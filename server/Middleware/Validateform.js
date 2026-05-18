@@ -1,0 +1,13 @@
+const { body } = require("express-validator");
+
+const validateCourse = [
+  body("title").notEmpty().withMessage("Title is required"),
+
+  body("description").notEmpty().withMessage("Description is required"),
+  body("price").isNumeric().withMessage("Price must be a number"),
+  body("level").notEmpty().withMessage("Level is required"),
+];
+
+module.exports = {
+  validateCourse,
+};
