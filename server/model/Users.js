@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
     default: "student",
   },
   avatar: { type: String },
+  status: { type: String, enum: ["active", "Inactive"] },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });

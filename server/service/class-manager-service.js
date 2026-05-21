@@ -118,9 +118,9 @@ const ChangeStatusClass = async (data) => {
 };
 const GetClassByStudent = async (data) => {
   try {
-    if (data?.role !== "student") {
-      throw { status: 404, message: "fobiden!" };
-    }
+    // if (data?.role !== "student") {
+    //   throw { status: 404, message: "fobiden!" };
+    // }
     const getClass = await classs
       .findById(data?.classId)
       .populate("courseId")

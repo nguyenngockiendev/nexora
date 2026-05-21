@@ -22,6 +22,9 @@ const MyClassCart = ({
   error,
   handchangesStatus,
   notification,
+  setSearch,
+  setFiler,
+  setFilterday
 }) => {
   return (
     <>
@@ -45,6 +48,7 @@ const MyClassCart = ({
               width: "220px",
               borderRadius: "10px",
             }}
+            onChange={(e) => setSearch(e.target.value)}
           />
 
           <select
@@ -53,11 +57,12 @@ const MyClassCart = ({
               width: "160px",
               borderRadius: "10px",
             }}
+            onChange={(e) => setFiler(e.target.value)}
           >
-            <option>All Status</option>
-            <option>Open</option>
-            <option>Closed</option>
-            <option>Upcoming</option>
+            <option value="All Status">All Status</option>
+            <option value="open">Open</option>
+            <option value="closed">Closed</option>
+            <option value="upcoming">Upcoming</option>
           </select>
 
           <select
@@ -66,10 +71,16 @@ const MyClassCart = ({
               width: "160px",
               borderRadius: "10px",
             }}
+            onChange={(e) => setFilterday(e.target.value)}
           >
-            <option>Newest</option>
-            <option>Oldest</option>
-            <option>Most Students</option>
+            <option value="All Day">All Day</option>
+            <option value="Monday">Monday</option>
+            <option value="Tuesday">Tuesday</option>
+            <option value="Wednesday">Wednesday</option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+            <option value="Saturday">Saturday</option>
+            <option value="Sunday">Sunday</option>
           </select>
         </div>
       </div>

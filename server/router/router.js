@@ -19,6 +19,7 @@ const {
   DeleteLession,
   UpdateLession,
 } = require("../controller/lession-controller");
+const { GetAlluser, GetUser, ChangeStatusUser, UpdateRole, GetStudentOnClasss, RemoveStudent} = require("../controller/user-controllsers");
 
 const { authMiddleware } = require("../Middleware/Middleware");
 
@@ -65,4 +66,16 @@ Router.put("/classes/:classId",authMiddleware,UpdateClass)
 Router.put("/change/status/:classId",authMiddleware,ChangeStatus)
 Router.get("/get-class/:classId",authMiddleware,GetClass)
 Router.get("/details-class/:courseId",authMiddleware,DetaiCourseClass)
+
+
+Router.get("/admin/users",authMiddleware,GetAlluser)
+Router.get("/admin/users/:userId",authMiddleware,GetUser)
+Router.patch("/admin/users/:userId/status",authMiddleware,ChangeStatusUser)
+Router.patch("/admin/users/:userId/role",authMiddleware,UpdateRole)
+
+
+
+Router.get("/instructor/classes/:classId/students",authMiddleware,GetStudentOnClasss)
+Router.get("/instructor/classes/:classId/students/:studentId",authMiddleware,RemoveStudent)
+
 module.exports = Router;
