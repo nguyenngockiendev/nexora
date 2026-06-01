@@ -1,10 +1,12 @@
-import { CCol, CContainer, CRow } from "@coreui/react";
+
 
 import { useParams } from "react-router-dom";
-import SidebarLesson from "../../features/components/LessionSibar";
-import LessionForm from "../../features/components/LessionForm";
-import { useCourseEnrollments } from "../../features/hooks/useCourseEnrollments";
+
 import { useState } from "react";
+import { useCourseEnrollments } from "../hooks/useCourseEnrollments";
+import SidebarLesson from "../../lesson/components/LessionSibar";
+import LessionForm from "../../lesson/components/LessionForm";
+import { Col, Container, Row } from "react-bootstrap";
 
 const CourseEnrollments = () => {
   const role = localStorage.getItem("role");
@@ -15,9 +17,9 @@ const CourseEnrollments = () => {
 
   return (
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
-      <CContainer>
-        <CRow className="justify-content-center">
-          <CCol md={3}>
+      <Container>
+        <Row className="justify-content-center">
+          <Col md={3}>
             <SidebarLesson
               loading={loading}
               error={error}
@@ -27,12 +29,12 @@ const CourseEnrollments = () => {
               id={courseId}
               role={role}
             />
-          </CCol>
-          <CCol md={9}>
+          </Col>
+          <Col md={9}>
             <LessionForm currentLesson={currentLesson} role={role} />
-          </CCol>
-        </CRow>
-      </CContainer>
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 };

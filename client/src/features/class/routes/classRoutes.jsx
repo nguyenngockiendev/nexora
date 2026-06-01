@@ -12,12 +12,18 @@ const ClassRoutes =[
     element:<MyClass/>
 },
 {
-    path:"my/class/live/class/:classId/item",
+    path:"student/live/class/:classId/item",
     element:<LiveclassRoom/>
 },
 {
     path:"my/class/update-class/:classId",
     element:<CreateClass/>
 },
+{
+    path:"courses/:classId/item",
+    element:<CreateClass/>
+},
+
+
 ]
 export default ClassRoutes

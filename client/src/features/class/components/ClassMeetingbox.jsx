@@ -34,7 +34,7 @@ const ClassRoom = ({ classs,navigate}) => {
           {/* JOIN BUTTON */}
         <Button
           variant="outline-secondary"
-          onClick={() => navigate("/my/class")}
+          onClick={() => navigate("/courses")}
         >
           Back to My Classes
         </Button>

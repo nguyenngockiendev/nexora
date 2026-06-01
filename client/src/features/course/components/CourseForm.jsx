@@ -1,6 +1,5 @@
 import { Button, Card, Col, Row } from "react-bootstrap";
 
-
 const CoursesForm = ({
   courses,
   loading,
@@ -10,6 +9,9 @@ const CoursesForm = ({
   setFilter,
   role,
   navigate,
+  errorPayment,
+
+  messagepayment,
 }) => {
   return (
     <>
@@ -21,7 +23,15 @@ const CoursesForm = ({
             Discover and purchase your favorite courses
           </p>
         </div>
+        {messagepayment === "payment failed!" ? (
+          <div className="alert alert-danger">{messagepayment}</div>
+        ) : (
+          <div className="alert alert-success">{messagepayment}</div>
+        )}
 
+        {errorPayment && (
+          <div className="alert alert-danger">{errorPayment}</div>
+        )}
         {/* Search + Filter */}
         <div className="d-flex gap-2 flex-wrap">
           <input
@@ -147,7 +157,7 @@ const CoursesForm = ({
                           payment(cou?._id, { type: cou?.type });
                         }
                         if (cou?.type === "live") {
-                          navigate(`/course-class-details/${cou._id}`);
+                          navigate(`details/class/live/${cou._id}`);
                         }
                       }}
                     >

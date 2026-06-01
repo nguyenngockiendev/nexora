@@ -89,7 +89,7 @@ const vnpayCallback = async (req, res) => {
       throw { message: "payment failed!" };
     }
     res.redirect(
-      `http://localhost:3000/courses?payment=${createerollment.message}`,
+      `http://localhost:5173/courses?payment=${createerollment.message}`,
     );
   
   } catch (error) {

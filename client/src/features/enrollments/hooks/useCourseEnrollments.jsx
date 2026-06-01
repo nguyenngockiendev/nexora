@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { checkEnrollment} from "../../api/enrollments-api";
+import { CheckEnrollment } from "../api/enrollments-api";
+
 
 
 const useCourseEnrollments = (data) => {
@@ -11,7 +12,7 @@ useEffect(() => {
     try {
       setLoading(true);
       setError(null);
-      const result = await checkEnrollment(data);
+      const result = await CheckEnrollment(data);
       setEnrollment(result);
       setLoading(false);
     } catch (error) {

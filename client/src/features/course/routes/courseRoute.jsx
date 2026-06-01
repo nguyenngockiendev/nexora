@@ -1,9 +1,8 @@
 // import DetailsCourseLive from "../pages/CourseDetailsLive";
 import Lession from "../../lesson/pages/Lession";
+import DetailsCourseLive from "../pages/CourseDetailsLive";
 import Courses from "../pages/Courses";
 import CreateCourses from "../pages/CreateCourses";
-
-// import CreateCourses from "../pages/CreateCourses";
 
 const courseRoute = [
   {
@@ -17,8 +16,8 @@ const courseRoute = [
     icon: "",
   },
   {
-    path: "course/detail",
-    // element: <DetailsCourseLive />,
+    path: "courses/details/class/live/:courseId",
+    element: <DetailsCourseLive/>,
     icon: "",
   },
   {

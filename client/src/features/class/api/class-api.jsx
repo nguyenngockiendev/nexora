@@ -27,7 +27,7 @@ const JoiClassByUser = async (classId) => {
 
 const CourseClassDetails = async (courseId) => {
   const request = await api.get(`/details-class/${courseId}`);
- 
+
   return request;
 };
 export {
