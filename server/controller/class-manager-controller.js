@@ -30,8 +30,8 @@ const GetclassbyId = async(req,res)=>{
   try {
     const data ={
       role: req.user.role,
-      courseId:req.user.userId,
-
+      intructor:req.user.userId,
+      courseId : req.params.courseId
     };
     const result = await GetClassbyInstructor(data);
     res.status(200).json(result);

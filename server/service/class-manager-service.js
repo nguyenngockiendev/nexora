@@ -43,7 +43,7 @@ const GetClassbyInstructor = async (data) => {
       throw { status: 403, message: "Only instructors can view their classes" };
     }
     const result = await classs
-      .find({ instructorId: data.courseId })
+      .find({ instructorId: data.intructor, courseId: data.courseId })
       .populate("instructorId", "name")
       .lean();
     if (!result || result === 0) {
@@ -165,7 +165,7 @@ const CourseDetailsClass = async (data) => {
     const getClass = await classs
       .find({ courseId: data?.courseId })
       .populate("courseId")
-      .populate("instructorId","-password -createdAt -updatedAt")
+      .populate("instructorId", "-password -createdAt -updatedAt")
       .lean();
     if (getClass.length === 0) {
       throw { status: 404, message: "you not have class!" };

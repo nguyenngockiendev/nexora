@@ -46,7 +46,7 @@ const CreateClass = () => {
       const result = await Update(data, classId);
       if (result) {
         toast.success("Update successfuly!");
-        navigate("/my-class");
+        navigate("/my/class");
         return;
       }
     } catch (error) {
@@ -59,7 +59,7 @@ const CreateClass = () => {
       await Create(data, courseId);
 
       toast.success(notification || "Create class successfully!");
-      navigate("/my-class");
+      navigate("/my/class");
       return;
     } catch (error) {
       console.error(error);

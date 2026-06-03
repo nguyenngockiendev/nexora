@@ -4,9 +4,8 @@ const CreateClass = async (data, courseId) => {
   const request = await api.post(`/create-class/${courseId}`, data);
   return request;
 };
-const GetClassbyInstructor = async () => {
-  const request = await api.get(`/get-class-by-instructor`);
-
+const GetClassbyInstructor = async (courseId) => {
+  const request = await api.get(`/get-class-by-instructor/${courseId}`);
   return request;
 };
 const UpdatClassById = async (data, classId) => {

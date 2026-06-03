@@ -24,14 +24,18 @@ const GetAllCourses = async (data) => {
     if (data?.role === "student") {
       course = await Courses.find().populate("instructor", "name type").lean();
     }
+    const resultFinal = await Promise.all(
+      course?.map( async(co) => {
+        const numbserclass = await classs.find({courseId: co?._id})
+        return {
+          ...co,
+          instructor: co?.instructor?.name,
+          numberClass:numbserclass.length,
+        };
+      }),
+    );
 
-    const result = course?.map((co) => {
-      return {
-        ...co,
-        instructor: co?.instructor?.name,
-      };
-    });
-    return result;
+    return resultFinal;
   } catch (error) {
     console.log(error);
     throw error;
@@ -165,7 +169,6 @@ const updateorder = async (data) => {
         orderpayment.status = "completed";
         await orderpayment.save();
         if (pricecourse?.type === "recorded") {
-
           const newerrollment = new errollment({
             userId: orderpayment.userId,
             courseId: orderpayment.courseId,

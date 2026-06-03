@@ -1,5 +1,6 @@
 import CreateClass from "../pages/CreateClasssPage"
 import LiveclassRoom from "../pages/LiveClassRoomPage"
+import ManageLiveclassRoom from "../pages/ManageLiveClassPage"
 import MyClass from "../pages/MyClassPage"
 
 const ClassRoutes =[
@@ -9,7 +10,7 @@ const ClassRoutes =[
 },
 {
     path:"my/class",
-    element:<MyClass/>
+    element:<ManageLiveclassRoom/>
 },
 {
     path:"student/live/class/:classId/item",
@@ -22,6 +23,10 @@ const ClassRoutes =[
 {
     path:"courses/:classId/item",
     element:<CreateClass/>
+},
+{
+    path:"my/class/details/class/:classId",
+    element:<MyClass/>
 },
 
 

@@ -6,9 +6,11 @@ import { useGetclassByIntructor } from "../hooks/useGetClassByIntructor";
 import useChangeStatus from "../hooks/useChangeStatusClass";
 import { Col, Container, Row } from "react-bootstrap";
 import MyClassCart from "../components/MyClassCart";
+import { useParams } from "react-router-dom";
 
 const MyClass = () => {
-  const { classs, error, loading } = useGetclassByIntructor();
+  const {classId} = useParams();
+  const { classs, error, loading } = useGetclassByIntructor(classId);
   const { notification, Change, erron } = useChangeStatus();
   const [result, setResult] = useState([]);
   const [search, setSearch] = useState("");

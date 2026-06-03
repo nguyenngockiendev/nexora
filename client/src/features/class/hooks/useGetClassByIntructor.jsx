@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { GetClassbyInstructor } from "../api/class-api";
 
-const useGetclassByIntructor = () => {
+const useGetclassByIntructor = (classId) => {
   const [classs, setClasss] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -11,7 +11,7 @@ const useGetclassByIntructor = () => {
       try {
         setLoading(true);
         setError(null);
-        const result = await GetClassbyInstructor();
+        const result = await GetClassbyInstructor(classId);
 
         setClasss(result);
 
@@ -23,7 +23,7 @@ const useGetclassByIntructor = () => {
     };
 
     getclass();
-  }, []);
+  }, [classId]);
 
   return { classs, error, loading };
 };

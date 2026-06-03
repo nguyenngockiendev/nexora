@@ -61,7 +61,7 @@ Router.get("/payment/vnpay-callback", vnpayCallback);
 Router.get("/enrollments",authMiddleware,Getorderbyuser);
 Router.get("/courses/:courseId/lession",authMiddleware,Getcheckenrollment);
 Router.post("/create-class/:courseId",authMiddleware,CreateClass);
-Router.get("/get-class-by-instructor",authMiddleware,GetclassbyId);
+Router.get("/get-class-by-instructor/:courseId",authMiddleware,GetclassbyId);
 Router.put("/classes/:classId",authMiddleware,UpdateClass)
 Router.put("/change/status/:classId",authMiddleware,ChangeStatus)
 Router.get("/get-class/:classId",authMiddleware,GetClass)
