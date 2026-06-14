@@ -125,14 +125,14 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
                 {/* Actions */}
                 <div className="mt-auto d-flex justify-content-between align-items-center">
                   {item?.type === "recorded" && (
-                    <Link to={`/courses/${item?.courseId?._id}/item`}>
+                    <Link to={`courses/${item?.courseId?._id}/item`}>
                       <Button size="sm" color="light">
                         Details
                       </Button>
                     </Link>
                   )}
                   {item?.type === "live" && (
-                    <Link to={`/live/class/${item?.classId}/item`}>
+                    <Link to={`live/class/${item?.classId}/item`}>
                       <Button size="sm" color="light">
                         Join in Class
                       </Button>

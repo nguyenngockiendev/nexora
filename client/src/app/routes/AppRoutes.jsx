@@ -15,6 +15,7 @@ function AppRoutes() {
     ...enrollmentsRoutes,
     ...ClassRoutes,
     ...userRoutes,
+   
   ];
 
   return (
