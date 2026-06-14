@@ -1,4 +1,4 @@
-const { GetAllUserByrole, GetUserById,  ChangeStatusByAdmin, UpdateroleByAdmin, GetAllStudentByIdClass, RemoveStudentinClass } = require("../service/user-service");
+const { GetAllUserByrole, GetUserById,  ChangeStatusByAdmin, UpdateroleByAdmin, GetAllStudentByIdClass, RemoveStudentinClass, RefectStudentoutclass } = require("../service/user-service");
 
 const GetAlluser = async (req, res) => {
   try {
@@ -85,4 +85,20 @@ const RemoveStudent = async (req, res) => {
     res.status(error.status || 500).json({ message: error.message });
   }
 };
-module.exports = { GetAlluser,GetUser,ChangeStatusUser,UpdateRole ,GetStudentOnClasss ,RemoveStudent};
+const RefectStudent = async (req, res) => {
+  try {
+    const data = {
+      role: req.user.role,
+      classId: req.params.classId,
+      studentId: req.params.studentId,
+      status:req.body.status,
+      
+    };
+    const result = await RefectStudentoutclass(data);
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
+module.exports = { GetAlluser,GetUser,ChangeStatusUser,UpdateRole ,GetStudentOnClasss ,RemoveStudent,RefectStudent};

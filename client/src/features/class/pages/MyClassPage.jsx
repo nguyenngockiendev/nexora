@@ -1,4 +1,3 @@
-
 // import { useNavigate} from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -6,25 +5,23 @@ import { useGetclassByIntructor } from "../hooks/useGetClassByIntructor";
 import useChangeStatus from "../hooks/useChangeStatusClass";
 import { Col, Container, Row } from "react-bootstrap";
 import MyClassCart from "../components/MyClassCart";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const MyClass = () => {
-  const {classId} = useParams();
-  const { classs, error, loading } = useGetclassByIntructor(classId);
-  const { notification, Change, erron } = useChangeStatus();
+  const { classId } = useParams();
+  const { classs, error, loading, getclass } = useGetclassByIntructor(classId);
+  const { notification, Change } = useChangeStatus();
   const [result, setResult] = useState([]);
   const [search, setSearch] = useState("");
   const [filer, setFiler] = useState("All Status");
   const [filterday, setFilterday] = useState("All Day");
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
-  const handchangesStatus = async (classId, status) => {
+  const handchangesStatus = async (data) => {
     try {
-      await Change(classId, status);
+      await Change(data);
+      await getclass();
       toast.success(notification);
-      classs;
-      console.log("notification", notification);
-      console.log("erron", erron);
     } catch (error) {
       console.log(error);
     }
@@ -65,6 +62,7 @@ const MyClass = () => {
               setSearch={setSearch}
               setFiler={setFiler}
               setFilterday={setFilterday}
+              navigate={navigate}
             />
           </Col>
         </Row>

@@ -6,9 +6,12 @@ const useChangeStatus = () => {
 
   const [erron, setErron] = useState(null);
 
-  const Change = async (classId, status) => {
+  const Change = async (data) => {
     try {
-      const res = await ChangeStatus(classId, status);
+      const res = await ChangeStatus({
+        classId: data._id,
+        status: data.status === "closed" ? "open" : "closed",
+      });
       SetNotification(res?.message);
 
       return res;

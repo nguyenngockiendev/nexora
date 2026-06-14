@@ -53,15 +53,11 @@ const Nav_Sidebar = [
         path: "course/create",
         icon: PlusCircle,
       },
+
       
-      {
-        name: "Create Class",
-        path: "#",
-        icon: PlusCircle,
-      },
-      {
-        name: "Students",
-        path: "#",
+  {
+        name: "User",
+        path: "user",
         icon: Users,
       },
     ],

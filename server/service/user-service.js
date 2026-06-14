@@ -14,7 +14,19 @@ const GetAllUserByrole = async (data) => {
     if (userList.length === 0) {
       throw { status: 404, message: "no users." };
     }
-    return userList;
+    const result = await Promise.all(
+      userList.map(async (item) => {
+        const totalcourse = await order.find({ userId: item._id });
+        const joid = totalcourse.filter((item) => item.status === "completed");
+        return {
+          ...item,
+          totalcourse: totalcourse.length,
+          joid: joid.length,
+        };
+      }),
+    );
+
+    return result;
   } catch (error) {
     console.log(error);
     throw error;
@@ -27,8 +39,9 @@ const GetUserById = async (data) => {
       throw { status: 404, message: "You don't have enough authority." };
     }
     const users = await user.findById(data?.userId).lean();
+    const orders = await order.find({ userId: data?.userId }).lean();
     const userInfor = await errollment
-      .find({ userId: users._id })
+      .find({ userId: data?.userId })
       .populate("courseId")
       .select()
       .populate({
@@ -42,9 +55,7 @@ const GetUserById = async (data) => {
         ],
       })
       .lean();
-    if (userInfor.length === 0) {
-      throw { status: 404, message: "no users." };
-    }
+
     const finalResult = userInfor.map((item) => ({
       _id: item._id,
       userId: item.userId,
@@ -77,7 +88,7 @@ const GetUserById = async (data) => {
       updatedAt: item.updatedAt,
     }));
 
-    return finalResult;
+    return { finalresult: finalResult || [], user: users, order: orders || [] };
   } catch (error) {
     console.log(error);
     throw error;
@@ -132,20 +143,26 @@ const GetAllStudentByIdClass = async (data) => {
       throw { status: 404, message: "You don't have enough authority." };
     }
     const student = await errollment
-      .find({ classId: data?.classId, status: "active", type: "live" })
-      .select("userId type");
-
-    const finalResult = await Promise.all(
-      student.map(async (item) => {
-        const userclass = await user
-          .find(item?.userId)
-          .select("-password")
-          .lean();
-        return { students: userclass };
-      }),
-    );
-
-    return finalResult;
+      .find({ classId: data?.classId, type: "live" })
+      .populate("userId", "name email avatar status")
+      .lean();
+    const students = student.filter((item) => item.status === "active");
+    const studentinactive = student.filter((item) => item.status !== "active");
+    const totalStudents = student.length;
+    const activeStudents = student.filter(
+      (item) => item.status === "active",
+    ).length;
+    const inactiveStudents = student.filter(
+      (item) => item.status !== "active",
+    ).length;
+    return {
+      student: students || [],
+      studentinactive: studentinactive || [],
+      totalStudents,
+      activeStudents,
+      inactiveStudents,
+      Refectstudent: student.map((item) => item.classId)[0],
+    };
   } catch (error) {
     console.log(error);
     throw error;
@@ -157,17 +174,72 @@ const RemoveStudentinClass = async (data) => {
     if (data?.role === "student") {
       throw { status: 404, message: "You don't have enough authority." };
     }
-    const enrollmentforstudent = await errollment.findOne({
-      classId: data?.classId,
-      userId: data?.studentId,
-      type: "live",
-    });
-    const removeinclass = await errollment.findByIdAndUpdate(
-      enrollmentforstudent._id,
+    const enrollmentforstudent = await errollment.findOneAndUpdate(
+      {
+        classId: data?.classId,
+        userId: data?.studentId,
+        type: "live",
+      },
       { status: data?.status },
-      { new: true },
     );
-    return { removeinclass: removeinclass, message: "Change status success!" };
+
+    if (!enrollmentforstudent) {
+      throw { status: 404, message: "not found!" };
+    }
+    await classs.findByIdAndUpdate(
+      { _id: enrollmentforstudent.classId, currentStudents: { $gt: 0 } },
+
+      {
+        $inc: { currentStudents: -1 },
+      },
+    );
+
+    return {
+      removeinclass: enrollmentforstudent,
+      message: "Change status success!",
+    };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const RefectStudentoutclass = async (data) => {
+  try {
+    if (data?.role === "student") {
+      throw { status: 404, message: "You don't have enough authority." };
+    }
+    const enrollmentforstudent = await errollment.findOneAndUpdate(
+      {
+        classId: data?.classId,
+        userId: data?.studentId,
+        type: "live",
+      },
+      { status: data?.status },
+    );
+
+    if (!enrollmentforstudent) {
+      throw { status: 404, message: "not found!" };
+    }
+    const classMaxstudent = await classs
+      .findById(enrollmentforstudent.classId)
+      .select("maxStudents currentStudents")
+      .lean();
+    await classs.findOneAndUpdate(
+      {
+        _id: enrollmentforstudent.classId,
+        currentStudents: { $lt: classMaxstudent.maxStudents },
+      },
+
+      {
+        $inc: { currentStudents: 1 },
+      },
+    );
+
+    return {
+      removeinclass: enrollmentforstudent,
+      message: "Change status success!",
+    };
   } catch (error) {
     console.log(error);
     throw error;
@@ -181,4 +253,5 @@ module.exports = {
   UpdateroleByAdmin,
   GetAllStudentByIdClass,
   RemoveStudentinClass,
+  RefectStudentoutclass,
 };

@@ -11,6 +11,7 @@ const MyClassCart = ({
   setSearch,
   setFiler,
   setFilterday,
+  navigate,
 }) => {
   return (
     <>
@@ -145,7 +146,7 @@ const MyClassCart = ({
 
                 {/* Actions */}
                 <div className="mt-auto d-flex flex-wrap gap-2">
-                  <Link to={`live/class/${item._id}/item`}>
+                  <Link to={`/live/class/${item._id}/item`}>
                     {" "}
                     <Button size="sm" color="primary">
                       Detail
@@ -153,7 +154,7 @@ const MyClassCart = ({
                   </Link>
 
                   <Link
-                    to={`update-class/${item?._id}`}
+                    to={`/update-class/${item?._id}`}
                     state={{ data: item }}
                   >
                     {" "}
@@ -162,19 +163,20 @@ const MyClassCart = ({
                     </Button>{" "}
                   </Link>
 
-                  <Button size="sm" color="info">
+                  <Button
+                    size="sm"
+                    color="info"
+                    onClick={() =>
+                      navigate(`/instructor/classes/${item._id}/students`)
+                    }
+                  >
                     Students
                   </Button>
 
                   <Button
                     size="sm"
                     color="warning"
-                    onClick={() =>
-                      handchangesStatus(
-                        item._id,
-                        item.status === "closed" ? "open" : "closed",
-                      )
-                    }
+                    onClick={() => handchangesStatus(item)}
                   >
                     {item.status === "closed" ? "open" : "closed"}
                   </Button>
@@ -202,8 +204,6 @@ const MyClassCart = ({
         <p className="text-medium-emphasis">
           Start creating your first live class
         </p>
-
-        <Button color="success">Create New Class</Button>
       </div>
     </>
   );

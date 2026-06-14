@@ -19,7 +19,7 @@ const {
   DeleteLession,
   UpdateLession,
 } = require("../controller/lession-controller");
-const { GetAlluser, GetUser, ChangeStatusUser, UpdateRole, GetStudentOnClasss, RemoveStudent} = require("../controller/user-controllsers");
+const { GetAlluser, GetUser, ChangeStatusUser, UpdateRole, GetStudentOnClasss, RemoveStudent, RefectStudent} = require("../controller/user-controllsers");
 
 const { authMiddleware } = require("../Middleware/Middleware");
 
@@ -76,6 +76,7 @@ Router.patch("/admin/users/:userId/role",authMiddleware,UpdateRole)
 
 
 Router.get("/instructor/classes/:classId/students",authMiddleware,GetStudentOnClasss)
-Router.get("/instructor/classes/:classId/students/:studentId",authMiddleware,RemoveStudent)
+Router.patch("/instructor/classes/:classId/students/:studentId",authMiddleware,RemoveStudent)
+Router.patch("/instructor/refect-classes/:classId/students/:studentId",authMiddleware,RefectStudent)
 
 module.exports = Router;
