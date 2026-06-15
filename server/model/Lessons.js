@@ -29,17 +29,6 @@ const lessonSchema = new mongoose.Schema({
     ],
     default: [],
   },
-  quiz: {
-    type: [
-      {
-        question: { type: String, required: true },
-        options: { type: [String], required: true },
-        correctAnswer: { type: String, required: true },
-        explanation: { type: String },
-      },
-    ],
-    default: [],
-  },
 });
 
 module.exports = mongoose.model("Lesson", lessonSchema);

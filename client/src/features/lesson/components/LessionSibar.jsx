@@ -45,7 +45,7 @@ const SidebarLesson = ({
               className="w-100"
               style={{
                 borderRadius: "10px",
-                color: "rebeccapurple" 
+                color: "rebeccapurple",
               }}
             >
               + Create New Lesson
@@ -86,7 +86,6 @@ const SidebarLesson = ({
               border: "1px solid ",
               padding: "8px 12px",
               borderRadius: "8px",
-             
             }}
           >
             {title?.length || 0} Lessons
@@ -122,7 +121,7 @@ const SidebarLesson = ({
                     className="fw-semibold"
                     style={{
                       fontSize: "0.95rem",
-                      color: "rebeccapurple" 
+                      color: "rebeccapurple",
                     }}
                   >
                     {index + 1}. {titl?.title}
@@ -132,7 +131,7 @@ const SidebarLesson = ({
                     className="text-medium-emphasis"
                     style={{
                       fontSize: "0.82rem",
-                      color: "rebeccapurple" 
+                      color: "rebeccapurple",
                     }}
                   >
                     {titl?.duration || "10 mins"}
@@ -161,7 +160,7 @@ const SidebarLesson = ({
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   whiteSpace: "nowrap",
-                  color: "rebeccapurple" 
+                  color: "rebeccapurple",
                 }}
               >
                 🎥 {titl?.video}

@@ -1,12 +1,12 @@
-import { 
-  BookOpen, 
-  Users, 
+import {
+  BookOpen,
+  Users,
   GraduationCap,
   Video,
   CreditCard,
   LayoutDashboard,
   Settings,
-  PlusCircle
+  PlusCircle,
 } from "lucide-react";
 
 const Nav_Sidebar = [
@@ -54,8 +54,7 @@ const Nav_Sidebar = [
         icon: PlusCircle,
       },
 
-      
-  {
+      {
         name: "User",
         path: "user",
         icon: Users,

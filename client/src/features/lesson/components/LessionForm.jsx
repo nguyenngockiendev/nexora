@@ -74,7 +74,7 @@ const LessionForm = ({
               {role !== "student" && (
                 <div className="d-flex gap-2">
                   <Link to={`/update_lession/${currentLesson._id}`}>
-                    <Button color="primary" style={{color:"rebeccapurple"}}>Update Lesson</Button>
+                    <Button color="primary" >Update Lesson</Button>
                   </Link>
 
                   <Button

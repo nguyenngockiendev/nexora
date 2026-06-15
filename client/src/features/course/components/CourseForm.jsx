@@ -130,19 +130,11 @@ const CoursesForm = ({
                     </Link>
                   )} */}
 
-                  {role !== "student" && cou?.type === "live" ? (
-                    <Button
-                      size="sm"
-                      className="flex-grow-1"
-                      onClick={() => navigate(`create/class/${cou._id}`)}
-                    >
-                      Create Class
-                    </Button>
-                  ) : role !== "student" ? (
+                  {role !== "student" && cou?.type === "recorded" ? (
                     <Button
                       size="sm"
                       className="w-100"
-                      onClick={() => navigate("#")}
+                      onClick={() => navigate(`details_course/${cou._id}`)}
                     >
                       Details
                     </Button>

@@ -52,15 +52,36 @@ const UpdateLessionByid = async (data) => {
     if (data?.role !== "instructor") {
       throw { status: 403, message: "forbidden" };
     }
-    const updatelession = await Lessons.findByIdAndUpdate(data._id, data, {
-      new: true,
-    });
-     if(!updatelession){
+    const updatelession = await Lessons.findByIdAndUpdate(
+      data.lessionId,
+      data,
+      {
+        returnDocument: true,
+      },
+    );
+    if (!updatelession) {
       throw { status: 404, message: "Lesson not found" };
-     }
+    }
     if (updatelession) {
       return { message: " Update Lession Succesfully!", data: updatelession };
     }
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const GetLessionByid = async (data) => {
+  try {
+    if (data?.role !== "instructor") {
+      throw { status: 403, message: "forbidden" };
+    }
+    const getlession = await Lessons.findById({ _id: data?.lessionId }).lean();
+    if (!getlession) {
+      throw { status: 404, message: "Lesson not found" };
+    }
+
+    return getlession;
   } catch (error) {
     console.log(error);
     throw error;
@@ -72,4 +93,5 @@ module.exports = {
   CreateLession,
   DeleteLessionByid,
   UpdateLessionByid,
+  GetLessionByid,
 };

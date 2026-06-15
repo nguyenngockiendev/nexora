@@ -6,6 +6,7 @@ import authRoutes from "../../features/auth/routes/authRoutes";
 import enrollmentsRoutes from "../../features/enrollments/routes/enrollmentsRoutes";
 import ClassRoutes from "../../features/class/routes/classRoutes";
 import userRoutes from "../../features/user/routes/userRoutes";
+import lessionRoute from "../../features/lesson/routes/lessionRoute";
 
 function AppRoutes() {
   const token = localStorage.getItem("token");
@@ -15,6 +16,7 @@ function AppRoutes() {
     ...enrollmentsRoutes,
     ...ClassRoutes,
     ...userRoutes,
+    ...lessionRoute
    
   ];
 

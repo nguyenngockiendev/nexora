@@ -3,6 +3,7 @@ const {
   CreateLession,
   DeleteLessionByid,
   UpdateLessionByid,
+  GetLessionByid,
 } = require("../service/lession");
 const uploadFile = require("../service/uploadfile-service");
 
@@ -41,7 +42,7 @@ const CreateLessons = async (req, res) => {
       courseId: req.body.courseId,
       videoUrl: videoUrl,
       role: req.user.role,
-      quiz: JSON.parse(req.body.quiz),
+
       resources: src,
     };
 
@@ -68,10 +69,24 @@ const DeleteLession = async (req, res) => {
 
 const UpdateLession = async (req, res) => {
   try {
+    let videoUrl = "";
+    let resourceUrl = "";
+    if (req.files?.video) {
+      videoUrl = await uploadFile(req.files.video[0].path);
+    }
+    if (req.files?.resourcesurl) {
+      resourceUrl = await uploadFile(req.files.resourcesurl[0].path);
+    }
     const data = {
       ...req.body,
+      videoUrl: videoUrl,
       role: req.user.role,
-      _id: req.params.id,
+      lessionId: req.params.lessionId,
+      resources: {
+        type: req.body.resourcestype,
+        title: req.body.resourcestitle,
+        url: resourceUrl,
+      },
     };
     const result = await UpdateLessionByid(data);
     res.status(200).json(result);
@@ -79,6 +94,22 @@ const UpdateLession = async (req, res) => {
     res.status(error.status || 500).json({ message: error.message });
   }
 };
-
-
-module.exports = { GetLessons, CreateLessons, DeleteLession,UpdateLession };
+const getLessionbyIntructor = async (req, res) => {
+  try {
+    const data = {
+      role: req.user.role,
+      lessionId: req.params.lessionId,
+    };
+    const result = await GetLessionByid(data);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
+module.exports = {
+  GetLessons,
+  CreateLessons,
+  DeleteLession,
+  UpdateLession,
+  getLessionbyIntructor,
+};

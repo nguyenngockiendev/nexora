@@ -13,8 +13,18 @@ const DeleteLessionbyid = async (data) => {
   const request = await api.delete(`/delete_lession/${data}`);
   return request;
 };
-const UpdateLessionbyid = async (data) => {
-  const request = await api.delete(`/update_lession/${data}`);
+const UpdateLessionbyid = async (lessionId, formData) => {
+  const request = await api.put(`/update_lession/${lessionId}`, formData);
   return request;
 };
-export { GetTitle, CreateLession, DeleteLessionbyid, UpdateLessionbyid };
+const GetLessionbyid = async (lessionId) => {
+  const request = await api.get(`/get_lessionbyupdate/${lessionId}`);
+  return request;
+};
+export {
+  GetTitle,
+  CreateLession,
+  DeleteLessionbyid,
+  UpdateLessionbyid,
+  GetLessionbyid,
+};

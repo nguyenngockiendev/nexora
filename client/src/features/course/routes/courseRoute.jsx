@@ -19,20 +19,20 @@ const courseRoute = [
   },
   {
     path: "courses/details/class/live/:courseId",
-    element: <DetailsCourseLive/>,
+    element: <DetailsCourseLive />,
     icon: "",
   },
   {
-    path: "details_course/:id",
-    element: <Lession />,
+    path: "courses/details_course/:id",
+    element: <Lession/>,
     icon: "",
   },
-   {
+  {
     path: "student/live/class/:classId/item",
     element: <LiveclassRoom />,
     icon: "",
   },
-   {
+  {
     path: "courses/:courseId/item",
     element: <CourseEnrollments />,
     icon: "",

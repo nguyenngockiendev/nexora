@@ -1,16 +1,26 @@
 import { useState } from "react";
-import { UpdateLessionbyid } from "../api/lession-api";
-
+import { GetLessionbyid, UpdateLessionbyid } from "../api/lession-api";
 
 const useUpdatelession = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [lession, setLession] = useState(null);
 
-  const update = async (data) => {
+  const getLession = async (lessionId) => {
+    try {
+     
+      const list = await GetLessionbyid(lessionId);
+      setLession(list);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const update = async (lessionId,formData) => {
+    // console.log("data",formData , "lessionId", lessionId);
     try {
       setLoading(true);
       setError(false);
-      const res = await UpdateLessionbyid(data);
+      const res = await UpdateLessionbyid(lessionId,formData);
       return res;
     } catch (error) {
       console.log(error);
@@ -19,6 +29,7 @@ const useUpdatelession = () => {
       setLoading(false);
     }
   };
-  return { loading, error, update };
+
+  return { loading, error, lession, update, getLession };
 };
 export default useUpdatelession;

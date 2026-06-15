@@ -1,12 +1,9 @@
 import { useState } from "react";
 import { CreateLession } from "../api/lession-api";
 
-
-
-
 const useCreateLession = () => {
   const [error, setError] = useState(null);
- 
+
   const Lession = async (data) => {
     try {
       setError(null);
