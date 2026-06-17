@@ -7,12 +7,11 @@ const LessionForm = ({
   errorlession,
   loadinglession,
   role,
+  navigate,
 }) => {
   if (!currentLesson) {
     return <div>Vui lòng chọn bài học</div>;
   }
-
-  // const conten = currentLesson?.resources;
 
   return (
     <div
@@ -55,7 +54,9 @@ const LessionForm = ({
           >
             <div className="d-flex justify-content-between align-items-start flex-wrap gap-3">
               <div>
-                <h2 className="fw-bold mb-2" style={{color: "rebeccapurple" }}>{currentLesson?.content}</h2>
+                <h2 className="fw-bold mb-2" style={{ color: "rebeccapurple" }}>
+                  {currentLesson?.content}
+                </h2>
 
                 {currentLesson?.isPreview && (
                   <span
@@ -74,7 +75,7 @@ const LessionForm = ({
               {role !== "student" && (
                 <div className="d-flex gap-2">
                   <Link to={`/update_lession/${currentLesson._id}`}>
-                    <Button color="primary" >Update Lesson</Button>
+                    <Button color="primary">Update Lesson</Button>
                   </Link>
 
                   <Button
@@ -83,6 +84,16 @@ const LessionForm = ({
                     disabled={loadinglession}
                   >
                     {loadinglession ? "Deleting..." : "Delete Lesson"}
+                  </Button>
+                  <Button
+                    color="primary"
+                    onClick={() =>
+                      navigate(
+                        `/create_quizz/lession/${currentLesson?._id}/course/${currentLesson?.courseId}`,
+                      )
+                    }
+                  >
+                    Create Quizz
                   </Button>
                 </div>
               )}
@@ -127,7 +138,9 @@ const LessionForm = ({
             }}
           >
             <div className="d-flex justify-content-between align-items-center mb-4">
-              <h5 className="fw-bold mb-0" style={{color:"rebeccapurple"}}>Lesson Resources</h5>
+              <h5 className="fw-bold mb-0" style={{ color: "rebeccapurple" }}>
+                Lesson Resources
+              </h5>
 
               <span className="badge bg-light text-dark">
                 {currentLesson?.resources?.length || 0} Files
@@ -158,20 +171,25 @@ const LessionForm = ({
                           justifyContent: "center",
                           alignItems: "center",
                           fontSize: "1.3rem",
-                          color:"rebeccapurple"
+                          color: "rebeccapurple",
                         }}
                       >
                         📄
                       </div>
 
                       <div>
-                        <div className="fw-semibold" style={{color:"rebeccapurple"}}>{src?.title}</div>
+                        <div
+                          className="fw-semibold"
+                          style={{ color: "rebeccapurple" }}
+                        >
+                          {src?.title}
+                        </div>
 
                         <div
                           className="text-medium-emphasis"
                           style={{
                             fontSize: "0.85rem",
-                            color:"rebeccapurple"
+                            color: "rebeccapurple",
                           }}
                         >
                           PDF Resource

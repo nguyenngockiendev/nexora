@@ -21,10 +21,15 @@ const GetLessionbyid = async (lessionId) => {
   const request = await api.get(`/get_lessionbyupdate/${lessionId}`);
   return request;
 };
+const CreateQuiz = async (lessionId, data) => {
+  const request = await api.put(`/create_quizz/${lessionId}`, data);
+  return request;
+};
 export {
   GetTitle,
   CreateLession,
   DeleteLessionbyid,
   UpdateLessionbyid,
   GetLessionbyid,
+  CreateQuiz,
 };

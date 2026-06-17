@@ -23,10 +23,7 @@ const questionSchema = new Schema({
     default: "",
   },
 
-  points: {
-    type: Number,
-    default: 1,
-  },
+
 });
 
 const quizSchema = new Schema(
@@ -50,6 +47,11 @@ const quizSchema = new Schema(
       required: true,
       trim: true,
     },
+    duration: {
+      type: Number,
+      required: true,
+      
+    },
 
     description: {
       type: String,
@@ -61,10 +63,6 @@ const quizSchema = new Schema(
       default: [],
     },
 
-    totalPoints: {
-      type: Number,
-      default: 0,
-    },
 
     passScore: {
       type: Number,

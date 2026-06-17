@@ -76,6 +76,7 @@ const Lession = () => {
               errorupdate={errorupdate}
               handUpdate={handUpdate}
               role={role}
+              navigate={navigate}
             />
           </Col>
         </Row>
