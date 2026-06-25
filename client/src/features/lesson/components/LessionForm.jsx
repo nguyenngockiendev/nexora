@@ -93,7 +93,9 @@ const LessionForm = ({
                       )
                     }
                   >
-                    Create Quizz
+                    {currentLesson?.QuizExits
+                      ? "Update Lession"
+                      : "Create Quizz"}
                   </Button>
                 </div>
               )}

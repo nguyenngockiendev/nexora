@@ -1,20 +1,38 @@
 const Lessons = require("../model/Lessons");
 
+const Courses = require("../model/Courses");
+
+const order = require("../model/Orders");
+const errollment = require("../model/Enrollments");
+const user = require("../model/Users");
+const classs = require("../model/Class");
+const quizz = require("../model/Quizz");
 const GetLession = async (data) => {
   try {
     let result = [];
     if (data?.role === "instructor") {
-      result = await Lessons.find({ courseId: data.id });
+      result = await Lessons.find({ courseId: data.id }).lean();
     } else if (data?.role === "student") {
-      result = await Lessons.find({ courseId: data.id, isPreview: true });
+      result = await Lessons.find({
+        courseId: data.id,
+        isPreview: true,
+      }).lean();
     } else if (data?.role === "admin") {
-      result = await Lessons.find({ courseId: data.id });
+      result = await Lessons.find({ courseId: data.id }).lean();
     }
 
     if (!result || result.length === 0) {
       throw { status: 404, message: "not lession" };
     }
-    return result;
+
+    const Quizzexist = Promise.all(
+      result.map(async (item) => {
+        const quizzExits = await quizz.findOne({ lessonId: item._id });
+
+        return { ...item, QuizExits: quizzExits };
+      }),
+    );
+    return Quizzexist;
   } catch (error) {
     console.log(error);
     throw error;

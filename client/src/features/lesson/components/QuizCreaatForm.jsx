@@ -17,6 +17,8 @@ const QuizCreaatForm = ({
   error,
   navigate,
   courseId,
+  istrue,
+  loading,
 }) => {
   const optionLabels = ["A", "B", "C", "D"];
 
@@ -73,6 +75,7 @@ const QuizCreaatForm = ({
                   <Form.Label>Tên đề</Form.Label>
                   <Form.Control
                     type="text"
+                    value={exam.title}
                     className="quiz-input"
                     required
                     placeholder="tạo đề kiểm tra"
@@ -90,17 +93,18 @@ const QuizCreaatForm = ({
                   <Form.Label>Thời gian</Form.Label>
                   <InputGroup className="quiz-input-group">
                     <Form.Control
-                      type="number"
+                      type="time"
                       required
+                      value={exam.duration}
                       className="quiz-input"
                       onChange={(e) =>
                         setExam({
                           ...exam,
-                          duration: Number(e.target.value),
+                          duration: e.target.value,
                         })
                       }
                     />
-                    <InputGroup.Text>phút</InputGroup.Text>
+                    <InputGroup.Text>Thời gian</InputGroup.Text>
                   </InputGroup>
                 </Form.Group>
               </Col>
@@ -111,6 +115,7 @@ const QuizCreaatForm = ({
                     <Form.Control
                       type="number"
                       required
+                      value={exam.passScore}
                       className="quiz-input"
                       onChange={(e) =>
                         setExam({
@@ -319,13 +324,25 @@ const QuizCreaatForm = ({
           >
             Preview Exam
           </Button>
-          <Button
-            variant="primary"
-            className="rounded-pill px-4 fw-semibold"
-            type="submit"
-          >
-            Create Quizz
-          </Button>{" "}
+
+          {istrue ? (
+            <Button
+              variant="primary"
+              className="rounded-pill px-4 fw-semibold"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? "...Loading" : "Update Quizz"}
+            </Button>
+          ) : (
+            <Button
+              variant="primary"
+              className="rounded-pill px-4 fw-semibold"
+              type="submit"
+            >
+              Create Quizz
+            </Button>
+          )}
         </div>
       </Form>
     </div>

@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { CreateQuiz } from "../api/lession-api";
 
-const useCreateLession = () => {
+const useCreateLession = (lessionId) => {
   const [error, setError] = useState(null);
   const [notification, setNotification] = useState("");
-  const Lession = async (lessionId, data) => {
+
+  const Lession = async (data) => {
     try {
       setError(null);
       const res = await CreateQuiz(lessionId, data);
@@ -15,6 +16,6 @@ const useCreateLession = () => {
       setError(message);
     }
   };
-  return { error, Lession,notification};
+  return { error, Lession, notification };
 };
 export default useCreateLession;

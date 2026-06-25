@@ -1,5 +1,3 @@
-
-
 import { useForm } from "react-hook-form";
 
 import { useNavigate } from "react-router-dom";
@@ -31,23 +29,15 @@ const Login = () => {
     }
   };
   return (
-    <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
-      <Container>
-        <Row className="justify-content-center">
-          <Col md={12}>
-            <LoginForm
-              register={register}
-              handleSubmit={handleSubmit}
-              login={login}
-              loading={loading}
-              error={error}
-              onSubmit={onSubmit}
-              navigate={navigate}
-            />
-          </Col>
-        </Row>
-      </Container>
-    </div>
+    <LoginForm
+      register={register}
+      handleSubmit={handleSubmit}
+      login={login}
+      loading={loading}
+      error={error}
+      onSubmit={onSubmit}
+      navigate={navigate}
+    />
   );
 };
 

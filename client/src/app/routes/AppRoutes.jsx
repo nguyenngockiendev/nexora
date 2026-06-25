@@ -7,6 +7,7 @@ import enrollmentsRoutes from "../../features/enrollments/routes/enrollmentsRout
 import ClassRoutes from "../../features/class/routes/classRoutes";
 import userRoutes from "../../features/user/routes/userRoutes";
 import lessionRoute from "../../features/lesson/routes/lessionRoute";
+import HomePage from "../../demo/HomePage/HomePage";
 
 function AppRoutes() {
   const token = localStorage.getItem("token");
@@ -16,8 +17,7 @@ function AppRoutes() {
     ...enrollmentsRoutes,
     ...ClassRoutes,
     ...userRoutes,
-    ...lessionRoute
-   
+    ...lessionRoute,
   ];
 
   return (
@@ -29,10 +29,12 @@ function AppRoutes() {
             token ? (
               <Navigate to="/courses" replace />
             ) : (
-              <Navigate to="/login" replace />
+              <Navigate to="/demo/home" replace />
             )
           }
         />
+        <Route path="/demo/home" element={<HomePage />} />
+
         {authRoutes.map((route) => (
           <Route key={route.path} path={route.path} element={route.element} />
         ))}

@@ -1,15 +1,18 @@
 import { Row } from "react-bootstrap";
 
 import "../style/CreateExamPage.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import QuizCreaatForm from "../components/QuizCreaatForm";
 import useCreateLession from "../hooks/useCreateQuiz";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import useUpdateQuizz from "../hooks/useUpdateQuizz";
 
 function CreateExamPage() {
-  const { Lession, notification, error } = useCreateLession();
-  const { lessionId,courseId} = useParams();
+  const { lessionId, courseId } = useParams();
+  const { Lession, notification, error } = useCreateLession(lessionId);
+  const { quizz, update, loading, message } = useUpdateQuizz(lessionId);
+  const [istrue, setIstrue] = useState(false);
 
   const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -30,6 +33,13 @@ function CreateExamPage() {
     ],
   });
 
+  useEffect(() => {
+    if (quizz) {
+      setExam(quizz);
+      setIstrue(true);
+    }
+  }, [quizz]);
+
   const addQuestion = () => {
     setExam((prev) => {
       const newquestion = {
@@ -44,13 +54,22 @@ function CreateExamPage() {
       };
     });
   };
+
   const handSubmit = async (e) => {
     try {
       e.preventDefault();
-      const result = await Lession(lessionId, exam);
-      if (result) {
-        navigate(`/courses/details_course/${courseId}`);
-        toast(notification);
+      if (quizz) {
+        const result = await update(exam);
+        if (result) {
+          toast(message);
+          navigate(`/courses/details_course/${courseId}`);
+        }
+      } else {
+        const result = await Lession(exam);
+        if (result) {
+          toast(notification);
+          navigate(`/courses/details_course/${courseId}`);
+        }
       }
     } catch (error) {
       console.log(error);
@@ -70,6 +89,9 @@ function CreateExamPage() {
           error={error}
           navigate={navigate}
           courseId={courseId}
+          quizz={quizz}
+          istrue={istrue}
+          loading={loading}
         />
       </Row>
     </div>
