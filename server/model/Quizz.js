@@ -22,8 +22,6 @@ const questionSchema = new Schema({
     type: String,
     default: "",
   },
-
-
 });
 
 const quizSchema = new Schema(
@@ -50,7 +48,6 @@ const quizSchema = new Schema(
     duration: {
       type: Number,
       required: true,
-      
     },
 
     description: {
@@ -63,7 +60,6 @@ const quizSchema = new Schema(
       default: [],
     },
 
-
     passScore: {
       type: Number,
       default: 70,
@@ -74,7 +70,12 @@ const quizSchema = new Schema(
       enum: ["draft", "published"],
       default: "draft",
     },
+    published: {
+      type: Boolean,
+      default: false,
+    },
   },
+
   {
     timestamps: true,
   },

@@ -93,18 +93,19 @@ const QuizCreaatForm = ({
                   <Form.Label>Thời gian</Form.Label>
                   <InputGroup className="quiz-input-group">
                     <Form.Control
-                      type="time"
+                      type="Number"
+                      step="any"
                       required
                       value={exam.duration}
                       className="quiz-input"
                       onChange={(e) =>
                         setExam({
                           ...exam,
-                          duration: e.target.value,
+                          duration: Number(e.target.value),
                         })
                       }
                     />
-                    <InputGroup.Text>Thời gian</InputGroup.Text>
+                    <InputGroup.Text>Phút</InputGroup.Text>
                   </InputGroup>
                 </Form.Group>
               </Col>
@@ -113,8 +114,9 @@ const QuizCreaatForm = ({
                   <Form.Label>Điểm đạt</Form.Label>
                   <InputGroup className="quiz-input-group">
                     <Form.Control
-                      type="number"
+                      type="Number"
                       required
+                      step="any"
                       value={exam.passScore}
                       className="quiz-input"
                       onChange={(e) =>

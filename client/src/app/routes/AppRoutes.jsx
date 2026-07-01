@@ -7,6 +7,7 @@ import enrollmentsRoutes from "../../features/enrollments/routes/enrollmentsRout
 import ClassRoutes from "../../features/class/routes/classRoutes";
 import userRoutes from "../../features/user/routes/userRoutes";
 import lessionRoute from "../../features/lesson/routes/lessionRoute";
+import quizzRoutes from "../../features/quizz/routes/quizzRoutes";
 import HomePage from "../../demo/HomePage/HomePage";
 
 function AppRoutes() {
@@ -18,6 +19,7 @@ function AppRoutes() {
     ...ClassRoutes,
     ...userRoutes,
     ...lessionRoute,
+    ...quizzRoutes,
   ];
 
   return (

@@ -30,7 +30,12 @@ const {
   UpdateLession,
   getLessionbyIntructor,
 } = require("../controller/lession-controller");
-const { CreateQuiz, GetQuizzByLession, UpdateQuizz } = require("../controller/quiz-controller");
+const {
+  CreateQuiz,
+  GetQuizzByLession,
+  UpdateQuizz,
+  CreateAttemp,
+} = require("../controller/quiz-controller");
 const {
   GetAlluser,
   GetUser,
@@ -125,4 +130,5 @@ Router.patch(
 Router.post("/create_quizz/:lessionId", authMiddleware, CreateQuiz);
 Router.get("/get_quizz/:lessonId", authMiddleware, GetQuizzByLession);
 Router.put("/upadate_quizz/:lessonId", authMiddleware, UpdateQuizz);
+Router.post("/create_attemp/quizz/:lessonId", authMiddleware, CreateAttemp);
 module.exports = Router;

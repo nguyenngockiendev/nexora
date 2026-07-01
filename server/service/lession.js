@@ -7,6 +7,7 @@ const errollment = require("../model/Enrollments");
 const user = require("../model/Users");
 const classs = require("../model/Class");
 const quizz = require("../model/Quizz");
+
 const GetLession = async (data) => {
   try {
     let result = [];

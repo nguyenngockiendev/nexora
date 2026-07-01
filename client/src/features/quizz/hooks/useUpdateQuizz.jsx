@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { GetQuizzByid, UpdateQuizzByid } from "../api/lession-api";
+import { GetQuizzByid, UpdateQuizzByid } from "../../lesson/api/lession-api";
 
 
 const useUpdateQuizz = (lessonId) => {
@@ -7,6 +7,7 @@ const useUpdateQuizz = (lessonId) => {
   const [quizz, setQuizz] = useState(null);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
 
   const update = async (data) => {
     try {

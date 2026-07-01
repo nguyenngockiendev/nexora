@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CreateQuiz } from "../api/lession-api";
+import { CreateQuiz } from "../../lesson/api/lession-api";
 
 const useCreateLession = (lessionId) => {
   const [error, setError] = useState(null);

@@ -1,5 +1,5 @@
 import { Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const LessionForm = ({
   currentLesson,
@@ -7,11 +7,11 @@ const LessionForm = ({
   errorlession,
   loadinglession,
   role,
-  navigate,
 }) => {
   if (!currentLesson) {
     return <div>Vui lòng chọn bài học</div>;
   }
+  const navigate = useNavigate();
 
   return (
     <div
@@ -72,7 +72,7 @@ const LessionForm = ({
               </div>
 
               {/* Actions */}
-              {role !== "student" && (
+              {role !== "student" ? (
                 <div className="d-flex gap-2">
                   <Link to={`/update_lession/${currentLesson._id}`}>
                     <Button color="primary">Update Lesson</Button>
@@ -93,11 +93,16 @@ const LessionForm = ({
                       )
                     }
                   >
-                    {currentLesson?.QuizExits
-                      ? "Update Lession"
-                      : "Create Quizz"}
+                    {currentLesson?.QuizExits ? "Update Quizz" : "Create Quizz"}
                   </Button>
                 </div>
+              ) : (
+                <Button
+                  color="primary"
+                  onClick={() => navigate(`/quizz/lession/${currentLesson._id}`)}
+                >
+                  Do quizz
+                </Button>
               )}
             </div>
           </div>
