@@ -1,4 +1,10 @@
-const { CreateQuizByIntructor, GetQuizzById, UpdateQuizzbyIntructor, CreateAttempQuiz } = require("../service/quiz-service");
+const {
+  CreateQuizByIntructor,
+  GetQuizzById,
+  UpdateQuizzbyIntructor,
+  CreateAttempQuiz,
+  GetAttempsQuiz,
+} = require("../service/quiz-service");
 
 const CreateQuiz = async (req, res) => {
   try {
@@ -50,10 +56,20 @@ const CreateAttemp = async (req, res) => {
       ...req.body,
     };
     const result = await CreateAttempQuiz(data);
-    res.status(200).json(result);
+    const resultAttemps = await GetAttempsQuiz({
+      studentId: req.user.userId,
+      attempsId: result._id,
+      lessonId: req.params.lessonId,
+    });
+    res.status(200).json(resultAttemps);
   } catch (error) {
     console.log(error);
     res.status(error.status || 500).json({ message: error.message });
   }
 };
-module.exports = { CreateQuiz, GetQuizzByLession, UpdateQuizz,CreateAttemp};
+module.exports = {
+  CreateQuiz,
+  GetQuizzByLession,
+  UpdateQuizz,
+  CreateAttemp,
+};

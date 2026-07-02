@@ -1,16 +1,18 @@
 import { useState } from "react";
-import { CreateAttempQuiz } from "../api/quizz-api";
+import { CreateAttempQuiz, GetAttemsp } from "../api/quizz-api";
 
 const useCreateAttempQuiz = (lessionId) => {
   const [error, setError] = useState(null);
   const [notification, setNotification] = useState("");
   const [loading, setLoading] = useState(false);
+  const [attemps, setAttemps] = useState(null);
+
 
   const CreateAttempquiz = async (payload) => {
     try {
       setLoading(false);
       const res = await CreateAttempQuiz(lessionId, payload);
-      setNotification(res?.message);
+      setAttemps(res);
       setLoading(true);
       return res;
     } catch (error) {
@@ -20,6 +22,14 @@ const useCreateAttempQuiz = (lessionId) => {
       setLoading(false);
     }
   };
-  return { CreateAttempquiz, loading, notification, error };
+
+  return {
+    CreateAttempquiz,
+    loading,
+    notification,
+    error,
+    attemps,
+    
+  };
 };
 export default useCreateAttempQuiz;

@@ -35,6 +35,7 @@ const {
   GetQuizzByLession,
   UpdateQuizz,
   CreateAttemp,
+  GetAttemsp,
 } = require("../controller/quiz-controller");
 const {
   GetAlluser,

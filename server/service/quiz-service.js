@@ -97,13 +97,15 @@ const CreateAttempQuiz = async (data) => {
     );
 
     let correctCount = 0;
-
+    let corecanwser = 0;
+    const poin = 10 / quiz.questions.length;
     const answers = questions.map((question) => {
       const selectedAnswer = data.answers[question._id.toString()];
       const isCorrect = selectedAnswer === question.correctAnswer;
 
       if (isCorrect) {
-        correctCount++;
+        corecanwser++;
+        correctCount += poin;
       }
 
       return {
@@ -125,15 +127,35 @@ const CreateAttempQuiz = async (data) => {
 
       score: correctCount,
       totalQuestions: quiz.questions.length,
-      correctAnswers: correctCount,
+      correctAnswers: corecanwser,
       timeTaken: data.timeTaken,
     };
 
-    await new attempQuizz(result).save();
+    const attempsId = await new attempQuizz(result).save();
 
-    return {
-      message: "Attempt successfully!",
-    };
+    return attempsId;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const GetAttempsQuiz = async ({ studentId, attempsId, lessonId }) => {
+  try {
+    const attepms = await attempQuizz
+      .findOne({ studentId, lessonId, _id: attempsId })
+      .populate("quizId", "passScore")
+      .select("-__v")
+      .lean();
+
+    if (!attepms) {
+      throw { status: 404, message: "you not have Attemps.wwill do quizz!" };
+    }
+    let pass = false;
+    if (attepms.score >= attepms.quizId.passScore) {
+      pass = true;
+    }
+    return { attepms: attepms, pass: pass };
   } catch (error) {
     console.log(error);
     throw error;
@@ -145,4 +167,5 @@ module.exports = {
   GetQuizzById,
   UpdateQuizzbyIntructor,
   CreateAttempQuiz,
+  GetAttempsQuiz,
 };

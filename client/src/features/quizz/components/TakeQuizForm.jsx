@@ -42,7 +42,7 @@ const TakeQuizForm = ({
   const answeredCount = Object.keys(answers).length;
   const isLastQuestion = currentIndex === quiz?.questions.length - 1;
   const isTimeUp = timeLeft <= 0;
-   
+
   const handleSubmitClick = () => {
     const unanswered = quiz?.questions.length - answeredCount;
 
@@ -77,26 +77,23 @@ const TakeQuizForm = ({
         <div className="tq-card tq-result-card">
           <div className="tq-card__body" style={{ padding: "40px 28px" }}>
             <div
-              className={`tq-result-icon ${result.passed ? "is-pass" : "is-fail"}`}
+              className={`tq-result-icon ${result.pass ? "is-pass" : "is-fail"}`}
             >
-              {result.passed ? (
-                <CheckCircle2 size={36} />
-              ) : (
-                <XCircle size={36} />
-              )}
+              {result.pass ? <CheckCircle2 size={36} /> : <XCircle size={36} />}
             </div>
 
-            <h2 className="tq-result-score">{result.score}%</h2>
+            <h2 className="tq-result-score">{result.attepms.score} điểm</h2>
             <p className="tq-result-label">
-              {result.correct}/{result.total} câu đúng
+              {result.attepms.correctAnswers}/{result.attepms.totalQuestions}{" "}
+              câu đúng
             </p>
 
             <span
-              className={`tq-status-pill ${result.passed ? "is-pass" : "is-fail"}`}
+              className={`tq-status-pill ${result.pass ? "is-pass" : "is-fail"}`}
             >
-              {result.passed
-                ? `Đạt — yêu cầu ${quiz.passScore}%`
-                : `Chưa đạt — yêu cầu ${quiz.passScore}%`}
+              {result.pass
+                ? `Đạt — yêu cầu ${result.attepms.quizId.passScore} điểm`
+                : `Chưa đạt — yêu cầu ${result.attepms.quizId.passScore} điểm`}
             </span>
 
             {isTimeUp && (
@@ -111,7 +108,7 @@ const TakeQuizForm = ({
 
         <div className="tq-review-list">
           {quiz?.questions?.map((q, qIndex) => {
-            const selected = answers[qIndex];
+            const selected = answers[q._id];
             const isCorrect = selected === q.correctAnswer;
 
             return (
@@ -197,7 +194,7 @@ const TakeQuizForm = ({
           </div>
           <div className="tq-card__body">
             <div className="tq-nav-list">
-              {quiz?.questions.map((q,index) => {
+              {quiz?.questions.map((q, index) => {
                 const isActive = index === currentIndex;
                 const isDone = answers[q._id] !== undefined;
 

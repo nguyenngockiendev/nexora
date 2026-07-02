@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 
 function TakeQuizPage() {
   const { lessionId } = useParams();
-  const { CreateAttempquiz, loading, notification, error } =
+  const { CreateAttempquiz, loading, notification, error, attemps } =
     useCreateAttempQuiz(lessionId);
 
   const { quizz } = useUpdateQuizz(lessionId);
@@ -16,26 +16,13 @@ function TakeQuizPage() {
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
-  const navigate = useNavigate();
+
   useEffect(() => {
     if (quizz) {
       setTimeLeft(quizz?.duration * 60);
     }
   }, [quizz]);
-  const result = useMemo(() => {
-    const total = quizz?.questions.length;
-    let correct = 0;
-
-    quizz?.questions?.forEach((q) => {
-      if (answers[q._id] === q.correctAnswer) correct += 1;
-    });
-
-    const score = Math.round((correct / total) * 100);
-    const passed = score >= quizz?.passScore;
-
-    return { total, correct, score, passed };
-  }, [answers, quizz]);
-
+  const result = attemps;
   const handleSelectAnswer = useCallback(
     (questionId, optionIndex) => {
       if (submitted) return;
@@ -50,10 +37,7 @@ function TakeQuizPage() {
 
   const handleSubmit = async () => {
     try {
-      console.log(result);
-      console.log(answers);
       const payload = {
-        result,
         answers,
         timeTaken: quizz.duration * 60 - timeLeft,
       };
@@ -62,7 +46,6 @@ function TakeQuizPage() {
       if (res) {
         setSubmitted(true);
         toast.success("Nộp bài thành công");
-        navigate(-1);
       }
     } catch (err) {
       console.log(err);

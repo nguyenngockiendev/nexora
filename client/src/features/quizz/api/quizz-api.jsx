@@ -16,4 +16,8 @@ const CreateAttempQuiz = async(lessonId,data)=>{
   const request = await api.post(`/create_attemp/quizz/${lessonId}`, data);
   return request;
 }
-export { CreateQuiz, GetQuizzByid, UpdateQuizzByid,CreateAttempQuiz};
+const GetAttemsp = async(lessonId)=>{
+  const request = await api.get(`/get_attemp/${lessonId}`);
+  return request;
+}
+export { CreateQuiz, GetQuizzByid, UpdateQuizzByid,CreateAttempQuiz,GetAttemsp};
