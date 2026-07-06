@@ -35,19 +35,19 @@ const CreateLessons = async (req, res) => {
     src = {
       type: req.body.resourcestype,
       title: req.body.resourcestitle,
-      url: resourceUrl,
+      url: resourceUrl.secure_url,
     };
     const data = {
       ...req.body,
+      duration: videoUrl.duration,
       courseId: req.body.courseId,
-      videoUrl: videoUrl,
+      videoUrl: videoUrl.secure_url,
       role: req.user.role,
 
       resources: src,
     };
 
     const result = await CreateLession(data);
-
     res.status(200).json(result);
   } catch (error) {
     res.status(error.status || 500).json({ message: error.message });
@@ -79,13 +79,14 @@ const UpdateLession = async (req, res) => {
     }
     const data = {
       ...req.body,
-      videoUrl: videoUrl,
+      duration: videoUrl.duration,
+      videoUrl: videoUrl.secure_url,
       role: req.user.role,
       lessionId: req.params.lessionId,
       resources: {
         type: req.body.resourcestype,
         title: req.body.resourcestitle,
-        url: resourceUrl,
+        url: resourceUrl.secure_url,
       },
     };
     const result = await UpdateLessionByid(data);

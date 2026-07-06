@@ -7,6 +7,8 @@ import LessionForm from "../components/LessionForm";
 import useSibarLession from "../hooks/useSibarLession";
 import useDeleteLessionbyid from "../hooks/useDeletelession";
 import useUpdatelession from "../hooks/useUpdatelession";
+// import { useRef } from "react";
+// import useSaveProcess from "../../process/hooks/useSaveProcess";
 
 const Lession = () => {
   const role = localStorage.getItem("role");
@@ -23,6 +25,45 @@ const Lession = () => {
   } = useUpdatelession();
   const navigate = useNavigate();
   const [currentLesson, setCurrentLesson] = useState(null);
+  
+  // const { SaveUpdate, exits } = useSaveProcess();
+  // const videoRef = useRef(null);
+  // const intervalRef = useRef(null);
+
+  // console.log("currentLesson", currentLesson);
+  // console.log(id);
+  // const handduration = () => {
+  //   if (videoRef.current) {
+  //     const duration = videoRef.current.duration;
+  //     console.log("Video duration:", duration, "seconds");
+  //   }
+  // };
+
+  // const handlePlay = () => {
+  //   if (!videoRef.current) return;
+  //   if (intervalRef.current) return;
+  //   console.log("Video is playing");
+  //   intervalRef.current = setInterval(() => {
+  //     SaveUpdate({
+  //       lastPosition: videoRef.current.currentTime,
+  //       lessonId: currentLesson._id,
+  //       courseId: currentLesson.courseId,
+  //     });
+  //     console.log("đang lưu", videoRef.current.currentTime);
+  //   }, 5000);
+  // };
+  // const handlePause = () => {
+  //   if (!videoRef.current) return;
+  //   console.log("Video is paused");
+  //   SaveUpdate({
+  //     lastPosition: videoRef.current.currentTime,
+  //     lessionId: currentLesson._id,
+  //     courseId: currentLesson.courseId,
+  //   });
+  //   clearInterval(intervalRef.current);
+  //   intervalRef.current = null;
+  // };
+
 
   const handUpdate = async (data) => {
     try {
@@ -68,6 +109,7 @@ const Lession = () => {
           </Col>
           <Col md={9}>
             <LessionForm
+              // videoRef={videoRef}
               currentLesson={currentLesson}
               handDelete={handDelete}
               errorlession={errorlession}
@@ -76,7 +118,10 @@ const Lession = () => {
               errorupdate={errorupdate}
               handUpdate={handUpdate}
               role={role}
-            
+              // handduration={handduration}
+              // onplay={handlePlay}
+              // onpause={handlePause}
+              // handcurentime={handcurentime}
             />
           </Col>
         </Row>

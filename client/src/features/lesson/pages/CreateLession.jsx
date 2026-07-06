@@ -25,7 +25,6 @@ const Createlession = () => {
       setLoading(true);
       const formData = new FormData();
       formData.append("title", data.title);
-      formData.append("duration", data.duration);
       formData.append("isPreview", data.isPreview);
       formData.append("content", data.content);
       formData.append("order", data.order);

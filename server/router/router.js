@@ -46,11 +46,15 @@ const {
   RemoveStudent,
   RefectStudent,
 } = require("../controller/user-controllsers");
+const {
+  GetInstructorBusinessDashboard,
+} = require("../controller/dashboard-controller");
 
 const { authMiddleware } = require("../Middleware/Middleware");
 
 const upload = require("../Middleware/Uploadfile");
 const { validateCourse } = require("../Middleware/Validateform");
+const { SaveProcess } = require("../controller/Process-controller");
 
 const Router = require("express").Router();
 
@@ -126,10 +130,17 @@ Router.patch(
   authMiddleware,
   RefectStudent,
 );
+Router.get(
+  "/instructor/dashboard/business",
+  authMiddleware,
+  GetInstructorBusinessDashboard,
+);
 
 //////
 Router.post("/create_quizz/:lessionId", authMiddleware, CreateQuiz);
 Router.get("/get_quizz/:lessonId", authMiddleware, GetQuizzByLession);
 Router.put("/upadate_quizz/:lessonId", authMiddleware, UpdateQuizz);
 Router.post("/create_attemp/quizz/:lessonId", authMiddleware, CreateAttemp);
+////
+Router.patch("/process-lesson/:courseId/:lessonId",authMiddleware,SaveProcess)
 module.exports = Router;

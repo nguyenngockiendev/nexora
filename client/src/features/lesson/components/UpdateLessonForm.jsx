@@ -76,17 +76,6 @@ const UpdateLessonForm = ({
             />
           </div>
 
-           <div className="mb-3">
-            <label className="form-label">duration</label>
-            <input
-              as="number"
-              rows={4}
-              placeholder="enter duration in minutes"
-              required
-              {...register("duration")}
-            />
-          </div>
-
           {/* Resource */}
           <InputGroup>
             <InputGroup.Text>Recouse</InputGroup.Text>

@@ -1,7 +1,5 @@
 const Lessons = require("../model/Lessons");
-
 const Courses = require("../model/Courses");
-
 const order = require("../model/Orders");
 const errollment = require("../model/Enrollments");
 const user = require("../model/Users");
@@ -46,7 +44,7 @@ const CreateLession = async (data) => {
     }
     const newlession = new Lessons(data);
     await newlession.save();
-    return { message: "create successfully" };
+    return { message: "create successfully", newlession: newlession };
   } catch (error) {
     console.log(error);
     throw error;

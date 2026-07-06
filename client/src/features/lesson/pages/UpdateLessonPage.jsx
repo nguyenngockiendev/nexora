@@ -28,7 +28,6 @@ const UpdateLessonPage = () => {
     if (lession)
       reset({
         title: lession.title,
-        duration: lession.duration,
         order: lession.order,
         isPreview: lession.isPreview,
         videoUrl: lession.videoUrl,
@@ -46,7 +45,6 @@ const UpdateLessonPage = () => {
       formData.append("resourcestitle", resource.title);
       formData.append("resourcesurl", resource.url);
       formData.append("title", data.title);
-      formData.append("duration", data.duration);
       formData.append("order", data.order);
       formData.append("content", data.content);
       formData.append("video", video);

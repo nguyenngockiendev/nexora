@@ -7,11 +7,16 @@ const LessionForm = ({
   errorlession,
   loadinglession,
   role,
+  videoRef,
+  handduration,
+  onplay,
+  onpause,
+  // handcurentime,
 }) => {
+  const navigate = useNavigate();
   if (!currentLesson) {
     return <div>Vui lòng chọn bài học</div>;
   }
-  const navigate = useNavigate();
 
   return (
     <div
@@ -99,7 +104,9 @@ const LessionForm = ({
               ) : (
                 <Button
                   color="primary"
-                  onClick={() => navigate(`/quizz/lession/${currentLesson._id}`)}
+                  onClick={() =>
+                    navigate(`/quizz/lession/${currentLesson._id}`)
+                  }
                 >
                   Do quizz
                 </Button>
@@ -123,16 +130,23 @@ const LessionForm = ({
                 borderRadius: "14px",
               }}
             >
-              <iframe
+              <video
+                ref={videoRef}
+                key={currentLesson?._id}
+                controls
                 width="100%"
-                height="500"
-                src={currentLesson?.videoUrl}
-                title="Video"
-                allowFullScreen
-                style={{
-                  border: "none",
+                height="auto"
+                style={{ border: "none" }}
+                onLoadedMetadata={() => {
+                  handduration();
                 }}
-              />
+                onPlay={onplay}
+                onPause={onpause}
+                // onTimeUpdate={handcurentime}
+              >
+                <source src={currentLesson?.videoUrl} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
             </div>
           </div>
 

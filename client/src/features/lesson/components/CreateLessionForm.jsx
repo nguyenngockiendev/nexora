@@ -57,18 +57,6 @@ const CreateLession = ({
 
           {/* Duration + Order */}
           <div className="row">
-            <div className="col-md-6 mb-3">
-              <label className="form-label">Duration (seconds)</label>
-              <InputGroup>
-                <InputGroup.Text>⏱</InputGroup.Text>
-                <Form.Control
-                  type="number"
-                  placeholder="300"
-                  required
-                  {...register("duration")}
-                />
-              </InputGroup>
-            </div>
 
             <div className="col-md-6 mb-3">
               <label className="form-label">Order</label>

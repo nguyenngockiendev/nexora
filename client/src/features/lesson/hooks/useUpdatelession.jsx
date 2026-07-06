@@ -16,7 +16,6 @@ const useUpdatelession = () => {
     }
   };
   const update = async (lessionId,formData) => {
-    // console.log("data",formData , "lessionId", lessionId);
     try {
       setLoading(true);
       setError(false);
