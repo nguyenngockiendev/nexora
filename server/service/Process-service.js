@@ -42,12 +42,12 @@ const SaveLessonProgress = async (data) => {
       (data.lastPosition / lessionDuration.duration) * 100,
     );
     let completed = false;
-    let date='';
+    let date = "";
     if (percen >= 70) {
       completed = true;
       date = Date.now();
     }
-    await ProcessLesson.findOneAndUpdate(
+    const result = await ProcessLesson.findOneAndUpdate(
       {
         userId: data.userId,
         courseId: data.courseId,
@@ -58,14 +58,35 @@ const SaveLessonProgress = async (data) => {
           lastPosition: data.lastPosition,
           percent: percen,
           completed: completed,
-          completedAt: date
+          completedAt: date,
         },
       },
+      {new: true},
     );
-    return { message: "cập nhật thành công!" };
+    return result;
   } catch (error) {
     console.log(error);
     throw error;
   }
 };
-module.exports = { SaveLessonProgress };
+
+const getLessonProgress = async (data) => {
+  try {
+    if (data.role != "student") {
+      throw { message: "bạn không có quyền tạo" };
+    }
+
+    const process = await ProcessLesson.findOne({
+      userId: data.userId,
+      lessonId: data.lessonId,
+    });
+    if (!process) {
+      return null;
+    }
+    return process;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+module.exports = { SaveLessonProgress, getLessonProgress };

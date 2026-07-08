@@ -1,9 +1,9 @@
-import InstructorDashboard from "../pages/InstructorDashboard";
+import Dashboard from "../pages/Dashboard";
 
 const dashboardRoutes = [
   {
     path: "dashboard",
-    element: <InstructorDashboard />,
+    element: <Dashboard />,
   },
 ];
 

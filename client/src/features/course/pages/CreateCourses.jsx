@@ -1,21 +1,20 @@
 
 
 
-import {  useForm } from "react-hook-form";
-
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { Col, Container, Row } from "react-bootstrap";
 import CreateCourese from "../components/CreateCoursesForm";
 import useCoursesService from "../hooks/useCreateCourses";
+
 const CreateCourses = () => {
   const { register, handleSubmit } = useForm();
   const { error, Create } = useCoursesService();
   const [loading, setLoading] = useState(false);
   const [thumbail, setThumbnail] = useState(null);
   const [notification, setnNotification] = useState("");
-  const [exits , setExits] = useState(false);
+  const [exits, setExits] = useState(false);
 
   const navigate = useNavigate();
 
@@ -43,7 +42,7 @@ const CreateCourses = () => {
         });
         return;
       }
-      toast.success(error || "Create Courses successfully!");
+      toast.success("Create Courses successfully!");
       navigate("/courses");
     } catch (err) {
       console.error(err);
@@ -52,26 +51,18 @@ const CreateCourses = () => {
     }
   };
   return (
-    <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
-      <Container>
-        <Row className="justify-content-center">
-          <Col md={12}>
-            <CreateCourese
-              register={register}
-              handleSubmit={handleSubmit}
-              onSubmit={onSubmit}
-              error={error}
-              navigate={navigate}
-              setThumbnail={setThumbnail}
-              loading={loading}
-              onConfirm={notification.onConfirm}
-              onCancel={notification.onCancel}
-              exits={exits}
-            />
-          </Col>
-        </Row>
-      </Container>
-    </div>
+    <CreateCourese
+      register={register}
+      handleSubmit={handleSubmit}
+      onSubmit={onSubmit}
+      error={error}
+      navigate={navigate}
+      setThumbnail={setThumbnail}
+      loading={loading}
+      onConfirm={notification.onConfirm}
+      onCancel={notification.onCancel}
+      exits={exits}
+    />
   );
 };
 

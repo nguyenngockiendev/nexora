@@ -1,11 +1,10 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-
 import { useState } from "react";
 import { toast } from "react-toastify";
 import useUserRegister from "../hooks/useregister";
 import RegisterForm from "../components/RegisterForm";
-import { Col, Container, Row } from "react-bootstrap";
+
 const Register = () => {
   const { register, handleSubmit } = useForm();
   const { registers, error, loading } = useUserRegister();
@@ -31,23 +30,25 @@ const Register = () => {
       console.error(err);
     }
   };
+
   return (
-    <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
-      <Container>
-        <Row className="justify-content-center">
-          <Col md={9} lg={7} xl={6}>
-            <RegisterForm
-              register={register}
-              handleSubmit={handleSubmit}
-              onSubmit={onSubmit}
-              error={error}
-              navigate={navigate}
-              Setavatar={Setavatar}
-              loading={loading}
-            />
-          </Col>
-        </Row>
-      </Container>
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden py-12">
+      {/* Background decorations */}
+      <div className="fixed inset-0 bg-mesh pointer-events-none z-0" />
+      <div className="fixed w-[500px] h-[500px] -top-[100px] -right-[100px] rounded-full bg-orb-1 pointer-events-none z-0" />
+      <div className="fixed w-[400px] h-[400px] bottom-[10%] -left-[80px] rounded-full bg-orb-2 pointer-events-none z-0" />
+      
+      <div className="w-full max-w-xl z-10 px-4">
+        <RegisterForm
+          register={register}
+          handleSubmit={handleSubmit}
+          onSubmit={onSubmit}
+          error={error}
+          navigate={navigate}
+          Setavatar={Setavatar}
+          loading={loading}
+        />
+      </div>
     </div>
   );
 };

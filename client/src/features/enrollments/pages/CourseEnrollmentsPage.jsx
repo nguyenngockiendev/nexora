@@ -1,11 +1,8 @@
 import { useParams } from "react-router-dom";
-
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useCourseEnrollments } from "../hooks/useCourseEnrollments";
 import SidebarLesson from "../../lesson/components/LessionSibar";
 import LessionForm from "../../lesson/components/LessionForm";
-import { Col, Container, Row } from "react-bootstrap";
-import { useRef } from "react";
 import useSaveProcess from "../../process/hooks/useSaveProcess";
 
 const CourseEnrollments = () => {
@@ -14,9 +11,16 @@ const CourseEnrollments = () => {
   const { enrollment, error, loading } = useCourseEnrollments(courseId);
   const [currentLesson, setCurrentLesson] = useState(null);
 
-  const { SaveUpdate, exits } = useSaveProcess();
+  const { SaveUpdate, exits, GetProcess, process } = useSaveProcess();
   const videoRef = useRef(null);
   const intervalRef = useRef(null);
+
+  useEffect(() => {
+    if (currentLesson) {
+      GetProcess(currentLesson._id);
+    }
+    console.log("process", process);
+  }, [currentLesson]);
 
   const handduration = () => {
     if (videoRef.current) {
@@ -38,6 +42,7 @@ const CourseEnrollments = () => {
       console.log("đang lưu", videoRef.current.currentTime);
     }, 5000);
   };
+
   const handlePause = () => {
     if (!videoRef.current) return;
     console.log("Video is paused");
@@ -49,33 +54,38 @@ const CourseEnrollments = () => {
     clearInterval(intervalRef.current);
     intervalRef.current = null;
   };
+
   return (
-    <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
-      <Container>
-        <Row className="justify-content-center">
-          <Col md={3}>
-            <SidebarLesson
-              loading={loading}
-              error={error}
-              title={enrollment}
-              currentLesson={currentLesson}
-              setCurrentLesson={setCurrentLesson}
-              id={courseId}
-              role={role}
-            />
-          </Col>
-          <Col md={9}>
-            <LessionForm
-              videoRef={videoRef}
-              currentLesson={currentLesson}
-              role={role}
-              handduration={handduration}
-              onplay={handlePlay}
-              onpause={handlePause}
-            />
-          </Col>
-        </Row>
-      </Container>
+    <div className="flex flex-col lg:flex-row min-h-[85vh] w-full bg-transparent rounded-[2rem] overflow-hidden">
+      
+      {/* Sidebar Area */}
+      <div className="w-full lg:w-[380px] xl:w-[420px] flex-shrink-0 bg-white/40 backdrop-blur-3xl border-r border-white/50 shadow-[10px_0_30px_rgba(0,0,0,0.02)] z-20 overflow-hidden">
+        <SidebarLesson
+          loading={loading}
+          error={error}
+          title={enrollment}
+          currentLesson={currentLesson}
+          setCurrentLesson={setCurrentLesson}
+          id={courseId}
+          role={role}
+          exits={exits}
+          process={process}
+        />
+      </div>
+
+      {/* Main Content Area */}
+      <div className="flex-1 h-full overflow-y-auto custom-scrollbar z-10 relative">
+        <LessionForm
+          videoRef={videoRef}
+          currentLesson={currentLesson}
+          role={role}
+          handduration={handduration}
+          onplay={handlePlay}
+          onpause={handlePause}
+          process={process}
+        />
+      </div>
+
     </div>
   );
 };

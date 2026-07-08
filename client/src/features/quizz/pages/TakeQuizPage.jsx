@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import TakeQuizForm from "../components/TakeQuizForm";
-import "../style/TakeQuizPage.css";
 import useUpdateQuizz from "../hooks/useUpdateQuizz";
 import { useNavigate, useParams } from "react-router-dom";
 import useCreateAttempQuiz from "../hooks/useAttempQuiz";
@@ -56,8 +55,8 @@ function TakeQuizPage() {
     setCurrentIndex(0);
     setAnswers({});
     setSubmitted(false);
-    setTimeLeft(quizz?.duration * 60);
-  }, []);
+    setTimeLeft(quizz?.duration ? quizz.duration * 60 : 0);
+  }, [quizz]);
 
   useEffect(() => {
     if (submitted || timeLeft <= 0) return;

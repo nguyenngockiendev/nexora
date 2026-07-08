@@ -7,4 +7,9 @@ const SaveProcess = async ({ courseId, lessonId, lastPosition }) => {
   return request;
 };
 
-export { SaveProcess };
+const GetProcessbyLession = async (lessonId) => {
+  const request = await api.get(`/process/${lessonId}`,);
+  return request;
+};
+
+export { SaveProcess, GetProcessbyLession };

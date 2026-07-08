@@ -1,113 +1,149 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import Nav_Sidebar from "../Nav_sidebar";
-
-import { ChevronLeft, Sparkles } from "lucide-react";
-import styles from "./Sidebar.module.css";
-import { Button } from "react-bootstrap";
+import { ChevronLeft, Sparkles, LogOut } from "lucide-react";
 
 const Sidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) => {
   const handleNavClick = () => {
-  
-    if (window.innerWidth <= 768) {
-      setMobileOpen(false);
-    }
+    if (window.innerWidth <= 768) setMobileOpen(false);
   };
   const navigation = useNavigate();
+
   return (
     <>
-    
-      <div 
-        className={`${styles.mobileOverlay} ${mobileOpen ? styles.visible : ''}`}
+      {/* Mobile Overlay */}
+      <div
+        className={`fixed inset-0 bg-orange-950/20 backdrop-blur-sm z-40 transition-opacity duration-300 md:hidden ${mobileOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         onClick={() => setMobileOpen(false)}
       />
-      
+
+      {/* Sidebar */}
       <aside
-        className={`
-          ${styles.sidebar} 
-          ${collapsed ? styles.collapsed : ''} 
-          ${mobileOpen ? styles.mobileOpen : ''}
+        className={`fixed top-3 left-3 bottom-3 z-50 flex flex-col transition-all duration-300 ease-in-out rounded-[28px] overflow-hidden
+          ${collapsed ? 'w-[68px]' : 'w-[248px]'}
+          ${mobileOpen ? 'translate-x-0' : '-translate-x-[calc(100%+12px)] md:translate-x-0'}
         `}
+        style={{
+          background: 'rgba(255, 252, 248, 0.72)',
+          backdropFilter: 'blur(40px) saturate(200%)',
+          WebkitBackdropFilter: 'blur(40px) saturate(200%)',
+          border: '1px solid rgba(255, 255, 255, 0.85)',
+          boxShadow: '0 0 60px rgba(249,115,22,0.1), 0 24px 64px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.9)',
+        }}
       >
-        {/* Header */}
-        <div className={styles.sidebarHeader}>
-          <div className={styles.logoContainer}>
-            <div className={styles.logoIcon}>
-              <Sparkles size={20} />
-            </div>
-            <span className={styles.logoText}>LinguaAI</span>
+        {/* Logo */}
+        <div className={`flex items-center h-16 px-4 shrink-0 ${collapsed ? 'justify-center' : 'gap-3'}`}>
+          <div
+            className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
+            style={{ background: 'linear-gradient(135deg, #f97316, #fb923c)', boxShadow: '0 4px 14px rgba(249,115,22,0.4)' }}
+          >
+            <Sparkles size={15} className="text-white" />
           </div>
 
-          <button
-            className={`${styles.collapseButton} ${collapsed ? styles.rotated : ''}`}
-            onClick={() => setCollapsed(!collapsed)}
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            <ChevronLeft size={18} />
-          </button>
+          <span className={`font-bold text-base text-slate-800 tracking-tight whitespace-nowrap transition-all duration-300 ${collapsed ? 'w-0 opacity-0 overflow-hidden' : 'opacity-100'}`}>
+            LinguaAI
+          </span>
+
+          {!collapsed && (
+            <button
+              className="ml-auto w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-orange-500 transition-colors shrink-0"
+              onClick={() => setCollapsed(true)}
+              aria-label="Collapse sidebar"
+            >
+              <ChevronLeft size={15} />
+            </button>
+          )}
         </div>
 
+        {collapsed && (
+          <button
+            className="mx-auto mb-2 w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-orange-500 transition-colors shrink-0"
+            onClick={() => setCollapsed(false)}
+            aria-label="Expand sidebar"
+          >
+            <ChevronLeft size={15} className="rotate-180" />
+          </button>
+        )}
+
         {/* Navigation */}
-        <nav className={styles.navContainer}>
+        <nav className="flex-1 overflow-y-auto overflow-x-hidden px-2 pb-2 flex flex-col gap-5">
           {Nav_Sidebar.map((group, groupIndex) => (
-            <div key={group.title || groupIndex} className={styles.navGroup}>
-              {group.title && (
-                <p className={styles.navGroupTitle}>{group.title}</p>
+            <div key={group.title || groupIndex} className="flex flex-col gap-0.5">
+              {group.title && !collapsed && (
+                <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-slate-400 px-3 mb-1">
+                  {group.title}
+                </p>
               )}
 
-              {group.items?.map((item) => (
+              {(group.items || (group.path ? [group] : [])).map((item) => (
                 <NavLink
                   key={item.path}
                   to={item.path}
                   onClick={handleNavClick}
-                  data-tooltip={item.name}
+                  title={collapsed ? item.name : undefined}
                   className={({ isActive }) =>
-                    `${styles.navItem} ${isActive ? styles.active : ''}`
+                    `nav-item-wave relative flex items-center gap-3 px-3 py-2.5 rounded-2xl
+                     transition-all duration-200 ease-out
+                     ${collapsed ? 'justify-center' : ''}
+                     ${isActive
+                       ? 'text-orange-600 -translate-y-px font-semibold'
+                       : 'text-slate-500 hover:text-slate-800 hover:-translate-y-0.5'
+                     }`
                   }
+                  style={({ isActive }) => isActive ? {
+                    background: 'linear-gradient(135deg, rgba(249,115,22,0.1), rgba(251,146,60,0.07))',
+                  } : {}}
                 >
-                  <span className={styles.navIcon}>
-                    {item.icon && <item.icon size={20} />}
-                  </span>
-                  <span className={styles.navText}>{item.name}</span>
+                  {({ isActive }) => (
+                    <>
+                      {isActive && (
+                        <span
+                          className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 rounded-r-full"
+                          style={{ background: 'linear-gradient(to bottom, #f97316, #fb923c)', boxShadow: '0 0 8px rgba(249,115,22,0.6)' }}
+                        />
+                      )}
+                      <span className={`shrink-0 ${isActive ? 'text-orange-500' : ''}`}>
+                        {item.icon && <item.icon size={18} />}
+                      </span>
+                      <span className={`text-sm whitespace-nowrap transition-all duration-200 ${collapsed ? 'w-0 opacity-0 overflow-hidden' : 'opacity-100'}`}>
+                        {item.name}
+                      </span>
+                    </>
+                  )}
                 </NavLink>
               ))}
-
-              {/* Single item without items array */}
-              {group.path && !group.items && (
-                <NavLink
-                  to={group.path}
-                  onClick={handleNavClick}
-                  data-tooltip={group.name}
-                  className={({ isActive }) =>
-                    `${styles.navItem} ${isActive ? styles.active : ''}`
-                  }
-                >
-                  <span className={styles.navIcon}>
-                    {group.icon && <group.icon size={20} />}
-                  </span>
-                  <span className={styles.navText}>{group.name}</span>
-                </NavLink>
-              )}
             </div>
           ))}
         </nav>
 
-        {/* Footer - User Profile */}
-        <div className={styles.sidebarFooter}>
-          <div className={styles.userProfile}>
-            <div className={styles.userAvatar}>U</div>
-            <div className={styles.userInfo}>
-              <div className={styles.userName}>User Name</div>
-              <div className={styles.userRole}>Student</div>
+        {/* User */}
+        <div className={`px-2 pb-3 shrink-0 flex flex-col gap-1 ${collapsed ? 'items-center' : ''}`}>
+          <div className={`flex items-center gap-3 px-3 py-2.5 rounded-2xl ${collapsed ? 'justify-center' : ''}`}>
+            <div
+              className="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold text-white shrink-0"
+              style={{ background: 'linear-gradient(135deg, #f97316, #fb923c)', boxShadow: '0 4px 10px rgba(249,115,22,0.3)' }}
+            >
+              U
             </div>
-            <div>
-            <Button onClick={()=>{
-              localStorage.removeItem("token");
-              navigation("/login")
-            }}>
-              Log out
-            </Button>
+            <div className={`min-w-0 transition-all duration-200 ${collapsed ? 'w-0 opacity-0 overflow-hidden' : 'opacity-100'}`}>
+              <div className="text-sm font-semibold text-slate-800 truncate">User Name</div>
+              <div className="text-xs text-slate-400">Student</div>
             </div>
           </div>
+
+          <button
+            className={`nav-item-wave relative flex items-center gap-2.5 px-3 py-2.5 rounded-2xl
+              transition-all duration-200 ease-out
+              text-slate-400 hover:text-red-500 hover:-translate-y-0.5
+              w-full ${collapsed ? 'justify-center' : ''}`}
+            onClick={() => {
+              localStorage.removeItem("token");
+              navigation("/login");
+            }}
+            title={collapsed ? "Log out" : undefined}
+          >
+            <LogOut size={16} />
+            {!collapsed && <span className="text-sm font-medium">Log out</span>}
+          </button>
         </div>
       </aside>
     </>
