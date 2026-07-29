@@ -59,8 +59,7 @@ const StatCard = ({ icon: Icon, label, value, tone, helper }) => {
 
 const StudentDashboardView = ({ dashboard, error, loading }) => {
   const studentName = getUserName();
-  
-  // MOCK DATA for Student Dashboard UI demonstration
+
   const overview = dashboard?.overview || {
     enrolledCourses: 4,
     completedLessons: 42,

@@ -10,7 +10,7 @@ const SidebarLesson = ({
   id,
   role,
   exits,
-  process,
+  allProcess = [],
 }) => {
   const navigate = useNavigate();
 
@@ -80,7 +80,10 @@ const SidebarLesson = ({
       <div className="relative z-10 flex-1 overflow-y-auto custom-scrollbar -mr-4 pr-4 pb-10 space-y-3">
         {title?.map((titl, index) => {
           const isActive = currentLesson?._id === titl?._id;
-          const isCompleted = process?.lessonId === titl?._id;
+          
+          // Kiểm tra xem lesson này đã có process nào hoàn thành chưa
+          const lessonProcess = allProcess.find(p => p.lessonId === titl?._id);
+          const isCompleted = lessonProcess?.completed === true;
           
           return (
             <div

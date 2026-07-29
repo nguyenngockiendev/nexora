@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { PlayCircle, FileText, Download, Edit, Trash2, ShieldQuestion, FileQuestion, BookOpen, AlertCircle } from "lucide-react";
+import {  FileText, Download, Edit, Trash2, ShieldQuestion, FileQuestion, BookOpen, AlertCircle } from "lucide-react";
 
 const LessionForm = ({
   currentLesson,

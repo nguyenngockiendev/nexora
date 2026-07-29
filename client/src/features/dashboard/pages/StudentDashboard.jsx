@@ -8,8 +8,7 @@ const StudentDashboard = () => {
 
   const getDashboard = async () => {
     try {
-      setLoading(true);
-      // Giả lập call API (Mock delay)
+      setLoading(true)
       await new Promise(resolve => setTimeout(resolve, 800));
       
       setDashboard({

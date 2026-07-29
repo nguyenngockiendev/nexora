@@ -11,15 +11,21 @@ const CourseEnrollments = () => {
   const { enrollment, error, loading } = useCourseEnrollments(courseId);
   const [currentLesson, setCurrentLesson] = useState(null);
 
-  const { SaveUpdate, exits, GetProcess, process } = useSaveProcess();
+  const { SaveUpdate, exits, GetProcess, process, FetchAllProcess, allProcess } = useSaveProcess();
   const videoRef = useRef(null);
   const intervalRef = useRef(null);
+
+  // Fetch all processes for the course on mount
+  useEffect(() => {
+    if (courseId) {
+      FetchAllProcess(courseId);
+    }
+  }, [courseId]);
 
   useEffect(() => {
     if (currentLesson) {
       GetProcess(currentLesson._id);
     }
-    console.log("process", process);
   }, [currentLesson]);
 
   const handduration = () => {
@@ -69,7 +75,7 @@ const CourseEnrollments = () => {
           id={courseId}
           role={role}
           exits={exits}
-          process={process}
+          allProcess={allProcess}
         />
       </div>
 

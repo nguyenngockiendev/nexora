@@ -3,11 +3,16 @@ const Courses = require("../model/Courses");
 const Class = require("../model/Class");
 const Enrollment = require("../model/Enrollments");
 const Order = require("../model/Orders");
+const User = require("../model/Users");
+const ProcessLession = require("../model/ProcessLessons");
 
 const getInstructorBusinessDashboard = async (data) => {
   try {
     if (data?.role !== "instructor") {
-      throw { status: 403, message: "Only instructors can view this dashboard" };
+      throw {
+        status: 403,
+        message: "Only instructors can view this dashboard",
+      };
     }
 
     const instructorId = new mongoose.Types.ObjectId(data.instructorId);
@@ -204,6 +209,34 @@ const getInstructorBusinessDashboard = async (data) => {
       coursePerformance,
       recentOrders,
     };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const getStudentDashboard = async (data) => {
+  try {
+    if (data?.role !== "student") {
+      throw {
+        status: 403,
+        message: "Only student can view this dashboard",
+      };
+    }
+    const infoStudent = await User.findById(data.userId).lean();
+    const enroment = await Enrollment.findOne({ userId: data.userId });
+    const infoClass = await Class.find({ _id: enroment.classId });
+    const process = await ProcessLession.find({userId:data.userId})
+
+    return {
+      overview: {
+        enrolledCourses: infoStudent.enrolledCourses.length,
+        completedLessons: process.length,
+        upcomingClasses: infoClass.length,
+        avgScore: infoStudent.avgScore
+      }
+    };
+
   } catch (error) {
     console.log(error);
     throw error;

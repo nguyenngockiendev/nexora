@@ -73,7 +73,7 @@ const SaveLessonProgress = async (data) => {
 const getLessonProgress = async (data) => {
   try {
     if (data.role != "student") {
-      throw { message: "bạn không có quyền tạo" };
+      throw { message: "bạn không có quyền xem" };
     }
 
     const process = await ProcessLesson.findOne({
@@ -89,4 +89,22 @@ const getLessonProgress = async (data) => {
     throw error;
   }
 };
-module.exports = { SaveLessonProgress, getLessonProgress };
+
+const getAllLessonProgress = async (data) => {
+  try {
+    if (data.role != "student") {
+      throw { message: "bạn không có quyền xem" };
+    }
+
+    const processes = await ProcessLesson.find({
+      userId: data.userId,
+      courseId: data.courseId,
+    });
+    return processes;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+module.exports = { SaveLessonProgress, getLessonProgress, getAllLessonProgress };

@@ -12,4 +12,9 @@ const GetProcessbyLession = async (lessonId) => {
   return request;
 };
 
-export { SaveProcess, GetProcessbyLession };
+const GetAllProcess = async (courseId) => {
+  const request = await api.get(`/process/course/${courseId}`);
+  return request;
+};
+
+export { SaveProcess, GetProcessbyLession, GetAllProcess };

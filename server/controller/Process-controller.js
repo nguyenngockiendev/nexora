@@ -1,4 +1,4 @@
-const { SaveLessonProgress, getLessonProgress } = require("../service/Process-service");
+const { SaveLessonProgress, getLessonProgress, getAllLessonProgress } = require("../service/Process-service");
 
 const SaveProcess = async (req, res) => {
   try {
@@ -30,4 +30,19 @@ const GetProcess = async (req, res) => {
     res.status(error.status || 500).json({ message: error.message });
   }
 };
-module.exports = { SaveProcess,GetProcess };
+
+const GetAllProcess = async (req, res) => {
+  try {
+    const data = {
+      role: req.user.role,
+      userId: req.user.userId,
+      courseId: req.params.courseId,
+    };
+    const result = await getAllLessonProgress(data);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
+
+module.exports = { SaveProcess, GetProcess, GetAllProcess };
