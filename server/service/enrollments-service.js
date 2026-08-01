@@ -3,6 +3,8 @@ const Lessons = require("../model/Lessons");
 const order = require("../model/Orders");
 const errollment = require("../model/Enrollments");
 const user = require("../model/Users");
+const ProcessLession = require("../model/ProcessLessons");
+const Message = require("../model/ClassMessages");
 
 const GetorderByUserId = async (data) => {
   try {
@@ -17,16 +19,28 @@ const GetorderByUserId = async (data) => {
         message: "You don't have any courses. Please start buying new courses.",
       };
     }
+
     const resultInstructorNam = await Promise.all(
       result.map(async (item) => {
         const intructorName = await user
           .findById(item?.courseId?.instructor)
           .select("name -_id avatar email")
           .lean();
-
+        const numberStudy = await Lessons.find({ courseId: item.courseId });
+        const completeds = await ProcessLession.find({
+          userId: data.userId,
+          courseId: item.courseId,
+          completed: true,
+        }).populate("lessonId");
+        const process = Math.round(
+          (completeds.length / numberStudy.length) * 100,
+        );
         return {
           ...item,
           instructor: intructorName,
+          numberStudy: numberStudy.length,
+          completed: completeds.length,
+          process:process
         };
       }),
     );

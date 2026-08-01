@@ -55,6 +55,7 @@ const { authMiddleware } = require("../Middleware/Middleware");
 const upload = require("../Middleware/Uploadfile");
 const { validateCourse } = require("../Middleware/Validateform");
 const { SaveProcess, GetProcess, GetAllProcess } = require("../controller/Process-controller");
+const { SenMessLimit } = require("../controller/message-controller");
 
 const Router = require("express").Router();
 
@@ -145,6 +146,6 @@ Router.post("/create_attemp/quizz/:lessonId", authMiddleware, CreateAttemp);
 Router.patch("/process-lesson/:courseId/:lessonId",authMiddleware,SaveProcess)
 Router.get("/process/:lessonId",authMiddleware,GetProcess)
 Router.get("/process/course/:courseId",authMiddleware,GetAllProcess)
-
+Router.get("/sendMessage/:classId",SenMessLimit)
 
 module.exports = Router;

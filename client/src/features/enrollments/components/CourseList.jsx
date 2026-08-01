@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Search, Filter, PlayCircle, BookOpen, Video, Clock, LayoutDashboard, Loader2 } from "lucide-react";
 
 const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
+  console.log(courses)
   return (
     <div className="space-y-8 pb-10">
       {/* ── Header & Filter Bar ── */}
@@ -102,46 +103,86 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
                 </div>
               </div>
 
-              {/* Progress */}
-              <div className="mb-6 bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
-                <div className="flex justify-between items-end mb-2">
-                  <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Overall Progress</span>
-                  <span className="text-lg font-black text-orange-500">45%</span>
-                </div>
-                <div className="h-2.5 w-full bg-slate-200 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full rounded-full transition-all duration-1000 ease-out relative"
-                    style={{ 
-                      width: "45%",
-                      background: 'linear-gradient(90deg, #f97316, #fbbf24)'
-                    }}
-                  >
-                    <div className="absolute inset-0 bg-white/20 w-full animate-[shimmer_2s_infinite]" />
+              {/* Dynamic Content Based on Course Type */}
+              {item?.type === "recorded" ? (
+                <>
+                  {/* Progress (Recorded) */}
+                  <div className="mb-6 bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
+                    <div className="flex justify-between items-end mb-2">
+                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Overall Progress</span>
+                      <span className="text-lg font-black text-orange-500">{item.process}%</span>
+                    </div>
+                    <div className="h-2.5 w-full bg-slate-200 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full rounded-full transition-all duration-1000 ease-out relative"
+                        style={{ 
+                          width: "45%",
+                          background: 'linear-gradient(90deg, #f97316, #fbbf24)'
+                        }}
+                      >
+                        <div className="absolute inset-0 bg-white/20 w-full animate-[shimmer_2s_infinite]" />
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
 
-              {/* Lesson Info */}
-              <div className="space-y-2 mb-6">
-                <div className="flex items-center gap-3 text-sm font-medium text-slate-600">
-                  <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center">
-                    <BookOpen size={14} />
+                  {/* Lesson Info (Recorded) */}
+                  <div className="space-y-2 mb-6">
+                    <div className="flex items-center gap-3 text-sm font-medium text-slate-600">
+                      <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center">
+                        <BookOpen size={14} />
+                      </div>
+                      <span>{item.completed} / {item.numberStudy} completed</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm font-medium text-slate-600">
+                      <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-500 flex items-center justify-center">
+                        <PlayCircle size={14} />
+                      </div>
+                      <span className="truncate">Next: <strong className="text-slate-800">React Hooks</strong></span>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm font-medium text-slate-600">
+                      <div className="w-7 h-7 rounded-lg bg-slate-100 text-slate-400 flex items-center justify-center">
+                        <Clock size={14} />
+                      </div>
+                      <span>Last accessed: 2 days ago</span>
+                    </div>
                   </div>
-                  <span>12 / 30 completed</span>
-                </div>
-                <div className="flex items-center gap-3 text-sm font-medium text-slate-600">
-                  <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-500 flex items-center justify-center">
-                    <PlayCircle size={14} />
+                </>
+              ) : (
+                <>
+                  {/* Access Pass Info (Live) */}
+                  <div className="mb-6 bg-orange-50/50 p-4 rounded-2xl border border-orange-100 relative overflow-hidden flex-1">
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-orange-200/50 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none" />
+                    
+                    <div className="relative z-10 space-y-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs font-black text-orange-600 uppercase tracking-widest bg-orange-100 px-2 py-1 rounded-md">
+                          Live Pass
+                        </span>
+                        <span className="inline-flex items-center gap-1.5 text-xs font-black text-emerald-600">
+                          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" /> Valid Access
+                        </span>
+                      </div>
+                      
+                      <div className="pt-3 border-t border-orange-200/50 space-y-2.5">
+                        <div className="flex items-center gap-3 text-sm font-medium text-slate-700">
+                          <div className="w-8 h-8 rounded-xl bg-white shadow-sm text-orange-500 flex items-center justify-center border border-orange-100">
+                            <Clock size={16} />
+                          </div>
+                          <span>Shift: <strong className="text-slate-800 font-black">Fixed Schedule</strong></span>
+                        </div>
+                        <div className="flex items-center gap-3 text-sm font-medium text-slate-700">
+                          <div className="w-8 h-8 rounded-xl bg-white shadow-sm text-blue-500 flex items-center justify-center border border-blue-50">
+                            <Video size={16} />
+                          </div>
+                          <span>Interactive <strong className="text-slate-800 font-black">Meet Session</strong></span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <span className="truncate">Next: <strong className="text-slate-800">React Hooks</strong></span>
-                </div>
-                <div className="flex items-center gap-3 text-sm font-medium text-slate-600">
-                  <div className="w-7 h-7 rounded-lg bg-slate-100 text-slate-400 flex items-center justify-center">
-                    <Clock size={14} />
-                  </div>
-                  <span>Last accessed: 2 days ago</span>
-                </div>
-              </div>
+                  {/* Placeholder spacer to match recorded card height */}
+                  <div className="space-y-2 mb-6 hidden xl:block opacity-0 h-4 pointer-events-none"></div>
+                </>
+              )}
 
               {/* Status & Actions */}
               <div className="mt-auto flex flex-col items-center justify-center gap-4 pt-5 border-t border-slate-100/50 px-2">
@@ -151,25 +192,28 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
                 </div>
 
                 <div className="flex justify-center items-center gap-3 w-full">
-                  {item?.type === "recorded" && (
-                    <Link to={`courses/${item?.courseId?._id}/item`}>
-                      <button className="whitespace-nowrap flex items-center justify-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:text-orange-500 transition-colors shadow-sm">
-                        <BookOpen size={16} /> Details
+                  {item?.type === "recorded" ? (
+                    <>
+                      <Link to={`courses/${item?.courseId?._id}/item`}>
+                        <button className="whitespace-nowrap flex items-center justify-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:text-orange-500 transition-colors shadow-sm">
+                          <BookOpen size={16} /> Details
+                        </button>
+                      </Link>
+                      <button className="whitespace-nowrap flex items-center justify-center gap-2 px-6 py-2.5 rounded-full text-sm font-black text-white shadow-md shadow-orange-500/30 hover:scale-105 active:scale-95 transition-all w-full"
+                              style={{ background: 'linear-gradient(135deg, #f97316, #fb923c)' }}>
+                        Continue <PlayCircle size={16} />
                       </button>
-                    </Link>
+                    </>
+                  ) : (
+                    <>
+                      <Link to={`live/class/${item?.classId}/item`} className="w-full">
+                        <button className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-full text-sm font-black text-white shadow-lg shadow-orange-500/30 hover:scale-[1.02] active:scale-95 transition-all border border-orange-400"
+                                style={{ background: 'linear-gradient(135deg, #f97316, #ea580c)' }}>
+                          <Video size={18} className="animate-pulse" /> Join Live Room
+                        </button>
+                      </Link>
+                    </>
                   )}
-                  {item?.type === "live" && (
-                    <Link to={`live/class/${item?.classId}/item`}>
-                      <button className="whitespace-nowrap flex items-center justify-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold text-orange-600 bg-orange-50 border border-orange-200 hover:bg-orange-500 hover:text-white transition-colors shadow-sm">
-                        <Video size={16} /> Join
-                      </button>
-                    </Link>
-                  )}
-
-                  <button className="whitespace-nowrap flex items-center justify-center gap-2 px-6 py-2.5 rounded-full text-sm font-black text-white shadow-md shadow-orange-500/30 hover:scale-105 active:scale-95 transition-all"
-                          style={{ background: 'linear-gradient(135deg, #f97316, #fb923c)' }}>
-                    Continue <PlayCircle size={16} />
-                  </button>
                 </div>
               </div>
               

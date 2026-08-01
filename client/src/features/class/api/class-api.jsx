@@ -51,6 +51,10 @@ const RefectStudent = async (data) => {
   );
   return request;
 };
+const MessageList = async (classId) => {
+  const request = await api.get(`/sendMessage/${classId}`);
+  return request;
+};
 export {
   CreateClass,
   GetClassbyInstructor,
@@ -61,4 +65,5 @@ export {
   GetStudentsByIntructor,
   RemoveStudentinClass,
   RefectStudent,
+  MessageList
 };
