@@ -1,6 +1,6 @@
 import { Button, Card,Col, Row } from "react-bootstrap";
 
-const DetailsCourse = ({ detalscourse, error, loading, payment }) => {
+const DetailsCourse = ({ detalscourse, error, loading, payment, errorPayment, paymentloading }) => {
 
   return (
     <div
@@ -117,6 +117,13 @@ const DetailsCourse = ({ detalscourse, error, loading, payment }) => {
           Choose the class schedule that fits you best
         </p>
       </div>
+
+      {errorPayment && (
+        <div className="alert alert-danger border-0 shadow-sm p-3 mb-4" style={{ borderRadius: '14px', fontSize: '13px', fontWeight: 'bold' }}>
+          ⚠️ {errorPayment}
+        </div>
+      )}
+
       {error && (
         <div className="text-center py-4">
           <p className="text-medium-emphasis">{error}</p>
@@ -207,6 +214,7 @@ const DetailsCourse = ({ detalscourse, error, loading, payment }) => {
                   <Button
                     color="success"
                     className="w-100"
+                    disabled={paymentloading}
                     style={{
                       borderRadius: "10px",
                     }}
@@ -217,7 +225,7 @@ const DetailsCourse = ({ detalscourse, error, loading, payment }) => {
                       })
                     }
                   >
-                    Buy This Class
+                    {paymentloading ? "Processing..." : "Buy This Class"}
                   </Button>
                 </div>
               </Card.Body>

@@ -1,8 +1,20 @@
 import api from "../../../shared/api/axiosClient";
 
-const paymentCourse = async (courseId,newdata) => {
-  const res = await api.put(`/create-payment/${courseId}`,newdata);
-  window.location.href = res.url;
+const paymentCourse = async (courseId, newdata) => {
+  const res = await api.put(`/create-payment/${courseId}`, newdata);
   return res;
 };
-export {paymentCourse}
+
+const resumepaymentCourse = async (orderId) => {
+  const res = await api.put(`/resume-payment/${orderId}`);
+  return res;
+};
+const orderHistory = async () => {
+  const res = await api.get(`order_history`);
+  return res;
+};
+const deleteorderHistory = async (orderId) => {
+  const res = await api.delete(`delete-order/${orderId}`);
+  return res;
+};
+export { paymentCourse, orderHistory, resumepaymentCourse, deleteorderHistory };

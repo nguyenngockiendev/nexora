@@ -120,7 +120,7 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
                 <div>
                   <div className="flex justify-between text-xs mb-1.5" style={{ color: '#94a3b8' }}>
                     <span className="flex items-center gap-1"><Clock size={11} />Progress</span>
-                    <span className="font-bold" style={{ color: '#f97316' }}>45%</span>
+                    <span className="font-bold" style={{ color: '#f97316' }}>10%</span>
                   </div>
                   <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(249,115,22,0.1)' }}>
                     <div

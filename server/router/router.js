@@ -15,13 +15,17 @@ const {
   GetAllCourese,
   CreateCourses,
   GetLessonByIdcontroller,
-  payment,
-  createPaymentUrl,
-  vnpayCallback,
 } = require("../controller/course-controller");
+const {
+  payment,
+  vnpayCallback,
+  ResumePay,
+  DeleteOrderbyUser,
+} = require("../controller/payment-controller");
 const {
   Getorderbyuser,
   Getcheckenrollment,
+  GetOrderHistory,
 } = require("../controller/enrollments-controller");
 const {
   GetLessons,
@@ -56,6 +60,7 @@ const upload = require("../Middleware/Uploadfile");
 const { validateCourse } = require("../Middleware/Validateform");
 const { SaveProcess, GetProcess, GetAllProcess } = require("../controller/Process-controller");
 const { SenMessLimit } = require("../controller/message-controller");
+const { ResumePayment } = require("../service/payment-service");
 
 const Router = require("express").Router();
 
@@ -146,6 +151,11 @@ Router.post("/create_attemp/quizz/:lessonId", authMiddleware, CreateAttemp);
 Router.patch("/process-lesson/:courseId/:lessonId",authMiddleware,SaveProcess)
 Router.get("/process/:lessonId",authMiddleware,GetProcess)
 Router.get("/process/course/:courseId",authMiddleware,GetAllProcess)
-Router.get("/sendMessage/:classId",SenMessLimit)
+Router.get("/sendMessage/:classId",SenMessLimit),
+Router.get("/order_history",authMiddleware,GetOrderHistory)
+
+
+Router.put("/resume-payment/:orderId", ResumePay);
+Router.delete("/delete-order/:orderId", DeleteOrderbyUser);
 
 module.exports = Router;

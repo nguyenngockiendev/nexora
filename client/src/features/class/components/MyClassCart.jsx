@@ -13,7 +13,7 @@ const MyClassCart = ({
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(null);
 
-  // Compute Analytics
+  
   const totalClasses = classs?.length || 0;
   const activeStudents = classs?.reduce((acc, curr) => acc + (curr.currentStudents || 0), 0) || 0;
   const upcomingClasses = classs?.filter(c => c.status === 'upcoming').length || 0;

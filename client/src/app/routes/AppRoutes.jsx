@@ -10,6 +10,7 @@ import lessionRoute from "../../features/lesson/routes/lessionRoute";
 import quizzRoutes from "../../features/quizz/routes/quizzRoutes";
 import HomePage from "../../demo/HomePage/HomePage";
 import dashboardRoutes from "../../features/dashboard/routes/dashboardRoutes";
+import paymentRoute from "../../features/payment/routes/paymentRoute";
 
 function AppRoutes() {
   const token = localStorage.getItem("token");
@@ -22,6 +23,7 @@ function AppRoutes() {
     ...userRoutes,
     ...lessionRoute,
     ...quizzRoutes,
+    ...paymentRoute
   ];
 
   return (

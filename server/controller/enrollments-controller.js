@@ -1,6 +1,7 @@
 const {
   GetorderByUserId,
   CheckEnrollment,
+  OrderHistory,
 } = require("../service/enrollments-service");
 
 const Getorderbyuser = async (req, res) => {
@@ -13,7 +14,7 @@ const Getorderbyuser = async (req, res) => {
     res.status(200).json(result);
   } catch (error) {
     console.log(error);
-    
+
     res.status(error.status || 500).json({ message: error.message });
   }
 };
@@ -30,7 +31,20 @@ const Getcheckenrollment = async (req, res) => {
     res.status(error.status || 500).json({ message: error.message });
   }
 };
+const GetOrderHistory = async (req, res) => {
+  try {
+    const data = {
+      userId: req.user.userId,
+    };
+    const result = await OrderHistory(data);
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
 module.exports = {
   Getorderbyuser,
   Getcheckenrollment,
+  GetOrderHistory,
 };

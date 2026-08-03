@@ -231,7 +231,7 @@ const CoursesForm = ({
                           disabled={paymentloading}
                           onClick={() => {
                             if (cou?.type === "recorded") {
-                              payment(cou?._id, { type: cou?.type });
+                              navigate(`details/recorded/${cou?._id}`);
                             }
                             if (cou?.type === "live") {
                               navigate(`details/class/live/${cou._id}`);
@@ -247,8 +247,8 @@ const CoursesForm = ({
                             </>
                           ) : (
                             <>
-                              <ShoppingCart size={isFeatured ? 18 : 16} />
-                              Buy Now
+                              <Info size={isFeatured ? 18 : 16} />
+                              Details
                             </>
                           )}
                         </button>

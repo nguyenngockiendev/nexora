@@ -3,6 +3,7 @@ import LiveclassRoom from "../../class/pages/LiveClassRoomPage";
 import CourseEnrollments from "../../enrollments/pages/CourseEnrollmentsPage";
 import Lession from "../../lesson/pages/Lession";
 import DetailsCourseLive from "../pages/CourseDetailsLive";
+import CourseDetailsRecorded from "../pages/CourseDetailsRecorded";
 import Courses from "../pages/Courses";
 import CreateCourses from "../pages/CreateCourses";
 
@@ -20,6 +21,11 @@ const courseRoute = [
   {
     path: "courses/details/class/live/:courseId",
     element: <DetailsCourseLive />,
+    icon: "",
+  },
+  {
+    path: "courses/details/recorded/:courseId",
+    element: <CourseDetailsRecorded />,
     icon: "",
   },
   {

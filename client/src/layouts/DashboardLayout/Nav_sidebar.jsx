@@ -66,7 +66,7 @@ const Nav_Sidebar = [
     items: [
       {
         name: "Payments",
-        path: "#",
+        path: "payment_History",
         icon: CreditCard,
       },
       {

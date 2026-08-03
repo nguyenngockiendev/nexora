@@ -5,6 +5,7 @@ const errollment = require("../model/Enrollments");
 const user = require("../model/Users");
 const ProcessLession = require("../model/ProcessLessons");
 const Message = require("../model/ClassMessages");
+const Orders = require("../model/Orders");
 
 const GetorderByUserId = async (data) => {
   try {
@@ -27,20 +28,37 @@ const GetorderByUserId = async (data) => {
           .select("name -_id avatar email")
           .lean();
         const numberStudy = await Lessons.find({ courseId: item.courseId });
+
         const completeds = await ProcessLession.find({
           userId: data.userId,
           courseId: item.courseId,
           completed: true,
         }).populate("lessonId");
+
         const process = Math.round(
           (completeds.length / numberStudy.length) * 100,
         );
+
+        const validCompleteds = completeds.filter((c) => c.lessonId);
+
+        const sortedLessons = [...numberStudy].sort(
+          (a, b) => a.order - b.order,
+        );
+
+        const completedLessonIds = new Set(
+          validCompleteds.map((c) => c.lessonId._id.toString()),
+        );
+
+        const nextLesson = sortedLessons.find(
+          (lesson) => !completedLessonIds.has(lesson._id.toString()),
+        );
+
         return {
           ...item,
           instructor: intructorName,
-          numberStudy: numberStudy.length,
-          completed: completeds.length,
-          process:process
+          numberStudy: numberStudy,
+          completed: completeds,
+          process: process,
         };
       }),
     );
@@ -67,5 +85,29 @@ const CheckEnrollment = async (data) => {
     throw error;
   }
 };
+const OrderHistory = async (data) => {
+  try {
+    const result = await Orders.find({ userId: data.userId })
+      .populate("courseId", "title price thumbnail type")
+      .lean();
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 
-module.exports = { GetorderByUserId, CheckEnrollment };
+const ActionOrder = async (data) => {
+  try {
+    
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+module.exports = {
+  GetorderByUserId,
+  CheckEnrollment,
+  OrderHistory,
+  ActionOrder,
+};
