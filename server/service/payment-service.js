@@ -172,11 +172,11 @@ const ResumePayment = async (data) => {
     throw error;
   }
 };
+
 const DeleteOrder = async (data) => {
   try {
-    const Resumepayment = await Orders.findByIdAndDelete(data.orderId);
-
-    return Resumepayment;
+    const result = await order.findByIdAndDelete(data.orderId);
+    return result;
   } catch (error) {
     console.log(error);
     throw error;

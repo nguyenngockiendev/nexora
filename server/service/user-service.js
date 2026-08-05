@@ -4,6 +4,8 @@ const order = require("../model/Orders");
 const errollment = require("../model/Enrollments");
 const user = require("../model/Users");
 const classs = require("../model/Class");
+const TeacherRequests = require("../model/TeacherRequests");
+const Users = require("../model/Users");
 
 const GetAllUserByrole = async (data) => {
   try {
@@ -245,6 +247,75 @@ const RefectStudentoutclass = async (data) => {
     throw error;
   }
 };
+const RequestInstructor = async (data) => {
+  try {
+    if (data.role != "student") {
+      throw { status: 404, message: "không thể yêu cầu làm Intructor!" };
+    }
+    const existingRequest = await TeacherRequests.findOne({
+      userId: data.userId,
+      status: "pending",
+    });
+    if (existingRequest) {
+      throw { status: 400, message: "Bạn đã có đơn đăng ký đang chờ duyệt!" };
+    }
+    const result = await TeacherRequests.create({
+      userId: data.userId,
+      specialty:data.specialty,
+      opinion: data.opinion,
+      proofImage: data.proofImage,
+      status: "pending",
+    });
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const ResponInstructor = async (data) => {
+  try {
+    if (data.role != "admin") {
+      throw { status: 404, message: "không có quyền thay đổi!" };
+    }
+    if (data.approved === "approved") {
+      const result = await Users.findByIdAndUpdate(data.userId, {
+        role: "instructor",
+      });
+      await TeacherRequests.findOneAndUpdate(
+        { _id: data.requestId },
+        {
+          status: "approved",
+        },
+      );
+      return result;
+    }
+    return await TeacherRequests.findOneAndUpdate(
+      { userId: data.userId },
+      {
+        status: "rejected",
+      },
+    );
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const GetPendingTeacherRequests = async (data) => {
+  try {
+    if (data.role !== "admin") {
+      throw { status: 403, message: "Bạn không có quyền xem thông tin này!" };
+    }
+    const requests = await TeacherRequests.find({ status: "pending" })
+      .populate("userId", "name email avatar")
+      .lean();
+    return requests;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 
 module.exports = {
   GetAllUserByrole,
@@ -254,4 +325,7 @@ module.exports = {
   GetAllStudentByIdClass,
   RemoveStudentinClass,
   RefectStudentoutclass,
+  RequestInstructor,
+  ResponInstructor,
+  GetPendingTeacherRequests,
 };

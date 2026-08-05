@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { CourseClassDetails } from "../../class/api/class-api";
-const useDetailsCourse = (courseId) => {
+import { GetDetailsCourse } from "../api/course-api";
+
+const useDetails = (courseId) => {
   const [detalscourse, setDetalscourse] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -10,7 +11,7 @@ const useDetailsCourse = (courseId) => {
       try {
         setLoading(true);
         setError(null);
-        const result = await CourseClassDetails(courseId);
+        const result = await GetDetailsCourse(courseId);
         setDetalscourse(result);
         setLoading(false);
       } catch (error) {
@@ -22,7 +23,8 @@ const useDetailsCourse = (courseId) => {
     };
     detailsCoures();
   }, [courseId]);
+  console.log("detalscourse", detalscourse);
  return { detalscourse, error, loading };
 };
 
-export { useDetailsCourse };
+export { useDetails };

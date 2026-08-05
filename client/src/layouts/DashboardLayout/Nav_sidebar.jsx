@@ -1,4 +1,4 @@
-                        import {
+import {
   BookOpen,
   Users,
   GraduationCap,
@@ -32,11 +32,13 @@ const Nav_Sidebar = [
         name: "Students Course",
         path: "student",
         icon: PlusCircle,
+        roles: ["student"],
       },
       {
         name: "Live Classes",
         path: "my/class",
         icon: Video,
+        roles: ["instructor"],
       },
       {
         name: "Enrollments",
@@ -52,12 +54,26 @@ const Nav_Sidebar = [
         name: "Create Course",
         path: "course/create",
         icon: PlusCircle,
+        roles: ["instructor", "admin"],
       },
 
       {
         name: "User",
         path: "user",
         icon: Users,
+        roles: ["admin"],
+      },
+      {
+        name: "Request Instructor",
+        path: "user/become-instructor",
+        icon: Users,
+        roles: ["student"],
+      },
+      {
+        name: "Duyệt Giảng Viên",
+        path: "admin/teacher-requests",
+        icon: Users,
+        roles: ["admin"],
       },
     ],
   },
@@ -68,6 +84,7 @@ const Nav_Sidebar = [
         name: "Payments",
         path: "payment_History",
         icon: CreditCard,
+        roles: ["student", "instructor"],
       },
       {
         name: "Settings",

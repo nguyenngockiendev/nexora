@@ -17,12 +17,12 @@ const GetAllCourses = async (data) => {
       course = await Courses.find().populate("instructor", "name type").lean();
     }
     const resultFinal = await Promise.all(
-      course?.map( async(co) => {
-        const numbserclass = await classs.find({courseId: co?._id})
+      course?.map(async (co) => {
+        const numbserclass = await classs.find({ courseId: co?._id });
         return {
           ...co,
           instructor: co?.instructor?.name,
-          numberClass:numbserclass.length,
+          numberClass: numbserclass.length,
         };
       }),
     );
@@ -62,9 +62,29 @@ const GetLessonById = async (data) => {
     throw error;
   }
 };
+const GetDetailsCourse = async (data) => {
+  try {
+    const list = await Courses.findById(data.courseId)
+      .populate("instructor")
+      .lean();
+    if (!list) {
+      throw { status: 404, message: "Course không tồn tại!" };
+    }
+    const lessionbycou = await Lessons.find({ courseId: list._id }).lean();
+    const result = {
+      ...list,
+      lessons: lessionbycou,
+    };
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 
 module.exports = {
   GetAllCourses,
   CreatenewCourses,
   GetLessonById,
+  GetDetailsCourse,
 };

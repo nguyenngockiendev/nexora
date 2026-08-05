@@ -26,10 +26,10 @@ const CreateLessons = async (req, res) => {
     let videoUrl = "";
     let resourceUrl = "";
     if (req.files?.videoUrl) {
-      videoUrl = await uploadFile(req.files.videoUrl[0].path);
+      videoUrl = await uploadFile(req.files.videoUrl[0].path ,true);
     }
     if (req.files?.resourcesurl) {
-      resourceUrl = await uploadFile(req.files.resourcesurl[0].path);
+      resourceUrl = await uploadFile(req.files.resourcesurl[0].path,false);
     }
 
     src = {
@@ -72,10 +72,10 @@ const UpdateLession = async (req, res) => {
     let videoUrl = "";
     let resourceUrl = "";
     if (req.files?.video) {
-      videoUrl = await uploadFile(req.files.video[0].path);
+      videoUrl = await uploadFile(req.files.video[0].path, true);
     }
     if (req.files?.resourcesurl) {
-      resourceUrl = await uploadFile(req.files.resourcesurl[0].path);
+      resourceUrl = await uploadFile(req.files.resourcesurl[0].path,false);
     }
     const data = {
       ...req.body,

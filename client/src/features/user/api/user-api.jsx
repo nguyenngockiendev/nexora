@@ -14,4 +14,23 @@ const Changerole = (data) => {
   });
   return request;
 };
-export { GetAlluserByAdmin, GetDatelsuserByAdmin, Changerole };
+const BecomeInstructor = (data) => {
+  const request = api.post(`/become-instructor`, data);
+  return request;
+};
+const ResponInstructor = (data) => {
+  const request = api.put(`/res-instructor`, data);
+  return request;
+};
+const GetPendingRequestsByAdmin = () => {
+  const request = api.get(`/admin/teacher-requests`);
+  return request;
+};
+export {
+  GetAlluserByAdmin,
+  GetDatelsuserByAdmin,
+  Changerole,
+  BecomeInstructor,
+  ResponInstructor,
+  GetPendingRequestsByAdmin,
+};

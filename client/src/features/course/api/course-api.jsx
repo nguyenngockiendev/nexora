@@ -13,6 +13,10 @@ const GetLession = async (id) => {
   const res = await api.get(`/get_lession/${id}`);
   return res;
 };
+const GetDetailsCourse = async (courseId) => {
+  const res = await api.get(`/details-course/${courseId}`);
+  console.log("res", res);
+  return res;
+};
 
-
-export { GetCourses, CreateCourses, GetLession};
+export { GetCourses, CreateCourses, GetLession, GetDetailsCourse };

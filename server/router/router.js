@@ -15,6 +15,7 @@ const {
   GetAllCourese,
   CreateCourses,
   GetLessonByIdcontroller,
+  DetailsCourse,
 } = require("../controller/course-controller");
 const {
   payment,
@@ -49,6 +50,9 @@ const {
   GetStudentOnClasss,
   RemoveStudent,
   RefectStudent,
+  BecomeInstructor,
+  ResInstructor,
+  GetPendingRequests,
 } = require("../controller/user-controllsers");
 const {
   GetInstructorBusinessDashboard,
@@ -58,7 +62,11 @@ const { authMiddleware } = require("../Middleware/Middleware");
 
 const upload = require("../Middleware/Uploadfile");
 const { validateCourse } = require("../Middleware/Validateform");
-const { SaveProcess, GetProcess, GetAllProcess } = require("../controller/Process-controller");
+const {
+  SaveProcess,
+  GetProcess,
+  GetAllProcess,
+} = require("../controller/Process-controller");
 const { SenMessLimit } = require("../controller/message-controller");
 const { ResumePayment } = require("../service/payment-service");
 
@@ -148,14 +156,26 @@ Router.get("/get_quizz/:lessonId", authMiddleware, GetQuizzByLession);
 Router.put("/upadate_quizz/:lessonId", authMiddleware, UpdateQuizz);
 Router.post("/create_attemp/quizz/:lessonId", authMiddleware, CreateAttemp);
 ////
-Router.patch("/process-lesson/:courseId/:lessonId",authMiddleware,SaveProcess)
-Router.get("/process/:lessonId",authMiddleware,GetProcess)
-Router.get("/process/course/:courseId",authMiddleware,GetAllProcess)
-Router.get("/sendMessage/:classId",SenMessLimit),
-Router.get("/order_history",authMiddleware,GetOrderHistory)
-
+Router.patch(
+  "/process-lesson/:courseId/:lessonId",
+  authMiddleware,
+  SaveProcess,
+);
+Router.get("/process/:lessonId", authMiddleware, GetProcess);
+Router.get("/process/course/:courseId", authMiddleware, GetAllProcess);
+(Router.get("/sendMessage/:classId", SenMessLimit),
+  Router.get("/order_history", authMiddleware, GetOrderHistory));
 
 Router.put("/resume-payment/:orderId", ResumePay);
 Router.delete("/delete-order/:orderId", DeleteOrderbyUser);
+Router.get("/details-course/:courseId", DetailsCourse);
+Router.post(
+  "/become-instructor",
+  authMiddleware,
+  upload.single("proofImage"),
+  BecomeInstructor,
+);
+Router.put("/res-instructor", authMiddleware, ResInstructor);
+Router.get("/admin/teacher-requests", authMiddleware, GetPendingRequests);
 
 module.exports = Router;

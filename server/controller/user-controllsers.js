@@ -1,4 +1,16 @@
-const { GetAllUserByrole, GetUserById,  ChangeStatusByAdmin, UpdateroleByAdmin, GetAllStudentByIdClass, RemoveStudentinClass, RefectStudentoutclass } = require("../service/user-service");
+const {
+  GetAllUserByrole,
+  GetUserById,
+  ChangeStatusByAdmin,
+  UpdateroleByAdmin,
+  GetAllStudentByIdClass,
+  RemoveStudentinClass,
+  RefectStudentoutclass,
+  RequestInstructor,
+  ResponInstructor,
+  GetPendingTeacherRequests,
+} = require("../service/user-service");
+const uploadFile = require("../service/uploadfile-service");
 
 const GetAlluser = async (req, res) => {
   try {
@@ -31,7 +43,7 @@ const ChangeStatusUser = async (req, res) => {
     const data = {
       userId: req.params.userId,
       role: req.user.role,
-      status: req.body.status
+      status: req.body.status,
     };
     const result = await ChangeStatusByAdmin(data);
     res.status(200).json(result);
@@ -45,7 +57,7 @@ const UpdateRole = async (req, res) => {
     const data = {
       userId: req.params.userId,
       role: req.user.role,
-      roles: req.body.roles
+      roles: req.body.roles,
     };
     const result = await UpdateroleByAdmin(data);
     res.status(200).json(result);
@@ -60,7 +72,6 @@ const GetStudentOnClasss = async (req, res) => {
     const data = {
       role: req.user.role,
       classId: req.params.classId,
-      
     };
     const result = await GetAllStudentByIdClass(data);
     res.status(200).json(result);
@@ -75,8 +86,7 @@ const RemoveStudent = async (req, res) => {
       role: req.user.role,
       classId: req.params.classId,
       studentId: req.params.studentId,
-      status:req.body.status,
-      
+      status: req.body.status,
     };
     const result = await RemoveStudentinClass(data);
     res.status(200).json(result);
@@ -91,8 +101,7 @@ const RefectStudent = async (req, res) => {
       role: req.user.role,
       classId: req.params.classId,
       studentId: req.params.studentId,
-      status:req.body.status,
-      
+      status: req.body.status,
     };
     const result = await RefectStudentoutclass(data);
     res.status(200).json(result);
@@ -101,4 +110,63 @@ const RefectStudent = async (req, res) => {
     res.status(error.status || 500).json({ message: error.message });
   }
 };
-module.exports = { GetAlluser,GetUser,ChangeStatusUser,UpdateRole ,GetStudentOnClasss ,RemoveStudent,RefectStudent};
+const BecomeInstructor = async (req, res) => {
+  try {
+    let proofImage = "";
+    if (req?.file) {
+      const uploadResult = await uploadFile(req?.file?.path);
+      proofImage = uploadResult?.secure_url || "";
+    }
+    const data = {
+      userId: req.user.userId,
+      role: req.user.role,
+      specialty: req.body.specialty,
+      opinion: req.body.opinion,
+      proofImage: proofImage,
+    };
+    const result = await RequestInstructor(data);
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
+const ResInstructor = async (req, res) => {
+  try {
+    const data = {
+      role: req.user.role,
+      userId: req.body.userId,
+      approved: req.body.approved,
+      requestId: req.body.requestId,
+    };
+    const result = await ResponInstructor(data);
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
+const GetPendingRequests = async (req, res) => {
+  try {
+    const data = {
+      role: req.user.role,
+    };
+    const result = await GetPendingTeacherRequests(data);
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
+module.exports = {
+  GetAlluser,
+  GetUser,
+  ChangeStatusUser,
+  UpdateRole,
+  GetStudentOnClasss,
+  RemoveStudent,
+  RefectStudent,
+  BecomeInstructor,
+  ResInstructor,
+  GetPendingRequests,
+};

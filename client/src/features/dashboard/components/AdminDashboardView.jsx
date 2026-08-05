@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Activity,
   BookOpen,
@@ -9,8 +11,13 @@ import {
   Users,
   UserCheck,
   CreditCard,
-  Calendar
+  Calendar,
+  Bell,
+  X,
+  Eye
 } from "lucide-react";
+import useRequestIntructor from "../../user/hooks/useRequestIntructor";
+import { toast } from "react-toastify";
 import {
   AreaChart,
   Area,
@@ -119,6 +126,13 @@ const CustomTooltip = ({ active, payload, label, formatter }) => {
 
 const AdminDashboardView = ({ dashboard, error, loading, onRetry, timeFilter, setTimeFilter }) => {
   const adminName = getUserName();
+  const navigate = useNavigate();
+
+  const { requestList, getRequests } = useRequestIntructor();
+
+  useEffect(() => {
+    getRequests();
+  }, []);
 
   const overview = dashboard?.overview || {};
   const revenueChart = dashboard?.revenueChart || [];
@@ -181,7 +195,7 @@ const AdminDashboardView = ({ dashboard, error, loading, onRetry, timeFilter, se
 
       {/* ── Hero Banner & Filter ── */}
       <section
-        className="relative overflow-hidden rounded-3xl p-6 lg:p-8 flex flex-col md:flex-row md:items-end justify-between gap-6"
+        className="relative overflow-visible rounded-3xl p-6 lg:p-8 flex flex-col md:flex-row md:items-end justify-between gap-6"
         style={{
           background: 'rgba(255,255,255,0.6)',
           border: '1px solid rgba(255,255,255,0.8)',
@@ -189,8 +203,26 @@ const AdminDashboardView = ({ dashboard, error, loading, onRetry, timeFilter, se
           boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.9), 0 16px 48px rgba(168,85,247,0.08)',
         }}
       >
-        <div className="absolute top-0 left-16 right-16 h-[1px] bg-gradient-to-r from-transparent via-purple-400/50 to-transparent" />
-        <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, #a855f7 0%, #ec4899 50%, transparent 70%)', filter: 'blur(40px)' }} />
+        {/* Glow wrapper with overflow-hidden */}
+        <div className="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
+          <div className="absolute top-0 left-16 right-16 h-[1px] bg-gradient-to-r from-transparent via-purple-400/50 to-transparent" />
+          <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full opacity-20" style={{ background: 'radial-gradient(circle, #a855f7 0%, #ec4899 50%, transparent 70%)', filter: 'blur(40px)' }} />
+        </div>
+
+        {/* Nút Chuông Thông Báo (Góc phải trên cùng) */}
+        <div className="absolute top-6 right-6 z-20">
+          <button
+            onClick={() => navigate("/admin/teacher-requests")}
+            className="relative flex items-center justify-center w-10 h-10 rounded-2xl text-slate-500 hover:text-orange-500 bg-white/70 backdrop-blur-md border border-slate-200 shadow-sm transition-all hover:scale-105 active:scale-95 border-0"
+            aria-label="Notifications"
+          >
+            <Bell size={18} />
+            {requestList.length > 0 && (
+              <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-orange-500 border border-white"
+                style={{ boxShadow: '0 0 6px rgba(249,115,22,0.8)' }} />
+            )}
+          </button>
+        </div>
 
         <div className="relative z-10">
           <div
@@ -211,6 +243,7 @@ const AdminDashboardView = ({ dashboard, error, loading, onRetry, timeFilter, se
           </p>
         </div>
 
+        {/* Bộ lọc thời gian */}
         <div className="relative z-10 flex items-center gap-3 bg-white/70 backdrop-blur-md p-2 rounded-2xl border border-slate-200 shadow-sm">
           <Calendar size={18} className="text-slate-400 ml-2" />
           <select 
