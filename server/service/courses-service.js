@@ -2,6 +2,7 @@ const Courses = require("../model/Courses");
 const Lessons = require("../model/Lessons");
 const classs = require("../model/Class");
 
+
 const GetAllCourses = async (data) => {
   try {
     let course = [];

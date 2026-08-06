@@ -19,4 +19,25 @@ const GetDetailsCourse = async (courseId) => {
   return res;
 };
 
-export { GetCourses, CreateCourses, GetLession, GetDetailsCourse };
+const CreateAndUpRating = async (courseId, data) => {
+  const res = await api.post(`/courses/${courseId}/ratings`, data);
+  return res;
+};
+const GetRatings = async (courseId) => {
+  const res = await api.get(`/courses/${courseId}/ratings`);
+  return res;
+};
+const DeleteRating = async (ratingId) => {
+  const res = await api.delete(`/ratings/${ratingId}`);
+  return res;
+};
+
+export {
+  GetCourses,
+  CreateCourses,
+  GetLession,
+  GetDetailsCourse,
+  CreateAndUpRating,
+  GetRatings,
+  DeleteRating,
+};

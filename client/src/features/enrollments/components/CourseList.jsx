@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 
 const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
-  console.log(courses);
+ 
   return (
     <div className="space-y-8 pb-10">
       {/* ── Header & Filter Bar ── */}
@@ -247,18 +247,21 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
                     <>
                       <Link to={`courses/${item?.courseId?._id}/item`}>
                         <button className="whitespace-nowrap flex items-center justify-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:text-orange-500 transition-colors shadow-sm">
-                          <BookOpen size={16} /> Details
+                          <BookOpen size={16} /> Learn Now
                         </button>
                       </Link>
+                      <Link to={`/courses/details/recorded/${item?.courseId?._id}`} className="w-full"> 
                       <button
+                      
                         className="whitespace-nowrap flex items-center justify-center gap-2 px-6 py-2.5 rounded-full text-sm font-black text-white shadow-md shadow-orange-500/30 hover:scale-105 active:scale-95 transition-all w-full"
                         style={{
                           background:
                             "linear-gradient(135deg, #f97316, #fb923c)",
                         }}
                       >
-                        Continue <PlayCircle size={16} />
+                       Details <PlayCircle size={16} />
                       </button>
+                      </Link>
                     </>
                   ) : (
                     <>

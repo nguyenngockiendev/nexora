@@ -11,16 +11,19 @@ import {
   X,
   ChevronDown,
   ChevronUp,
+  Star,
+  Send,
 } from "lucide-react";
+import CourseRating from "./CourseRating";
+
 
 const Detailscourse = ({
   payment,
-  navigate,
+  ratings,
   detalscourse,
-  error,
-  loading,
-  activeLessonId,
-  setActiveLessonId,
+  instructorRating,
+  setUserRating,
+  handInstructorRatingChange,
   showPreviewModal,
   setShowPreviewModal,
   previewVideoUrl,
@@ -62,7 +65,11 @@ const Detailscourse = ({
               <div className="flex items-center gap-1">
                 <Calendar size={14} /> Cập nhật:{" "}
                 <span className="text-slate-600">
-                  {detalscourse?.updatedAt ? new Date(detalscourse.updatedAt).toLocaleDateString("vi-VN") : ""}
+                  {detalscourse?.updatedAt
+                    ? new Date(detalscourse.updatedAt).toLocaleDateString(
+                        "vi-VN",
+                      )
+                    : ""}
                 </span>
               </div>
             </div>
@@ -205,18 +212,53 @@ const Detailscourse = ({
                 </p>
 
                 {/* Stats */}
-                <div className="flex gap-4 text-xs font-bold text-slate-400">
-                  <div>⭐ {detalscourse?.instructor?.rating} Đánh giá</div>
-                  <div>
-                    👥{" "}
-                    {(detalscourse?.instructor?.studentsCount || 0).toLocaleString(
-                      "vi-VN",
-                    )}{" "}
-                    Học viên
-                  </div>
-                  <div>📚 {detalscourse?.instructor?.coursesCount} Khóa học</div>
-                </div>
+                <form onSubmit={(e) => { e.preventDefault(); handInstructorRatingChange(e); }} className="space-y-2">
+                  <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-slate-400">
+                    <div className="flex gap-1 items-center">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          type="button"
+                          onClick={() => setUserRating(star)}
+                          className="p-0.5 border-0 bg-transparent cursor-pointer hover:scale-110 transition-transform"
+                        >
+                          <Star
+                            size={16}
+                            className={
+                              star <= instructorRating
+                                ? "text-amber-400"
+                                : "text-slate-300"
+                            }
+                            fill={
+                              star <= instructorRating ? "currentColor" : "none"
+                            }
+                          />
+                        </button>
+                      ))}
+                    </div>
 
+                    <div className="text-amber-500 font-bold">{ratings?.avgRatingIns || 5.0} ⭐</div>
+
+                    <div>
+                      👥{" "}
+                      {(
+                        detalscourse?.instructor?.studentsCount || 0
+                      ).toLocaleString("vi-VN")}{" "}
+                      Học viên
+                    </div>
+                    <div>
+                      📚 {detalscourse?.instructor?.coursesCount} Khóa học
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="px-3 py-1.5 rounded-lg text-xs font-bold text-white flex items-center gap-1.5 border-0 cursor-pointer shadow-sm hover:scale-105 transition-transform"
+                    style={{ background: "linear-gradient(135deg, #f97316, #ea580c)" }}
+                  >
+                    <Send size={12} /> Gửi đánh giá giảng viên
+                  </button>
+                </form>
                 <p className="text-sm font-medium text-slate-500 leading-relaxed pt-2 border-t border-slate-100">
                   {detalscourse?.instructor?.bio}
                 </p>
@@ -227,6 +269,7 @@ const Detailscourse = ({
 
         {/* CỘT PHẢI: THẺ MUA KHÓA HỌC STICKY (Chiếm 1 phần) */}
         <div className="lg:sticky lg:top-8 space-y-6">
+          {/* THẺ 1: THẺ MUA KHÓA HỌC */}
           <div
             className="rounded-[2rem] overflow-hidden"
             style={{
@@ -273,15 +316,22 @@ const Detailscourse = ({
                     WebkitTextFillColor: "transparent",
                   }}
                 >
-                  {detalscourse?.price ? detalscourse.price.toLocaleString("vi-VN") : 0} ₫
+                  {detalscourse?.price
+                    ? detalscourse.price.toLocaleString("vi-VN")
+                    : 0}{" "}
+                  ₫
                 </h2>
+                <div className="flex items-center gap-1.5 text-xs font-bold text-amber-500 pt-1">
+                  <Star size={14} fill="currentColor" /> 4.8 / 5.0 (25 đánh giá)
+                </div>
               </div>
 
               {/* Purchase Action Buttons */}
               <div className="space-y-3">
-                {/* 🔑 NÚT MUA CHÍNH: Bạn sẽ tích hợp logic gọi hàm payment() ở đây */}
                 <button
-                  onClick={() => payment(detalscourse?._id, { type: "recorded" })}
+                  onClick={() =>
+                    payment(detalscourse?._id, { type: "recorded" })
+                  }
                   className="w-full py-3.5 rounded-2xl text-sm font-black text-white shadow-lg shadow-orange-500/25 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
                   style={{
                     background: "linear-gradient(135deg, #f97316, #ea580c)",
@@ -321,6 +371,18 @@ const Detailscourse = ({
               </div>
             </div>
           </div>
+
+          <div
+            className="rounded-[2rem] p-6"
+            style={{
+              background: "rgba(255,255,255,0.65)",
+              border: "1px solid rgba(255,255,255,0.85)",
+              backdropFilter: "blur(24px)",
+              boxShadow: "0 16px 40px rgba(194,110,30,0.06)",
+            }}
+          >
+            {detalscourse?._id && <CourseRating courseId={detalscourse._id} />}
+          </div>
         </div>
       </div>
 
@@ -337,7 +399,7 @@ const Detailscourse = ({
               border: "1px solid rgba(255,255,255,1)",
               backdropFilter: "blur(20px)",
             }}
-            onClick={(e) => e.stopPropagation()} // Chặn bong bóng sự kiện
+            onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
             <div className="p-4 flex items-center justify-between border-b border-slate-100">
@@ -367,4 +429,5 @@ const Detailscourse = ({
     </div>
   );
 };
+
 export default Detailscourse;

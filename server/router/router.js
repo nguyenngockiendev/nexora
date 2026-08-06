@@ -69,6 +69,7 @@ const {
 } = require("../controller/Process-controller");
 const { SenMessLimit } = require("../controller/message-controller");
 const { ResumePayment } = require("../service/payment-service");
+const { CreateAndUpdateRating, GetRating, DeleteRatingByuser } = require("../controller/rating-controller");
 
 const Router = require("express").Router();
 
@@ -177,5 +178,9 @@ Router.post(
 );
 Router.put("/res-instructor", authMiddleware, ResInstructor);
 Router.get("/admin/teacher-requests", authMiddleware, GetPendingRequests);
+///rating
 
+Router.post("/courses/:courseId/ratings",authMiddleware,CreateAndUpdateRating);
+Router.get("/courses/:courseId/ratings",GetRating);
+Router.delete("/ratings/:ratingId",authMiddleware,DeleteRatingByuser);
 module.exports = Router;

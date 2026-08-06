@@ -1,9 +1,3 @@
-
-
-
-const processRoutes = [
- 
-
-];
+const processRoutes = [];
 
 export default processRoutes;

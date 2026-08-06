@@ -3,26 +3,30 @@ import { useParams, useNavigate } from "react-router-dom";
 import Detailscourse from "../components/DetailsCourse";
 import { useDetails } from "../hooks/useDetailsCourse";
 import usePayment from "../../payment/hooks/usePayment";
+import useRating from "../hooks/useRating";
 
 const CourseDetailsRecorded = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
   const { detalscourse, error, loading } = useDetails(courseId);
-  const { payment} = usePayment()
-  
-  const [activeLessonId, setActiveLessonId] = useState(null); 
+  const { payment } = usePayment();
+  const { ratings, CreateAndUpdate } = useRating(courseId);
+  const [activeLessonId, setActiveLessonId] = useState(null);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [previewVideoUrl, setPreviewVideoUrl] = useState("");
   const [expandedSyllabus, setExpandedSyllabus] = useState(true);
+  const [instructorRating, setUserRating] = useState(5);
 
-  console.log("detalscourse", detalscourse);
- 
   const totalDuration = (detalscourse?.lessons || []).reduce(
     (acc, curr) => acc + curr.duration,
     0,
   );
-
-  
+  const handInstructorRatingChange = async (e) => {
+    e.preventDefault();
+    await CreateAndUpdate({
+      instructorRating: instructorRating,
+    });
+  };
   const handleOpenPreview = (videoUrl) => {
     if (!videoUrl) return;
     setPreviewVideoUrl(videoUrl);
@@ -31,7 +35,11 @@ const CourseDetailsRecorded = () => {
   return (
     <div>
       <Detailscourse
-      payment={payment}
+        handInstructorRatingChange={handInstructorRatingChange}
+        instructorRating={instructorRating}
+        setUserRating={setUserRating}
+        ratings={ratings}
+        payment={payment}
         navigate={navigate}
         detalscourse={detalscourse}
         error={error}
