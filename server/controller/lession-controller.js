@@ -26,10 +26,10 @@ const CreateLessons = async (req, res) => {
     let videoUrl = "";
     let resourceUrl = "";
     if (req.files?.videoUrl) {
-      videoUrl = await uploadFile(req.files.videoUrl[0].path ,true);
+      videoUrl = await uploadFile(req.files.videoUrl[0].path, true);
     }
     if (req.files?.resourcesurl) {
-      resourceUrl = await uploadFile(req.files.resourcesurl[0].path,false);
+      resourceUrl = await uploadFile(req.files.resourcesurl[0].path, false);
     }
 
     src = {
@@ -45,6 +45,7 @@ const CreateLessons = async (req, res) => {
       role: req.user.role,
 
       resources: src,
+      status: "PROCESSING",
     };
 
     const result = await CreateLession(data);
@@ -75,7 +76,7 @@ const UpdateLession = async (req, res) => {
       videoUrl = await uploadFile(req.files.video[0].path, true);
     }
     if (req.files?.resourcesurl) {
-      resourceUrl = await uploadFile(req.files.resourcesurl[0].path,false);
+      resourceUrl = await uploadFile(req.files.resourcesurl[0].path, false);
     }
     const data = {
       ...req.body,
@@ -88,6 +89,7 @@ const UpdateLession = async (req, res) => {
         title: req.body.resourcestitle,
         url: resourceUrl.secure_url,
       },
+      status: "PROCESSING",
     };
     const result = await UpdateLessionByid(data);
     res.status(200).json(result);

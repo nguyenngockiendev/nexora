@@ -8,11 +8,15 @@ const { Server } = require("socket.io");
 const Router = require("./router/router");
 const registerSoket = require("./socket");
 
+const { ChunkingVideo } = require("./service/changTotext-service");
+
 const app = express();
 app.use(cors());
 const PORT = process.env.PORT || 9000;
 app.use(express.json());
-DBconnection();
+DBconnection().then(() => {
+  ChunkingVideo();
+});
 app.use("/uploads", express.static("uploads"));
 app.use("/api", Router);
 

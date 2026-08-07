@@ -19,6 +19,12 @@ const lessonSchema = new mongoose.Schema(
     isPreview: { type: Boolean, default: false, required: true },
 
     content: { type: String, default: "" },
+    status: {
+      type: String,
+      enum: ["PROCESSING", "TRANSCRIPT_READY", "FAILED"],
+      default: "PROCESSING",
+    },
+
     resources: {
       type: [
         {
