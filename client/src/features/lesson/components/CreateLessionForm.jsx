@@ -6,7 +6,6 @@ const CreateLession = ({
   register,
   handleSubmit,
   onSubmit,
-
   resource,
   setResource,
 
@@ -56,26 +55,21 @@ const CreateLession = ({
           </div>
 
           {/* Duration + Order */}
-          <div className="row">
-
-            <div className="col-md-6 mb-3">
-              <label className="form-label">Order</label>
-              <InputGroup>
-                <InputGroup.Text>#</InputGroup.Text>
-                <Form.Control
-                  type="number"
-                  placeholder="1"
-                  required
-                  {...register("order")}
-                />
-              </InputGroup>
-            </div>
-          </div>
+          <div className="row"></div>
 
           {/* Preview */}
           <div className="mb-3 d-flex align-items-center gap-2">
             <Form.Check {...register("isPreview")} />
             <span>Allow Preview</span>
+          </div>
+          {/* Status Processing */}
+          <div className="mb-3 d-flex align-items-center gap-2">
+            <Form.Check
+              {...register("status")}
+              type="checkbox"
+              value="PROCESSING"
+            />
+            <span>Auto Video Processing (AI Transcript)</span>
           </div>
 
           {/* Content */}

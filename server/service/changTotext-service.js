@@ -45,7 +45,7 @@ const readAudioData = (filePath) => {
 const ChunkingVideo = async () => {
   const transcriber = await pipeline(
     "automatic-speech-recognition",
-    "Xenova/whisper-base",
+    "Xenova/whisper-small",
   );
 
   try {

@@ -45,7 +45,7 @@ const CreateLessons = async (req, res) => {
       role: req.user.role,
 
       resources: src,
-      status: "PROCESSING",
+      status: req.body.status === "false" ? "PENDING" : "PROCESSING",
     };
 
     const result = await CreateLession(data);
@@ -70,8 +70,8 @@ const DeleteLession = async (req, res) => {
 
 const UpdateLession = async (req, res) => {
   try {
-    let videoUrl = "";
-    let resourceUrl = "";
+    let videoUrl = null;
+    let resourceUrl = null;
     if (req.files?.video) {
       videoUrl = await uploadFile(req.files.video[0].path, true);
     }
@@ -80,16 +80,15 @@ const UpdateLession = async (req, res) => {
     }
     const data = {
       ...req.body,
-      duration: videoUrl.duration,
-      videoUrl: videoUrl.secure_url,
+      duration: videoUrl?.duration,
+      videoUrl: videoUrl?.secure_url,
       role: req.user.role,
       lessionId: req.params.lessionId,
-      resources: {
-        type: req.body.resourcestype,
-        title: req.body.resourcestitle,
-        url: resourceUrl.secure_url,
-      },
-      status: "PROCESSING",
+
+      resourceType: req.body.resourcestype,
+      resourceTitle: req.body.resourcestitle,
+      resourceUrl: resourceUrl?.secure_url,
+      status: req.body.status === "false" ? "PENDING" : "PROCESSING",
     };
     const result = await UpdateLessionByid(data);
     res.status(200).json(result);

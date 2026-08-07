@@ -12,7 +12,7 @@ const UpdateLessonPage = () => {
   const navigate = useNavigate();
   const { loading, error, update, lession, getLession } = useUpdatelession();
   const [video, Setvideo] = useState(null);
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, setValue } = useForm();
 
   const [resource, setResource] = useState({
     type: "pdf",
@@ -30,6 +30,7 @@ const UpdateLessonPage = () => {
         title: lession.title,
         order: lession.order,
         isPreview: lession.isPreview,
+        status: lession.status,
         videoUrl: lession.videoUrl,
         content: lession.content,
         resources: lession.resources,
@@ -49,6 +50,8 @@ const UpdateLessonPage = () => {
       formData.append("content", data.content);
       formData.append("video", video);
       formData.append("isPreview", data.isPreview);
+      const statusVal = (data.status === true || data.status === "PROCESSING" || data.status === "true") ? "PROCESSING" : "";
+      formData.append("status", statusVal);
        console.log(Object.fromEntries(formData.entries()));
       const result = await update(lessionId, formData);
       if (result) {
@@ -75,6 +78,7 @@ const UpdateLessonPage = () => {
               setResource={setResource}
               navigate={navigate}
               resource={resource}
+              setValue={setValue}
               lession={lession}
             />
           </Col>

@@ -8,7 +8,6 @@ const UpdateLessonForm = ({
   navigate,
   handleupdate,
   handleSubmit,
-  setResource,
 }) => {
   return (
     <Card className="mx-4 shadow-sm border-0">
@@ -62,6 +61,16 @@ const UpdateLessonForm = ({
           <div className="mb-3 d-flex align-items-center gap-2">
             <Form.Check {...register("isPreview")} />
             <span>Allow Preview</span>
+          </div>
+
+          {/* Status Processing */}
+          <div className="mb-3 d-flex align-items-center gap-2">
+            <Form.Check
+              {...register("status")}
+              type="checkbox"
+              value="PROCESSING"
+            />
+            <span>Auto Video Processing (AI Transcript)</span>
           </div>
 
           {/* Content */}

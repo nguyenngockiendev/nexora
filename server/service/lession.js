@@ -5,6 +5,7 @@ const errollment = require("../model/Enrollments");
 const user = require("../model/Users");
 const classs = require("../model/Class");
 const quizz = require("../model/Quizz");
+const { ChunkingVideo } = require("./changTotext-service");
 
 const GetLession = async (data) => {
   try {
@@ -39,11 +40,17 @@ const GetLession = async (data) => {
 };
 const CreateLession = async (data) => {
   try {
+    const numberOrder = await Lessons.findOne().sort({ order: -1 });
+    let order = numberOrder?.order || 0;
     if (data?.role !== "instructor") {
       throw { status: 403, message: "forbidden" };
     }
-    const newlession = new Lessons(data);
-    await newlession.save();
+    order++;
+    const newlession = await Lessons.create({ ...data, order: order });
+    if (data.status === "PROCESSING") {
+      ChunkingVideo();
+    }
+
     return { message: "create successfully", newlession: newlession };
   } catch (error) {
     console.log(error);
@@ -69,13 +76,33 @@ const UpdateLessionByid = async (data) => {
     if (data?.role !== "instructor") {
       throw { status: 403, message: "forbidden" };
     }
+
     const updatelession = await Lessons.findByIdAndUpdate(
       data.lessionId,
-      data,
       {
-        returnDocument: true,
+        $set: {
+          title: data.title,
+          videoUrl: data.videoUrl,
+          duration: data.duration,
+          isPreview: data.isPreview,
+          content: data.content,
+          status: data.status,
+          resources: [
+            {
+              type: data.resourceType,
+              title: data.resourceTitle,
+              url: data.resourceUrl,
+            },
+          ],
+        },
+      },
+      {
+        new: true,
       },
     );
+    if (data.status === "PROCESSING") {
+      ChunkingVideo();
+    }
     if (!updatelession) {
       throw { status: 404, message: "Lesson not found" };
     }

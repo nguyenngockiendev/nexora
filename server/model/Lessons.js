@@ -21,8 +21,8 @@ const lessonSchema = new mongoose.Schema(
     content: { type: String, default: "" },
     status: {
       type: String,
-      enum: ["PROCESSING", "TRANSCRIPT_READY", "FAILED"],
-      default: "PROCESSING",
+      enum: ["PENDING","PROCESSING", "TRANSCRIPT_READY", "FAILED"],
+      default: "PENDING",
     },
 
     resources: {

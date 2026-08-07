@@ -27,8 +27,9 @@ const Createlession = () => {
       formData.append("title", data.title);
       formData.append("isPreview", data.isPreview);
       formData.append("content", data.content);
-      formData.append("order", data.order);
       formData.append("videoUrl", videoFile);
+
+      formData.append("status", data.status);
       formData.append("resourcestype", resource.type);
       formData.append("resourcestitle", resource.title);
       formData.append("resourcesurl", resource.url);
@@ -57,10 +58,8 @@ const Createlession = () => {
               register={register}
               handleSubmit={handleSubmit}
               onSubmit={onSubmit}
-           
               resource={resource}
               setResource={setResource}
-           
               setVideoFile={setVideoFile}
               loading={loading}
             />
