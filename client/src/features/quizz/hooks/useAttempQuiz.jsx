@@ -1,12 +1,10 @@
 import { useState } from "react";
-import { CreateAttempQuiz, GetAttemsp } from "../api/quizz-api";
+import { CreateAttempQuiz } from "../api/quizz-api";
 
 const useCreateAttempQuiz = (lessionId) => {
   const [error, setError] = useState(null);
-  const [notification, setNotification] = useState("");
   const [loading, setLoading] = useState(false);
   const [attemps, setAttemps] = useState(null);
-
 
   const CreateAttempquiz = async (payload) => {
     try {
@@ -22,14 +20,14 @@ const useCreateAttempQuiz = (lessionId) => {
       setLoading(false);
     }
   };
+  
 
   return {
     CreateAttempquiz,
     loading,
-    notification,
+
     error,
     attemps,
-    
   };
 };
 export default useCreateAttempQuiz;

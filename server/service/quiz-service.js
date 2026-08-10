@@ -111,7 +111,7 @@ const CreateAttempQuiz = async (data) => {
       return {
         questionId: question._id,
         selectedAnswer,
-        correctAnswer: question.correctAnswer,
+        correctAnswer: question.correctAnswer ?? 0,
         isCorrect,
       };
     });
@@ -149,7 +149,7 @@ const GetAttempsQuiz = async ({ studentId, attempsId, lessonId }) => {
       .lean();
 
     if (!attepms) {
-      throw { status: 404, message: "you not have Attemps.wwill do quizz!" };
+      throw { status: 404, message: "you not have Attemps.will do quizz!" };
     }
     let pass = false;
     if (attepms.score >= attepms.quizId.passScore) {
@@ -162,10 +162,123 @@ const GetAttempsQuiz = async ({ studentId, attempsId, lessonId }) => {
   }
 };
 
+const GetCourse = async (data) => {
+  try {
+    if (data.role === "student") {
+      throw { status: 404, message: "không có quyền!" };
+    }
+    const listCourse = await Courses.findOne({
+      instructor: data.userId,
+    });
+    if (!listCourse) {
+      throw {
+        status: 404,
+        message:
+          "khóa học không tồn tại! Bạn hãy tạo bài học trước rồi mới tạo Quiz nhé ",
+      };
+    }
+    const listLession = await Lessons.find()
+      .select("title")
+      .populate("courseId", "title")
+      .lean();
+    if (listCourse.length === 0) {
+      throw { status: 404, message: "bài học không tồn tại" };
+    }
+    return listLession;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const GetQuizzbyStudent = async (data) => {
+  try {
+    const listQuiz = await errollment
+      .find({
+        userId: data.userId,
+      })
+      .populate({
+        path: "courseId",
+        select: "title",
+        populate: {
+          path: "instructor",
+          select: "name",
+        },
+      })
+      .lean();
+    const arr = await Promise.all(
+      listQuiz.map(async (item) => {
+        const course = item.courseId;
+        if (!course) return null;
+
+        const less = await Lessons.find({ courseId: course._id })
+          .select("title")
+          .lean();
+
+        return {
+          course: course,
+          lession: less,
+          Quizz: await Promise.all(
+            less.map(async (e) => {
+              const quiz = await quizz
+                .findOne({ lessonId: e._id })
+                .select("title duration passScore")
+                .lean();
+              if (!quiz) return null;
+              const Attemps = await attempQuizz
+                .findOne({ quizId: quiz._id, studentId: data.userId })
+                .sort({ createdAt: -1 })
+                .select("score status")
+                .lean();
+              return { quiz: quiz, Attemps: Attemps };
+            }),
+          ),
+        };
+      }),
+    );
+    const finalResult = arr.filter(Boolean).flatMap((item) => {
+      if (!item || !item.lession || item.lession.length === 0) return [];
+      return item.lession
+        .map((lesson, index) => {
+          const quizDetail = item.Quizz?.[index];
+          if (!quizDetail) return null;
+          let status = "NOT_STARTED";
+          if (quizDetail.Attemps && quizDetail.Attemps.score !== undefined) {
+            status =
+              quizDetail.Attemps.score >= quizDetail.quiz.passScore
+                ? "PASSED"
+                : "FAILED";
+          }
+
+          return {
+            courseId: item.course._id,
+            courseTitle: item.course.title,
+            instructorName: item.course.instructor?.name || "",
+            lessonId: lesson._id,
+            lessonTitle: lesson.title,
+            quizId: quizDetail.quiz._id,
+            quizTitle: quizDetail.quiz.title,
+            duration: quizDetail.quiz.duration,
+            passScore: quizDetail.quiz.passScore,
+            status: status,
+            lastAttempt: quizDetail.Attemps || null,
+          };
+        })
+        .filter(Boolean);
+    });
+    return finalResult;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 module.exports = {
   CreateQuizByIntructor,
   GetQuizzById,
   UpdateQuizzbyIntructor,
   CreateAttempQuiz,
   GetAttempsQuiz,
+  GetCourse,
+  GetQuizzbyStudent,
 };

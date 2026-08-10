@@ -50,11 +50,6 @@ const quizSchema = new Schema(
       required: true,
     },
 
-    description: {
-      type: String,
-      default: "",
-    },
-
     questions: {
       type: [questionSchema],
       default: [],

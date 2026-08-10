@@ -10,12 +10,18 @@ function TakeQuizPage() {
   const { CreateAttempquiz, loading, notification, error, attemps } =
     useCreateAttempQuiz(lessionId);
 
-  const { quizz } = useUpdateQuizz(lessionId);
+  const { quizz ,Quizz} = useUpdateQuizz(lessionId);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
 
+
+  useEffect(()=>{
+    if(lessionId){
+      Quizz(lessionId)
+    }
+  },[lessionId])
   useEffect(() => {
     if (quizz) {
       setTimeLeft(quizz?.duration * 60);

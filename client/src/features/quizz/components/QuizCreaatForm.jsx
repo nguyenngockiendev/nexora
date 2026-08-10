@@ -5,6 +5,7 @@ import {
   Col,
   Form,
   InputGroup,
+  Modal,
   Row,
 } from "react-bootstrap";
 const QuizCreaatForm = ({
@@ -19,13 +20,20 @@ const QuizCreaatForm = ({
   courseId,
   istrue,
   loading,
+  courses,
+  hanhId,
+  setShowModal,
+  showModal,
+  setNumQuestions,
+  numQuestions,
+  handleQuickSelect,
+  handleSubmit,
+  header,
 }) => {
   const optionLabels = ["A", "B", "C", "D"];
-
   return (
     <div className="create-exam-page  d-flex flex-column">
-      <div className="d-flex align-items-center justify-content-between">
-        {" "}
+      <div className="d-flex align-items-center justify-content-between mb-2">
         <div className="d-flex align-items-center gap-4">
           <Button
             variant="light"
@@ -35,14 +43,9 @@ const QuizCreaatForm = ({
           >
             ← Back
           </Button>
-          <div className=" align-items-center">
+          <div className="align-items-center">
             <h1 className="quiz-page-title mb-0">Tạo đề kiểm tra</h1>
           </div>
-          {error && (
-            <div>
-              <h1>{error}</h1>
-            </div>
-          )}
         </div>
         <div className="d-none d-sm-flex gap-2">
           <Button
@@ -62,10 +65,23 @@ const QuizCreaatForm = ({
         </div>
       </div>
 
+      {/* 🔴 Thông báo lỗi từ Server */}
+      {error && (
+        <div className="alert alert-danger py-2 px-3 mb-3 small font-weight-bold">
+          ⚠️ {error || "Đã xảy ra lỗi!"}
+        </div>
+      )}
+      {!header && (
+        <div className="alert alert-danger py-2 px-3 mb-3 small font-weight-bold">
+          ⚠️{" "}
+          {"bạn phải điền thông tin đề rồi mới được dùng tính năng Generate!"}
+        </div>
+      )}
+
       <Form onSubmit={handSubmit}>
-        <Card className="quiz-card mb-4">
-          <Card.Body className="p-4">
-            <div className="d-flex align-items-center gap-2 mb-4">
+        <Card className="quiz-card mb-3">
+          <Card.Body className="p-3 px-4">
+            <div className="d-flex align-items-center gap-2 mb-3">
               <span className="quiz-icon-badge">✎</span>
               <Card.Title className="mb-0 fw-bold">Thông tin đề</Card.Title>
             </div>
@@ -98,6 +114,7 @@ const QuizCreaatForm = ({
                       required
                       value={exam.duration}
                       className="quiz-input"
+                      onWheel={(e) => e.target.blur()}
                       onChange={(e) =>
                         setExam({
                           ...exam,
@@ -119,6 +136,7 @@ const QuizCreaatForm = ({
                       step="any"
                       value={exam.passScore}
                       className="quiz-input"
+                      onWheel={(e) => e.target.blur()}
                       onChange={(e) =>
                         setExam({
                           ...exam,
@@ -127,6 +145,36 @@ const QuizCreaatForm = ({
                       }
                     />
                   </InputGroup>
+                </Form.Group>
+              </Col>
+
+              <Col sm={6} lg={3}>
+                <Form.Group>
+                  <Form.Label>Chọn bài học cần tạo Quizz:</Form.Label>
+                  <Form.Select
+                    className="quiz-input"
+                    required
+                    onChange={(e) => {
+                      const selectid = e.target.value;
+                      if (!selectid) {
+                        hanhId(null, null);
+                        return;
+                      }
+
+                      const item = Array.isArray(courses)
+                        ? courses.find((c) => c._id === e.target.value)
+                        : null;
+                      if (item) hanhId(item.courseId?._id, item._id);
+                    }}
+                  >
+                    <option value="">-- Chọn bài học cần tạo Quizz --</option>
+                    {Array.isArray(courses) &&
+                      courses.map((item) => (
+                        <option key={item._id} value={item._id}>
+                          [{item.courseId?.title}] - {item.title}
+                        </option>
+                      ))}
+                  </Form.Select>
                 </Form.Group>
               </Col>
             </Row>
@@ -191,12 +239,12 @@ const QuizCreaatForm = ({
                   {currentIndex + 1 + "/" + exam.questions.length}
                 </Card.Subtitle>
               </Card.Header>
-              <Card.Body className="p-4 d-flex flex-column gap-4">
+              <Card.Body className="p-3 px-4 d-flex flex-column gap-3">
                 <Form.Group>
                   <Form.Label>Nội dung</Form.Label>
                   <Form.Control
                     as="textarea"
-                    rows={3}
+                    rows={2}
                     required
                     value={exam?.questions?.[currentIndex]?.question}
                     className="quiz-input"
@@ -318,13 +366,14 @@ const QuizCreaatForm = ({
             </Card>
           </Col>
         </Row>
-        <div>
+        <div className="d-flex align-items-center justify-content-between mt-4">
           <Button
             variant="light"
             className="quiz-btn-soft rounded-pill px-4"
             type="button"
+            onClick={() => setShowModal(true)}
           >
-            Preview Exam
+            Generate AI
           </Button>
 
           {istrue ? (
@@ -347,6 +396,87 @@ const QuizCreaatForm = ({
           )}
         </div>
       </Form>
+      {showModal && header && (
+        <Modal
+          show={showModal}
+          onHide={() => setShowModal(false)}
+          centered
+          className="quiz-ai-modal"
+          backdrop="static"
+        >
+          <Modal.Header closeButton className="border-bottom-0 pb-0">
+            <Modal.Title className="fw-bold fs-5 d-flex align-items-center gap-2">
+              <span className="quiz-icon-badge">✨</span>
+              Tạo Đề Thi Tự Động Bằng AI
+            </Modal.Title>
+          </Modal.Header>
+          <Form onSubmit={handleSubmit}>
+            <Modal.Body className="py-4">
+              <p className="text-muted small mb-4">
+                Hệ thống AI sẽ tự động phân tích video bài học đã chọn và sinh
+                ra các câu hỏi trắc nghiệm kèm đáp án và lời giải thích tương
+                ứng.
+              </p>
+              <Form.Group className="mb-3">
+                <Form.Label className="fw-bold small text-slate-700 mb-2">
+                  Số lượng câu hỏi cần sinh:
+                </Form.Label>
+                <InputGroup className="quiz-input-group mb-3">
+                  <Form.Control
+                    type="number"
+                    min={1}
+                    max={25}
+                    value={numQuestions}
+                    onChange={(e) => setNumQuestions(Number(e.target.value))}
+                    className="quiz-input fw-bold fs-5 text-center"
+                    required
+                  />
+                  <InputGroup.Text className="fw-bold">Câu hỏi</InputGroup.Text>
+                </InputGroup>
+                {/* 3 Nút chọn nhanh số câu */}
+                <div className="d-flex align-items-center gap-2">
+                  <span className="small text-muted me-1">Gợi ý nhanh:</span>
+                  {[5, 10, 15, 25].map((count) => (
+                    <Button
+                      key={count}
+                      type="button"
+                      variant={
+                        numQuestions === count ? "primary" : "outline-secondary"
+                      }
+                      size="sm"
+                      className="rounded-pill px-3 py-1 small fw-semibold"
+                      onClick={() => handleQuickSelect(count)}
+                    >
+                      {count} câu
+                    </Button>
+                  ))}
+                </div>
+              </Form.Group>
+            </Modal.Body>
+            <Modal.Footer className="border-top-0 pt-0">
+              <Button
+                variant="light"
+                className="quiz-btn-soft rounded-pill px-4"
+                onClick={() => setShowModal(false)}
+                type="button"
+                disabled={loading}
+              >
+                Hủy bỏ
+              </Button>
+              <Button
+                variant="primary"
+                className="rounded-pill px-4 fw-semibold"
+                type="submit"
+                disabled={loading}
+              >
+                {loading
+                  ? "⌛ Đang sinh bài thi..."
+                  : "✨ Bắt Đầu Sinh Quiz AI"}
+              </Button>
+            </Modal.Footer>
+          </Form>
+        </Modal>
+      )}
     </div>
   );
 };
