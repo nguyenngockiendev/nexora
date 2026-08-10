@@ -7,6 +7,8 @@ import {
   LayoutDashboard,
   Settings,
   PlusCircle,
+  FileQuestion,
+  BrainCircuit 
 } from "lucide-react";
 
 const Nav_Sidebar = [
@@ -55,6 +57,18 @@ const Nav_Sidebar = [
         path: "course/create",
         icon: PlusCircle,
         roles: ["instructor", "admin"],
+      },
+      {
+        name: "Create Quizz",
+        path: "create_quizz/lession",
+        icon: FileQuestion,
+        roles: ["instructor", "admin"],
+      },
+       {
+        name: "My Quizzes",
+        path: "student/quizzes",
+        icon: BrainCircuit,
+        roles: ["student"],
       },
 
       {
