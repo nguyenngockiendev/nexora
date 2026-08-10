@@ -7,9 +7,11 @@ const PromtsforAI = require("./transcript.prompt");
 const DEFAULTQUESTION = 25;
 const generateQuizAI = async (data) => {
   try {
-    DBconnection();
     if (data.role === "" || data.role === null) {
       throw { status: 404, message: "Không có quyền!" };
+    }
+    if (data.questionCount === null) {
+      throw { status: 404, message: "chưa nhập số lượng câu mong muốn!" };
     }
     const ExisLession = await Lessons.findById(data.lessionId);
     if (!ExisLession) {
@@ -32,7 +34,7 @@ const generateQuizAI = async (data) => {
       throw {
         status: 404,
         message:
-          "Số lượng câu hỏi không đúng định dang! Hãy nhập số lượng câu hỏi",
+          "Số lượng câu hỏi không đúng định dang hoặc quá 25 câu Quizz , hãy nhập lại số lượng câu hỏi <= 25 và > 0",
       };
     }
 
@@ -45,20 +47,29 @@ const generateQuizAI = async (data) => {
       .join(`\n\n`);
     const dataAI = PromtsforAI(data.questionCount, transcriptChunks);
     const finalResult = await QuizzGenWithAI(dataAI);
-    console.log("dataAI", transcriptChunks);
-    console.log("kết quả cuối cùng", finalResult);
+
+    if (Number(finalResult.length) !== count) {
+      throw {
+        status: 404,
+        message: "AI trả về dữ liệu không đủ câu hỏi .Hãy làm lại!",
+      };
+    }
+
+    if (finalResult.options > 4 || finalResult.options < 0) {
+      throw {
+        status: 404,
+        message:
+          "Lỗi sinh bài thi: Đáp án câu hỏi do AI tạo ra bị thiếu hoặc sai chỉ số!!",
+      };
+    }
+
+    return finalResult;
   } catch (error) {
     console.log(error);
     throw error;
   }
 };
 
-generateQuizAI({
-  role: "instructor",
-  lessionId: "6a7848c8b804a377ae7c95c7",
-  questionCount: 10,
-});
-
-// module.exports={
-//   generateQuizAI
-// }
+module.exports = {
+  generateQuizAI,
+};

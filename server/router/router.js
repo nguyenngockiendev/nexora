@@ -41,6 +41,8 @@ const {
   UpdateQuizz,
   CreateAttemp,
   GetAttemsp,
+  GetCourseForQuizz,
+  GetQuizBystuden,
 } = require("../controller/quiz-controller");
 const {
   GetAlluser,
@@ -70,6 +72,7 @@ const {
 const { SenMessLimit } = require("../controller/message-controller");
 const { ResumePayment } = require("../service/payment-service");
 const { CreateAndUpdateRating, GetRating, DeleteRatingByuser } = require("../controller/rating-controller");
+const { GenerateQuizAI } = require("../controller/AIgenerete");
 
 const Router = require("express").Router();
 
@@ -183,4 +186,7 @@ Router.get("/admin/teacher-requests", authMiddleware, GetPendingRequests);
 Router.post("/courses/:courseId/ratings",authMiddleware,CreateAndUpdateRating);
 Router.get("/courses/:courseId/ratings",GetRating);
 Router.delete("/ratings/:ratingId",authMiddleware,DeleteRatingByuser);
+Router.get("/generate/:lessionId/quizz" ,authMiddleware,GenerateQuizAI)
+Router.get("/instructor/courses-with-lessons" ,authMiddleware,GetCourseForQuizz)
+Router.get("/student/quizzes" ,authMiddleware,GetQuizBystuden)
 module.exports = Router;

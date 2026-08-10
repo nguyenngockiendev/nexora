@@ -44,7 +44,14 @@ YÊU CẦU:
 
 13. Mỗi câu hỏi phải có "chunkIndex" tương ứng với CHUNK mà câu hỏi được tạo ra.
 
-14. Hãy tạo đúng ${questionNumber} câu hỏi nếu nội dung được cung cấp đủ thông tin để tạo số câu hỏi đó. Nếu nội dung không đủ, chỉ tạo số câu hỏi có thể tạo được mà vẫn đảm bảo chất lượng.
+14. Số lượng câu hỏi:
+
+Hãy tạo đúng ${questionNumber} câu hỏi.
+Phải cố gắng tạo đủ số lượng câu hỏi được yêu cầu bằng cách khai thác các thông tin, chi tiết, khái niệm, nguyên nhân, mục đích, ví dụ, quy trình, số liệu hoặc ý chính khác nhau xuất hiện trong các CHUNK được cung cấp.
+Các câu hỏi phải được tạo từ một CHUNK duy nhất và không được kết hợp thông tin giữa các CHUNK.
+Nếu một CHUNK không đủ thông tin để tạo thêm câu hỏi mà không bị trùng ý, hãy tạo câu hỏi từ các CHUNK khác được cung cấp.
+Không được giảm số lượng câu hỏi chỉ vì một CHUNK riêng lẻ không đủ thông tin.
+Tuyệt đối không bịa, suy diễn hoặc sử dụng kiến thức bên ngoài.
 
 THÔNG TIN CHUNK:
 
