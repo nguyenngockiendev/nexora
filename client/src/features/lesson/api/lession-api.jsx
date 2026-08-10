@@ -25,12 +25,12 @@ const CreateQuiz = async (lessionId, data) => {
   const request = await api.post(`/create_quizz/${lessionId}`, data);
   return request;
 };
-const GetQuizzByid = async (lessonId) => {
-  const request = await api.get(`/get_quizz/${lessonId}`);
+const GetQuizzByid = async (lessionId) => {
+  const request = await api.get(`/get_quizz/${lessionId}`);
   return request;
 };
-const UpdateQuizzByid = async (lessonId,data) => {
-  const request = await api.put(`/upadate_quizz/${lessonId}`,data);
+const UpdateQuizzByid = async (lessonId, data) => {
+  const request = await api.put(`/upadate_quizz/${lessonId}`, data);
   return request;
 };
 export {
@@ -41,6 +41,5 @@ export {
   GetLessionbyid,
   CreateQuiz,
   GetQuizzByid,
-  UpdateQuizzByid
-
+  UpdateQuizzByid,
 };
