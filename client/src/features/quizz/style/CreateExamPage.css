@@ -243,7 +243,16 @@ body {
   font-weight: 600;
   color: var(--quiz-text);
   cursor: pointer;
+  flex-shrink: 0 !important;
+  min-height: 40px;
   transition: background 0.15s, border-color 0.15s, transform 0.1s;
+}
+
+/* Scroll container for left questions sidebar */
+.quiz-question-scroll-list {
+  max-height: 450px;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .quiz-q-item:hover {

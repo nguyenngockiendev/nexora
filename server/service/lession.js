@@ -47,9 +47,6 @@ const CreateLession = async (data) => {
     }
     order++;
     const newlession = await Lessons.create({ ...data, order: order });
-    if (data.status === "PROCESSING") {
-      ChunkingVideo();
-    }
 
     return { message: "create successfully", newlession: newlession };
   } catch (error) {
@@ -100,9 +97,7 @@ const UpdateLessionByid = async (data) => {
         new: true,
       },
     );
-    if (data.status === "PROCESSING") {
-      ChunkingVideo();
-    }
+
     if (!updatelession) {
       throw { status: 404, message: "Lesson not found" };
     }

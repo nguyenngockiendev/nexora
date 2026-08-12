@@ -62,7 +62,7 @@ const ChunkingVideo = async () => {
           const audioData = readAudioData(audiopath);
           const output = await transcriber(audioData, {
             chunk_length_s: 30,
-            language:"vi",
+            language: "vi",
             task: "transcribe",
           });
 
@@ -82,8 +82,6 @@ const ChunkingVideo = async () => {
         }
         video.status = "TRANSCRIPT_READY";
         await video.save();
-      } else {
-        await new Promise((resolve) => setTimeout(resolve, 5000));
       }
     }
   } catch (error) {

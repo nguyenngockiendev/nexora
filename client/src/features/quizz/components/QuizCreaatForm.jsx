@@ -16,8 +16,7 @@ const QuizCreaatForm = ({
   setExam,
   handSubmit,
   error,
-  navigate,
-  courseId,
+
   istrue,
   loading,
   courses,
@@ -35,26 +34,11 @@ const QuizCreaatForm = ({
     <div className="create-exam-page  d-flex flex-column">
       <div className="d-flex align-items-center justify-content-between mb-2">
         <div className="d-flex align-items-center gap-4">
-          <Button
-            variant="light"
-            className="quiz-btn-back rounded-pill"
-            type="button"
-            onClick={() => navigate(`/courses/details_course/${courseId}`)}
-          >
-            ← Back
-          </Button>
           <div className="align-items-center">
             <h1 className="quiz-page-title mb-0">Tạo đề kiểm tra</h1>
           </div>
         </div>
         <div className="d-none d-sm-flex gap-2">
-          <Button
-            variant="light"
-            className="quiz-btn-soft rounded-pill px-4"
-            type="button"
-          >
-            Preview
-          </Button>
           <Button
             variant="primary"
             className="rounded-pill px-4 fw-semibold"
@@ -65,7 +49,6 @@ const QuizCreaatForm = ({
         </div>
       </div>
 
-      {/* 🔴 Thông báo lỗi từ Server */}
       {error && (
         <div className="alert alert-danger py-2 px-3 mb-3 small font-weight-bold">
           ⚠️ {error || "Đã xảy ra lỗi!"}
@@ -191,35 +174,37 @@ const QuizCreaatForm = ({
                 </Badge>
               </Card.Header>
 
-              <Card.Body className="p-3 d-flex flex-column gap-2">
-                {exam.questions.map((q, index) => {
-                  const isActive = index === currentIndex;
+              <Card.Body className="p-3 d-flex flex-column">
+                <div className="quiz-question-scroll-list d-flex flex-column gap-2 mb-2">
+                  {exam.questions.map((q, index) => {
+                    const isActive = index === currentIndex;
 
-                  const isDone = q.question.trim() !== "";
+                    const isDone = (q?.question || "").trim() !== "";
 
-                  return (
-                    <button
-                      key={q.id || index}
-                      type="button"
-                      onClick={() => setCurrentIndex(index)}
-                      className={`quiz-q-item ${isActive ? "is-active" : ""} ${
-                        isDone ? "is-done" : ""
-                      }`}
-                    >
-                      <span className="quiz-q-item__status">
-                        {isDone ? "✓" : "●"}
-                      </span>
+                    return (
+                      <button
+                        key={q.id || index}
+                        type="button"
+                        onClick={() => setCurrentIndex(index)}
+                        className={`quiz-q-item ${isActive ? "is-active" : ""} ${
+                          isDone ? "is-done" : ""
+                        }`}
+                      >
+                        <span className="quiz-q-item__status">
+                          {isDone ? "✓" : "●"}
+                        </span>
 
-                      <span className="quiz-q-item__num">{index + 1}</span>
+                        <span className="quiz-q-item__num">{index + 1}</span>
 
-                      <span className="quiz-q-item__label">Câu hỏi</span>
-                    </button>
-                  );
-                })}
+                        <span className="quiz-q-item__label">Câu hỏi</span>
+                      </button>
+                    );
+                  })}
+                </div>
 
                 <Button
                   variant="outline-primary"
-                  className="quiz-btn-add rounded-pill mt-2"
+                  className="quiz-btn-add rounded-pill mt-auto"
                   type="button"
                   onClick={addQuestion}
                 >

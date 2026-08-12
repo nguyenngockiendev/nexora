@@ -116,14 +116,12 @@ function CreateExamPage() {
       if (quizz) {
         const result = await update(lessionId, exam);
         if (result) {
-          toast(message);
-          navigate(`/courses/details_course/${courseId}`);
+          toast.success("Cập nhật Quizz thành công!");
         }
       } else {
         const result = await Lession(lessionId, exam);
         if (result) {
-          toast(notification);
-          navigate(`/courses/details_course/${courseId}`);
+          toast.success("Tạo bài Quizz thành công!");
         }
       }
     } catch (error) {
