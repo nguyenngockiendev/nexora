@@ -1,31 +1,25 @@
-import { useEffect, useRef, useState } from "react";
-import { io } from "socket.io-client";
+import { useEffect, useState } from "react";
+
 import { MessageList } from "../api/class-api";
-import { toast } from "react-toastify";
+
+import useShareSocket from "../../../shared/hooks/useSocket";
 const useClassChat = (classId) => {
   const [message, setMessage] = useState([]);
-  const socketRef = useRef(null);
+
+  const socket = useShareSocket();
   const [loadings, setLoading] = useState(false);
   const inforUser = JSON.parse(localStorage.getItem("userInfor") || "{}");
   useEffect(() => {
-    socketRef.current = io("http://localhost:5000");
-    socketRef.current.emit("join_class", {
+    if (!socket) return;
+    socket.emit("join_class", {
       classId,
       name: inforUser.name || "Vô danh",
     });
-    socketRef.current.on("system_message", (data) => {
-      toast.info(data);
-    })
-    socketRef.current.on("new_class_message" , (data)=>{
-      setMessage((prev) => [...prev,data])
-    })
 
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.disconnect();
-      }
-    };
-  }, [classId]);
+    socket.on("new_class_message", (data) => {
+      setMessage((prev) => [...prev, data]);
+    });
+  }, [socket, classId]);
 
   useEffect(() => {
     const LimitMessage = async () => {
@@ -41,11 +35,13 @@ const useClassChat = (classId) => {
     LimitMessage();
   }, [classId]);
   const sendMess = (content) => {
-    socketRef.current.emit("send_class_message", {
-      classId,
-      userId: inforUser?.userId,
-      content,
-    });
+    if (socket) {
+      socket.emit("send_class_message", {
+        classId,
+        userId: inforUser?.userId,
+        content,
+      });
+    }
   };
 
   return { message, loadings, sendMess };
