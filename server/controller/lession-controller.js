@@ -4,6 +4,8 @@ const {
   DeleteLessionByid,
   UpdateLessionByid,
   GetLessionByid,
+  GetCoursewithLessionById,
+  getLessionDetails,
 } = require("../service/lession");
 const uploadFile = require("../service/uploadfile-service");
 
@@ -46,6 +48,7 @@ const CreateLessons = async (req, res) => {
 
       resources: src,
       status: req.body.status === "false" ? "PENDING" : "PROCESSING",
+      io: req.app.get("io"),
     };
 
     const result = await CreateLession(data);
@@ -89,6 +92,7 @@ const UpdateLession = async (req, res) => {
       resourceTitle: req.body.resourcestitle,
       resourceUrl: resourceUrl?.secure_url,
       status: req.body.status === "false" ? "PENDING" : "PROCESSING",
+      io: req.app.get("io"),
     };
     const result = await UpdateLessionByid(data);
     res.status(200).json(result);
@@ -108,10 +112,39 @@ const getLessionbyIntructor = async (req, res) => {
     res.status(error.status || 500).json({ message: error.message });
   }
 };
+const GetCoursewithLession =async(req,res)=>{
+  try {
+    const data ={
+      role: req.user.role,
+      userId: req.user.userId,
+    }
+    const result = await GetCoursewithLessionById(data);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(error.status || 500).json({ message: error.message });
+  }
+}
+
+const GetLessionDetails =async(req,res)=>{
+  try {
+    const data={
+      role: req.user.role,
+      courseId: req.params.courseId,
+    }
+     const result = await getLessionDetails(data);
+     res.status(200).json(result);
+  } catch (error) {
+     res.status(error.status || 500).json({ message: error.message });
+  }
+}
+
+
 module.exports = {
   GetLessons,
   CreateLessons,
   DeleteLession,
   UpdateLession,
   getLessionbyIntructor,
+  GetCoursewithLession,
+  GetLessionDetails
 };

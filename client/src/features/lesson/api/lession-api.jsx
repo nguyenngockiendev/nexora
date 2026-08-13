@@ -33,6 +33,15 @@ const UpdateQuizzByid = async (lessonId, data) => {
   const request = await api.put(`/upadate_quizz/${lessonId}`, data);
   return request;
 };
+
+const GetrecordedCourse= async () => {
+  const request = await api.get(`/instructor/recorded-courses`);
+  return request;
+};
+const GetLessionDetails= async (courseId) => {
+  const request = await api.get(`/lessions/${courseId}`);
+  return request;
+};
 export {
   GetTitle,
   CreateLession,
@@ -42,4 +51,6 @@ export {
   CreateQuiz,
   GetQuizzByid,
   UpdateQuizzByid,
+  GetrecordedCourse,
+  GetLessionDetails
 };

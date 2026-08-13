@@ -25,7 +25,7 @@ const Lession = () => {
   } = useUpdatelession();
   const navigate = useNavigate();
   const [currentLesson, setCurrentLesson] = useState(null);
-  
+
   // const { SaveUpdate, exits } = useSaveProcess();
   // const videoRef = useRef(null);
   // const intervalRef = useRef(null);
@@ -63,7 +63,6 @@ const Lession = () => {
   //   clearInterval(intervalRef.current);
   //   intervalRef.current = null;
   // };
-
 
   const handUpdate = async (data) => {
     try {

@@ -6,6 +6,8 @@ const user = require("../model/Users");
 const classs = require("../model/Class");
 const quizz = require("../model/Quizz");
 const { ChunkingVideo } = require("./changTotext-service");
+const { default: mongoose } = require("mongoose");
+const { Worker2 } = require("./Worker/worker.service");
 
 const GetLession = async (data) => {
   try {
@@ -47,7 +49,11 @@ const CreateLession = async (data) => {
     }
     order++;
     const newlession = await Lessons.create({ ...data, order: order });
-
+    if (data.status === "PROCESSING") {
+      if (Worker2) {
+        Worker2({ _id: newlession._id.toString() }, data.io);
+      }
+    }
     return { message: "create successfully", newlession: newlession };
   } catch (error) {
     console.log(error);
@@ -97,7 +103,11 @@ const UpdateLessionByid = async (data) => {
         new: true,
       },
     );
-
+    if (data.status === "PROCESSING") {
+      if (Worker2) {
+        Worker2({ _id: updatelession._id.toString() }, data.io);
+      }
+    }
     if (!updatelession) {
       throw { status: 404, message: "Lesson not found" };
     }
@@ -126,11 +136,85 @@ const GetLessionByid = async (data) => {
     throw error;
   }
 };
+const GetCoursewithLessionById = async (data) => {
+  try {
+    if (data?.role !== "instructor") {
+      throw { status: 403, message: "forbidden" };
+    }
+    const result = await Courses.aggregate([
+      {
+        $match: {
+          instructor: new mongoose.Types.ObjectId(data.userId),
+          type: "recorded",
+        },
+      },
+      {
+        $lookup: {
+          from: "lessons",
+          localField: "_id",
+          foreignField: "courseId",
+          as: "lessionlist",
+        },
+      },
 
+      {
+        $lookup: {
+          from: "users",
+          localField: "instructor",
+          foreignField: "_id",
+          as: "IntructorName",
+        },
+      },
+      {
+        $unwind: "$IntructorName",
+      },
+      {
+        $project: {
+          _id: 1,
+          title: 1,
+          type: 1,
+          instructor: "$IntructorName.name",
+          lessonCount: { $size: "$lessionlist" },
+        },
+      },
+    ]);
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+const getLessionDetails = async (data) => {
+  try {
+    if (data.role !== "instructor") {
+      throw { status: 404, message: "không có quyền!" };
+    }
+    const listlession = await Lessons.find({
+      courseId: data.courseId,
+    }).populate("courseId", "type");
+    if (listlession.length === 0) {
+      throw { status: 404, message: "bạn không có bài học nào!" };
+    }
+    const result = listlession.map((e) => {
+      return {
+        _id: e._id,
+        title: e.title,
+        type: e.courseId.type,
+        status: e.status,
+      };
+    });
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 module.exports = {
   GetLession,
   CreateLession,
   DeleteLessionByid,
   UpdateLessionByid,
   GetLessionByid,
+  GetCoursewithLessionById,
+  getLessionDetails
 };

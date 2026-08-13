@@ -34,6 +34,8 @@ const {
   DeleteLession,
   UpdateLession,
   getLessionbyIntructor,
+  GetCoursewithLession,
+  GetLessionDetails,
 } = require("../controller/lession-controller");
 const {
   CreateQuiz,
@@ -189,4 +191,7 @@ Router.delete("/ratings/:ratingId",authMiddleware,DeleteRatingByuser);
 Router.get("/generate/:lessionId/quizz" ,authMiddleware,GenerateQuizAI)
 Router.get("/instructor/courses-with-lessons" ,authMiddleware,GetCourseForQuizz)
 Router.get("/student/quizzes" ,authMiddleware,GetQuizBystuden)
+Router.get("/instructor/recorded-courses" ,authMiddleware,GetCoursewithLession)
+Router.get("/lessions/:courseId" ,authMiddleware,GetLessionDetails)
+
 module.exports = Router;
