@@ -42,47 +42,50 @@ const readAudioData = (filePath) => {
   return audioData;
 };
 
-const ChunkingVideo = async () => {
+const ChunkingVideo = async (lessionId) => {
   const transcriber = await pipeline(
     "automatic-speech-recognition",
     "Xenova/whisper-small",
   );
 
   try {
-    while (true) {
-      const video = await Lessons.findOne({ status: "PROCESSING" });
-      if (video) {
-        const chunking = 120;
-        let index = 0;
+    const video = await Lessons.findOne({
+      _id: lessionId,
+      status: "PROCESSING",
+    });
+    if (video) {
+      const chunking = 120;
+      let index = 0;
 
-        for (let start = 0; start < video.duration; start += chunking) {
-          const end = Math.min(start + chunking, video.duration);
-          const audiopath = await cutAudio(video.videoUrl, start, end - start);
+      for (let start = 0; start < video.duration; start += chunking) {
+        const end = Math.min(start + chunking, video.duration);
+        const audiopath = await cutAudio(video.videoUrl, start, end - start);
 
-          const audioData = readAudioData(audiopath);
-          const output = await transcriber(audioData, {
-            chunk_length_s: 30,
-            language: "vi",
-            task: "transcribe",
-          });
+        const audioData = readAudioData(audiopath);
+        const output = await transcriber(audioData, {
+          chunk_length_s: 30,
+          language: "vi",
+          task: "transcribe",
+        });
 
-          await LessonTranscripts.create({
-            lessonId: video._id,
-            chunkIndex: index,
-            startTime: start,
-            endTime: end,
-            text: typeof output === "string" ? output : (output?.text ?? ""),
-            status: "DONE",
-          });
+        await LessonTranscripts.create({
+          lessonId: video._id,
+          chunkIndex: index,
+          startTime: start,
+          endTime: end,
+          text: typeof output === "string" ? output : (output?.text ?? ""),
+          status: "DONE",
+        });
 
-          index++;
-          if (fs.existsSync(audiopath)) {
-            fs.unlinkSync(audiopath);
-          }
+        index++;
+        if (fs.existsSync(audiopath)) {
+          fs.unlinkSync(audiopath);
         }
-        video.status = "TRANSCRIPT_READY";
-        await video.save();
       }
+      video.status = "TRANSCRIPT_READY";
+      await video.save();
+    } else {
+      await new Promise((resolve) => setTimeout(resolve, 5000));
     }
   } catch (error) {
     console.log(error);

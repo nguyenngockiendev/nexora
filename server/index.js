@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { Worker } = require("worker_threads");
+
 const cors = require("cors");
 const express = require("express");
 const DBconnection = require("./config/db");
@@ -23,23 +23,11 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
   },
 });
+app.set("io", io);
 
 io.on("connection", (socket) => {
   registerSoket(io, socket);
 });
-
-const Worker2 = () => {
-  const work = new Worker("./worker1.js");
-  work.on("message", (result) => {
-    io.emit("messageChangettext", `${result}`);
-    console.log(result);
-  });
-  work.on("error", (result) => {
-    io.emit("messageChangettext", `${result}`);
-    console.log(result);
-  });
-};
-Worker2();
 
 server.listen(PORT, () => {
   console.log(`Inventory server is running on port ${PORT}`);
