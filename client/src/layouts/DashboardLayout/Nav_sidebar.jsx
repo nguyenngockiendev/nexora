@@ -8,7 +8,7 @@ import {
   Settings,
   PlusCircle,
   FileQuestion,
-  BrainCircuit 
+  BrainCircuit,
 } from "lucide-react";
 
 const Nav_Sidebar = [
@@ -37,12 +37,6 @@ const Nav_Sidebar = [
         roles: ["student"],
       },
       {
-        name: "Live Classes",
-        path: "my/class",
-        icon: Video,
-        roles: ["instructor"],
-      },
-      {
         name: "Enrollments",
         path: "#",
         icon: GraduationCap,
@@ -64,11 +58,24 @@ const Nav_Sidebar = [
         icon: FileQuestion,
         roles: ["instructor", "admin"],
       },
-       {
+      {
         name: "My Quizzes",
         path: "student/quizzes",
         icon: BrainCircuit,
         roles: ["student"],
+      },
+      {
+        name: "Classes",
+        path: "my/class",
+        icon: Video,
+        roles: ["instructor"],
+      },
+
+      {
+        name: "Lession",
+        path: "instructor/lessons",
+        icon: BrainCircuit,
+        roles: ["instructor"],
       },
 
       {
