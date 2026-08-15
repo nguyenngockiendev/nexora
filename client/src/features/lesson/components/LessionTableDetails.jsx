@@ -7,7 +7,10 @@ const LessionTableLession = ({
   handDelete,
   searchTerm,
   setSearchTerm,
+  process,
+  handupdatetracrip,
 }) => {
+  console.log(process);
   return (
     <div className="p-3 p-md-4 w-100">
       {/* Top Header Navigation */}
@@ -110,22 +113,40 @@ const LessionTableLession = ({
                     {item.status && (
                       <small
                         className={`fw-semibold ${
-                          item.status === "TRANSCRIPT_READY"
+                          item.status === "TRANSCRIPT_READY" ||
+                          (process?.lessionId === item._id &&
+                            process?.percent === 100)
                             ? "text-success"
                             : item.status === "PROCESSING"
                               ? "text-warning"
                               : "text-muted"
                         }`}
                       >
-                        {item.status === "TRANSCRIPT_READY"
+                        {item.status === "TRANSCRIPT_READY" ||
+                        (process?.lessionId === item._id &&
+                          process?.percent === 100)
                           ? "✓ Transcript Ready"
                           : item.status === "PROCESSING"
-                            ? "⌛ Đang bóc tách ngầm..."
+                            ? process?.lessionId === item._id &&
+                              process?.percent !== undefined
+                              ? `⌛ Đang bóc tách ${process.percent}%...`
+                              : "⌛ Đang bóc tách ngầm..."
                             : "● Chờ xử lý"}
                       </small>
                     )}
                   </div>
                 </div>
+                {item.status === "PENDING" && (
+                  <div>
+                    <Button
+                      variant="light"
+                      onClick={() => handupdatetracrip(item._id)}
+                      disabled={process}
+                    >
+                      ⚡ Auto Video Processing
+                    </Button>
+                  </div>
+                )}
 
                 {/* Right: Badge Type + Dropdown Menu ⋯ */}
                 <div className="d-flex align-items-center gap-3">

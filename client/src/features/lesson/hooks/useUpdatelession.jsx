@@ -8,18 +8,17 @@ const useUpdatelession = () => {
 
   const getLession = async (lessionId) => {
     try {
-     
       const list = await GetLessionbyid(lessionId);
       setLession(list);
     } catch (error) {
       console.log(error);
     }
   };
-  const update = async (lessionId,formData) => {
+  const update = async (lessionId, formData) => {
     try {
       setLoading(true);
       setError(false);
-      const res = await UpdateLessionbyid(lessionId,formData);
+      const res = await UpdateLessionbyid(lessionId, formData);
       return res;
     } catch (error) {
       console.log(error);

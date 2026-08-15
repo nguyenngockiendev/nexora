@@ -15,6 +15,7 @@ const DeleteLessionbyid = async (data) => {
 };
 const UpdateLessionbyid = async (lessionId, formData) => {
   const request = await api.put(`/update_lession/${lessionId}`, formData);
+
   return request;
 };
 const GetLessionbyid = async (lessionId) => {
@@ -34,11 +35,11 @@ const UpdateQuizzByid = async (lessonId, data) => {
   return request;
 };
 
-const GetrecordedCourse= async () => {
+const GetrecordedCourse = async () => {
   const request = await api.get(`/instructor/recorded-courses`);
   return request;
 };
-const GetLessionDetails= async (courseId) => {
+const GetLessionDetails = async (courseId) => {
   const request = await api.get(`/lessions/${courseId}`);
   return request;
 };
@@ -52,5 +53,5 @@ export {
   GetQuizzByid,
   UpdateQuizzByid,
   GetrecordedCourse,
-  GetLessionDetails
+  GetLessionDetails,
 };

@@ -8,7 +8,6 @@ const CreateLession = ({
   onSubmit,
   resource,
   setResource,
-
   loading,
   setVideoFile,
 }) => {
@@ -47,7 +46,6 @@ const CreateLession = ({
                 type="file"
                 required
                 onChange={(e) => {
-                  console.log(e.target.files[0]);
                   setVideoFile(e.target.files[0]);
                 }}
               />

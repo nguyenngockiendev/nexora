@@ -5,9 +5,12 @@ const UpdateLessonForm = ({
   Setvideo,
   loading,
   resource,
+  setResource,
   navigate,
   handleupdate,
   handleSubmit,
+  isuploading,
+  uploadPercent
 }) => {
   return (
     <Card className="mx-4 shadow-sm border-0">
@@ -38,11 +41,6 @@ const UpdateLessonForm = ({
           {/* Video URL */}
           <div className="mb-3">
             <label className="form-label">Video URL</label>
-            {/* {lession.videoUrl && (
-              <div className="mb-2">
-                <video src={lession.videoUrl} width="50px" />
-              </div>
-            )} */}
             <InputGroup>
               <InputGroup.Text>🎥</InputGroup.Text>
 
@@ -103,8 +101,8 @@ const UpdateLessonForm = ({
 
           {/* Buttons */}
           <div className="d-flex gap-2 mt-4">
-            <Button type="submit" variant="primary" disabled={loading}>
-              {loading ? "Saving..." : "Save Lesson"}
+            <Button type="submit" variant="primary" disabled={isuploading}>
+              {isuploading ? `Đang lưu...${uploadPercent}%` : "Lưu bài học"}
             </Button>
 
             <Button
