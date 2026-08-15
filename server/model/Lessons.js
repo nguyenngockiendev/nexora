@@ -21,16 +21,16 @@ const lessonSchema = new mongoose.Schema(
     content: { type: String, default: "" },
     status: {
       type: String,
-      enum: ["PENDING","PROCESSING", "TRANSCRIPT_READY", "FAILED"],
+      enum: ["PENDING", "PROCESSING", "TRANSCRIPT_READY", "FAILED"],
       default: "PENDING",
     },
 
     resources: {
       type: [
         {
-          type: { type: String, required: true },
-          title: { type: String, required: true },
-          url: { type: String, required: true, default: "" },
+          type: { type: String },
+          title: { type: String },
+          url: { type: String, default: "" },
         },
       ],
       default: [],

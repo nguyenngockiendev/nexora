@@ -2,6 +2,7 @@ const fs = require("fs");
 const ffmpeg = require("fluent-ffmpeg");
 const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 ffmpeg.setFfmpegPath(ffmpegPath);
+const { parentPort } = require("worker_threads");
 
 const { pipeline } = require("@xenova/transformers");
 const wavefile = require("wavefile");
@@ -78,6 +79,15 @@ const ChunkingVideo = async (lessionId) => {
         });
 
         index++;
+        const totalChunk = Math.ceil(video.duration / chunking);
+        let process = Math.round((index / totalChunk) * 100);
+         if(parentPort){
+          parentPort.postMessage({
+            lessionId:lessionId,
+            status:"PROCESSING",
+            percent:process,
+          })
+         }
         if (fs.existsSync(audiopath)) {
           fs.unlinkSync(audiopath);
         }

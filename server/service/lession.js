@@ -79,25 +79,17 @@ const UpdateLessionByid = async (data) => {
     if (data?.role !== "instructor") {
       throw { status: 403, message: "forbidden" };
     }
+    const updateData = {};
 
+    for (let item in data) {
+      if (data[item] !== undefined && item !== "lessionId" && item !== "io") {
+        updateData[item] = data[item];
+      }
+    }
     const updatelession = await Lessons.findByIdAndUpdate(
       data.lessionId,
       {
-        $set: {
-          title: data.title,
-          videoUrl: data.videoUrl,
-          duration: data.duration,
-          isPreview: data.isPreview,
-          content: data.content,
-          status: data.status,
-          resources: [
-            {
-              type: data.resourceType,
-              title: data.resourceTitle,
-              url: data.resourceUrl,
-            },
-          ],
-        },
+        $set: updateData,
       },
       {
         new: true,
@@ -216,5 +208,5 @@ module.exports = {
   UpdateLessionByid,
   GetLessionByid,
   GetCoursewithLessionById,
-  getLessionDetails
+  getLessionDetails,
 };
