@@ -193,6 +193,9 @@ const getLessionDetails = async (data) => {
         title: e.title,
         type: e.courseId.type,
         status: e.status,
+        videoUrl: e.videoUrl,
+        content: e.content,
+        resources: e.resources,
       };
     });
     return result;

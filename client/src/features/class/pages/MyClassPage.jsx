@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useGetclassByIntructor } from "../hooks/useGetClassByIntructor";
 import useChangeStatus from "../hooks/useChangeStatusClass";
-import { Col, Container, Row } from "react-bootstrap";
 import MyClassCart from "../components/MyClassCart";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -29,7 +28,7 @@ const MyClass = () => {
 
   useEffect(() => {
     const handEditClass = () => {
-      let finalResult = [...classs];
+      let finalResult = Array.isArray(classs) ? [...classs] : [];
       if (filer !== "All Status") {
         finalResult = finalResult.filter((item) => item.status === filer);
       }
@@ -49,24 +48,18 @@ const MyClass = () => {
     handEditClass();
   }, [classs, search, filer, filterday]);
   return (
-    <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
-      <Container>
-        <Row className="justify-content-center">
-          <Col md={12}>
-            <MyClassCart
-              classs={result}
-              loading={loading}
-              error={error}
-              handchangesStatus={handchangesStatus}
-              notification={notification}
-              setSearch={setSearch}
-              setFiler={setFiler}
-              setFilterday={setFilterday}
-              navigate={navigate}
-            />
-          </Col>
-        </Row>
-      </Container>
+    <div className="w-full">
+      <MyClassCart
+        classs={result}
+        loading={loading}
+        error={error}
+        handchangesStatus={handchangesStatus}
+        notification={notification}
+        setSearch={setSearch}
+        setFiler={setFiler}
+        setFilterday={setFilterday}
+        navigate={navigate}
+      />
     </div>
   );
 };

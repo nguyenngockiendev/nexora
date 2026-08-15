@@ -19,6 +19,7 @@ const InstructorCurriculumPage = () => {
   const socket = useShareSocket();
   const { Delete } = useDeleteLessionbyid();
   const { update } = useUpdatelession();
+  const [selectedLesson, setSelectedLesson] = useState(null);
   useEffect(() => {
     if (!socket) {
       return;
@@ -64,9 +65,17 @@ const InstructorCurriculumPage = () => {
     );
     toast.success("update status success!");
   };
+  const handselectedLesson = (selectedLesson) => {
+    if (!selectedLesson) return;
+    setSelectedLesson(selectedLesson);
+  };
+  const onClose = () => setSelectedLesson(null);
   return (
     <div>
       <LessionTableLession
+        onClose={onClose}
+        selectedLesson={selectedLesson}
+        handselectedLesson={handselectedLesson}
         handDelete={handDelete}
         navigate={navigate}
         curriculum={filterLession}

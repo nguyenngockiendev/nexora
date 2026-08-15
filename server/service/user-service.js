@@ -146,7 +146,7 @@ const GetAllStudentByIdClass = async (data) => {
     }
     const student = await errollment
       .find({ classId: data?.classId, type: "live" })
-      .populate("userId", "name email avatar status")
+      .populate("userId", "name email avatar status phone")
       .lean();
     const students = student.filter((item) => item.status === "active");
     const studentinactive = student.filter((item) => item.status !== "active");
