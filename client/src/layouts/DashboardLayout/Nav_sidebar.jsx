@@ -1,7 +1,6 @@
 import {
   BookOpen,
   Users,
-  GraduationCap,
   Video,
   CreditCard,
   LayoutDashboard,
@@ -9,6 +8,7 @@ import {
   PlusCircle,
   FileQuestion,
   BrainCircuit,
+  ShoppingBag,
 } from "lucide-react";
 
 const Nav_Sidebar = [
@@ -23,69 +23,71 @@ const Nav_Sidebar = [
     ],
   },
   {
-    title: "Learning",
+    title: "Khóa học",
     items: [
       {
-        name: "My Courses",
-        path: "courses",
+        name: "Khóa học",
+        path: "courses-all",
         icon: BookOpen,
+        roles: ["student", "admin", "instructor"],
       },
       {
-        name: "Students Course",
+        name: "Khóa học của tôi",
+        path: "courses",
+        icon: BookOpen,
+        roles: ["instructor", "admin"],
+      },
+      {
+        name: "Khóa học đã mua",
         path: "student",
         icon: PlusCircle,
         roles: ["student"],
       },
-      {
-        name: "Enrollments",
-        path: "#",
-        icon: GraduationCap,
-      },
     ],
   },
   {
-    title: "Management",
+    title: "Quản lý",
     items: [
       {
-        name: "Create Course",
+        name: "Tạo khóa học",
         path: "course/create",
         icon: PlusCircle,
         roles: ["instructor", "admin"],
       },
       {
-        name: "Create Quizz",
+        name: "Tạo bài kiểm tra",
         path: "create_quizz/lession",
         icon: FileQuestion,
         roles: ["instructor", "admin"],
       },
       {
-        name: "My Quizzes",
+        name: "Bài kiểm tra",
         path: "student/quizzes",
         icon: BrainCircuit,
         roles: ["student"],
       },
       {
-        name: "Classes",
+        name: "Lớp trực tuyến",
         path: "my/class",
         icon: Video,
         roles: ["instructor"],
       },
 
       {
-        name: "Lession",
+        name: "bài học",
         path: "instructor/lessons",
         icon: BrainCircuit,
         roles: ["instructor"],
       },
 
       {
-        name: "User",
+        name: "Quản lý người dùng",
         path: "user",
         icon: Users,
         roles: ["admin"],
       },
       {
-        name: "Request Instructor",
+        name: "Đăng kí Giảng Viên",
         path: "user/become-instructor",
         icon: Users,
         roles: ["student"],
@@ -96,19 +98,31 @@ const Nav_Sidebar = [
         icon: Users,
         roles: ["admin"],
       },
+      {
+        name: "Quản lý bài học",
+        path: "admin/courses/quality-control",
+        icon: PlusCircle,
+        roles: ["admin"],
+      },
     ],
   },
   {
-    title: "Account",
+    title: "Giao Dịch",
     items: [
       {
-        name: "Payments",
+        name: "Lịch sử đơn hàng",
         path: "payment_History",
         icon: CreditCard,
         roles: ["student", "instructor"],
       },
       {
-        name: "Settings",
+        name: "Giỏ Hàng",
+        path: "cart",
+        icon: ShoppingBag,
+        roles: ["student", "instructor"],
+      },
+      {
+        name: "Cài đặt",
         path: "#",
         icon: Settings,
       },

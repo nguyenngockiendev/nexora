@@ -21,7 +21,7 @@ const CreateClass = () => {
   } = useUpdateClass();
   const navigate = useNavigate();
 
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, control } = useForm();
   useEffect(() => {
     if (classsdata) {
       reset({
@@ -66,24 +66,19 @@ const CreateClass = () => {
     }
   };
   return (
-    <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
-      <Container>
-        <Row className="justify-content-center">
-          <Col md={12}>
-            <CreateClassForm
-              register={register}
-              handleSubmit={handleSubmit}
-              onSubmit={classsdata ? onUpdate : onSubmit}
-              loading={loading}
-              notification={notification}
-              classsdata={classsdata}
-              navigate={navigate}
-              classloading={classloading}
-              classnotification={classnotification}
-            />
-          </Col>
-        </Row>
-      </Container>
+    <div className="w-full">
+      <CreateClassForm
+        register={register}
+        handleSubmit={handleSubmit}
+        onSubmit={classsdata ? onUpdate : onSubmit}
+        loading={loading}
+        notification={notification}
+        classsdata={classsdata}
+        navigate={navigate}
+        classloading={classloading}
+        classnotification={classnotification}
+        control={control}
+      />
     </div>
   );
 };

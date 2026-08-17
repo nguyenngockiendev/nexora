@@ -11,7 +11,6 @@ import {
   X,
   Mail,
   Phone,
-  Calendar,
 } from "lucide-react";
 import { useState } from "react";
 

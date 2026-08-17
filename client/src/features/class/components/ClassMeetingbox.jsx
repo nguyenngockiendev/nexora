@@ -13,6 +13,8 @@ import {
   Send,
 } from "lucide-react";
 import { useState } from "react";
+import { Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
   const [contenChat, setContentChat] = useState("");
@@ -25,56 +27,63 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
 
   return (
     <div className="space-y-8 pb-10">
-      {/* ── Hero Banner (Join Meeting) ── */}
-
-      {/* ── Hero Banner (Join Meeting) ── */}
+      {/* ── Hero Banner (Frosted Dark Glass Background + Centered Pill Button) ── */}
       <div
-        className="relative rounded-[2.5rem] overflow-hidden shadow-[0_20px_60px_rgba(249,115,22,0.15)]"
+        className="relative rounded-[2.5rem] overflow-hidden p-8 md:p-12 flex flex-col items-center justify-center text-center gap-4 shadow-xl transition-all"
         style={{
           background:
-            "linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,255,255,0.95))",
-          border: "1px solid rgba(255,255,255,0.9)",
+            "linear-gradient(135deg, rgba(40,30,20,0.65) 0%, rgba(70,50,30,0.55) 50%, rgba(30,25,20,0.7) 100%)",
+          backdropFilter: "blur(30px)",
+          border: "1px solid rgba(255,255,255,0.2)",
+          boxShadow:
+            "0 20px 60px rgba(0,0,0,0.15), inset 0 1px 1px rgba(255,255,255,0.3)",
         }}
       >
-        {/* Background Decorative Blobs */}
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-orange-400/20 rounded-full blur-[80px] pointer-events-none" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-amber-400/20 rounded-full blur-[80px] pointer-events-none" />
-
-        <div className="relative p-8 md:p-12 flex flex-col md:flex-row justify-between items-center gap-8 backdrop-blur-xl">
-          <div className="flex-1 text-center md:text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-100 text-orange-600 text-xs font-bold uppercase tracking-wider mb-4 border border-orange-200">
-              <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />{" "}
-              Live Session Ready
-            </div>
-            <h1 className="text-4xl md:text-5xl font-black mb-2 text-slate-800 leading-tight">
-              {classs?.className || "React Bootcamp - Live Class"}
-            </h1>
-            <p className="text-lg text-slate-500 font-medium max-w-xl">
-              You are currently enrolled in this class. Your live session is
-              ready to begin.
-            </p>
-          </div>
-
-          <div className="flex flex-col items-center gap-3">
-            <button
-              onClick={() => window.open(classs?.meetingLink, "_blank")}
-              className="group relative flex items-center gap-3 px-8 py-5 rounded-2xl font-black text-white text-xl transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(249,115,22,0.4)]"
-              style={{
-                background: "linear-gradient(135deg, #f97316, #fb923c)",
-              }}
-            >
-              <div className="absolute inset-0 rounded-2xl border-2 border-white/20" />
-              {/* Radar Pulse Effect */}
-              <div className="absolute inset-0 rounded-2xl bg-orange-500 opacity-20 animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite]" />
-
-              <Video className="w-8 h-8 group-hover:rotate-12 transition-transform" />
-              <span>Join Google Meet</span>
-            </button>
-            <span className="text-sm font-bold text-slate-400">
-              Click to enter virtual classroom
-            </span>
-          </div>
+        <div className="absolute top-4 left-6 z-20">
+          <button
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold text-white/90 bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm group"
+            style={{ borderRadius: "9999px" }}
+          >
+            <ArrowLeft
+              size={15}
+              className="group-hover:-translate-x-1 transition-transform"
+            />
+            <span>Back</span>
+          </button>
         </div>
+
+        <div
+          className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full pointer-events-none opacity-40 blur-[90px]"
+          style={{
+            background: "radial-gradient(circle, #f97316 0%, transparent 70%)",
+          }}
+        />
+        <div
+          className="absolute -bottom-24 right-10 w-72 h-72 rounded-full pointer-events-none opacity-30 blur-[80px]"
+          style={{
+            background: "radial-gradient(circle, #fbbf24 0%, transparent 70%)",
+          }}
+        />
+
+        <div className="relative z-10 flex flex-col items-center gap-3 max-w-2xl">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight drop-shadow-md">
+            {classs?.className || "React Bootcamp - Live Class"}
+          </h1>
+        </div>
+
+        <button
+          onClick={() => window.open(classs?.meetingLink, "_blank")}
+          className="relative z-10 flex items-center gap-2.5 px-7 py-3 rounded-full font-bold text-white text-sm transition-all duration-300 hover:scale-105 hover:shadow-2xl group active:scale-95"
+          style={{
+            background: "linear-gradient(135deg, #f97316, #fb923c)",
+            borderRadius: "9999px",
+            boxShadow: "0 8px 24px rgba(249,115,22,0.45)",
+          }}
+        >
+          <Video className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+          <span>Join Google Meet 🎥</span>
+        </button>
       </div>
 
       {/* ── Main Content Grid ── */}
@@ -83,40 +92,46 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
         <div className="lg:col-span-8 space-y-8">
           {/* Teacher Profile Card */}
           <div
-            className="p-8 rounded-[2rem] transition-all hover:shadow-xl hover:shadow-orange-500/5 flex flex-col sm:flex-row items-center sm:items-start gap-6 relative overflow-hidden"
+            className="p-5 rounded-[2rem] transition-all flex items-center gap-4 relative overflow-hidden"
             style={{
               background: "rgba(255,255,255,0.7)",
               border: "1px solid rgba(255,255,255,0.8)",
               backdropFilter: "blur(20px)",
+              boxShadow: "0 4px 20px rgba(194,110,30,0.04)",
             }}
           >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-orange-100 to-transparent opacity-50 rounded-bl-[100px]" />
-
             <img
               src={
                 classs?.instructorId?.avatar ||
                 "https://ui-avatars.com/api/?name=Teacher&background=random"
               }
               alt="Instructor"
-              className="w-28 h-28 rounded-3xl object-cover shadow-lg border-4 border-white"
+              className="w-16 h-16 rounded-full object-cover ring-4 ring-white/90 shadow-md shrink-0"
             />
-            <div className="text-center sm:text-left flex-1 z-10">
-              <span className="inline-block px-3 py-1 bg-slate-100 text-slate-500 text-xs font-bold rounded-lg mb-2 uppercase tracking-wide">
-                Course Instructor
-              </span>
-              <h3 className="text-2xl font-black text-slate-800 mb-1">
-                {classs?.instructorId?.name || "Instructor Name"}
-              </h3>
-              <p className="text-slate-500 font-medium mb-4">
-                Senior Developer & Educator
-              </p>
-
-              <div className="flex flex-wrap justify-center sm:justify-start gap-2">
-                <span className="px-3 py-1.5 bg-orange-50 text-orange-600 rounded-lg text-sm font-semibold border border-orange-100">
-                  8 Years Experience
+            <div className="flex-1 min-w-0 space-y-1.5">
+              <div className="flex items-center gap-1.5">
+                <h3 className="text-lg font-extrabold text-slate-800 truncate">
+                  {classs?.instructorId?.name || "Instructor Name"}
+                </h3>
+                <span className="w-4 h-4 rounded-full bg-blue-500 text-white flex items-center justify-center text-[9px] font-extrabold shrink-0 shadow-sm">
+                  ✓
                 </span>
-                <span className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-sm font-semibold border border-blue-100">
-                  Top Rated
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <span
+                  className="px-3 py-1 bg-white/90 text-orange-600 rounded-full text-xs font-semibold border border-orange-200/80 shadow-sm flex items-center gap-1.5"
+                  style={{ borderRadius: "9999px" }}
+                >
+                  <span className="text-orange-500 text-[11px]">⚛️</span> React
+                  Expert
+                </span>
+                <span
+                  className="px-3 py-1 bg-white/90 text-amber-700 rounded-full text-xs font-semibold border border-amber-200/80 shadow-sm flex items-center gap-1.5"
+                  style={{ borderRadius: "9999px" }}
+                >
+                  <span className="text-amber-500 text-[11px]">🏆</span> Top
+                  Mentor
                 </span>
               </div>
             </div>
@@ -139,11 +154,15 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
                 {classs?.status || "Active"}
               </div>
             </div>
-            <div
+            <Link
+              to={
+                classs?._id ? `/instructor/classes/${classs._id}/students` : "#"
+              }
               className="p-5 rounded-3xl"
               style={{
                 background: "rgba(255,255,255,0.6)",
                 border: "1px solid rgba(255,255,255,0.8)",
+                cursor: "pointer",
               }}
             >
               <Users className="text-blue-500 mb-3" size={24} />
@@ -153,7 +172,8 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
               <h4 className="text-xl font-black text-slate-800">
                 {classs?.currentStudents || 0} / {classs?.maxStudents || 0}
               </h4>
-            </div>
+            </Link>
+
             <div
               className="p-5 rounded-3xl"
               style={{
@@ -261,17 +281,6 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
 
         {/* RIGHT COLUMN (4 cols) */}
         <div className="lg:col-span-4 space-y-6">
-          <button
-            onClick={() => navigate("/courses")}
-            className="w-full flex items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all hover:bg-white hover:-translate-y-1 hover:shadow-lg text-slate-600 mb-2"
-            style={{
-              background: "rgba(255,255,255,0.5)",
-              border: "1px solid rgba(255,255,255,0.8)",
-            }}
-          >
-            <ArrowLeft size={18} /> Back to My Classes
-          </button>
-
           {/* ── Live Class Chat Card (Pure UI - No Logic) ── */}
           <div
             className="p-6 rounded-[2rem] flex flex-col h-[480px] relative overflow-hidden"
@@ -360,57 +369,39 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
               </button>
             </div>
           </div>
-
-          {/* Schedule Card */}
           <div
-            className="p-6 rounded-[2rem]"
+            className="p-6 rounded-[2rem] flex flex-col h-[420px]"
             style={{
               background: "rgba(255,255,255,0.7)",
               border: "1px solid rgba(255,255,255,0.8)",
+              backdropFilter: "blur(20px)",
+              boxShadow: "0 4px 20px rgba(194,110,30,0.04)",
             }}
           >
-            <h4 className="text-lg font-black text-slate-800 mb-4 flex items-center gap-2">
+            <h4 className="text-lg font-black text-slate-800 mb-4 flex items-center gap-2 shrink-0">
               <Calendar className="text-orange-500" size={20} /> Weekly Schedule
             </h4>
-            <div className="p-4 rounded-2xl bg-white/50 border border-white">
-              <div className="font-bold text-slate-800 mb-1">
-                {classs?.schedule?.day || "Monday"}
-              </div>
-              <div className="text-slate-500 font-medium flex items-center gap-2">
-                <Clock size={14} /> {classs?.schedule?.startTime || "19:00"} -{" "}
-                {classs?.schedule?.endTime || "21:00"}
+
+            {/* Scrollable Schedule List */}
+            <div className="flex-1 overflow-y-auto pr-1 space-y-3 custom-scrollbar">
+              <div className="p-4 rounded-2xl bg-white/80 border border-orange-200/60 shadow-sm">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-extrabold text-slate-800 text-sm">
+                    {classs?.className || "Main Live Session"}
+                  </span>
+                  <span className="text-xs font-bold text-orange-600 bg-orange-50 px-2.5 py-0.5 rounded-full border border-orange-200">
+                    {classs?.startDate || "Active"}
+                  </span>
+                </div>
+                <div className="font-bold text-slate-700 text-xs mb-1">
+                  {classs?.schedule?.day || "Monday"}
+                </div>
+                <div className="text-slate-500 text-xs font-semibold flex items-center gap-1.5">
+                  <Clock size={13} className="text-orange-500" />
+                  {classs?.schedule?.startTime} – {classs?.schedule?.endTime}
+                </div>
               </div>
             </div>
-          </div>
-
-          {/* Quick Info Card */}
-          <div
-            className="p-6 rounded-[2rem]"
-            style={{
-              background: "rgba(255,255,255,0.7)",
-              border: "1px solid rgba(255,255,255,0.8)",
-            }}
-          >
-            <h4 className="text-lg font-black text-slate-800 mb-4 flex items-center gap-2">
-              <Info className="text-blue-500" size={20} /> Class Features
-            </h4>
-            <ul className="space-y-3">
-              <li className="flex items-start gap-2 text-sm font-medium text-slate-600">
-                <span className="text-orange-500 mt-0.5">•</span> Live
-                interactive class
-              </li>
-              <li className="flex items-start gap-2 text-sm font-medium text-slate-600">
-                <span className="text-orange-500 mt-0.5">•</span> Real-time Q&A
-              </li>
-              <li className="flex items-start gap-2 text-sm font-medium text-slate-600">
-                <span className="text-orange-500 mt-0.5">•</span> Recording
-                available after session
-              </li>
-              <li className="flex items-start gap-2 text-sm font-medium text-slate-600">
-                <span className="text-orange-500 mt-0.5">•</span> Certificate on
-                completion
-              </li>
-            </ul>
           </div>
         </div>
       </div>

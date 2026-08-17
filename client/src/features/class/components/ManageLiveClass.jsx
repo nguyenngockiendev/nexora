@@ -2,7 +2,14 @@ import "react-toastify/dist/ReactToastify.css";
 import { Search, Plus, Radio, Users, Clock, ChevronRight } from "lucide-react";
 import { useState } from "react";
 
-const ManageClass = ({ listCourseLive, error, loading, navigate }) => {
+const ManageClass = ({
+  listCourseLive,
+  error,
+  loading,
+  navigate,
+  selectedCourseId,
+  setSelectedCourseId,
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredCourses = listCourseLive?.filter((item) =>
@@ -38,11 +45,28 @@ const ManageClass = ({ listCourseLive, error, loading, navigate }) => {
             </span>
           </div>
 
+          {/* Option 1: Course Selector Pill Dropdown */}
+          <div className="relative shrink-0">
+            <select
+              value={selectedCourseId || listCourseLive?.[0]?._id || ""}
+              onChange={(e) => setSelectedCourseId(e.target.value)}
+              className="px-4 py-2.5 rounded-full text-xs font-bold text-slate-700 bg-white/80 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 shadow-sm cursor-pointer"
+              style={{ borderRadius: "9999px" }}
+            >
+              {listCourseLive?.map((c) => (
+                <option key={c._id} value={c._id}>
+                  {c.title || "Select Course"}
+                </option>
+              ))}
+            </select>
+          </div>
+
           {/* Create Session Pill Button */}
           <button
             onClick={() => {
-              if (listCourseLive && listCourseLive.length > 0) {
-                navigate(`/courses/create/class/${listCourseLive[0]._id}`);
+              const targetId = selectedCourseId || listCourseLive?.[0]?._id;
+              if (targetId) {
+                navigate(`/courses/create/class/${targetId}`);
               }
             }}
             className="flex items-center gap-2 px-6 py-2.5 rounded-full font-bold text-orange-600 text-sm transition-all duration-200 hover:scale-105 shrink-0"
@@ -54,7 +78,7 @@ const ManageClass = ({ listCourseLive, error, loading, navigate }) => {
             }}
           >
             <Plus size={16} className="text-orange-500" />
-            <span>Create Session</span>
+            <span>Create Class</span>
           </button>
         </div>
       </div>
