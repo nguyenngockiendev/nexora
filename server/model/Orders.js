@@ -8,17 +8,7 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
 
-    courseId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Course",
-      required: true,
-    },
-    classId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Class",
-    },
-
-    price: { type: Number, required: true },
+    Totalprice: { type: Number, required: true },
 
     status: {
       type: String,
@@ -32,6 +22,36 @@ const orderSchema = new mongoose.Schema(
       required: true,
       default: "vnpay",
     },
+    items: [
+      {
+        courseId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Course",
+          required: true,
+        },
+        classId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Class",
+          default: null,
+        },
+        type: {
+          type: String,
+          enum: ["recorded", "live", "free"],
+          required: true,
+          default: "recorded",
+        },
+        price: {
+          type: Number,
+          required: true,
+          default: 0,
+        },
+        addedAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+      { _id: true },
+    ],
   },
   {
     timestamps: true,

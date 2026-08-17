@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import SidebarLesson from "../components/LessionSibar";
-import { Col, Container, Row } from "react-bootstrap";
+
 import LessionForm from "../components/LessionForm";
 import useSibarLession from "../hooks/useSibarLession";
 import useDeleteLessionbyid from "../hooks/useDeletelession";
@@ -92,39 +92,36 @@ const Lession = () => {
   };
 
   return (
-    <div className=" min-vh-100 d-flex flex-row align-items-center">
-      <Container>
-        <Row className="justify-content-center">
-          <Col md={3}>
-            <SidebarLesson
-              loading={loading}
-              error={error}
-              title={title}
-              currentLesson={currentLesson}
-              setCurrentLesson={setCurrentLesson}
-              id={id}
-              role={role}
-            />
-          </Col>
-          <Col md={9}>
-            <LessionForm
-              // videoRef={videoRef}
-              currentLesson={currentLesson}
-              handDelete={handDelete}
-              errorlession={errorlession}
-              loadinglession={loadinglession}
-              loadingupdate={loadingupdate}
-              errorupdate={errorupdate}
-              handUpdate={handUpdate}
-              role={role}
-              // handduration={handduration}
-              // onplay={handlePlay}
-              // onpause={handlePause}
-              // handcurentime={handcurentime}
-            />
-          </Col>
-        </Row>
-      </Container>
+    <div className="flex h-screen w-full overflow-hidden">
+      <aside className="w-[320px] shrink-0 overflow-hidden">
+        <SidebarLesson
+          loading={loading}
+          error={error}
+          title={title}
+          currentLesson={currentLesson}
+          setCurrentLesson={setCurrentLesson}
+          id={id}
+          role={role}
+        />
+      </aside>
+      <main>
+        {" "}
+        <LessionForm
+          // videoRef={videoRef}
+          currentLesson={currentLesson}
+          handDelete={handDelete}
+          errorlession={errorlession}
+          loadinglession={loadinglession}
+          loadingupdate={loadingupdate}
+          errorupdate={errorupdate}
+          handUpdate={handUpdate}
+          role={role}
+          // handduration={handduration}
+          // onplay={handlePlay}
+          // onpause={handlePause}
+          // handcurentime={handcurentime}
+        />
+      </main>
     </div>
   );
 };

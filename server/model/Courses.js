@@ -21,7 +21,9 @@ const courseSchema = new mongoose.Schema(
       enum: ["beginner", "intermediate", "advanced"],
       required: true,
     },
+    status: { type: String, enum: ["active", "inactive"], required: true },
   },
+
   {
     timestamps: true,
   },

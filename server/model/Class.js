@@ -14,7 +14,7 @@ const classSchema = new mongoose.Schema(
     },
 
     className: { type: String, required: true, trim: true },
-    description: { type: String, required: true, trim: true },
+    description: { type: String, trim: true },
     maxStudents: { type: Number, required: true, default: 30, min: 1 },
     currentStudents: { type: Number, default: 0 },
     registerDeadline: { type: Date, required: true },
@@ -43,6 +43,11 @@ const classSchema = new mongoose.Schema(
       type: String,
       enum: ["open", "ongoing", "closes"],
       default: "open",
+    },
+    isLocked: {
+      type: Boolean,
+
+      default: "false",
     },
     price: {
       type: Number,

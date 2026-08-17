@@ -11,8 +11,15 @@ const GetorderByUserId = async (data) => {
   try {
     const result = await errollment
       .find({ userId: data?.userId })
-      .select("-_id type createdAt status completedAt enrolledAt classId")
-      .populate("courseId")
+      .select("-_id type createdAt status completedAt enrolledAt")
+      .populate({
+        path: "courseId",
+        match: { status: "active" },
+      })
+      .populate({
+        path: "classId",
+        match: { isLocked: false },
+      })
       .lean();
     if (!result || result.length === 0) {
       throw {
@@ -88,7 +95,8 @@ const CheckEnrollment = async (data) => {
 const OrderHistory = async (data) => {
   try {
     const result = await Orders.find({ userId: data.userId })
-      .populate("courseId", "title price thumbnail type")
+      .populate("items.courseId", "title price thumbnail type")
+      .populate("items.classId", "className schedule")
       .lean();
     return result;
   } catch (error) {
@@ -99,7 +107,6 @@ const OrderHistory = async (data) => {
 
 const ActionOrder = async (data) => {
   try {
-    
   } catch (error) {
     console.log(error);
     throw error;

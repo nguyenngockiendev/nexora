@@ -23,7 +23,7 @@ const MyClassCart = ({
   return (
     <div className="space-y-6 pb-10">
       
-      {/* ── 1. ANALYTICS ROW (Stat Cards) ── */}
+      
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: 'Total Classes', value: totalClasses, icon: <Activity size={18} />, bg: 'rgba(249,115,22,0.1)', color: '#ea580c' },
@@ -110,6 +110,7 @@ const MyClassCart = ({
         className="flex flex-col md:flex-row justify-between items-center gap-4 p-3 rounded-2xl"
         style={{ background: 'rgba(255,255,255,0.45)', border: '1px solid rgba(255,255,255,0.7)', backdropFilter: 'blur(12px)' }}
       >
+        
         <h3 className="text-lg font-bold text-slate-800 px-2">All Classes</h3>
         
         <div className="flex flex-wrap gap-2 w-full md:w-auto">
@@ -256,6 +257,8 @@ const MyClassCart = ({
 
                 {/* Card Action Buttons (Pill Capsule Style) */}
                 <div className="mt-auto flex flex-col gap-2">
+
+
                   <button
                     className="w-full py-2.5 rounded-full font-bold text-white text-xs transition-all duration-300 hover:scale-[1.02] hover:shadow-md flex items-center justify-center gap-2"
                     style={{
@@ -263,9 +266,9 @@ const MyClassCart = ({
                       boxShadow: '0 4px 14px rgba(249,115,22,0.25)',
                       borderRadius: '9999px',
                     }}
-                    onClick={() => window.location.href = item?.meetingLink || '#'}
+                    onClick={() => navigate(`/live/class/${item._id}/item`)}
                   >
-                    <PlayCircle size={15} /> Meeting Link
+                     <Activity size={13} /> Join class
                   </button>
 
                   <div className="grid grid-cols-2 gap-2">
@@ -289,10 +292,13 @@ const MyClassCart = ({
                         border: '1px solid rgba(249,115,22,0.25)',
                         color: '#ea580c',
                         borderRadius: '9999px',
+                        
                       }}
-                      onClick={() => navigate(`/live/class/${item._id}/item`)}
+                      onClick={() => window.location.href = item?.meetingLink || '#'}
+                      
                     >
-                      <Activity size={13} /> Detail
+                     
+                      <PlayCircle size={15} /> Meeting Link
                     </button>
                   </div>
                 </div>

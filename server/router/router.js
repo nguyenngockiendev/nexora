@@ -16,6 +16,9 @@ const {
   CreateCourses,
   GetLessonByIdcontroller,
   DetailsCourse,
+  ManagerCourse,
+  IsLookedCourseAndLession,
+  GetCoursesforevery,
 } = require("../controller/course-controller");
 const {
   payment,
@@ -82,6 +85,7 @@ Router.post("/login", AuthController);
 Router.post("/register", upload.single("avatar"), RegisterController);
 Router.post("/fogot-password", ResetPasswordController);
 Router.get("/courses", authMiddleware, GetAllCourese);
+Router.get("/courses_all", authMiddleware, GetCoursesforevery);
 Router.post(
   "/newcourses",
   authMiddleware,
@@ -118,7 +122,7 @@ Router.get(
   getLessionbyIntructor,
 );
 
-Router.put("/create-payment/:courseId", authMiddleware, payment);
+Router.put("/create-payment", authMiddleware, payment);
 
 Router.get("/payment/vnpay-callback", vnpayCallback);
 Router.get("/enrollments", authMiddleware, Getorderbyuser);
@@ -193,5 +197,6 @@ Router.get("/instructor/courses-with-lessons" ,authMiddleware,GetCourseForQuizz)
 Router.get("/student/quizzes" ,authMiddleware,GetQuizBystuden)
 Router.get("/instructor/recorded-courses" ,authMiddleware,GetCoursewithLession)
 Router.get("/lessions/:courseId" ,authMiddleware,GetLessionDetails)
-
+Router.get("/admin/courses/quality-control" ,authMiddleware,ManagerCourse);
+Router.patch("/admin/courses/:courseId/status" ,authMiddleware,IsLookedCourseAndLession);
 module.exports = Router;
