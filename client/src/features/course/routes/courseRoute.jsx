@@ -7,10 +7,17 @@ import CourseDetailsRecorded from "../pages/CourseDetailsRecorded";
 import Courses from "../pages/Courses";
 import CreateCourses from "../pages/CreateCourses";
 
+import AdminCourseQualityPage from "../pages/AdminCourseQualityPage";
+
 const courseRoute = [
   {
+    path: "courses-all",
+    element: <Courses mode="all" />,
+    icon: "",
+  },
+  {
     path: "courses",
-    element: <Courses />,
+    element: <Courses mode="mine" />,
     icon: "",
   },
   {
@@ -30,7 +37,7 @@ const courseRoute = [
   },
   {
     path: "courses/details_course/:id",
-    element: <Lession/>,
+    element: <Lession />,
     icon: "",
   },
   {
@@ -41,6 +48,11 @@ const courseRoute = [
   {
     path: "courses/:courseId/item",
     element: <CourseEnrollments />,
+    icon: "",
+  },
+  {
+    path: "admin/courses/quality-control",
+    element: <AdminCourseQualityPage />,
     icon: "",
   },
 ];

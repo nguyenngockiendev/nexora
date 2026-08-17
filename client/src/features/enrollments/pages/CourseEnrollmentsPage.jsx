@@ -11,7 +11,8 @@ const CourseEnrollments = () => {
   const { enrollment, error, loading } = useCourseEnrollments(courseId);
   const [currentLesson, setCurrentLesson] = useState(null);
 
-  const { SaveUpdate, exits, GetProcess, process, FetchAllProcess, allProcess } = useSaveProcess();
+  const { SaveUpdate, exits, GetProcess, process, FetchAllProcess, allProcess } =
+    useSaveProcess();
   const videoRef = useRef(null);
   const intervalRef = useRef(null);
 
@@ -62,10 +63,10 @@ const CourseEnrollments = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-[85vh] w-full bg-transparent rounded-[2rem] overflow-hidden">
-      
-      {/* Sidebar Area */}
-      <div className="w-full lg:w-[380px] xl:w-[420px] flex-shrink-0 bg-white/40 backdrop-blur-3xl border-r border-white/50 shadow-[10px_0_30px_rgba(0,0,0,0.02)] z-20 overflow-hidden">
+    /* ── Compact 2-Card Layout (Vừa Vặn, Nhẹ Nhàng & Không Bị Phồng To) ── */
+    <div className="flex flex-col lg:flex-row h-auto lg:h-[88vh] w-full bg-transparent rounded-[2rem] overflow-hidden gap-6">
+      {/* ── Left Sidebar Glass Card (Ultra-Compact Sizing) ── */}
+      <div className="w-full lg:w-[310px] xl:w-[340px] flex-shrink-0 h-[560px] lg:h-full bg-white/60 backdrop-blur-3xl border border-white/90 rounded-[2rem] shadow-sm z-20 overflow-hidden flex flex-col">
         <SidebarLesson
           loading={loading}
           error={error}
@@ -79,8 +80,8 @@ const CourseEnrollments = () => {
         />
       </div>
 
-      {/* Main Content Area */}
-      <div className="flex-1 h-full overflow-y-auto custom-scrollbar z-10 relative">
+      {/* ── Right Content Glass Card (Compact Sizing) ── */}
+      <div className="flex-1 h-full overflow-y-auto custom-scrollbar z-10 relative bg-white/60 backdrop-blur-3xl border border-white/90 rounded-[2rem] p-6 lg:p-8 shadow-sm">
         <LessionForm
           videoRef={videoRef}
           currentLesson={currentLesson}
@@ -91,7 +92,6 @@ const CourseEnrollments = () => {
           process={process}
         />
       </div>
-
     </div>
   );
 };

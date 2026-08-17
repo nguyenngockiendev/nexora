@@ -26,20 +26,14 @@ const MyCourses = () => {
     handfilter();
   }, [search, filter, courses]);
   return (
-    <div className="min-vh-100 d-flex flex-row align-items-center">
-      <Container>
-        <Row className="justify-content-center">
-          <Col md={12}>
-            <CourseList
-              courses={filterdata}
-              error={error}
-              loading={loading}
-              setFilter={setFilter}
-              setSearch={setSearch}
-            />
-          </Col>
-        </Row>
-      </Container>
+    <div className="w-full min-h-screen py-4 md:py-6">
+      <CourseList
+        courses={filterdata}
+        error={error}
+        loading={loading}
+        setFilter={setFilter}
+        setSearch={setSearch}
+      />
     </div>
   );
 };

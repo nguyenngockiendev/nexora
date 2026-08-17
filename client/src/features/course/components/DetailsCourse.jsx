@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 import CourseRating from "./CourseRating";
 
-
 const Detailscourse = ({
   payment,
   ratings,
@@ -212,7 +211,13 @@ const Detailscourse = ({
                 </p>
 
                 {/* Stats */}
-                <form onSubmit={(e) => { e.preventDefault(); handInstructorRatingChange(e); }} className="space-y-2">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handInstructorRatingChange(e);
+                  }}
+                  className="space-y-2"
+                >
                   <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-slate-400">
                     <div className="flex gap-1 items-center">
                       {[1, 2, 3, 4, 5].map((star) => (
@@ -237,7 +242,9 @@ const Detailscourse = ({
                       ))}
                     </div>
 
-                    <div className="text-amber-500 font-bold">{ratings?.avgRatingIns || 5.0} ⭐</div>
+                    <div className="text-amber-500 font-bold">
+                      {ratings?.avgRatingIns || 5.0} ⭐
+                    </div>
 
                     <div>
                       👥{" "}
@@ -254,7 +261,9 @@ const Detailscourse = ({
                   <button
                     type="submit"
                     className="px-3 py-1.5 rounded-lg text-xs font-bold text-white flex items-center gap-1.5 border-0 cursor-pointer shadow-sm hover:scale-105 transition-transform"
-                    style={{ background: "linear-gradient(135deg, #f97316, #ea580c)" }}
+                    style={{
+                      background: "linear-gradient(135deg, #f97316, #ea580c)",
+                    }}
                   >
                     <Send size={12} /> Gửi đánh giá giảng viên
                   </button>
@@ -329,9 +338,7 @@ const Detailscourse = ({
               {/* Purchase Action Buttons */}
               <div className="space-y-3">
                 <button
-                  onClick={() =>
-                    payment(detalscourse?._id, { type: "recorded" })
-                  }
+                  onClick={() => payment(detalscourse)}
                   className="w-full py-3.5 rounded-2xl text-sm font-black text-white shadow-lg shadow-orange-500/25 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
                   style={{
                     background: "linear-gradient(135deg, #f97316, #ea580c)",

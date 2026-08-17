@@ -4,6 +4,9 @@ const {
   CreatenewCourses,
   GetLessonById,
   GetDetailsCourse,
+  GetCourseForAdmin,
+  UpdateisLookedCourse,
+  GetCourses,
 } = require("../service/courses-service");
 const uploadFile = require("../service/uploadfile-service");
 const { validationResult } = require("express-validator");
@@ -13,6 +16,17 @@ const GetAllCourese = async (req, res) => {
   try {
     const data = req.user;
     const result = await GetAllCourses(data);
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
+
+const GetCoursesforevery = async (req, res) => {
+  try {
+    const data = req.user;
+    const result = await GetCourses(data);
 
     res.status(200).json(result);
   } catch (error) {
@@ -69,10 +83,39 @@ const DetailsCourse = async (req, res) => {
     res.status(error.status || 500).json({ message: error.message });
   }
 };
+const ManagerCourse = async (req, res) => {
+  try {
+    const data = {
+      role: req.user.role,
+    };
+    const result = await GetCourseForAdmin(data);
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
+const IsLookedCourseAndLession = async (req, res) => {
+  try {
+    const data = {
+      role: req.user.role,
+      courseId:req.params.courseId,
+      status: req.body.status,
+    };
+    const result = await UpdateisLookedCourse(data);
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
 
 module.exports = {
   GetAllCourese,
   CreateCourses,
   GetLessonByIdcontroller,
-  DetailsCourse
+  DetailsCourse,
+  ManagerCourse,
+  IsLookedCourseAndLession,
+  GetCoursesforevery
 };

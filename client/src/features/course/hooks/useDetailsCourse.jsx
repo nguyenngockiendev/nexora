@@ -23,8 +23,8 @@ const useDetails = (courseId) => {
     };
     detailsCoures();
   }, [courseId]);
-  console.log("detalscourse", detalscourse);
- return { detalscourse, error, loading };
+
+  return { detalscourse, error, loading };
 };
 
 export { useDetails };
