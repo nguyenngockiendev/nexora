@@ -1,7 +1,7 @@
 import api from "../../../shared/api/axiosClient";
 
-const paymentCourse = async (courseId, newdata) => {
-  const res = await api.put(`/create-payment/${courseId}`, newdata);
+const paymentCourse = async (newdata) => {
+  const res = await api.put(`/create-payment`, newdata);
   return res;
 };
 

@@ -1,5 +1,10 @@
-import { useEffect, useState } from "react";
-import { deleteorderHistory, orderHistory, paymentCourse, resumepaymentCourse } from "../api/payment-api";
+import { useState } from "react";
+import {
+  deleteorderHistory,
+  orderHistory,
+  paymentCourse,
+  resumepaymentCourse,
+} from "../api/payment-api";
 import { toast } from "react-toastify";
 
 const usePayment = () => {
@@ -7,30 +12,31 @@ const usePayment = () => {
   const [loading, setLoading] = useState(false);
   const [order, setOrder] = useState([]);
 
-  useEffect(() => {
-    const orderhistory = async () => {
-      try {
-        setLoading(false);
-        const res = await orderHistory();
-        setOrder(res);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    orderhistory();
-  }, []);
-  
-
-  const payment = async (courseId, data) => {
+  const orderhistory = async () => {
     try {
+      setLoading(false);
+      const res = await orderHistory();
+      setOrder(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const payment = async (data) => {
+    try {
+      const isArr = Array.isArray(data) ? data : [data];
       const newdata = {
-        type: data.type,
-        classId: data.classId || null,
+        items: isArr.map((item) => ({
+          courseId: item.courseId?._id || item.courseId || item._id,
+          classId: item?.classId || null,
+          type: item.type,
+          price: item.price,
+        })),
       };
       setLoading(true);
       setError(null);
-      const res = await paymentCourse(courseId, newdata);
-      console.log("payment res", res);
+      const res = await paymentCourse(newdata);
+
       setLoading(false);
 
       if (res && res.url) {
@@ -42,15 +48,14 @@ const usePayment = () => {
       console.log("payment error", error);
       const message = error.response?.data?.message || "payment failed!";
       setError(message);
-      toast.error(message); // 🔔 HIỂN THỊ TOAST LỖI CHO NGƯỜI DÙNG
+      toast.error(message);
     } finally {
       setLoading(false);
     }
   };
 
-   const Resumepayment = async (orderId) => {
+  const Resumepayment = async (orderId) => {
     try {
-     ;
       setLoading(true);
       setError(null);
       const res = await resumepaymentCourse(orderId);
@@ -66,7 +71,7 @@ const usePayment = () => {
       console.log("payment error", error);
       const message = error.response?.data?.message || "payment failed!";
       setError(message);
-      toast.error(message); // 🔔 HIỂN THỊ TOAST LỖI CHO NGƯỜI DÙNG
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -79,8 +84,10 @@ const usePayment = () => {
       setLoading(false);
 
       if (res) {
-        toast.success("đã xóa đơn hàng thành công!"); 
-        setOrder((prevOrders) => prevOrders.filter((order) => order._id !== orderId));
+        toast.success("đã xóa đơn hàng thành công!");
+        setOrder((prevOrders) =>
+          prevOrders.filter((order) => order._id !== orderId),
+        );
       } else {
         throw new Error("Delete order failed!");
       }
@@ -88,13 +95,13 @@ const usePayment = () => {
       console.log("delete order error", error);
       const message = error.response?.data?.message || "Delete order failed!";
       setError(message);
-      toast.error(message); 
-
-    }
-    finally {
+      toast.error(message);
+    } finally {
       setLoading(false);
     }
-  }
-  return { payment, error, loading ,order,Resumepayment,deleteOrder};
+  };
+  return { payment, error, loading, order, Resumepayment, deleteOrder };
 };
+
+export { usePayment };
 export default usePayment;

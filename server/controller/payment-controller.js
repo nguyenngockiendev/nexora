@@ -10,17 +10,16 @@ const payment = async (req, res) => {
   try {
     const data = {
       userId: req.user.userId,
-      courseId: req.params.courseId,
-      type: req.body.type,
-      classId: req.body.classId || null,
+
+      items: req.body.items,
     };
+
     const result = await paymemtCourese(data);
     if (!result) {
       throw { message: "not have course!" };
     }
     const paymentcourse = await createVNPayPaymentUrl(result);
 
-    console.log("paymentcourse", paymentcourse);
     res.status(200).json({ url: paymentcourse });
   } catch (error) {
     console.log(error);
@@ -55,21 +54,19 @@ const ResumePay = async (req, res) => {
     res.status(error.status || 500).json({ message: error.message });
   }
 };
-const DeleteOrderbyUser = async(req,res)=>{
+const DeleteOrderbyUser = async (req, res) => {
   try {
     const data = {
       orderId: req.params.orderId,
-    }
+    };
     const result = await DeleteOrder(data);
     res.status(200).json(result);
-  } catch (error) {
-    
-  }
-}
+  } catch (error) {}
+};
 
 module.exports = {
   payment,
   vnpayCallback,
   ResumePay,
-  DeleteOrderbyUser
+  DeleteOrderbyUser,
 };
