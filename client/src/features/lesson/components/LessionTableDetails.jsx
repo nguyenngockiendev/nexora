@@ -143,6 +143,7 @@ const LessionTableLession = ({
                 {item.status === "PENDING" && (
                   <div>
                     <Button
+                      onClick={(e) => e.stopPropagation()}
                       variant="light"
                       onClick={() => handupdatetracrip(item._id)}
                       disabled={process}
@@ -152,7 +153,6 @@ const LessionTableLession = ({
                   </div>
                 )}
 
-                {/* Right: Badge Type + Dropdown Menu ⋯ */}
                 <div className="d-flex align-items-center gap-3">
                   <Badge
                     pill

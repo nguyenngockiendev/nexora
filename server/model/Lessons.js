@@ -17,7 +17,7 @@ const lessonSchema = new mongoose.Schema(
     order: { type: Number, required: true },
 
     isPreview: { type: Boolean, default: false, required: true },
-
+    isLocked: { type: Boolean, default: false, required: true },
     content: { type: String, default: "" },
     status: {
       type: String,

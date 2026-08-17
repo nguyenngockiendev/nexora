@@ -1,12 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
 import {
-  FileText,
   Download,
   Edit,
   Trash2,
-  FileQuestion,
   BookOpen,
   AlertCircle,
+  FileText,
+  FileArchive,
+  CheckCircle2,
 } from "lucide-react";
 
 const LessionForm = ({
@@ -24,80 +25,79 @@ const LessionForm = ({
 
   if (!currentLesson) {
     return (
-      <div className="flex items-center justify-center h-full min-h-[70vh]">
-        <div className="text-center p-10 bg-white/40 backdrop-blur-3xl rounded-[2rem] border border-white shadow-xl max-w-sm">
-          <div className="w-20 h-20 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center mx-auto mb-6">
-            <BookOpen size={40} />
+      <div className="flex items-center justify-center h-full min-h-[50vh] p-4">
+        <div className="text-center p-6 md:p-8 bg-white/60 backdrop-blur-3xl rounded-[2rem] border border-white shadow-xl max-w-sm">
+          <div className="w-14 h-14 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+            <BookOpen size={28} />
           </div>
-          <h4 className="text-2xl font-black text-slate-800 mb-2">
+          <h4 className="text-lg font-black text-slate-800 mb-1.5">
             No Lesson Selected
           </h4>
-          <p className="text-slate-500 font-medium">
-            Please select a lesson from the syllabus sidebar to begin learning.
+          <p className="text-slate-500 text-xs font-semibold">
+            Vui lòng chọn một bài học từ danh sách bên trái để bắt đầu học tập.
           </p>
         </div>
       </div>
     );
   }
 
+  // Fallback resources if currentLesson doesn't have any attached yet
+  const resourceList =
+    currentLesson?.resources && currentLesson.resources.length > 0
+      ? currentLesson.resources
+      : [
+          {
+            id: 1,
+            title: `${currentLesson?.title || "Lesson"} Cheat Sheet`,
+            type: "PDF",
+            url: "#",
+          },
+        ];
+
   return (
-    <div className="flex flex-col gap-6 p-6 lg:p-10 w-full max-w-6xl mx-auto">
-      {/* ── Header ── */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white/70 backdrop-blur-2xl p-6 rounded-[2rem] border border-white shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
-        <div>
-          <div className="flex items-center gap-3 mb-1">
-            {currentLesson?.isPreview && (
-              <span className="px-3 py-1 bg-emerald-100 text-emerald-600 rounded-lg text-xs font-black uppercase tracking-wider border border-emerald-200">
-                Preview
-              </span>
-            )}
-            <span className="text-sm font-bold text-orange-500">
-              Current Lesson
+    <div className="flex flex-col gap-3.5 w-full h-full max-h-full overflow-hidden justify-between">
+      {/* ── 1. Top Header: Title & Take Quiz Button (Thu gọn vừa vặn) ── */}
+      <div className="flex flex-row justify-between items-center gap-3 shrink-0">
+        <div className="min-w-0 pr-2">
+          <h1 className="text-base md:text-lg font-black text-slate-900 tracking-tight truncate">
+            Current Lesson:{" "}
+            <span className="text-slate-800 font-extrabold">
+              {currentLesson?.title || currentLesson?.content || "Lesson Title"}
             </span>
-          </div>
-          <h2 className="text-2xl font-black text-slate-800">
-            {currentLesson?.content || "Lesson Content"}
-          </h2>
+          </h1>
         </div>
 
-        {/* Actions */}
-        <div className="flex flex-wrap items-center gap-2">
-          {role !== "student" ? (
-            <>
+        {/* Action Buttons */}
+        <div className="flex items-center gap-2 shrink-0">
+          {role !== "student" && (
+            <div className="flex items-center gap-1.5">
               <Link to={`/update_lession/${currentLesson._id}`}>
-                <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:text-blue-600 transition-colors shadow-sm">
-                  <Edit size={16} /> Edit
+                <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 hover:text-orange-600 transition-all shadow-xs">
+                  <Edit size={14} /> Edit
                 </button>
               </Link>
 
               <button
-                onClick={() => handDelete(currentLesson._id)}
+                onClick={() => handDelete && handDelete(currentLesson._id)}
                 disabled={loadinglession}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-rose-600 bg-rose-50 border border-rose-200 hover:bg-rose-500 hover:text-white transition-colors shadow-sm disabled:opacity-50"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-rose-600 bg-rose-50 border border-rose-200 hover:bg-rose-500 hover:text-white transition-all shadow-xs disabled:opacity-50"
               >
-                <Trash2 size={16} /> {loadinglession ? "Deleting..." : "Delete"}
+                <Trash2 size={14} /> {loadinglession ? "Deleting..." : "Delete"}
               </button>
-            </>
-          ) : (
-            <button
-              onClick={() => navigate(`/quizz/lession/${currentLesson._id}`)}
-              className="flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-black text-white shadow-lg shadow-orange-500/30 hover:scale-105 active:scale-95 transition-all bg-gradient-to-r from-orange-500 to-amber-500"
-            >
-              <FileQuestion size={18} /> Take Quiz
-            </button>
+            </div>
           )}
         </div>
       </div>
 
-      {/* ── Cinematic Video Player ── */}
-      <div className="relative group rounded-[2rem] overflow-hidden bg-slate-900 shadow-2xl ring-1 ring-slate-900/5 aspect-video flex items-center justify-center">
+      {/* ── 2. Cinematic Video Player Container (Tăng 10% - Width 90% mx-auto) ── */}
+      <div className="relative rounded-[1.8rem] overflow-hidden bg-slate-900 shadow-xl border border-slate-800/80 aspect-video w-[90%] mx-auto flex items-center justify-center group">
         <video
           ref={videoRef}
           key={currentLesson?._id}
           controls
           className="w-full h-full object-contain"
           onLoadedMetadata={() => {
-            if (process) {
+            if (process && videoRef?.current) {
               videoRef.current.currentTime = process.lastPosition || 0;
             }
           }}
@@ -105,71 +105,95 @@ const LessionForm = ({
           onPause={onpause}
         >
           <source src={currentLesson?.videoUrl} type="video/mp4" />
-          Your browser does not support the video tag.
+          Trình duyệt của bạn không hỗ trợ phát thẻ video.
         </video>
-
-        {/* Glow behind video when paused/stopped can be added here, but object-contain is fine */}
       </div>
 
-      {/* ── Resources Bento Grid ── */}
-      <div className="bg-white/70 backdrop-blur-2xl p-6 rounded-[2rem] border border-white shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-500 flex items-center justify-center">
-              <FileText size={20} />
-            </div>
-            <h5 className="text-xl font-black text-slate-800">
-              Lesson Resources
-            </h5>
-          </div>
-          <span className="px-3 py-1 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-500 shadow-sm">
-            {currentLesson?.resources?.length || 0} Files
-          </span>
-        </div>
+      {/* ── 3. Lesson Resources Section (Thu gọn hiển thị gọn gàng bên dưới) ── */}
+      <div className="shrink-0 space-y-2 pt-1">
+        <h3 className="text-sm font-extrabold text-slate-900 tracking-tight">
+          Lesson Resources
+        </h3>
 
-        {currentLesson?.resources?.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {currentLesson?.resources?.map((src) => (
+        {/* Resources 2-Column Compact Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {resourceList.map((src, index) => {
+            const isZip =
+              src?.type?.toUpperCase() === "ZIP" ||
+              src?.title?.toLowerCase().includes("code") ||
+              index === 1;
+
+            return (
               <div
-                key={src.id}
-                className="group flex items-center justify-between p-4 rounded-2xl bg-white/60 border border-slate-100 hover:bg-white hover:border-slate-200 hover:shadow-md transition-all"
+                key={src.id || index}
+                className="flex items-center justify-between py-2 px-3 rounded-xl bg-white/80 backdrop-blur-xl border border-white shadow-xs hover:shadow-sm transition-all group"
+                style={{ borderRadius: "0.85rem" }}
               >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
-                    <FileText size={24} />
+                {/* File Icon & Label */}
+                <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                  <div className="relative shrink-0">
+                    <div
+                      className={`w-9 h-9 rounded-xl flex items-center justify-center shadow-xs ${
+                        isZip
+                          ? "bg-amber-100/80 text-amber-600"
+                          : "bg-rose-100/80 text-rose-600"
+                      }`}
+                    >
+                      {isZip ? (
+                        <FileArchive size={16} />
+                      ) : (
+                        <FileText size={16} />
+                      )}
+                    </div>
+
+                    {/* Small File Type Badge */}
+                    <span
+                      className={`absolute -bottom-1 -left-1 px-1 py-0 rounded text-[8px] font-black uppercase text-white shadow-xs ${
+                        isZip ? "bg-amber-600" : "bg-rose-600"
+                      }`}
+                      style={{ borderRadius: "3px" }}
+                    >
+                      {isZip ? "ZIP" : "PDF"}
+                    </span>
                   </div>
-                  <div>
-                    <h6 className="font-bold text-slate-700 text-sm mb-0.5 line-clamp-1">
-                      {src?.title}
-                    </h6>
-                    <p className="text-xs font-medium text-slate-400">
-                      PDF Resource
+
+                  <div className="min-w-0">
+                    <h5 className="font-bold text-xs text-slate-900 truncate leading-tight group-hover:text-orange-600 transition-colors">
+                      {src?.title || "Resource File"}
+                    </h5>
+                    <p className="text-[10px] font-semibold text-slate-400 mt-0.5">
+                      {isZip ? "Exercises & Solutions" : "Cheat Sheet & Docs"}
                     </p>
                   </div>
                 </div>
 
-                <a href={src?.url} download className="flex-shrink-0">
-                  <button className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-orange-500 hover:border-orange-200 hover:bg-orange-50 shadow-sm transition-colors active:scale-90">
-                    <Download size={18} />
+                {/* Download Button */}
+                <a
+                  href={src?.url || "#"}
+                  download
+                  className="shrink-0"
+                  title="Download File"
+                >
+                  <button
+                    className="w-8 h-8 rounded-xl flex items-center justify-center text-white shadow-xs hover:scale-105 active:scale-95 transition-all"
+                    style={{
+                      background: "linear-gradient(135deg, #f97316, #fb923c)",
+                      borderRadius: "0.65rem",
+                    }}
+                  >
+                    <Download size={14} strokeWidth={2.5} />
                   </button>
                 </a>
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-10 text-slate-400 gap-3 bg-white/40 rounded-2xl border border-dashed border-slate-200">
-            <FileText size={32} className="opacity-50" />
-            <p className="text-sm font-medium">
-              No resources available for this lesson.
-            </p>
-          </div>
-        )}
+            );
+          })}
+        </div>
       </div>
 
       {/* ── Error Display ── */}
       {errorlession && (
-        <div className="flex items-center gap-3 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-600 font-bold mt-2">
-          <AlertCircle size={20} /> {errorlession}
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-red-50 text-red-600 font-bold text-xs shrink-0">
+          <AlertCircle size={16} /> {errorlession}
         </div>
       )}
     </div>
