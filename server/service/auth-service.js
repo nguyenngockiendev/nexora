@@ -7,12 +7,19 @@ const loginUser = async (email, password) => {
   try {
     const user = await User.findOne({ email: email });
     if (!user) {
-      throw { status: 401, message: "Invalid email" };
+      throw { status: 401, message: "Tài khoản không chính xác!" };
+    }
+    if (user.status === "inactive") {
+      throw {
+        status: 401,
+        message: "Tài khoản bị cấm hoặc chưa được kích hoạt !",
+      };
     }
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
-      throw { status: 401, message: "Password is incorrect" };
+      throw { status: 401, message: "Sai mật khẩu hãy nhập lại!" };
     }
+
     const payload = { userId: user._id, role: user.role };
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN,
@@ -35,10 +42,10 @@ const registerUser = async (data) => {
   try {
     const exitUser = await User.findOne({ email: data.email });
     if (exitUser) {
-      throw { status: 400, message: "Email already exists" };
+      throw { status: 400, message: "Email đã tồn tại" };
     }
     if (data.password !== data.repeatpassword) {
-      throw { status: 400, message: "Passwords do not match" };
+      throw { status: 400, message: "Mật khẩu không trùng" };
     }
     const hashpassword = await bcrypt.hash(
       data.password,

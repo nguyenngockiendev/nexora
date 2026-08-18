@@ -9,6 +9,7 @@ const {
   RequestInstructor,
   ResponInstructor,
   GetPendingTeacherRequests,
+  GetuserbyId,
 } = require("../service/user-service");
 const uploadFile = require("../service/uploadfile-service");
 
@@ -158,6 +159,19 @@ const GetPendingRequests = async (req, res) => {
     res.status(error.status || 500).json({ message: error.message });
   }
 };
+
+const GetUserInfor = async (req, res) => {
+  try {
+    const data = {
+      userId: req.user.userId,
+    };
+    const result = await GetuserbyId(data);
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
 module.exports = {
   GetAlluser,
   GetUser,
@@ -169,4 +183,5 @@ module.exports = {
   BecomeInstructor,
   ResInstructor,
   GetPendingRequests,
+  GetUserInfor
 };

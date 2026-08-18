@@ -261,7 +261,7 @@ const RequestInstructor = async (data) => {
     }
     const result = await TeacherRequests.create({
       userId: data.userId,
-      specialty:data.specialty,
+      specialty: data.specialty,
       opinion: data.opinion,
       proofImage: data.proofImage,
       status: "pending",
@@ -317,6 +317,17 @@ const GetPendingTeacherRequests = async (data) => {
   }
 };
 
+const GetuserbyId = async (data) => {
+  try {
+    const userInfor = await Users.findById(data.userId)
+      .select("-password")
+      .lean();
+    return userInfor;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 module.exports = {
   GetAllUserByrole,
   GetUserById,
@@ -328,4 +339,5 @@ module.exports = {
   RequestInstructor,
   ResponInstructor,
   GetPendingTeacherRequests,
+  GetuserbyId,
 };

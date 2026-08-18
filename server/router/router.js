@@ -25,6 +25,7 @@ const {
   vnpayCallback,
   ResumePay,
   DeleteOrderbyUser,
+  GetHistoryByadmin,
 } = require("../controller/payment-controller");
 const {
   Getorderbyuser,
@@ -60,6 +61,7 @@ const {
   BecomeInstructor,
   ResInstructor,
   GetPendingRequests,
+  GetUserInfor,
 } = require("../controller/user-controllsers");
 const {
   GetInstructorBusinessDashboard,
@@ -198,5 +200,9 @@ Router.get("/student/quizzes" ,authMiddleware,GetQuizBystuden)
 Router.get("/instructor/recorded-courses" ,authMiddleware,GetCoursewithLession)
 Router.get("/lessions/:courseId" ,authMiddleware,GetLessionDetails)
 Router.get("/admin/courses/quality-control" ,authMiddleware,ManagerCourse);
+Router.get("/admin/history" ,authMiddleware,GetHistoryByadmin);
+
+Router.get("/user/information" ,authMiddleware,GetUserInfor);
+
 Router.patch("/admin/courses/:courseId/status" ,authMiddleware,IsLookedCourseAndLession);
 module.exports = Router;

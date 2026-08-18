@@ -8,14 +8,13 @@ import ClassRoutes from "../../features/class/routes/classRoutes";
 import userRoutes from "../../features/user/routes/userRoutes";
 import lessionRoute from "../../features/lesson/routes/lessionRoute";
 import quizzRoutes from "../../features/quizz/routes/quizzRoutes";
-import HomePage from "../../demo/HomePage/HomePage";
+
 import dashboardRoutes from "../../features/dashboard/routes/dashboardRoutes";
 import paymentRoute from "../../features/payment/routes/paymentRoute";
 import cartRoute from "../../features/cart/routes/cartRoute";
+import HomePage from "../../demo/HomePage/HomePage";
 
 function AppRoutes() {
-  const token = localStorage.getItem("token");
-
   const routes = [
     ...dashboardRoutes,
     ...courseRoute,
@@ -31,17 +30,7 @@ function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route
-          path="/"
-          element={
-            token ? (
-              <Navigate to="/courses" replace />
-            ) : (
-              <Navigate to="/demo/home" replace />
-            )
-          }
-        />
-        <Route path="/demo/home" element={<HomePage />} />
+        <Route path="/" element={<HomePage />} />
 
         {authRoutes.map((route) => (
           <Route key={route.path} path={route.path} element={route.element} />

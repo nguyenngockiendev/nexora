@@ -11,8 +11,8 @@ const userSchema = new mongoose.Schema(
       default: "student",
     },
     avatar: { type: String },
-    status: { type: String, enum: ["active", "Inactive"] },
-    phone: { type: String,},
+    status: { type: String, enum: ["active", "inactive"] },
+    phone: { type: String },
   },
   {
     timestamps: true,
