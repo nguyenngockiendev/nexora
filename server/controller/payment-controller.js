@@ -4,6 +4,7 @@ const {
   updateorder,
   ResumePayment,
   DeleteOrder,
+  GethhistorysForAdmin,
 } = require("../service/payment-service");
 
 const payment = async (req, res) => {
@@ -61,12 +62,28 @@ const DeleteOrderbyUser = async (req, res) => {
     };
     const result = await DeleteOrder(data);
     res.status(200).json(result);
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    res.status(error.status || 500).json({ message: error.message });
+  }
 };
 
+const GetHistoryByadmin = async (req, res) => {
+  try {
+    const data = {
+      role: req.user.role,
+    };
+    const result = await GethhistorysForAdmin(data);
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
 module.exports = {
   payment,
   vnpayCallback,
   ResumePay,
   DeleteOrderbyUser,
+  GetHistoryByadmin
 };

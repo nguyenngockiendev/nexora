@@ -17,4 +17,14 @@ const deleteorderHistory = async (orderId) => {
   const res = await api.delete(`delete-order/${orderId}`);
   return res;
 };
-export { paymentCourse, orderHistory, resumepaymentCourse, deleteorderHistory };
+const managerHistoryByadmin = async () => {
+  const res = await api.get(`/admin/history`);
+  return res;
+};
+export {
+  paymentCourse,
+  orderHistory,
+  resumepaymentCourse,
+  deleteorderHistory,
+  managerHistoryByadmin,
+};

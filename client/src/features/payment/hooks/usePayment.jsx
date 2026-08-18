@@ -45,7 +45,7 @@ const usePayment = () => {
         window.location.href = res.data.url;
       }
     } catch (error) {
-      console.log("payment error", error);
+      
       const message = error.response?.data?.message || "payment failed!";
       setError(message);
       toast.error(message);

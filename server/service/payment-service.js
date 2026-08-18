@@ -175,6 +175,94 @@ const DeleteOrder = async (data) => {
     throw error;
   }
 };
+const GethhistorysForAdmin = async (data) => {
+  try {
+    if (data.role !== "admin") {
+      throw { status: 404, message: "Quyền hạn không đủ!" };
+    }
+    const OrderHistory = await Orders.find()
+      .populate("userId", "name email avatar")
+      .populate({
+        path: "items.courseId",
+        select: "title thumbnail price",
+        populate: {
+          path: "instructor",
+          select: "name",
+        },
+      })
+      .populate({
+        path: "items.classId",
+        select: "className price",
+
+        populate: [
+          {
+            path: "instructorId",
+            select: "name",
+          },
+          {
+            path: "courseId",
+            select: "title thumbnail  ",
+          },
+        ],
+      })
+      .sort({
+        createdAt: -1,
+      })
+      .lean();
+
+    const totalPurchases = OrderHistory.reduce(
+      (sum, order) => {
+        if (order.status === "completed") {
+          sum.completed += Number(order.Totalprice);
+        }
+        if (order.status === "failed") {
+          sum.failed += Number(order.Totalprice);
+        }
+
+        if (order.status === "pending") {
+          sum.pending += Number(order.Totalprice);
+        }
+        return sum;
+      },
+      {
+        failed: 0,
+        completed: 0,
+        pending: 0,
+      },
+    );
+    let TotalComplete = 0;
+    let TotalFalse = 0;
+    let TotalPending = 0;
+
+    OrderHistory.filter((e) => {
+      if (e.status === "completed") {
+        TotalComplete++;
+      }
+      if (e.status === "pending") {
+        TotalPending++;
+      }
+      if (e.status === "failed") {
+        TotalFalse++;
+      }
+    });
+    const finalResultTotal = {
+      totalPurchasesComplete: totalPurchases.completed,
+      totalPurchasesfalse: totalPurchases.failed,
+      totalPurchasespending: totalPurchases.pending,
+      totalCoursesCount: OrderHistory.length,
+      recentPayment: OrderHistory.sort((k, n) => n.addedAt - k.addedAt)[0],
+      TotalComplete: TotalComplete,
+      TotalFalse: TotalFalse,
+      TotalPending: TotalPending,
+      OrderHistory: OrderHistory,
+    };
+
+    return finalResultTotal;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 
 module.exports = {
   paymemtCourese,
@@ -182,4 +270,5 @@ module.exports = {
   updateorder,
   ResumePayment,
   DeleteOrder,
+  GethhistorysForAdmin,
 };
