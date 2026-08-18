@@ -5,4 +5,8 @@ const GetInstructorBusinessDashboard = async () => {
   return res;
 };
 
-export { GetInstructorBusinessDashboard };
+const GetUserInformation = async () => {
+  const res = await api.get("/user/information");
+  return res;
+};
+export { GetInstructorBusinessDashboard, GetUserInformation };

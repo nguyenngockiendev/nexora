@@ -1,34 +1,31 @@
-import { useEffect, useState } from "react";
 import InstructorDashboard from "./InstructorDashboard";
 import StudentDashboard from "./StudentDashboard";
 import AdminDashboard from "./AdminDashboard";
+import useDashboats from "../hooks/useDashboats";
 
 const Dashboard = () => {
-  const [role, setRole] = useState("student"); // default to student
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    try {
-      const userInfo = JSON.parse(localStorage.getItem("userInfor"));
-      if (userInfo?.role) {
-        setRole(userInfo.role);
-      }
-    } catch (e) {
-      console.error("Error reading user role", e);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const { dashboard, error, loading } = useDashboats();
 
   if (loading) {
-    return <div className="p-10 text-center text-slate-500 font-medium">Đang tải bảng điều khiển...</div>;
+    return (
+      <div className="p-10 text-center text-slate-500 font-medium">
+        Đang tải bảng điều khiển...
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="p-10 text-center text-slate-500 font-medium">
+        Đang tải bảng điều khiển...
+      </div>
+    );
   }
 
-  if (role === "admin") {
+  if (dashboard?.role === "admin") {
     return <AdminDashboard />;
   }
-  
-  if (role === "instructor") {
+
+  if (dashboard?.role === "instructor") {
     return <InstructorDashboard />;
   }
 

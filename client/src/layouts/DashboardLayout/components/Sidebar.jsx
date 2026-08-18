@@ -2,18 +2,20 @@ import { NavLink, useNavigate } from "react-router-dom";
 import Nav_Sidebar from "../Nav_sidebar";
 import { ChevronLeft, Sparkles, LogOut } from "lucide-react";
 
-const Sidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) => {
+const Sidebar = ({
+  collapsed,
+  setCollapsed,
+  mobileOpen,
+  setMobileOpen,
+  dashboard,
+}) => {
   const handleNavClick = () => {
     if (window.innerWidth <= 768) setMobileOpen(false);
   };
   const navigation = useNavigate();
 
-  const role = localStorage.getItem("role") || "student";
-  const userInfo = JSON.parse(localStorage.getItem("userInfor") || "{}");
-
   return (
     <>
-      {/* Mobile Overlay */}
       <div
         className={`fixed inset-0 bg-orange-950/20 backdrop-blur-sm z-40 transition-opacity duration-300 md:hidden ${mobileOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         onClick={() => setMobileOpen(false)}
@@ -89,7 +91,9 @@ const Sidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) => {
               )}
 
               {(group.items || (group.path ? [group] : []))
-                .filter((item) => !item.roles || item.roles.includes(role))
+                .filter(
+                  (item) => !item.roles || item.roles.includes(dashboard?.role),
+                )
                 .map((item) => (
                   <NavLink
                     key={item.path}
@@ -152,9 +156,9 @@ const Sidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) => {
           <div
             className={`flex items-center gap-3 px-3 py-2.5 rounded-2xl ${collapsed ? "justify-center" : ""}`}
           >
-            {userInfo.avatar ? (
+            {dashboard?.avatar ? (
               <img
-                src={userInfo.avatar}
+                src={dashboard?.avatar}
                 className="w-8 h-8 rounded-xl object-cover border border-slate-200 shrink-0"
                 alt="Avatar"
               />
@@ -166,17 +170,18 @@ const Sidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) => {
                   boxShadow: "0 4px 10px rgba(249,115,22,0.3)",
                 }}
               >
-                {(userInfo.name || "U")[0].toUpperCase()}
+                {(dashboard?.name || "U")[0].toUpperCase()}
               </div>
             )}
             <div
               className={`min-w-0 transition-all duration-200 ${collapsed ? "w-0 opacity-0 overflow-hidden" : "opacity-100"}`}
             >
               <div className="text-sm font-semibold text-slate-800 truncate">
-                {userInfo.name || "User Name"}
+                {dashboard?.name || "User Name"}
               </div>
               <div className="text-xs text-slate-400">
-                {role.charAt(0).toUpperCase() + role.slice(1)}
+                {dashboard?.role.charAt(0).toUpperCase() +
+                  dashboard?.role.slice(1)}
               </div>
             </div>
           </div>

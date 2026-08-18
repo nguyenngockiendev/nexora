@@ -116,6 +116,12 @@ const Nav_Sidebar = [
         roles: ["student", "instructor"],
       },
       {
+        name: "Quản lý giao dịch",
+        path: "admin/payments",
+        icon: CreditCard,
+        roles: ["admin"],
+      },
+      {
         name: "Giỏ Hàng",
         path: "cart",
         icon: ShoppingBag,

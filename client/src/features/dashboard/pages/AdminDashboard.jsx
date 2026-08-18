@@ -5,15 +5,12 @@ const AdminDashboard = () => {
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [timeFilter, setTimeFilter] = useState("week"); // 'week' | 'month'
+  const [timeFilter, setTimeFilter] = useState("week");
 
   const getDashboard = async (filter) => {
     try {
       setLoading(true);
-      // Giả lập call API (Mock delay)
-      await new Promise((resolve) => setTimeout(resolve, 800));
 
-      // Dữ liệu giả lập thay đổi theo bộ lọc
       const isWeek = filter === "week";
 
       const mockData = {
