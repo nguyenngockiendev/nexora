@@ -49,23 +49,17 @@ const Createlession = () => {
   };
 
   return (
-    <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
-      <Container>
-        <Row className="justify-content-center">
-          <Col md={12}>
-            <CreateLession
-              navigate={navigate}
-              register={register}
-              handleSubmit={handleSubmit}
-              onSubmit={onSubmit}
-              resource={resource}
-              setResource={setResource}
-              setVideoFile={setVideoFile}
-              loading={loading}
-            />
-          </Col>
-        </Row>
-      </Container>
+    <div className="w-full min-h-screen py-6 md:py-10 px-2 sm:px-4">
+      <CreateLession
+        navigate={navigate}
+        register={register}
+        handleSubmit={handleSubmit}
+        onSubmit={onSubmit}
+        resource={resource}
+        setResource={setResource}
+        setVideoFile={setVideoFile}
+        loading={loading}
+      />
     </div>
   );
 };
