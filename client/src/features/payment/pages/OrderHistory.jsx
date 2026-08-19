@@ -1,14 +1,16 @@
 import { CheckCircle2, AlertCircle, XCircle } from "lucide-react";
 import HistoryTable from "../components/OrderHistoryTable";
 import usePayment from "../hooks/usePayment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const OrderHistory = () => {
-  const { order, Resumepayment, deleteOrder } = usePayment();
+  const { order, Resumepayment, deleteOrder, orderhistory } = usePayment();
 
   const [actionLoadingId, setActionLoadingId] = useState(null);
-
-  console.log("orders in OrderHistory", order);
+  console.log("order", order);
+  useEffect(() => {
+    orderhistory();
+  }, []);
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",

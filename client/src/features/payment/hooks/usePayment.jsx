@@ -45,7 +45,6 @@ const usePayment = () => {
         window.location.href = res.data.url;
       }
     } catch (error) {
-      
       const message = error.response?.data?.message || "payment failed!";
       setError(message);
       toast.error(message);
@@ -100,8 +99,15 @@ const usePayment = () => {
       setLoading(false);
     }
   };
-  return { payment, error, loading, order, Resumepayment, deleteOrder };
+  return {
+    payment,
+    error,
+    loading,
+    order,
+    Resumepayment,
+    deleteOrder,
+    orderhistory,
+  };
 };
 
-export { usePayment };
 export default usePayment;

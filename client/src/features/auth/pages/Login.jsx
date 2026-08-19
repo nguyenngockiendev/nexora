@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
 
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 
 import useLogin from "../hooks/uselogin";
 import LoginForm from "../components/LoginForm";

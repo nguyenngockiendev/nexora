@@ -5,12 +5,10 @@ import useAdminPayment from "../hooks/useAdminPayment";
 const AdminPaymentManagement = () => {
   const {
     transactions,
-
     searchQuery,
     setSearchQuery,
     statusFilter,
     setStatusFilter,
-
     currentPage,
     setCurrentPage,
     GetHistory,
