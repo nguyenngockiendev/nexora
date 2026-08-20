@@ -10,7 +10,6 @@ import {
   Award,
   ChevronRight,
 } from "lucide-react";
-import UserDropdown from "../../../layouts/DashboardLayout/components/Header";
 
 const formatNumber = (value) => Number(value || 0).toLocaleString("vi-VN");
 

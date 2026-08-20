@@ -3,7 +3,8 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 
 import useDashboats from "../../features/dashboard/hooks/useDashboats";
-import CornerOrangeButton from "./components/Header";
+import CornerOrangeButton from "./components/ButtonInfor";
+import NotificationBell from "./components/Notification";
 
 const Dashboard = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -34,6 +35,9 @@ const Dashboard = () => {
         className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out z-10 ${collapsed ? "md:ml-[80px]" : "md:ml-[260px]"} ml-0`}
       >
         <main className="relative flex-1 p-3 md:p-5 overflow-x-hidden">
+          <div className="absolute top-3 right-20 sm:right-24 z-40">
+            <NotificationBell  user={dashboard}/>
+          </div>
           <CornerOrangeButton dashboard={dashboard} />
           <Outlet context={{ dashboard, setDashboard ,loading}} />
         </main>

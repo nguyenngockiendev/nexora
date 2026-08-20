@@ -13,8 +13,6 @@ import {
   CreditCard,
   Calendar,
   Bell,
-  X,
-  Eye,
 } from "lucide-react";
 import useRequestIntructor from "../../user/hooks/useRequestIntructor";
 
@@ -49,7 +47,6 @@ const getUserName = () => {
   }
 };
 
-// ── Stat Card (Light Glass + Purple Accent) ──
 const StatCard = ({ icon: Icon, label, value, tone, helper }) => {
   const tones = {
     purple: {
@@ -370,23 +367,6 @@ const AdminDashboardView = ({
               filter: "blur(40px)",
             }}
           />
-        </div>
-
-        {/* Nút Chuông Thông Báo (Góc phải trên cùng) */}
-        <div className="absolute top-6 right-6 z-20">
-          <button
-            onClick={() => navigate("/admin/teacher-requests")}
-            className="relative flex items-center justify-center w-10 h-10 rounded-2xl text-slate-500 hover:text-orange-500 bg-white/70 backdrop-blur-md border border-slate-200 shadow-sm transition-all hover:scale-105 active:scale-95 border-0"
-            aria-label="Notifications"
-          >
-            <Bell size={18} />
-            {requestList.length > 0 && (
-              <span
-                className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-orange-500 border border-white"
-                style={{ boxShadow: "0 0 6px rgba(249,115,22,0.8)" }}
-              />
-            )}
-          </button>
         </div>
 
         <div className="relative z-10">
