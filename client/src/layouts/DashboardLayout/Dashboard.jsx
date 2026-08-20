@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
-import Footer from "./components/Footer";
+
 import useDashboats from "../../features/dashboard/hooks/useDashboats";
+import CornerOrangeButton from "./components/Header";
 
 const Dashboard = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { dashboard } = useDashboats();
+  const { dashboard, setDashboard ,loading} = useDashboats();
   return (
     <div
       className="relative min-h-screen flex overflow-hidden"
@@ -32,10 +33,10 @@ const Dashboard = () => {
       <div
         className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out z-10 ${collapsed ? "md:ml-[80px]" : "md:ml-[260px]"} ml-0`}
       >
-        <main className="flex-1 p-3 md:p-5 overflow-x-hidden">
-          <Outlet context={{ userInfor: dashboard }} />
+        <main className="relative flex-1 p-3 md:p-5 overflow-x-hidden">
+          <CornerOrangeButton dashboard={dashboard} />
+          <Outlet context={{ dashboard, setDashboard ,loading}} />
         </main>
-        <Footer />
       </div>
     </div>
   );

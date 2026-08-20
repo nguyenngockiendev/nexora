@@ -26,6 +26,14 @@ const GetPendingRequestsByAdmin = () => {
   const request = api.get(`/admin/teacher-requests`);
   return request;
 };
+const UpdateProfileUser = (data) => {
+  const request = api.put(`/user_update/profile`, data);
+  return request;
+};
+const ChangePassWord = (data) => {
+  const request = api.patch(`/user_change_pass`,  data );
+  return request;
+};
 export {
   GetAlluserByAdmin,
   GetDatelsuserByAdmin,
@@ -33,4 +41,6 @@ export {
   BecomeInstructor,
   ResponInstructor,
   GetPendingRequestsByAdmin,
+  UpdateProfileUser,
+  ChangePassWord,
 };

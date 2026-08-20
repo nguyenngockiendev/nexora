@@ -5,7 +5,6 @@ const useDashboats = () => {
   const [dashboard, setDashboard] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  console.log("dashboard", dashboard);
   useEffect(() => {
     const getDashboard = async () => {
       try {
@@ -24,7 +23,7 @@ const useDashboats = () => {
     getDashboard();
   }, []);
 
-  return { dashboard, error, loading };
+  return { dashboard, error, loading ,setDashboard };
 };
 
 export default useDashboats;

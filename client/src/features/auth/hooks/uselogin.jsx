@@ -10,7 +10,6 @@ const useLogin = () => {
       setLoading(true);
       setError(null);
       const res = await loginUser(data.email, data.password);
-      console.log("login", res);
 
       setLoading(false);
       return res;

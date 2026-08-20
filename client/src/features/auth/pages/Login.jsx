@@ -16,7 +16,7 @@ const Login = () => {
       const result = await login(data);
 
       if (result) {
-        localStorage.setItem("token", result.token);
+        localStorage.setItem("token", result);
 
         navigate("/dashboard");
       }

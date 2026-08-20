@@ -154,7 +154,8 @@ const Sidebar = ({
           className={`px-2 pb-3 shrink-0 flex flex-col gap-1 ${collapsed ? "items-center" : ""}`}
         >
           <div
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-2xl ${collapsed ? "justify-center" : ""}`}
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-2xl cursor-pointer hover:bg-orange-500/10 transition-colors ${collapsed ? "justify-center" : ""}`}
+            title="Xem thông tin cá nhân"
           >
             {dashboard?.avatar ? (
               <img
@@ -180,8 +181,10 @@ const Sidebar = ({
                 {dashboard?.name || "User Name"}
               </div>
               <div className="text-xs text-slate-400">
-                {dashboard?.role.charAt(0).toUpperCase() +
-                  dashboard?.role.slice(1)}
+                {dashboard?.role
+                  ? dashboard?.role.charAt(0).toUpperCase() +
+                    dashboard?.role.slice(1)
+                  : "Student"}
               </div>
             </div>
           </div>

@@ -1,245 +1,265 @@
-import { useState, useEffect } from "react";
-import { Search, Bell, Settings, HelpCircle, Menu, ChevronDown, Command, Check, X, Eye } from "lucide-react";
-import useRequestIntructor from "../../../features/user/hooks/useRequestIntructor";
-import { toast } from "react-toastify";
+import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  UserCircle2,
+  User,
+  CreditCard,
+  HelpCircle,
+  LogOut,
+  GraduationCap,
+  BookOpen,
+  Shield,
+} from "lucide-react";
 
-const Header = ({ onMobileMenuClick }) => {
-  const [searchFocused, setSearchFocused] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+export default function CornerOrangeButton({ dashboard, icon }) {
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef(null);
+  const navigate = useNavigate();
 
-  const role = localStorage.getItem("role") || "student";
-  const userInfo = JSON.parse(localStorage.getItem("userInfor") || "{}");
-
-  const { requestList, getRequests, respondRequest, loading } = useRequestIntructor();
-
-  // Tự động load đơn đăng ký nếu là admin
+  const user = dashboard || {};
+  const userName = user.name;
+  const userEmail = user.email;
+  const userRole = user.role;
+  const userAvatar = user.avatar;
   useEffect(() => {
-    if (role === "admin") {
-      getRequests();
-    }
-  }, [role]);
+    const handleClickOutside = (event) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target)
+      ) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-  const handleToggleNotifications = () => {
-    setShowNotifications(!showNotifications);
-    if (!showNotifications && role === "admin") {
-      getRequests();
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    navigate("/login");
+  };
+
+  const getRoleBadge = (role) => {
+    switch (role) {
+      case "admin":
+        return {
+          label: "Admin",
+          bg: "bg-purple-50 text-purple-700 border-purple-200",
+          icon: <Shield size={10} />,
+        };
+      case "instructor":
+        return {
+          label: "Giảng viên",
+          bg: "bg-amber-50 text-amber-700 border-amber-200",
+          icon: <BookOpen size={10} />,
+        };
+      default:
+        return {
+          label: "Học viên",
+          bg: "bg-orange-50 text-orange-700 border-orange-200",
+          icon: <GraduationCap size={10} />,
+        };
     }
   };
 
-  const handleRespond = async (requestId, userId, approvedStatus) => {
-    try {
-      await respondRequest(requestId, userId, approvedStatus);
-      toast.success(approvedStatus === "approved" ? "Phê duyệt giảng viên thành công!" : "Đã từ chối đơn đăng ký.");
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Thao tác thất bại!");
-    }
-  };
+  const roleInfo = getRoleBadge(userRole);
 
   return (
-    <header
-      className="sticky top-0 z-30 h-[72px] px-4 md:px-6 flex items-center justify-between border-b border-white/[0.06]"
-      style={{
-        background: 'rgba(7, 13, 31, 0.6)',
-        backdropFilter: 'blur(24px) saturate(180%)',
-        WebkitBackdropFilter: 'blur(24px) saturate(180%)',
-      }}
-    >
-      {/* Top glow line */}
-      <div className="absolute top-0 left-16 right-16 h-[1px] bg-gradient-to-r from-transparent via-blue-400/30 to-transparent pointer-events-none" />
-
-      {/* Left Section */}
-      <div className="flex items-center gap-4">
-        {/* Mobile Menu Button */}
-        <button
-          className="md:hidden flex items-center justify-center w-10 h-10 rounded-2xl text-slate-400 hover:text-white transition-all border border-white/10 hover:border-white/20"
-          style={{ background: 'rgba(255,255,255,0.05)' }}
-          onClick={onMobileMenuClick}
-          aria-label="Toggle menu"
+    <div className="absolute top-0 right-0 z-40" ref={containerRef}>
+      <button
+        type="button"
+        onClick={() => setOpen((prev) => !prev)}
+        className="group relative w-24 h-24 sm:w-28 sm:h-28 p-0 border-0 bg-transparent cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 focus:outline-none select-none"
+      >
+        <svg
+          viewBox="0 0 100 100"
+          className="w-full h-full drop-shadow-md transition-all duration-200 group-hover:drop-shadow-xl"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <Menu size={20} />
-        </button>
-
-        {/* Search */}
-        <div className={`relative hidden sm:flex items-center transition-all duration-300 ${searchFocused ? 'w-80' : 'w-60'}`}>
-          <Search
-            size={16}
-            className={`absolute left-3.5 transition-colors duration-300 ${searchFocused ? 'text-blue-400' : 'text-slate-500'}`}
-          />
-          <input
-            type="text"
-            placeholder="Search courses, classes..."
-            className="glass-input w-full h-10 pl-10 pr-14 text-sm"
-            onFocus={() => setSearchFocused(true)}
-            onBlur={() => setSearchFocused(false)}
-          />
-          <div className="absolute right-3 flex items-center gap-1 px-1.5 py-0.5 rounded-lg border border-white/10 text-[10px] font-bold text-slate-500"
-            style={{ background: 'rgba(255,255,255,0.05)' }}>
-            <Command size={11} />
-            <span>K</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Right Section */}
-      <div className="flex items-center gap-2 sm:gap-3">
-        <div className="flex items-center gap-1.5 relative">
-          <button
-            className="hidden sm:flex items-center justify-center w-9 h-9 rounded-xl text-slate-500 hover:text-white transition-all border border-transparent hover:border-white/10"
-            style={{ background: 'rgba(255,255,255,0.04)' }}
-            aria-label="Help"
-          >
-            <HelpCircle size={18} />
-          </button>
-
-          {/* Nút Chuông Thông Báo */}
-          <button
-            onClick={handleToggleNotifications}
-            className="relative flex items-center justify-center w-9 h-9 rounded-xl text-slate-500 hover:text-white transition-all border border-transparent hover:border-white/10"
-            style={{ background: 'rgba(255,255,255,0.04)' }}
-            aria-label="Notifications"
-          >
-            <Bell size={18} />
-            {role === "admin" && requestList.length > 0 && (
-              <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-orange-500 border border-[#070d1f]"
-                style={{ boxShadow: '0 0 6px rgba(249,115,22,0.8)' }} />
-            )}
-          </button>
-
-          {/* DDL Dropdown Thông Báo */}
-          {showNotifications && (
-            <div
-              className="absolute right-0 top-11 w-80 rounded-2xl border border-white/[0.08] shadow-2xl overflow-hidden z-[99]"
-              style={{
-                background: "rgba(10, 18, 42, 0.95)",
-                backdropFilter: "blur(20px)",
-              }}
+          <defs>
+            <linearGradient
+              id="cornerOrangeGrad"
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="100%"
             >
-              <div className="p-3.5 border-b border-white/[0.06] flex justify-between items-center bg-white/[0.02]">
-                <span className="text-xs font-black text-white uppercase tracking-wider">Thông báo duyệt đơn</span>
-                {role === "admin" && (
-                  <span className="px-2 py-0.5 rounded bg-orange-500/10 border border-orange-500/20 text-[10px] font-bold text-orange-400">
-                    {requestList.length} đơn chờ
-                  </span>
-                )}
-              </div>
+              <stop offset="0%" stopColor="#fb923c" />
+              <stop offset="60%" stopColor="#f97316" />
+              <stop offset="100%" stopColor="#ea580c" />
+            </linearGradient>
+            <linearGradient
+              id="cornerAmberGrad"
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="100%"
+            >
+              <stop offset="0%" stopColor="#fef08a" />
+              <stop offset="100%" stopColor="#f59e0b" />
+            </linearGradient>
+          </defs>
 
-              <div className="max-h-[360px] overflow-y-auto divide-y divide-white/[0.04]">
-                {role === "admin" ? (
-                  requestList.length > 0 ? (
-                    requestList.map((req) => (
-                      <div key={req._id} className="p-3 flex flex-col gap-2 hover:bg-white/[0.01] transition-colors">
-                        <div className="flex items-center gap-2.5">
-                          <img
-                            src={req.userId?.avatar || "https://res.cloudinary.com/db7t78kpw/image/upload/v1711287957/default-avatar_g9kcxo.png"}
-                            className="w-8 h-8 rounded-xl object-cover border border-white/10"
-                            alt="Avatar"
-                          />
-                          <div className="min-w-0 flex-1">
-                            <div className="text-xs font-bold text-white truncate">{req.userId?.name}</div>
-                            <div className="text-[10px] text-slate-500 truncate">Dạy: {req.specialty}</div>
-                          </div>
-                        </div>
+          {/* Lớp sóng vàng lót */}
+          <path
+            d="M 0 0 
+               H 100 
+               V 100 
+               C 100 68, 86 52, 74 44 
+               C 64 36, 52 26, 42 14 
+               C 34 2, 16 1, 0 0 
+               Z"
+            fill="url(#cornerAmberGrad)"
+            opacity="0.85"
+          />
 
-                        <p className="text-[11px] text-slate-400 bg-white/[0.02] p-2 rounded-lg border border-white/[0.04] m-0">
-                          {req.opinion}
-                        </p>
+          {/* Lớp sóng cam chính */}
+          <path
+            d="M 12 0 
+               H 100 
+               V 88 
+               C 98 62, 85 48, 73 40 
+               C 63 32, 50 22, 38 10 
+               C 30 1, 18 0, 12 0 
+               Z"
+            fill="url(#cornerOrangeGrad)"
+          />
+        </svg>
 
-                        {req.proofImage && (
-                          <div
-                            onClick={() => setSelectedImage(req.proofImage)}
-                            className="relative aspect-video rounded-lg overflow-hidden border border-white/10 group cursor-pointer"
-                          >
-                            <img src={req.proofImage} className="w-full h-full object-cover group-hover:scale-105 transition-transform" alt="Proof" />
-                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                              <Eye size={16} className="text-white" />
-                            </div>
-                          </div>
-                        )}
-
-                        <div className="flex gap-2 justify-end mt-1">
-                          <button
-                            onClick={() => handleRespond(req._id, req.userId?._id, "rejected")}
-                            disabled={loading}
-                            className="px-2.5 py-1 rounded-lg text-[10px] font-black text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition-colors border-0"
-                          >
-                            Từ chối
-                          </button>
-                          <button
-                            onClick={() => handleRespond(req._id, req.userId?._id, "approved")}
-                            disabled={loading}
-                            className="px-2.5 py-1 rounded-lg text-[10px] font-black text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 transition-colors border-0"
-                          >
-                            Phê duyệt
-                          </button>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="p-5 text-center text-xs text-slate-500 font-medium">Không có yêu cầu nào chờ duyệt.</div>
-                  )
-                ) : (
-                  <div className="p-5 text-center text-xs text-slate-500 font-medium">Bạn không có thông báo mới.</div>
-                )}
-              </div>
-            </div>
-          )}
-
-          <button
-            className="hidden sm:flex items-center justify-center w-9 h-9 rounded-xl text-slate-500 hover:text-white transition-all border border-transparent hover:border-white/10"
-            style={{ background: 'rgba(255,255,255,0.04)' }}
-            aria-label="Settings"
-          >
-            <Settings size={18} />
-          </button>
-        </div>
-
-        <div className="w-[1px] h-7 bg-white/[0.08] hidden sm:block" />
-
-        {/* User Menu */}
-        <button
-          className="flex items-center gap-2.5 py-1.5 pl-1.5 pr-3 rounded-2xl border border-white/10 hover:border-white/20 transition-all"
-          style={{ background: 'rgba(255,255,255,0.05)' }}
-        >
-          {userInfo.avatar ? (
-            <img src={userInfo.avatar} className="w-8 h-8 rounded-xl object-cover border border-white/10" alt="Avatar" />
+        {/* Icon UserCircle2 */}
+        <div className="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 text-white pointer-events-none flex items-center justify-center">
+          {icon ? (
+            icon
           ) : (
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center font-bold text-white text-sm"
-              style={{ background: 'linear-gradient(135deg, #f97316, #fb923c)', boxShadow: '0 0 12px rgba(249,115,22,0.4)' }}>
-              {(userInfo.name || "U")[0].toUpperCase()}
-            </div>
+            <UserCircle2 className="w-6 h-6 sm:w-7 sm:h-7 text-white stroke-[2.2] transition-transform duration-300 group-hover:scale-110 drop-shadow-sm" />
           )}
-          <div className="hidden sm:block text-left">
-            <div className="text-sm font-semibold text-white leading-tight">{userInfo.name || "User Name"}</div>
-            <div className="text-xs text-slate-500 font-medium">
-              {role.charAt(0).toUpperCase() + role.slice(1)}
+        </div>
+      </button>
+      {/* 🌟 2. HỘP THOẠI BONG BÓNG (SPEECH BUBBLE MODAL KÍNH MỜ BÓNG BẨY) 🌟 */}
+      {open && (
+        <div
+          className="absolute top-[70px] right-2 sm:top-[84px] sm:right-3 z-50 w-72 rounded-[28px] p-3.5 animate-in fade-in slide-in-from-top-2 duration-200 -translate-y-6"
+          style={{
+            background:
+              "linear-gradient(145deg, rgba(248, 209, 17, 0.2) 0%, rgba(252, 252, 252, 0.10) 100%)",
+            backdropFilter: "blur(32px) saturate(200%)",
+            WebkitBackdropFilter: "blur(32px) saturate(200%)",
+            border: "1px solid rgba(255, 255, 255, 0.85)",
+            boxShadow:
+              "0 24px 60px rgba(180, 100, 20, 0.16), 0 4px 16px rgba(0,0,0,0.04), inset 0 1.5px 1px rgba(255, 255, 255, 0.95), inset 0 -1px 1px rgba(249, 115, 22, 0.08)",
+          }}
+        >
+          <div
+            className="absolute -top-2 right-4.5 w-4.5 h-4.5 rotate-45 rounded-xs pointer-events-none"
+            style={{
+              background: "rgba(177, 69, 6, 0.72)",
+              backdropFilter: "blur(32px)",
+              WebkitBackdropFilter: "blur(32px)",
+              borderLeft: "1px solid rgba(255, 255, 255, 0.85)",
+              borderTop: "1px solid rgba(255, 255, 255, 0.85)",
+            }}
+          />
+
+          {/* User Header Card kính mờ */}
+          <div
+            className="relative p-3 rounded-2xl mb-2 flex items-center gap-3 shadow-2xs"
+            style={{
+              background: "rgba(255, 255, 255, 0.5)",
+              border: "1px solid rgba(255, 255, 255, 0.75)",
+              backdropFilter: "blur(16px)",
+            }}
+          >
+            {userAvatar && (
+              <img
+                src={userAvatar}
+                alt={userName}
+                className="w-11 h-11 rounded-full object-cover border border-amber-200/80 flex-shrink-0 shadow-2xs"
+              />
+            )}
+
+            <div className="min-w-0 flex-1">
+              <p className="font-black text-sm text-slate-900 truncate">
+                {userName}
+              </p>
+              <p className="text-[11px] text-slate-500 truncate">{userEmail}</p>
+              <div className="mt-1">
+                <span
+                  className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold border ${roleInfo.bg}`}
+                >
+                  {roleInfo.icon}
+                  <span>{roleInfo.label}</span>
+                </span>
+              </div>
             </div>
           </div>
-          <ChevronDown size={14} className="text-slate-600 hidden sm:block ml-1" />
-        </button>
-      </div>
 
-      {/* Lightbox Preview cho ảnh minh chứng chứng chỉ */}
-      {selectedImage && (
-        <div
-          onClick={() => setSelectedImage(null)}
-          className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 cursor-pointer animate-fade-in"
-        >
-          <button
-            onClick={() => setSelectedImage(null)}
-            className="absolute top-4 right-4 p-2 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-colors border-0"
-          >
-            <X size={20} />
-          </button>
-          <img
-            src={selectedImage}
-            alt="Certificate Lightbox"
-            className="max-w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl"
-          />
+          <div className="space-y-1 text-xs font-semibold text-slate-700">
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                navigate("/user/profile");
+              }}
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl hover:bg-orange-500/10 hover:text-slate-900 transition-all cursor-pointer text-left group"
+            >
+              <div className="w-7 h-7 rounded-xl bg-orange-500/15 flex items-center justify-center text-orange-600 flex-shrink-0 group-hover:scale-110 transition-transform">
+                <User size={15} />
+              </div>
+              <span className="font-semibold text-slate-800">
+                Thông tin cá nhân
+              </span>
+            </button>
+
+            {/* 2. Billing & Orders */}
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                navigate("/payment_History");
+              }}
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl hover:bg-orange-500/10 hover:text-slate-900 transition-all cursor-pointer text-left group"
+            >
+              <div className="w-7 h-7 rounded-xl bg-amber-500/15 flex items-center justify-center text-amber-600 flex-shrink-0 group-hover:scale-110 transition-transform">
+                <CreditCard size={15} />
+              </div>
+              <span className="font-semibold text-slate-800">
+                Lịch sử đơn hàng
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                navigate("/help");
+              }}
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl hover:bg-blue-500/10 hover:text-slate-900 transition-all cursor-pointer text-left group"
+            >
+              <div className="w-7 h-7 rounded-xl bg-blue-500/15 flex items-center justify-center text-blue-600 flex-shrink-0 group-hover:scale-110 transition-transform">
+                <HelpCircle size={15} />
+              </div>
+              <span className="font-semibold text-slate-800">
+                Trợ giúp &amp; FAQ
+              </span>
+            </button>
+
+            <div className="my-1.5 border-t border-slate-200/50" />
+
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl hover:bg-rose-500/10 text-rose-600 hover:text-rose-700 transition-all cursor-pointer text-left group"
+            >
+              <div className="w-7 h-7 rounded-xl bg-rose-500/15 flex items-center justify-center text-rose-600 flex-shrink-0 group-hover:scale-110 transition-transform">
+                <LogOut size={15} />
+              </div>
+              <span className="font-bold">Đăng xuất</span>
+            </button>
+          </div>
         </div>
       )}
-    </header>
+    </div>
   );
-};
-
-export default Header;
+}
