@@ -128,7 +128,6 @@ export default function CornerOrangeButton({ dashboard, icon }) {
           />
         </svg>
 
-        {/* Icon UserCircle2 */}
         <div className="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 text-white pointer-events-none flex items-center justify-center">
           {icon ? (
             icon
@@ -137,7 +136,7 @@ export default function CornerOrangeButton({ dashboard, icon }) {
           )}
         </div>
       </button>
-      {/* 🌟 2. HỘP THOẠI BONG BÓNG (SPEECH BUBBLE MODAL KÍNH MỜ BÓNG BẨY) 🌟 */}
+
       {open && (
         <div
           className="absolute top-[70px] right-2 sm:top-[84px] sm:right-3 z-50 w-72 rounded-[28px] p-3.5 animate-in fade-in slide-in-from-top-2 duration-200 -translate-y-6"
@@ -229,21 +228,23 @@ export default function CornerOrangeButton({ dashboard, icon }) {
               </span>
             </button>
 
-            <button
-              type="button"
-              onClick={() => {
-                setOpen(false);
-                navigate("/help");
-              }}
-              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl hover:bg-blue-500/10 hover:text-slate-900 transition-all cursor-pointer text-left group"
-            >
-              <div className="w-7 h-7 rounded-xl bg-blue-500/15 flex items-center justify-center text-blue-600 flex-shrink-0 group-hover:scale-110 transition-transform">
-                <HelpCircle size={15} />
-              </div>
-              <span className="font-semibold text-slate-800">
-                Trợ giúp &amp; FAQ
-              </span>
-            </button>
+            {userRole != "admin" && (
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false);
+                  navigate("/help");
+                }}
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl hover:bg-blue-500/10 hover:text-slate-900 transition-all cursor-pointer text-left group"
+              >
+                <div className="w-7 h-7 rounded-xl bg-blue-500/15 flex items-center justify-center text-blue-600 flex-shrink-0 group-hover:scale-110 transition-transform">
+                  <HelpCircle size={15} />
+                </div>
+                <span className="font-semibold text-slate-800">
+                  Trợ giúp &amp; FAQ
+                </span>
+              </button>
+            )}
 
             <div className="my-1.5 border-t border-slate-200/50" />
 
