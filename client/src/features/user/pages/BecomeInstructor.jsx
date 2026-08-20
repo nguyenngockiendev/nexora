@@ -51,7 +51,7 @@ const BecomeInstructor = () => {
   };
 
   return (
-    <div>
+    <div className="w-full min-h-[calc(100vh-140px)]">
       <RequestInstructor
         opinion={opinion}
         setOpinion={setOpinion}
