@@ -86,6 +86,12 @@ const {
   DeleteRatingByuser,
 } = require("../controller/rating-controller");
 const { GenerateQuizAI } = require("../controller/AIgenerete");
+const {
+  ReplybyAdmin,
+  GetAllNotifi,
+  GetNotifiByUser,
+  UsertSendNotifi,
+} = require("../controller/Notification-controller");
 
 const Router = require("express").Router();
 
@@ -234,9 +240,12 @@ Router.put(
   ChangeUserProfile,
 );
 
-Router.patch(
-  "/user_change_pass",
-  authMiddleware,
-  ChangePassWord,
-);
+Router.patch("/user_change_pass", authMiddleware, ChangePassWord);
+
+
+Router.post("/User_send", authMiddleware, UsertSendNotifi);
+Router.post("/admin/Notification/:receiverId", authMiddleware, ReplybyAdmin);
+Router.get("/admin/getAll", authMiddleware, GetAllNotifi);
+Router.get("/user_getNotification", authMiddleware, GetNotifiByUser);
+
 module.exports = Router;
