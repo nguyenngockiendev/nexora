@@ -42,13 +42,13 @@ const CreateCourses = async (req, res) => {
     }
     let thumbnail = "";
     if (req?.file) {
-      thumbnail = await uploadFile(req?.file?.path);
+      thumbnail = await uploadFile(req?.file?.path ,false);
     }
     const data = {
       ...req.body,
       instructor: req.user.userId,
       role: req.user.role,
-      thumbnail: thumbnail,
+      thumbnail: thumbnail.secure_url,
     };
 
     const result = await CreatenewCourses(data);

@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../hooks/useCart";
-import { usePayment } from "../../payment/hooks/usePayment";
+import  usePayment  from "../../payment/hooks/usePayment";
 
 const CartView = () => {
   const navigate = useNavigate();
