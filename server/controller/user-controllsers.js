@@ -10,8 +10,11 @@ const {
   ResponInstructor,
   GetPendingTeacherRequests,
   GetuserbyId,
+  UpdateProfile,
+  UpdatePass,
 } = require("../service/user-service");
 const uploadFile = require("../service/uploadfile-service");
+const { findByIdAndUpdate } = require("../model/Lessons");
 
 const GetAlluser = async (req, res) => {
   try {
@@ -115,7 +118,7 @@ const BecomeInstructor = async (req, res) => {
   try {
     let proofImage = "";
     if (req?.file) {
-      const uploadResult = await uploadFile(req?.file?.path);
+      const uploadResult = await uploadFile(req?.file?.path, false);
       proofImage = uploadResult?.secure_url || "";
     }
     const data = {
@@ -172,6 +175,40 @@ const GetUserInfor = async (req, res) => {
     res.status(error.status || 500).json({ message: error.message });
   }
 };
+const ChangeUserProfile = async (req, res) => {
+  try {
+    let avatar = undefined;
+    if (req.file) {
+      avatar = await uploadFile(req.file.path, false);
+    }
+
+    const data = {
+      userId: req.user.userId,
+      name: req.body.name,
+      email: req.body.email,
+      avatar: avatar.secure_url,
+      phone: req.body.phone,
+    };
+    const result = await UpdateProfile(data);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
+const ChangePassWord = async (req, res) => {
+  try {
+    const data = {
+      userId: req.user.userId,
+      newpassword: req.body.newPassword,
+      currentPassword: req.body.currentPassword,
+
+    };
+    const result = await UpdatePass(data);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
 module.exports = {
   GetAlluser,
   GetUser,
@@ -183,5 +220,7 @@ module.exports = {
   BecomeInstructor,
   ResInstructor,
   GetPendingRequests,
-  GetUserInfor
+  GetUserInfor,
+  ChangeUserProfile,
+  ChangePassWord
 };

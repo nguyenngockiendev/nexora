@@ -24,14 +24,8 @@ const loginUser = async (email, password) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN,
     });
-    const userInfor = {
-      userId: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      avatar: user.avatar,
-    };
-    return { token, userInfor };
+
+    return token;
   } catch (error) {
     console.error("Error occurred while logging in user:", error);
     throw error;
@@ -71,7 +65,7 @@ const resetPassword = async (email, newPassword) => {
   try {
     const emailUser = await User.findOne({ email: email });
     if (!emailUser) {
-      throw { status: 404, message: "Email not found" };
+      throw { status: 404, message: "Email không tồn tại" };
     }
 
     const hashpassword = await bcrypt.hash(
@@ -81,7 +75,7 @@ const resetPassword = async (email, newPassword) => {
     emailUser.password = hashpassword;
 
     await emailUser.save();
-    return { message: "Password reset successfully" };
+    return { message: "đổi mật khẩu thành công" };
   } catch (error) {
     console.log("Error occurred while resetting password:", error);
     throw error;

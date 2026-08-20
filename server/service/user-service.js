@@ -1,11 +1,12 @@
-const Courses = require("../model/Courses");
-const Lessons = require("../model/Lessons");
+const dotenv = require("dotenv");
+dotenv.config();
 const order = require("../model/Orders");
 const errollment = require("../model/Enrollments");
 const user = require("../model/Users");
 const classs = require("../model/Class");
 const TeacherRequests = require("../model/TeacherRequests");
 const Users = require("../model/Users");
+const bcrypt = require("bcrypt");
 
 const GetAllUserByrole = async (data) => {
   try {
@@ -328,6 +329,57 @@ const GetuserbyId = async (data) => {
     throw error;
   }
 };
+
+const UpdateProfile = async (data) => {
+  try {
+    const filldata = ["name", "email", "avatar", "phone"];
+    const inforuser = {};
+    for (const item in data) {
+      if (filldata.includes(item) && data[item] !== undefined)
+        inforuser[item] = data[item];
+    }
+    const userUpdate = await Users.findByIdAndUpdate(
+      data.userId,
+      {
+        $set: inforuser,
+      },
+      { new: true },
+    );
+    if (!userUpdate) {
+      throw { status: 403, message: "cập nhật thất bại" };
+    }
+    return userUpdate;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+const UpdatePass = async (data) => {
+  try {
+    const EmailExits = await Users.findById(data.userId);
+    if (!EmailExits) {
+      throw { status: 403, message: "Tài khoản không tồn tại!" };
+    }
+    const isPassword = await bcrypt.compare(
+      data.currentPassword,
+      EmailExits.password,
+    );
+    if (!isPassword) {
+      throw { status: 403, message: "Mật khẩu không đúng!" };
+    }
+    const hashPass = await bcrypt.hash(
+      data.newpassword,
+      parseInt(process.env.SALT_ROUNDS),
+    );
+    await Users.findByIdAndUpdate(data.userId, {
+      password: hashPass,
+    });
+    return true;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 module.exports = {
   GetAllUserByrole,
   GetUserById,
@@ -340,4 +392,6 @@ module.exports = {
   ResponInstructor,
   GetPendingTeacherRequests,
   GetuserbyId,
+  UpdateProfile,
+  UpdatePass,
 };

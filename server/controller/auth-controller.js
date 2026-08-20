@@ -19,10 +19,10 @@ const RegisterController = async (req, res) => {
   try {
     let avatar = "";
     if (req?.file) {
-      avatar = await uploadFile(req?.file?.path);
+      avatar = await uploadFile(req?.file?.path, false);
     }
 
-    const data = { ...req.body, avatar: avatar };
+    const data = { ...req.body, avatar: avatar.secure_url };
     const result = await registerUser(data);
     res.status(200).json(result);
   } catch (error) {

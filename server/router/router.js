@@ -62,6 +62,8 @@ const {
   ResInstructor,
   GetPendingRequests,
   GetUserInfor,
+  ChangeUserProfile,
+  ChangePassWord,
 } = require("../controller/user-controllsers");
 const {
   GetInstructorBusinessDashboard,
@@ -78,7 +80,11 @@ const {
 } = require("../controller/Process-controller");
 const { SenMessLimit } = require("../controller/message-controller");
 const { ResumePayment } = require("../service/payment-service");
-const { CreateAndUpdateRating, GetRating, DeleteRatingByuser } = require("../controller/rating-controller");
+const {
+  CreateAndUpdateRating,
+  GetRating,
+  DeleteRatingByuser,
+} = require("../controller/rating-controller");
 const { GenerateQuizAI } = require("../controller/AIgenerete");
 
 const Router = require("express").Router();
@@ -191,18 +197,46 @@ Router.put("/res-instructor", authMiddleware, ResInstructor);
 Router.get("/admin/teacher-requests", authMiddleware, GetPendingRequests);
 ///rating
 
-Router.post("/courses/:courseId/ratings",authMiddleware,CreateAndUpdateRating);
-Router.get("/courses/:courseId/ratings",GetRating);
-Router.delete("/ratings/:ratingId",authMiddleware,DeleteRatingByuser);
-Router.get("/generate/:lessionId/quizz" ,authMiddleware,GenerateQuizAI)
-Router.get("/instructor/courses-with-lessons" ,authMiddleware,GetCourseForQuizz)
-Router.get("/student/quizzes" ,authMiddleware,GetQuizBystuden)
-Router.get("/instructor/recorded-courses" ,authMiddleware,GetCoursewithLession)
-Router.get("/lessions/:courseId" ,authMiddleware,GetLessionDetails)
-Router.get("/admin/courses/quality-control" ,authMiddleware,ManagerCourse);
-Router.get("/admin/history" ,authMiddleware,GetHistoryByadmin);
+Router.post(
+  "/courses/:courseId/ratings",
+  authMiddleware,
+  CreateAndUpdateRating,
+);
+Router.get("/courses/:courseId/ratings", GetRating);
+Router.delete("/ratings/:ratingId", authMiddleware, DeleteRatingByuser);
+Router.get("/generate/:lessionId/quizz", authMiddleware, GenerateQuizAI);
+Router.get(
+  "/instructor/courses-with-lessons",
+  authMiddleware,
+  GetCourseForQuizz,
+);
+Router.get("/student/quizzes", authMiddleware, GetQuizBystuden);
+Router.get(
+  "/instructor/recorded-courses",
+  authMiddleware,
+  GetCoursewithLession,
+);
+Router.get("/lessions/:courseId", authMiddleware, GetLessionDetails);
+Router.get("/admin/courses/quality-control", authMiddleware, ManagerCourse);
+Router.get("/admin/history", authMiddleware, GetHistoryByadmin);
 
-Router.get("/user/information" ,authMiddleware,GetUserInfor);
+Router.get("/user/information", authMiddleware, GetUserInfor);
 
-Router.patch("/admin/courses/:courseId/status" ,authMiddleware,IsLookedCourseAndLession);
+Router.patch(
+  "/admin/courses/:courseId/status",
+  authMiddleware,
+  IsLookedCourseAndLession,
+);
+Router.put(
+  "/user_update/profile",
+  authMiddleware,
+  upload.single("avatar"),
+  ChangeUserProfile,
+);
+
+Router.patch(
+  "/user_change_pass",
+  authMiddleware,
+  ChangePassWord,
+);
 module.exports = Router;
