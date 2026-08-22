@@ -12,6 +12,7 @@ import {
   Receipt,
   FileText,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const AdminPaymentTable = ({
   transactions,
@@ -24,6 +25,7 @@ const AdminPaymentTable = ({
   setCurrentPage,
   loading,
 }) => {
+  const navigate = useNavigate();
   const [expandedOrderId, setExpandedOrderId] = useState(null);
 
   const toggleExpand = (orderId) => {
@@ -401,6 +403,7 @@ const AdminPaymentTable = ({
                                     {formatPrice(item.price)}
                                   </span>
                                   <button
+                                  onClick={() =>navigate(`/instructor/lessons/${item.courseId._id}`)}
                                     type="button"
                                     className="px-4 py-2 rounded-full text-xs font-bold text-orange-600 bg-orange-50 border border-orange-200/80 hover:bg-orange-100 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer shadow-2xs"
                                   >

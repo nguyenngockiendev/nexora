@@ -26,12 +26,12 @@ const courseRoute = [
     icon: "",
   },
   {
-    path: "courses/details/class/live/:courseId",
+    path: "courses-all/details/class/live/:courseId",
     element: <DetailsCourseLive />,
     icon: "",
   },
   {
-    path: "courses/details/recorded/:courseId",
+    path: "courses-all/details/recorded/:courseId",
     element: <CourseDetailsRecorded />,
     icon: "",
   },

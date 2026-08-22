@@ -15,6 +15,7 @@ import {
   RotateCcw,
   MessageSquare,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -46,12 +47,11 @@ const AdminCourseQualityView = ({
   bannedCount,
 }) => {
   const displayList = filteredCourses || courses || [];
-
+  const navigate = useNavigate();
   return (
     <div className="space-y-6 pb-12">
       <ToastContainer position="top-right" autoClose={3000} />
 
-      {/* ── Top Hero Header Banner ── */}
       <div
         className="p-8 md:p-10 rounded-[2.5rem] relative overflow-hidden shadow-sm transition-all flex flex-col lg:flex-row lg:items-center justify-between gap-6"
         style={{
@@ -262,6 +262,8 @@ const AdminCourseQualityView = ({
                       ? "bg-amber-50/30 hover:bg-amber-50/60"
                       : "hover:bg-white/90"
                 }`}
+                style={{ cursor: "pointer" }}
+                onClick={() => navigate(`/instructor/lessons/${item._id}`)}
               >
                 {/* Course Details */}
                 <div className="col-span-1 lg:col-span-4 flex items-center gap-4">

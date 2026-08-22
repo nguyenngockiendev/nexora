@@ -1,6 +1,3 @@
-
-
-
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -9,14 +6,33 @@ import CreateCourese from "../components/CreateCoursesForm";
 import useCoursesService from "../hooks/useCreateCourses";
 
 const CreateCourses = () => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, watch, setValue } = useForm({
+    defaultValues: {
+      type: "recorded",
+      level: "beginner",
+      title: "",
+      description: "",
+      price: "",
+    },
+  });
   const { error, Create } = useCoursesService();
   const [loading, setLoading] = useState(false);
   const [thumbail, setThumbnail] = useState(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState(null);
   const [notification, setnNotification] = useState("");
   const [exits, setExits] = useState(false);
 
   const navigate = useNavigate();
+
+  const handleThumbnailChange = (file) => {
+    if (file) {
+      setThumbnail(file);
+      setThumbnailPreview(URL.createObjectURL(file));
+    } else {
+      setThumbnail(null);
+      setThumbnailPreview(null);
+    }
+  };
 
   const onSubmit = async (data) => {
     try {
@@ -27,11 +43,13 @@ const CreateCourses = () => {
       formdata.append("price", data.price);
       formdata.append("level", data.level);
       formdata.append("type", data.type);
-      formdata.append("thumbnail", thumbail);
+      if (thumbail) {
+        formdata.append("thumbnail", thumbail);
+      }
       const result = await Create(formdata);
-      
+
       if (!result) {
-        toast.error(error || "Failed to create course!");
+        toast.error(error || "Tạo khóa học thất bại!");
         return;
       }
       if (data?.type === "live") {
@@ -42,7 +60,7 @@ const CreateCourses = () => {
         });
         return;
       }
-      toast.success("Create Courses successfully!");
+      toast.success("Tạo khóa học mới thành công!");
       navigate("/courses");
     } catch (err) {
       console.error(err);
@@ -50,14 +68,18 @@ const CreateCourses = () => {
       setLoading(false);
     }
   };
+
   return (
     <CreateCourese
       register={register}
       handleSubmit={handleSubmit}
+      watch={watch}
+      setValue={setValue}
       onSubmit={onSubmit}
       error={error}
       navigate={navigate}
-      setThumbnail={setThumbnail}
+      setThumbnail={handleThumbnailChange}
+      thumbnailPreview={thumbnailPreview}
       loading={loading}
       onConfirm={notification.onConfirm}
       onCancel={notification.onCancel}

@@ -27,6 +27,7 @@ const CoursesForm = ({
 }) => {
   const [selectedSort, setSelectedSort] = useState("latest");
   const { addToCart, cartItems } = useCart();
+  
   return (
     <div className="w-full space-y-8 pb-16">
       <section
@@ -54,8 +55,6 @@ const CoursesForm = ({
             </span>
           </button>
         </div>
-
-        {/* Ambient warm glows */}
         <div
           className="absolute -top-24 -left-24 w-80 h-80 rounded-full opacity-25 pointer-events-none blur-[70px]"
           style={{
@@ -212,9 +211,8 @@ const CoursesForm = ({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
           {courses.map((cou) => {
             const isLive = cou?.type === "live";
-            const rating =
-              cou?.avgRatting || cou?.rating || (isLive ? 4.9 : 4.8);
-            const reviewCount = cou?.totalReviews || cou?.ratingsCount || 120;
+            const rating = cou?.rattingforcoure;
+            const reviewCount = cou?.Rattingleng || 0;
             const priceFormatted =
               Number(cou?.price || 0) === 0
                 ? "Free"
@@ -239,7 +237,7 @@ const CoursesForm = ({
                 }}
               >
                 <div>
-                  {/* Thumbnail Image Container (Tăng chiều cao 20% lên h-52) */}
+             
                   <div className="relative h-52 rounded-2xl overflow-hidden mb-4 shadow-xs group-hover:shadow-sm transition-all bg-gradient-to-br from-orange-100 via-amber-50 to-slate-100 flex items-center justify-center">
                     <img
                       src={
@@ -299,11 +297,10 @@ const CoursesForm = ({
                     <span>{cou?.category || cou?.level || "General"}</span>
                     <span>•</span>
                     <span className="truncate">
-                      {cou?.instructor?.name || "Expert Instructor"}
+                      {cou?.instructor || "Expert Instructor"}
                     </span>
                   </div>
 
-                  {/* Rating & Price on SAME Row (Chuẩn y hệt mẫu ảnh 2) */}
                   <div className="flex items-center justify-between pt-1 mb-3">
                     {/* Rating */}
                     <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700">

@@ -31,6 +31,8 @@ const InstructorCurriculumPage = () => {
       socket.off("messageChangettext");
     };
   });
+
+  console.log("process", process);
   useEffect(() => {
     if (detaisLession) {
       setArrlession(detaisLession);
