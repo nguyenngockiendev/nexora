@@ -22,7 +22,7 @@ const generateQuizAI = async (data) => {
     })
       .select("chunkIndex text")
       .lean();
-    if (Exitstranc.some((e) => !e.text.trim())) {
+    if (Exitstranc.length === 0 || Exitstranc.some((e) => !e.text.trim())) {
       throw {
         status: 404,
         message: "Lỗi chưa tạo trancrip. hãy tạo Trancrip trước!",

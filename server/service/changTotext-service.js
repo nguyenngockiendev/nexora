@@ -4,14 +4,16 @@ const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 ffmpeg.setFfmpegPath(ffmpegPath);
 const { parentPort } = require("worker_threads");
 
-const { pipeline } = require("@xenova/transformers");
-const wavefile = require("wavefile");
 const LessonTranscripts = require("../model/LessonTranscripts");
 const Lessons = require("../model/Lessons");
+const { TranscribeAI } = require("./ModunAIgenerate/quizAI.service");
 
 const cutAudio = (videoUrl, start, duration) => {
   return new Promise((resolve, reject) => {
-    const outputPath = `./temp/audio-${start}.wav`;
+    if (!fs.existsSync("./temp")) {
+      fs.mkdirSync("./temp", { recursive: true });
+    }
+    const outputPath = `./temp/audio-${start}-${Date.now()}.mp3`;
 
     ffmpeg(videoUrl)
       .setStartTime(start)
@@ -19,7 +21,8 @@ const cutAudio = (videoUrl, start, duration) => {
       .noVideo()
       .audioFrequency(16000)
       .audioChannels(1)
-      .format("wav")
+      .audioBitrate("32k")
+      .format("mp3")
       .output(outputPath)
       .on("end", () => {
         resolve(outputPath);
@@ -31,75 +34,118 @@ const cutAudio = (videoUrl, start, duration) => {
   });
 };
 
-const readAudioData = (filePath) => {
-  const buffer = fs.readFileSync(filePath);
-  const wav = new wavefile.WaveFile(buffer);
-  wav.toBitDepth("32f");
-  wav.toSampleRate(16000);
-  let audioData = wav.getSamples();
-  if (Array.isArray(audioData)) {
-    audioData = audioData[0];
-  }
-  return audioData;
-};
-
 const ChunkingVideo = async (lessionId) => {
-  const transcriber = await pipeline(
-    "automatic-speech-recognition",
-    "Xenova/whisper-small",
-  );
-
   try {
     const video = await Lessons.findOne({
       _id: lessionId,
       status: "PROCESSING",
     });
-    if (video) {
-      const chunking = 120;
-      let index = 0;
 
-      for (let start = 0; start < video.duration; start += chunking) {
-        const end = Math.min(start + chunking, video.duration);
-        const audiopath = await cutAudio(video.videoUrl, start, end - start);
+    if (!video) {
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      return;
+    }
 
-        const audioData = readAudioData(audiopath);
-        const output = await transcriber(audioData, {
-          chunk_length_s: 30,
-          language: "vi",
-          task: "transcribe",
-        });
+    const chunking = 1800;
+    const allSegments = [];
+    const totalApiChunks = Math.max(Math.ceil(video.duration / chunking), 1);
+    let currentApiChunk = 0;
 
-        await LessonTranscripts.create({
-          lessonId: video._id,
-          chunkIndex: index,
-          startTime: start,
-          endTime: end,
-          text: typeof output === "string" ? output : (output?.text ?? ""),
-          status: "DONE",
-        });
+    for (let start = 0; start < video.duration; start += chunking) {
+      const end = Math.min(start + chunking, video.duration);
+      const duration = Math.max(end - start, 1);
+      const audiopath = await cutAudio(video.videoUrl, start, duration);
 
-        index++;
-        const totalChunk = Math.ceil(video.duration / chunking);
-        let process = Math.round((index / totalChunk) * 100);
-         if(parentPort){
-          parentPort.postMessage({
-            lessionId:lessionId,
-            status:"PROCESSING",
-            percent:process,
-          })
-         }
+      try {
+        const output = await TranscribeAI(audiopath);
+
+        if (
+          output &&
+          Array.isArray(output.segments) &&
+          output.segments.length > 0
+        ) {
+          for (const seg of output.segments) {
+            allSegments.push({
+              start: start + seg.start,
+              end: start + seg.end,
+              text: (seg.text || "").trim(),
+            });
+          }
+        } else if (output && output.text) {
+          allSegments.push({
+            start: start,
+            end: end,
+            text: output.text.trim(),
+          });
+        }
+      } catch (err) {
+        console.error(`Lỗi khi transcribe khúc ${start}s -> ${end}s:`, err);
+      } finally {
         if (fs.existsSync(audiopath)) {
           fs.unlinkSync(audiopath);
         }
       }
-      video.status = "TRANSCRIPT_READY";
-      await video.save();
-    } else {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+
+      currentApiChunk++;
+      const processPercent = Math.min(
+        Math.round((currentApiChunk / totalApiChunks) * 80),
+        80,
+      );
+      if (parentPort) {
+        parentPort.postMessage({
+          lessionId: lessionId,
+          status: "PROCESSING",
+          percent: processPercent,
+        });
+      }
     }
+
+    const targetChunkSize = 120;
+    let chunkIndex = 0;
+    let currentText = "";
+    let chunkStart = 0;
+
+    for (const seg of allSegments) {
+      currentText += (currentText ? " " : "") + seg.text;
+
+      if (seg.end - chunkStart >= targetChunkSize) {
+        await LessonTranscripts.create({
+          lessonId: video._id,
+          chunkIndex: chunkIndex++,
+          startTime: Math.round(chunkStart),
+          endTime: Math.round(seg.end),
+          text: currentText.trim(),
+          status: "DONE",
+        });
+
+        chunkStart = seg.end;
+        currentText = "";
+      }
+    }
+
+    if (currentText.trim()) {
+      await LessonTranscripts.create({
+        lessonId: video._id,
+        chunkIndex: chunkIndex++,
+        startTime: Math.round(chunkStart),
+        endTime: Math.round(video.duration || chunkStart + 120),
+        text: currentText.trim(),
+        status: "DONE",
+      });
+    }
+     if (parentPort) {
+        parentPort.postMessage({
+          lessionId: lessionId,
+          status: "Transcrip ready",
+          percent: 100,
+        });
+      }
+
+    video.status = "TRANSCRIPT_READY";
+    await video.save();
   } catch (error) {
-    console.log(error);
+    console.error("Lỗi trong ChunkingVideo:", error);
   }
 };
 
-module.exports = { cutAudio, readAudioData, ChunkingVideo };
+module.exports = { cutAudio, ChunkingVideo };

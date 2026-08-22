@@ -9,19 +9,14 @@ const Worker2 = (data, io) => {
 
   work.on("message", (result) => {
     if (io) {
-      io.emit("messageChangettext", `${result}`);
-    }
-  });
-  work.on("message", (result) => {
-    if (io) {
       io.emit("messageChangettext", result);
     }
   });
-  
 
   work.on("error", (err) => {
+    console.error("Worker error:", err);
     if (io) {
-      io.emit("messageChangettext", `${err}`);
+      io.emit("messageChangettext", { error: err?.message || err });
     }
   });
 };

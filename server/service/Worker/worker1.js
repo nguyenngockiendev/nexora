@@ -10,16 +10,12 @@ const ChantextThear = async () => {
 
     try {
       const targetId = (data._id || data).toString();
-
-      const work = await ChunkingVideo(targetId);
-
-      work.on("message", (result) => {
-        if (io) {
-          io.emit("messageChangettext", result); 
-        }
-      });
+      await ChunkingVideo(targetId);
     } catch (error) {
-      parentPort.postMessage(error?.message || error);
+      console.error("Lỗi trong Worker1:", error);
+      if (parentPort) {
+        parentPort.postMessage({ error: error?.message || error });
+      }
     }
   });
 };

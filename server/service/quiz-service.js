@@ -178,7 +178,7 @@ const GetCourse = async (data) => {
       };
     }
     const listLession = await Lessons.find()
-      .select("title")
+      .select("title status duration type")
       .populate("courseId", "title")
       .lean();
     if (listCourse.length === 0) {

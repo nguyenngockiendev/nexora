@@ -14,6 +14,12 @@ const Changerole = (data) => {
   });
   return request;
 };
+const ChangeUserRole = (data) => {
+  const request = api.patch(`/admin/users/${data.id}/role`, {
+    roles: data?.role,
+  });
+  return request;
+};
 const BecomeInstructor = (data) => {
   const request = api.post(`/become-instructor`, data);
   return request;
@@ -38,6 +44,7 @@ export {
   GetAlluserByAdmin,
   GetDatelsuserByAdmin,
   Changerole,
+  ChangeUserRole,
   BecomeInstructor,
   ResponInstructor,
   GetPendingRequestsByAdmin,

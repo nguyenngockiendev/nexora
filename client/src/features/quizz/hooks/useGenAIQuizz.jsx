@@ -7,7 +7,6 @@ const useGenAIQuizz = () => {
   const [loadingAI, setLoading] = useState(false);
 
   const AIquizz = async (lessionId, questionCount) => {
-    console.log("🚀 CALL API", lessionId, questionCount);
     try {
       setLoading(true);
       const listQuizzAI = await GenAIForQuizz(lessionId, questionCount);
