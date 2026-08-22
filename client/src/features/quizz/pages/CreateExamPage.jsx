@@ -92,6 +92,8 @@ function CreateExamPage() {
         })),
       });
       setIstrue(true);
+      setShowModal(false);
+      toast.success("AI đã sinh bộ câu hỏi Quiz thành công! ✨");
     }
   }, [quizzAI]);
 
@@ -160,9 +162,12 @@ function CreateExamPage() {
           error={error}
           navigate={navigate}
           courseId={courseId}
+          lessionId={lessionId}
           quizz={quizz}
           istrue={istrue}
           loading={loading}
+          loadingAI={loadingAI}
+          errorAI={errorAI}
         />
       </Row>
     </div>

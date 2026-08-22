@@ -30,7 +30,9 @@ const GetQuizExam = async () => {
 };
 
 const GenAIForQuizz = async (lessionId, questionCount) => {
-  const res = await api.get(`generate/${lessionId}/quizz?questionCount=${questionCount}`);
+  const res = await api.get(
+    `generate/${lessionId}/quizz?questionCount=${questionCount}`,
+  );
   return res;
 };
 export {

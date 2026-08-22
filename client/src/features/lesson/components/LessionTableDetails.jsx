@@ -1,4 +1,5 @@
 import { Badge, Button, Card, Dropdown, Modal } from "react-bootstrap";
+import { useOutletContext } from "react-router-dom";
 
 const LessionTableLession = ({
   navigate,
@@ -13,6 +14,9 @@ const LessionTableLession = ({
   handselectedLesson,
   onClose,
 }) => {
+  const { dashboard } = useOutletContext();
+  const role = dashboard?.role;
+
   return (
     <div className="p-3 p-md-4 w-100">
       {/* Top Header Navigation */}
@@ -35,24 +39,27 @@ const LessionTableLession = ({
         </div>
 
         {/* Action Buttons */}
-        <div className="d-flex align-items-center gap-2">
-          <Button
-            variant="light"
-            className="quiz-btn-soft rounded-pill px-4 fw-semibold"
-            type="button"
-            onClick={() => navigate(`/create_lession/${courseId}`)}
-          >
-            + Thêm bài học
-          </Button>
-          <Button
-            variant="primary"
-            className="rounded-pill px-4 fw-semibold d-flex align-items-center gap-2"
-            type="button"
-            onClick={() => navigate("/create_quizz/lession")}
-          >
-            ✨ Tạo Quiz AI
-          </Button>
-        </div>
+
+        {role == "instructor" && (
+          <div className="d-flex align-items-center gap-2">
+            <Button
+              variant="light"
+              className="quiz-btn-soft rounded-pill px-4 fw-semibold"
+              type="button"
+              onClick={() => navigate(`/create_lession/${courseId}`)}
+            >
+              + Thêm bài học
+            </Button>
+            <Button
+              variant="primary"
+              className="rounded-pill px-4 fw-semibold d-flex align-items-center gap-2"
+              type="button"
+              onClick={() => navigate("/create_quizz/lession")}
+            >
+              ✨ Tạo Quiz AI
+            </Button>
+          </div>
+        )}
       </div>
 
       <Card className="quiz-card p-3">
@@ -140,7 +147,7 @@ const LessionTableLession = ({
                     )}
                   </div>
                 </div>
-                {item.status === "PENDING" && (
+                {item.status === "PENDING" && dashboard.role == "intructor" && (
                   <div>
                     <Button
                       onClick={(e) => e.stopPropagation()}
@@ -162,33 +169,37 @@ const LessionTableLession = ({
                     {item.type}
                   </Badge>
 
-                  <Dropdown align="end" onClick={(e) => e.stopPropagation()}>
-                    <Dropdown.Toggle
-                      variant="light"
-                      className="quiz-btn-soft rounded-circle p-1 px-2 border-0 no-caret"
-                      id={`dropdown-${item._id}`}
-                    >
-                      ⋯
-                    </Dropdown.Toggle>
+                  {role == "instructor" && (
+                    <Dropdown align="end" onClick={(e) => e.stopPropagation()}>
+                      <Dropdown.Toggle
+                        variant="light"
+                        className="quiz-btn-soft rounded-circle p-1 px-2 border-0 no-caret"
+                        id={`dropdown-${item._id}`}
+                      >
+                        ⋯
+                      </Dropdown.Toggle>
 
-                    <Dropdown.Menu className="shadow-sm border-0 rounded-3">
-                      <Dropdown.Item
-                        onClick={() => navigate(`/update_lession/${item._id}`)}
-                      >
-                        ✏️ Chỉnh sửa bài
-                      </Dropdown.Item>
-                      <Dropdown.Item onClick={() => handselectedLesson(item)}>
-                        👁️ Xem trước
-                      </Dropdown.Item>
-                      <Dropdown.Divider />
-                      <Dropdown.Item
-                        className="text-danger"
-                        onClick={() => handDelete(item._id)}
-                      >
-                        🗑️ Xóa khỏi giáo trình
-                      </Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
+                      <Dropdown.Menu className="shadow-sm border-0 rounded-3">
+                        <Dropdown.Item
+                          onClick={() =>
+                            navigate(`/update_lession/${item._id}`)
+                          }
+                        >
+                          ✏️ Chỉnh sửa bài
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => handselectedLesson(item)}>
+                          👁️ Xem trước
+                        </Dropdown.Item>
+                        <Dropdown.Divider />
+                        <Dropdown.Item
+                          className="text-danger"
+                          onClick={() => handDelete(item._id)}
+                        >
+                          🗑️ Xóa khỏi giáo trình
+                        </Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  )}
                 </div>
               </div>
             ))
