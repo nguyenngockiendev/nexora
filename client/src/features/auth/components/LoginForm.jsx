@@ -32,8 +32,6 @@ const LoginForm = ({
           "linear-gradient(135deg, #fdf8f3 0%, #f7eee2 35%, #fae8d4 70%, #fdf4eb 100%)",
       }}
     >
-      {/* ── 3D Golden Floating Orbs (Background Decoration) ── */}
-      {/* Orb 1: Far Left Sphere */}
       <div
         className="absolute -left-16 top-1/4 w-64 h-64 sm:w-80 sm:h-80 rounded-full pointer-events-none opacity-85 z-0"
         style={{
@@ -45,7 +43,6 @@ const LoginForm = ({
         }}
       />
 
-      {/* Orb 2: Top Right Giant Sphere */}
       <div
         className="absolute -right-20 -top-20 w-80 h-80 sm:w-96 sm:h-96 rounded-full pointer-events-none opacity-80 z-0"
         style={{
@@ -56,7 +53,6 @@ const LoginForm = ({
         }}
       />
 
-      {/* Orb 3: Bottom Right Small Sphere */}
       <div
         className="absolute left-[62%] bottom-6 sm:bottom-12 w-20 h-20 sm:w-28 sm:h-28 rounded-full pointer-events-none opacity-90 z-0"
         style={{
@@ -66,10 +62,8 @@ const LoginForm = ({
         }}
       />
 
-      {/* Ambient Lighting Orbs */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-amber-200/40 pointer-events-none filter blur-[120px] z-0" />
 
-      {/* ── Top Left: Back to Home Button ── */}
       <Link
         to="/"
         className="absolute top-5 left-5 sm:top-8 sm:left-8 z-30 inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold text-slate-700 bg-white/85 hover:bg-white border border-white/95 shadow-md shadow-amber-900/5 backdrop-blur-xl transition-all hover:scale-105 active:scale-95 group cursor-pointer"
@@ -78,12 +72,10 @@ const LoginForm = ({
           size={14}
           className="text-slate-500 group-hover:-translate-x-0.5 group-hover:text-orange-600 transition-all"
         />
-        <span>Back to Home</span>
+        <span>Quay lại Trang chủ</span>
       </Link>
 
-      {/* ── Main Container with Floating Badges ── */}
       <div className="relative z-10 w-full max-w-5xl">
-        {/* ── Main Frosted Glass Card ── */}
         <div
           className="rounded-[2.5rem] sm:rounded-[38px] p-6 sm:p-10 md:p-12 relative overflow-visible grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center"
           style={{
@@ -95,9 +87,7 @@ const LoginForm = ({
               "0 30px 80px rgba(180, 100, 20, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9)",
           }}
         >
-          {/* ════════════ LEFT COLUMN: LOGIN FORM ════════════ */}
           <div className="flex flex-col justify-center space-y-6">
-            {/* Logo Nexora LMS */}
             <div className="flex items-center gap-2.5">
               <div
                 className="w-9 h-9 rounded-xl flex items-center justify-center text-white shadow-md shadow-orange-500/25 flex-shrink-0"
@@ -114,17 +104,15 @@ const LoginForm = ({
               </span>
             </div>
 
-            {/* Title & Subtitle */}
             <div>
               <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-                Welcome Back
+                Chào Mừng Trở Lại
               </h1>
               <p className="text-xs sm:text-sm font-semibold text-slate-500 mt-1">
-                Login to your personal learning dashboard.
+                Đăng nhập vào bảng điều khiển học tập cá nhân của bạn.
               </p>
             </div>
 
-            {/* Error Message */}
             {error && (
               <div className="p-3.5 px-4 rounded-2xl bg-rose-50 border border-rose-200/80 text-rose-700 text-xs font-bold flex items-center gap-2.5 shadow-2xs">
                 <AlertCircle size={16} className="text-rose-500 flex-shrink-0" />
@@ -132,9 +120,7 @@ const LoginForm = ({
               </div>
             )}
 
-            {/* Form */}
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              {/* Email Field */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-700 tracking-wide">
                   Email
@@ -146,17 +132,16 @@ const LoginForm = ({
                   <input
                     type="email"
                     required
-                    placeholder="john.doe@email.com"
+                    placeholder="vidu@email.com"
                     {...register("email")}
                     className="w-full pl-11 pr-4 py-3.5 text-sm font-semibold text-slate-900 placeholder-slate-400 bg-transparent outline-none rounded-2xl"
                   />
                 </div>
               </div>
 
-              {/* Password Field */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-700 tracking-wide">
-                  Password
+                  Mật khẩu
                 </label>
                 <div className="relative rounded-2xl bg-white/90 border border-slate-200 shadow-2xs transition-all focus-within:border-orange-400 focus-within:ring-4 focus-within:ring-orange-500/15">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
@@ -179,25 +164,22 @@ const LoginForm = ({
                   </button>
                 </div>
 
-                {/* Forgot Password Link */}
                 <div className="flex justify-end pt-1">
                   <Link
                     to="/forgot-password"
                     className="text-xs font-bold text-slate-500 hover:text-orange-600 transition-colors"
                   >
-                    Forgot Password?
+                    Quên mật khẩu?
                   </Link>
                 </div>
               </div>
 
-              {/* Divider */}
               <div className="flex items-center my-2">
                 <div className="flex-1 border-t border-slate-200/80" />
-                <span className="px-3 text-xs font-semibold text-slate-400">or</span>
+                <span className="px-3 text-xs font-semibold text-slate-400">hoặc</span>
                 <div className="flex-1 border-t border-slate-200/80" />
               </div>
 
-              {/* Google Quick Sign In Button */}
               <button
                 type="button"
                 className="w-full py-3 px-4 rounded-2xl bg-white/95 border border-slate-200 shadow-2xs hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center justify-center gap-2.5 text-xs sm:text-sm font-bold text-slate-700 cursor-pointer group"
@@ -220,10 +202,9 @@ const LoginForm = ({
                     d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"
                   />
                 </svg>
-                <span>Google Quick Sign In</span>
+                <span>Đăng nhập nhanh với Google</span>
               </button>
 
-              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={loading}
@@ -235,32 +216,29 @@ const LoginForm = ({
                 {loading ? (
                   <>
                     <Loader2 size={16} className="animate-spin" />
-                    <span>Signing in...</span>
+                    <span>Đang đăng nhập...</span>
                   </>
                 ) : (
                   <>
-                    <span>Sign In</span>
+                    <span>Đăng Nhập</span>
                     <ArrowRight size={16} />
                   </>
                 )}
               </button>
 
-              {/* Register Link */}
               <p className="text-center text-xs font-semibold text-slate-500 pt-2">
-                Don't have an account?{" "}
+                Bạn chưa có tài khoản?{" "}
                 <Link
                   to="/register"
                   className="font-bold text-orange-600 hover:text-orange-700 underline underline-offset-2"
                 >
-                  Create free account
+                  Tạo tài khoản miễn phí
                 </Link>
               </p>
             </form>
           </div>
 
-          {/* ════════════ RIGHT COLUMN: LIVE LEARNING SHOWCASE ════════════ */}
           <div className="relative flex items-center justify-center pl-0 lg:pl-4">
-            {/* Inner Student Performance Glass Card */}
             <div
               className="w-full max-w-md rounded-3xl p-5 sm:p-6 flex flex-col gap-4 relative overflow-hidden"
               style={{
@@ -270,10 +248,9 @@ const LoginForm = ({
                 backdropFilter: "blur(20px)",
               }}
             >
-              {/* Header: Student Profile */}
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
-                  Student Performance
+                  Hiệu Suất Học Tập
                 </p>
                 <div className="flex items-center gap-3">
                   <img
@@ -294,11 +271,10 @@ const LoginForm = ({
                 </div>
               </div>
 
-              {/* Stats Row */}
               <div className="grid grid-cols-2 gap-4 py-2 border-y border-slate-100">
                 <div>
                   <p className="text-[11px] font-semibold text-slate-500">
-                    Course Completion
+                    Hoàn thành khóa học
                   </p>
                   <p className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mt-0.5">
                     98%
@@ -306,7 +282,7 @@ const LoginForm = ({
                 </div>
                 <div>
                   <p className="text-[11px] font-semibold text-slate-500">
-                    Overall Grade
+                    Điểm tổng kết
                   </p>
                   <p className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mt-0.5">
                     A+
@@ -314,19 +290,18 @@ const LoginForm = ({
                 </div>
               </div>
 
-              {/* Live Class Preview Card */}
               <div className="space-y-1.5">
                 <p className="text-[11px] font-semibold text-slate-500">
-                  Live Class Preview
+                  Xem trước lớp trực tuyến
                 </p>
                 <div className="rounded-2xl p-3.5 bg-slate-900 text-white relative overflow-hidden shadow-md flex items-center justify-between group cursor-pointer">
                   <div className="relative z-10 max-w-[80%]">
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-500/90 text-white text-[9px] font-black tracking-wider uppercase mb-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                      LIVE NOW
+                      ĐANG TRỰC TIẾP
                     </span>
                     <p className="text-xs font-bold text-slate-100 truncate">
-                      Advanced UX Design - Session 3: Prototyping
+                      Advanced UX Design - Buổi 3: Prototyping
                     </p>
                   </div>
 
@@ -336,11 +311,10 @@ const LoginForm = ({
                 </div>
               </div>
 
-              {/* 5-Star Student Review & AI Quiz Master */}
               <div className="flex items-center justify-between gap-2 pt-1">
                 <div>
                   <p className="text-[10px] font-semibold text-slate-400">
-                    5-Star Student Review
+                    Đánh giá 5 sao từ học viên
                   </p>
                   <div className="flex items-center gap-1 text-xs font-bold text-slate-800 mt-0.5">
                     <div className="flex text-amber-500">
@@ -348,7 +322,7 @@ const LoginForm = ({
                         <Star key={i} size={11} className="fill-amber-400 text-amber-400" />
                       ))}
                     </div>
-                    <span>Excellent!</span>
+                    <span>Xuất sắc!</span>
                   </div>
                 </div>
 
@@ -361,8 +335,6 @@ const LoginForm = ({
           </div>
         </div>
 
-        {/* ════════════ FLOATING AMBIENT GLASS CARDS ════════════ */}
-        {/* Floating Card 1: Top Right (+98% Completion Rate) */}
         <div
           className="hidden md:flex absolute -top-5 -right-6 lg:-right-8 items-center gap-3 p-3.5 px-4 rounded-2xl z-20 shadow-xl"
           style={{
@@ -380,12 +352,11 @@ const LoginForm = ({
               +98%
             </p>
             <p className="text-[10px] font-semibold text-slate-500">
-              Completion Rate
+              Tỷ lệ hoàn thành
             </p>
           </div>
         </div>
 
-        {/* Floating Card 2: Middle Right (Live Class Starting Soon) */}
         <div
           className="hidden md:block absolute top-1/2 -right-8 lg:-right-12 -translate-y-1/2 p-3.5 px-5 rounded-2xl z-20 shadow-xl space-y-1"
           style={{
@@ -396,7 +367,7 @@ const LoginForm = ({
           }}
         >
           <p className="text-[9px] uppercase font-bold tracking-wider text-slate-400">
-            Live Class Starting Soon
+            Lớp học sắp bắt đầu
           </p>
           <p className="text-xs font-black text-slate-900">
             Digital Marketing
@@ -406,7 +377,6 @@ const LoginForm = ({
           </p>
         </div>
 
-        {/* Floating Card 3: Bottom Right (Community - Join 25,000+ Students) */}
         <div
           className="hidden md:flex absolute -bottom-5 -right-4 lg:-right-6 flex-col gap-1.5 p-3.5 px-4 rounded-2xl z-20 shadow-xl"
           style={{
@@ -417,12 +387,11 @@ const LoginForm = ({
           }}
         >
           <p className="text-[9px] uppercase font-bold tracking-wider text-slate-400">
-            Community
+            Cộng đồng học tập
           </p>
           <p className="text-xs font-bold text-slate-800">
-            Join 25,000+ Students
+            Hơn 25.000+ Học viên tham gia
           </p>
-          {/* Overlapping Avatar Stack */}
           <div className="flex items-center -space-x-2 pt-0.5">
             <img
               src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80"

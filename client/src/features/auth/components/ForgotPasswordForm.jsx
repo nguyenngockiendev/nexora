@@ -11,14 +11,14 @@ const FogotPassWordForm = ({
   return (
     <div className="glass-panel p-8 sm:p-10 w-full flex flex-col items-center">
       <div className="flex items-center gap-2 font-bold text-xl text-slate-900 mb-6">
-        <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-500 text-white">
+        <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/20">
           <Sparkles size={20} />
         </div>
-        <span>LinguaAI</span>
+        <span>Nexora LMS</span>
       </div>
 
-      <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2">Forgot Password</h1>
-      <p className="text-slate-500 text-center mb-8">Please enter your email to verify.</p>
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2">Quên Mật Khẩu</h1>
+      <p className="text-slate-500 text-center mb-8">Vui lòng nhập email và mật khẩu mới để đặt lại.</p>
 
       {status && (
         <div className="w-full p-3 mb-6 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 rounded-xl text-sm text-center">
@@ -33,8 +33,6 @@ const FogotPassWordForm = ({
       )}
 
       <form onSubmit={handleSubmit(onsubmit)} className="w-full flex flex-col gap-5">
-        
-        {/* Email */}
         <div className="flex flex-col gap-1.5">
           <label className="text-sm font-semibold text-slate-700">Email</label>
           <div className="relative">
@@ -43,16 +41,15 @@ const FogotPassWordForm = ({
             </span>
             <input
               className="glass-input w-full pl-10"
-              placeholder="Enter your email"
+              placeholder="vidu@email.com"
               autoComplete="email"
               {...register("email")}
             />
           </div>
         </div>
 
-        {/* New Password */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-semibold text-slate-700">New Password</label>
+          <label className="text-sm font-semibold text-slate-700">Mật khẩu mới</label>
           <div className="relative">
             <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
               <Lock size={18} />
@@ -60,22 +57,21 @@ const FogotPassWordForm = ({
             <input
               type="password"
               className="glass-input w-full pl-10"
-              placeholder="Enter new password"
+              placeholder="Nhập mật khẩu mới"
               autoComplete="new-password"
               {...register("newpassword")}
             />
           </div>
         </div>
 
-        {/* Buttons */}
         <div className="flex flex-col sm:flex-row items-center gap-4 mt-4">
-          <Link to="/login" className="w-full sm:flex-1 flex justify-center items-center gap-2 py-3 px-4 glass-card text-slate-700 font-semibold hover:bg-white/80 transition-colors">
+          <Link to="/login" className="w-full sm:flex-1 flex justify-center items-center gap-2 py-3 px-4 glass-card text-slate-700 font-semibold hover:bg-white/80 transition-colors cursor-pointer">
             <ArrowLeft size={16} />
-            Back
+            Quay lại
           </Link>
           
-          <button type="submit" className="w-full sm:flex-1 flex justify-center items-center gap-2 py-3 px-4 bg-gradient-to-br from-indigo-500 to-violet-500 text-white font-semibold rounded-xl shadow-lg shadow-indigo-500/30 hover:-translate-y-0.5 hover:shadow-indigo-500/40 transition-all">
-            Change
+          <button type="submit" className="w-full sm:flex-1 flex justify-center items-center gap-2 py-3 px-4 bg-gradient-to-br from-orange-500 to-amber-500 text-white font-semibold rounded-xl shadow-lg shadow-orange-500/30 hover:-translate-y-0.5 hover:shadow-orange-500/40 transition-all cursor-pointer">
+            Đổi mật khẩu
             <ArrowRight size={16} />
           </button>
         </div>

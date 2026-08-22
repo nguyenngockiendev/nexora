@@ -24,10 +24,12 @@ const CoursesForm = ({
   navigate,
   errorPayment,
   messagepayment,
+  setStar,
+  setPrice,
 }) => {
   const [selectedSort, setSelectedSort] = useState("latest");
   const { addToCart, cartItems } = useCart();
-  
+
   return (
     <div className="w-full space-y-8 pb-16">
       <section
@@ -70,7 +72,7 @@ const CoursesForm = ({
 
         <div className="relative z-10 max-w-3xl space-y-4">
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-tight">
-            Level up with{" "}
+            Nâng tầm kiến thức cùng{" "}
             <span
               style={{
                 background:
@@ -79,25 +81,21 @@ const CoursesForm = ({
                 WebkitTextFillColor: "transparent",
               }}
             >
-              Premium Courses
+              Khóa Học Hàng Đầu
             </span>
           </h1>
 
           <p className="text-sm md:text-base font-semibold text-slate-500 max-w-2xl mx-auto leading-relaxed">
-            Master new skills with interactive live sessions or learn at your
-            own pace with our meticulously crafted recorded courses. Start
-            learning today!
+            Làm chủ kỹ năng mới với các lớp học trực tuyến tương tác hoặc học theo lộ trình riêng với các bài giảng chất lượng cao. Bắt đầu học ngay hôm nay!
           </p>
         </div>
       </section>
 
-      {/* ── 2. Pill Search & Filters Bar ── */}
       <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
-        {/* Search Input Pill */}
         <div className="relative w-full lg:max-w-md">
           <input
             type="text"
-            placeholder="Search courses, skills, instructors..."
+            placeholder="Tìm kiếm khóa học, kỹ năng, giảng viên..."
             onChange={(e) => setSearch && setSearch(e.target.value)}
             className="w-full pl-6 pr-12 py-3.5 rounded-full text-sm font-semibold bg-white/80 border border-white/90 shadow-[0_4px_20px_rgba(0,0,0,0.03)] backdrop-blur-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all text-slate-800 placeholder-slate-400"
             style={{ borderRadius: "9999px" }}
@@ -107,19 +105,17 @@ const CoursesForm = ({
           </div>
         </div>
 
-        {/* Filter Dropdown Pills Group */}
         <div className="flex items-center gap-2.5 flex-wrap w-full lg:w-auto justify-start lg:justify-end">
-          {/* Level Filter Pill */}
           <div className="relative">
             <select
               onChange={(e) => setFilter && setFilter(e.target.value)}
               className="appearance-none pl-4 pr-9 py-2.5 rounded-full text-xs md:text-sm font-bold bg-white/80 border border-white/90 shadow-sm backdrop-blur-xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-slate-700 cursor-pointer"
               style={{ borderRadius: "9999px" }}
             >
-              <option value="All Courses">All Levels</option>
-              <option value="beginner">Beginner</option>
-              <option value="intermediate">Intermediate</option>
-              <option value="advanced">Advanced</option>
+              <option value="All Courses">Tất cả cấp độ</option>
+              <option value="beginner">Cơ bản</option>
+              <option value="intermediate">Trung cấp</option>
+              <option value="advanced">Nâng cao</option>
             </select>
             <ChevronDown
               size={14}
@@ -127,15 +123,15 @@ const CoursesForm = ({
             />
           </div>
 
-          {/* Rating Filter Pill */}
           <div className="relative">
             <select
               className="appearance-none pl-4 pr-9 py-2.5 rounded-full text-xs md:text-sm font-bold bg-white/80 border border-white/90 shadow-sm backdrop-blur-xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-slate-700 cursor-pointer"
               style={{ borderRadius: "9999px" }}
+              onChange={(e) => setStar && setStar(e.target.value)}
             >
-              <option value="all">Rating: All</option>
-              <option value="4.5">4.5+ Stars</option>
-              <option value="4.0">4.0+ Stars</option>
+              <option value="all">Đánh giá: Tất cả</option>
+              <option value="4.5">4.5+ Sao</option>
+              <option value="4.0">4.0+ Sao</option>
             </select>
             <ChevronDown
               size={14}
@@ -143,17 +139,16 @@ const CoursesForm = ({
             />
           </div>
 
-          {/* Sort By Filter Pill */}
           <div className="relative">
             <select
               value={selectedSort}
-              onChange={(e) => setSelectedSort(e.target.value)}
+              onChange={(e) => setPrice && setPrice(e.target.value)}
               className="appearance-none pl-4 pr-9 py-2.5 rounded-full text-xs md:text-sm font-bold bg-white/80 border border-white/90 shadow-sm backdrop-blur-xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-slate-700 cursor-pointer"
               style={{ borderRadius: "9999px" }}
             >
-              <option value="latest">Sort by: Latest</option>
-              <option value="price-asc">Price: Low to High</option>
-              <option value="price-desc">Price: High to Low</option>
+              <option value="all">Giá: Tất cả</option>
+              <option value="price-asc">Giá: Thấp đến cao</option>
+              <option value="price-desc">Giá: Cao đến thấp</option>
             </select>
             <ChevronDown
               size={14}
@@ -163,7 +158,6 @@ const CoursesForm = ({
         </div>
       </div>
 
-      {/* ── Payment / Alert Messages ── */}
       {(messagepayment || errorPayment) && (
         <div className="flex flex-col gap-2.5">
           {messagepayment && (
@@ -202,8 +196,7 @@ const CoursesForm = ({
 
       {loading && (
         <div className="flex items-center justify-center gap-3 py-16 text-orange-500 font-bold text-base">
-          <Loader2 className="animate-spin" size={26} /> Loading course
-          catalog...
+          <Loader2 className="animate-spin" size={26} /> Đang tải danh sách khóa học...
         </div>
       )}
 
@@ -215,14 +208,8 @@ const CoursesForm = ({
             const reviewCount = cou?.Rattingleng || 0;
             const priceFormatted =
               Number(cou?.price || 0) === 0
-                ? "Free"
+                ? "Miễn phí"
                 : `${Number(cou?.price || 0).toLocaleString("vi-VN")} đ`;
-
-            const thumbnail =
-              cou?.thumbnail ||
-              (isLive
-                ? "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=500&q=80"
-                : "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&q=80");
 
             return (
               <div
@@ -237,7 +224,6 @@ const CoursesForm = ({
                 }}
               >
                 <div>
-             
                   <div className="relative h-52 rounded-2xl overflow-hidden mb-4 shadow-xs group-hover:shadow-sm transition-all bg-gradient-to-br from-orange-100 via-amber-50 to-slate-100 flex items-center justify-center">
                     <img
                       src={
@@ -258,7 +244,6 @@ const CoursesForm = ({
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-black/10 pointer-events-none" />
 
-                    {/* Type Badge */}
                     <div className="absolute top-2.5 right-2.5 z-10">
                       {isLive ? (
                         <div
@@ -269,7 +254,7 @@ const CoursesForm = ({
                             borderRadius: "9999px",
                           }}
                         >
-                          <Radio size={11} className="animate-pulse" /> LIVE
+                          <Radio size={11} className="animate-pulse" /> TRỰC TUYẾN
                         </div>
                       ) : (
                         <div
@@ -280,29 +265,26 @@ const CoursesForm = ({
                             borderRadius: "9999px",
                           }}
                         >
-                          <Video size={11} /> RECORDED
+                          <Video size={11} /> VIDEO BÀI GIẢNG
                         </div>
                       )}
                     </div>
                   </div>
 
-                  {/* Course Title */}
                   <h3 className="text-sm md:text-base font-black text-slate-900 line-clamp-1 leading-snug group-hover:text-orange-600 transition-colors mb-1.5">
-                    {cou?.title || "Course Title"}
+                    {cou?.title || "Khóa học"}
                   </h3>
 
-                  {/* Short Meta line (Clock / Category / Level) */}
                   <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 mb-3">
                     <Clock size={13} />
-                    <span>{cou?.category || cou?.level || "General"}</span>
+                    <span>{cou?.category || cou?.level || "Tổng quát"}</span>
                     <span>•</span>
                     <span className="truncate">
-                      {cou?.instructor || "Expert Instructor"}
+                      {cou?.instructor || "Giảng viên chuyên môn"}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between pt-1 mb-3">
-                    {/* Rating */}
                     <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700">
                       <Star
                         size={14}
@@ -313,11 +295,10 @@ const CoursesForm = ({
                       </span>
                       <span className="text-slate-300 font-normal">|</span>
                       <span className="text-slate-400 font-semibold">
-                        {reviewCount} reviews
+                        {reviewCount} Lượt đánh giá
                       </span>
                     </div>
 
-                    {/* Price */}
                     <div className="text-base font-black text-orange-600">
                       {priceFormatted}
                     </div>
@@ -331,11 +312,10 @@ const CoursesForm = ({
                       className="flex-1 py-2 px-3 rounded-full text-xs font-extrabold text-slate-700 bg-white/90 border border-slate-300 hover:bg-white hover:border-slate-400 hover:text-slate-900 hover:scale-[1.02] active:scale-95 transition-all shadow-2xs text-center"
                       style={{ borderRadius: "9999px" }}
                     >
-                      Add to cart
+                      Thêm vào giỏ hàng
                     </button>
                   )}
 
-                  {/* Enroll Now Button */}
                   <button
                     disabled={paymentloading}
                     onClick={() => {
@@ -351,7 +331,7 @@ const CoursesForm = ({
                       borderRadius: "9999px",
                     }}
                   >
-                    Details Course
+                    Chi tiết khóa học
                   </button>
                 </div>
               </div>
@@ -360,15 +340,14 @@ const CoursesForm = ({
         </div>
       )}
 
-      {/* ── Empty State ── */}
       {!loading && courses?.length === 0 && (
         <div className="flex flex-col items-center justify-center text-center p-12 rounded-[2rem] bg-white/60 backdrop-blur-2xl border border-dashed border-orange-200">
           <Search size={32} className="text-orange-400 mb-2 opacity-70" />
           <h4 className="text-base font-black text-slate-800 mb-1">
-            No courses found
+            Không tìm thấy khóa học nào
           </h4>
           <p className="text-xs font-semibold text-slate-500">
-            Try searching with a different keyword or adjusting your filters.
+            Hãy thử tìm kiếm với từ khóa khác hoặc điều chỉnh các bộ lọc.
           </p>
         </div>
       )}

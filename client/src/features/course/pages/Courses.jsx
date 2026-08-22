@@ -14,6 +14,8 @@ const Courses = ({ mode }) => {
 
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All Courses");
+  const [price, setPrice] = useState("");
+  const [star, setStar] = useState("all");
 
   useEffect(() => {
     getcourses();
@@ -39,11 +41,27 @@ const Courses = ({ mode }) => {
       if (filter !== "All Courses") {
         result = result.filter((item) => item.level === filter);
       }
+
+      if (price !== "all" && price == "price-desc") {
+        result = result.sort((a, b) => b.price - a.price);
+      }
+      if (price !== "all" && price == "price-asc") {
+        result = result.sort((a, b) => a.price - b.price);
+      }
+
+
+
+      if (star !== "all") {
+        result = result.filter(
+          (item) => Number(item.rattingforcoure) >= Number(star),
+        );
+      }
+
       setFilterdata(result);
     };
 
     handfilter();
-  }, [search, filter, courses]);
+  }, [search, filter, courses, price, star]);
 
   useEffect(() => {
     const handfilter = () => {
@@ -56,6 +74,7 @@ const Courses = ({ mode }) => {
       if (filter !== "All Courses") {
         result = result.filter((item) => item.level === filter);
       }
+
       setFilterdatall(result);
     };
 
@@ -66,6 +85,8 @@ const Courses = ({ mode }) => {
     <div className="w-full min-h-screen py-6 md:py-8">
       {mode == "all" ? (
         <CoursesForm
+          setPrice={setPrice}
+          setStar={setStar}
           messagepayment={messagepayment}
           payment={payment}
           errorPayment={errorPayment}
@@ -80,6 +101,8 @@ const Courses = ({ mode }) => {
         />
       ) : (
         <CoursesForm
+          setPrice={setPrice}
+          setStar={setStar}
           messagepayment={messagepayment}
           payment={payment}
           errorPayment={errorPayment}

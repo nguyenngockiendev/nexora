@@ -28,12 +28,10 @@ const HistoryTable = ({
     setExpandedOrderId((prev) => (prev === orderId ? null : orderId));
   };
 
-  // Safe order list resolution (handles array or wrapped object)
   const orderList = Array.isArray(orders)
     ? orders
     : orders?.items || orders?.OrderHistory || [];
 
-  // Summary Metrics Calculation
   const totalSpent = orderList
     .filter((o) => o.status === "completed")
     .reduce((sum, o) => sum + (o.Totalprice || o.totalPrice || 0), 0);
@@ -45,7 +43,6 @@ const HistoryTable = ({
 
   return (
     <div className="w-full space-y-6 pb-16">
-      {/* ── Top Header Banner (Warm Glassmorphism) ── */}
       <div
         className="w-full rounded-[2.5rem] p-6 sm:p-8 md:p-10 relative overflow-hidden transition-all"
         style={{
@@ -59,7 +56,7 @@ const HistoryTable = ({
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-50 border border-orange-200 text-orange-700 text-xs font-bold mb-2 shadow-2xs">
               <CreditCard size={13} className="text-orange-500" />
-              <span>Billing &amp; Transactions</span>
+              <span>Lịch sử hóa đơn &amp; Giao dịch</span>
             </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
               Lịch sử đơn hàng
@@ -72,7 +69,7 @@ const HistoryTable = ({
 
           <button
             type="button"
-            onClick={() => navigate("/courses-all")}
+            onClick={() => navigate("/courses")}
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold text-slate-700 bg-white/90 border border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition-all cursor-pointer shadow-2xs self-start sm:self-auto"
           >
             <ShoppingBag size={14} />
@@ -80,9 +77,7 @@ const HistoryTable = ({
           </button>
         </div>
 
-        {/* ── 3 Summary Stat Cards ── */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8 pt-6 border-t border-amber-200/60">
-          {/* Card 1: Total Spent */}
           <div className="p-4 rounded-2xl bg-white/90 border border-slate-200/80 shadow-2xs">
             <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
               Tổng chi tiêu
@@ -97,7 +92,6 @@ const HistoryTable = ({
             </span>
           </div>
 
-          {/* Card 2: Completed Orders */}
           <div className="p-4 rounded-2xl bg-white/90 border border-slate-200/80 shadow-2xs">
             <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
               Đơn hoàn thành
@@ -111,7 +105,6 @@ const HistoryTable = ({
             </span>
           </div>
 
-          {/* Card 3: Pending Orders */}
           <div className="p-4 rounded-2xl bg-white/90 border border-slate-200/80 shadow-2xs">
             <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
               Chờ thanh toán
@@ -127,7 +120,6 @@ const HistoryTable = ({
         </div>
       </div>
 
-      {/* ── Orders Table / List Container ── */}
       <div
         className="w-full rounded-[2.5rem] p-4 sm:p-6 md:p-8 relative overflow-hidden transition-all"
         style={{
@@ -138,7 +130,6 @@ const HistoryTable = ({
         }}
       >
         {orderList.length === 0 ? (
-          /* Empty State */
           <div className="flex flex-col items-center justify-center text-center py-16 px-4">
             <div className="w-16 h-16 rounded-3xl bg-orange-100/80 flex items-center justify-center text-orange-600 mb-4 shadow-inner">
               <ShoppingBag size={32} />
@@ -162,7 +153,6 @@ const HistoryTable = ({
           </div>
         ) : (
           <div className="space-y-4">
-            {/* Desktop / Tablet List of Orders */}
             <div className="space-y-4">
               {orderList.map((order) => {
                 const items = Array.isArray(order.items) ? order.items : [];
@@ -182,9 +172,7 @@ const HistoryTable = ({
                     key={order._id}
                     className="rounded-2xl sm:rounded-3xl bg-white/90 border border-slate-200/80 shadow-2xs hover:border-amber-300 transition-all overflow-hidden"
                   >
-                    {/* Main Order Card Header Row */}
                     <div className="p-4 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                      {/* Left: Thumbnail & Course / Order Info */}
                       <div className="flex items-start sm:items-center gap-3.5 min-w-0 flex-1">
                         <div className="w-16 h-12 sm:w-20 sm:h-14 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0 shadow-inner">
                           <img
@@ -202,7 +190,7 @@ const HistoryTable = ({
                             <span
                               className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                                 isLive
-                                  ? "bg-rose-50 text-rose-700 border border-rose-200"
+                                   ? "bg-rose-50 text-rose-700 border border-rose-200"
                                   : "bg-orange-50 text-orange-700 border border-orange-200"
                               }`}
                             >
@@ -211,7 +199,7 @@ const HistoryTable = ({
                               ) : (
                                 <BookOpen size={10} />
                               )}
-                              <span>{isLive ? "Live Class" : "Recorded"}</span>
+                              <span>{isLive ? "Trực tuyến" : "Tự học"}</span>
                             </span>
 
                             {items.length > 1 && (
@@ -244,7 +232,6 @@ const HistoryTable = ({
                         </div>
                       </div>
 
-                      {/* Middle: Price & Status */}
                       <div className="flex items-center justify-between md:justify-end gap-6 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100">
                         <div className="text-left md:text-right">
                           <p className="text-[11px] font-semibold text-slate-400 uppercase">
@@ -268,7 +255,6 @@ const HistoryTable = ({
                         </div>
                       </div>
 
-                      {/* Right: Action Buttons */}
                       <div className="flex items-center justify-end gap-2 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100 flex-shrink-0">
                         {order.status === "completed" && (
                           <button
@@ -344,7 +330,6 @@ const HistoryTable = ({
                       </div>
                     </div>
 
-                    {/* Expandable Sub-items (if order has multiple courses) */}
                     {isExpanded && items.length > 1 && (
                       <div className="p-4 sm:p-6 bg-slate-50/80 border-t border-slate-100 space-y-3">
                         <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
@@ -382,7 +367,7 @@ const HistoryTable = ({
 
                                 <div className="flex items-center gap-4 flex-shrink-0">
                                   <span className="font-semibold text-slate-500">
-                                    {subIsLive ? "Live Class" : "Recorded"}
+                                    {subIsLive ? "Trực tuyến" : "Tự học"}
                                   </span>
                                   <span className="font-black text-slate-900">
                                     {formatPrice

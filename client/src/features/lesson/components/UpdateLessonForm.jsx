@@ -10,40 +10,35 @@ const UpdateLessonForm = ({
   handleupdate,
   handleSubmit,
   isuploading,
-  uploadPercent
+  uploadPercent,
 }) => {
   return (
     <Card className="mx-4 shadow-sm border-0">
       <Card.Body className="p-4">
-        {/* Header */}{" "}
         <div className="mb-4">
-          {" "}
-          <h3 className="fw-bold mb-1">Create Lesson</h3>{" "}
+          <h3 className="fw-bold mb-1">Cập Nhật Bài Học</h3>
           <p className="text-muted mb-0">
-            Add new lesson content for this course{" "}
-          </p>{" "}
+            Chỉnh sửa thông tin, video và tài liệu của bài học
+          </p>
         </div>
         <Form onSubmit={handleSubmit(handleupdate)}>
-          {/* Title */}
           <div className="mb-3">
-            <label className="form-label">Lesson Title</label>
+            <label className="form-label">Tiêu đề bài học</label>
             <InputGroup>
               <InputGroup.Text>📘</InputGroup.Text>
               <Form.Control
                 type="text"
-                placeholder="Enter lesson title"
+                placeholder="Nhập tiêu đề bài học"
                 required
                 {...register("title")}
               />
             </InputGroup>
           </div>
 
-          {/* Video URL */}
           <div className="mb-3">
-            <label className="form-label">Video URL</label>
+            <label className="form-label">Video bài giảng</label>
             <InputGroup>
               <InputGroup.Text>🎥</InputGroup.Text>
-
               <Form.Control
                 type="file"
                 placeholder="https://..."
@@ -55,37 +50,33 @@ const UpdateLessonForm = ({
             </InputGroup>
           </div>
 
-          {/* Preview toggle */}
           <div className="mb-3 d-flex align-items-center gap-2">
             <Form.Check {...register("isPreview")} />
-            <span>Allow Preview</span>
+            <span>Cho phép học thử miễn phí</span>
           </div>
 
-          {/* Status Processing */}
           <div className="mb-3 d-flex align-items-center gap-2">
             <Form.Check
               {...register("status")}
               type="checkbox"
               value="PROCESSING"
             />
-            <span>Auto Video Processing (AI Transcript)</span>
+            <span>Tự động tạo phụ đề AI (Speech-to-Text)</span>
           </div>
 
-          {/* Content */}
           <div className="mb-3">
-            <label className="form-label">Content</label>
+            <label className="form-label">Nội dung mô tả bài học</label>
             <Form.Control
               as="textarea"
               rows={4}
-              placeholder="Lesson description..."
+              placeholder="Mô tả nội dung bài học..."
               required
               {...register("content")}
             />
           </div>
 
-          {/* Resource */}
           <InputGroup>
-            <InputGroup.Text>Recouse</InputGroup.Text>
+            <InputGroup.Text>Tài liệu đính kèm</InputGroup.Text>
             <Form.Control
               type="file"
               placeholder="PDF"
@@ -99,10 +90,9 @@ const UpdateLessonForm = ({
             />
           </InputGroup>
 
-          {/* Buttons */}
           <div className="d-flex gap-2 mt-4">
             <Button type="submit" variant="primary" disabled={isuploading}>
-              {isuploading ? `Đang lưu...${uploadPercent}%` : "Lưu bài học"}
+              {isuploading ? `Đang lưu... ${uploadPercent}%` : "Lưu bài học"}
             </Button>
 
             <Button
@@ -110,7 +100,7 @@ const UpdateLessonForm = ({
               variant="secondary"
               onClick={() => navigate(-1)}
             >
-              Back
+              Quay lại
             </Button>
           </div>
         </Form>

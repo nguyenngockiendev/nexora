@@ -19,7 +19,6 @@ const LessionTableLession = ({
 
   return (
     <div className="p-3 p-md-4 w-100">
-      {/* Top Header Navigation */}
       <div className="d-flex align-items-center justify-content-between mb-4">
         <div className="d-flex align-items-center gap-3">
           <Button
@@ -28,19 +27,17 @@ const LessionTableLession = ({
             type="button"
             onClick={() => navigate("/instructor/lessons")}
           >
-            ← Back
+            ← Quay lại
           </Button>
           <div>
             <div className="text-muted small fw-semibold">
-              Lessons › ReactJS cho người đi làm
+              Bài học › Chi tiết giáo trình
             </div>
-            <h1 className="quiz-page-title mb-0">ReactJS cho người đi làm</h1>
+            <h1 className="quiz-page-title mb-0">Giáo trình bài học</h1>
           </div>
         </div>
 
-        {/* Action Buttons */}
-
-        {role == "instructor" && (
+        {role === "instructor" && (
           <div className="d-flex align-items-center gap-2">
             <Button
               variant="light"
@@ -65,7 +62,7 @@ const LessionTableLession = ({
       <Card className="quiz-card p-3">
         <Card.Header className="quiz-card-header d-flex justify-content-between align-items-center bg-transparent border-bottom-0 pb-2">
           <Card.Title className="mb-0 fw-bold fs-5 text-slate-800">
-            Curriculum List
+            Danh Sách Bài Giảng
           </Card.Title>
           <Badge pill bg="warning" text="dark" className="px-3 py-1">
             {curriculum.length} mục bài giảng
@@ -74,7 +71,6 @@ const LessionTableLession = ({
 
         <Card.Body className="p-2 d-flex flex-column gap-2">
           <div className="d-flex gap-2 mb-3 px-1">
-            {/* Ô 1: Tìm kiếm theo tên bài học */}
             <input
               type="text"
               className="form-control rounded-pill px-3 py-2 border-0 bg-white shadow-sm flex-grow-1"
@@ -82,7 +78,6 @@ const LessionTableLession = ({
               value={searchTerm || ""}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            {/* Ô 2: Select chọn lọc theo Trạng thái */}
             <select
               className="form-select rounded-pill px-3 py-2 border-0 bg-white shadow-sm fw-semibold text-slate-700"
               style={{ width: "220px" }}
@@ -90,7 +85,7 @@ const LessionTableLession = ({
               onChange={(e) => setSearchTerm(e.target.value)}
             >
               <option value="">⚙️ Tất cả trạng thái</option>
-              <option value="TRANSCRIPT_READY">✓ Transcript Ready</option>
+              <option value="TRANSCRIPT_READY">✓ Đã tạo phụ đề</option>
               <option value="PROCESSING">⌛ Đang bóc tách ngầm...</option>
               <option value="PENDING">● Chờ xử lý</option>
             </select>
@@ -108,7 +103,6 @@ const LessionTableLession = ({
                 style={{ cursor: "pointer" }}
                 onClick={() => handselectedLesson(item)}
               >
-                {/* Left: Drag Handle + Title */}
                 <div className="d-flex align-items-center gap-3 flex-grow-1">
                   <span
                     className="text-muted fs-5 cursor-grab"
@@ -136,7 +130,7 @@ const LessionTableLession = ({
                         {item.status === "TRANSCRIPT_READY" ||
                         (process?.lessionId === item._id &&
                           process?.percent === 100)
-                          ? "✓ Transcript Ready"
+                          ? "✓ Đã tạo phụ đề"
                           : item.status === "PROCESSING"
                             ? process?.lessionId === item._id &&
                               process?.percent !== undefined
@@ -147,15 +141,17 @@ const LessionTableLession = ({
                     )}
                   </div>
                 </div>
-                {item.status === "PENDING" && dashboard.role == "intructor" && (
+                {item.status === "PENDING" && dashboard.role === "instructor" && (
                   <div>
                     <Button
-                      onClick={(e) => e.stopPropagation()}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handupdatetracrip(item._id);
+                      }}
                       variant="light"
-                      onClick={() => handupdatetracrip(item._id)}
                       disabled={process}
                     >
-                      ⚡ Auto Video Processing
+                      ⚡ Tự động phân tích video
                     </Button>
                   </div>
                 )}
@@ -166,10 +162,10 @@ const LessionTableLession = ({
                     bg={item.type === "Quiz" ? "warning" : "primary"}
                     className="px-3 py-1 fw-semibold"
                   >
-                    {item.type}
+                    {item.type === "Quiz" ? "Trắc nghiệm" : "Video bài học"}
                   </Badge>
 
-                  {role == "instructor" && (
+                  {role === "instructor" && (
                     <Dropdown align="end" onClick={(e) => e.stopPropagation()}>
                       <Dropdown.Toggle
                         variant="light"
@@ -231,7 +227,6 @@ const LessionTableLession = ({
           </Modal.Header>
           <Modal.Body className="p-4 bg-white">
             <div className="row g-4">
-              {/* Cột Trái: Trình phát Video */}
               <div className="col-12 col-md-7">
                 {selectedLesson.videoUrl ? (
                   <div className="ratio ratio-16x9 rounded-3 overflow-hidden shadow-sm border border-light bg-black">
@@ -251,7 +246,6 @@ const LessionTableLession = ({
                   </div>
                 )}
               </div>
-              {/* Cột Phải: Thông tin chi tiết */}
               <div className="col-12 col-md-5 d-flex flex-column gap-3">
                 <div className="p-3 rounded-3 bg-light bg-opacity-50 border border-light">
                   <small className="text-muted fw-semibold d-block mb-1">
@@ -269,7 +263,7 @@ const LessionTableLession = ({
                     className="px-3 py-2 fw-semibold"
                   >
                     {selectedLesson.status === "TRANSCRIPT_READY"
-                      ? "✓ Transcript Ready"
+                      ? "✓ Đã tạo phụ đề"
                       : selectedLesson.status === "PROCESSING"
                         ? "⌛ Đang bóc tách ngầm..."
                         : "● Chờ xử lý"}
@@ -286,7 +280,6 @@ const LessionTableLession = ({
                   </p>
                 </div>
 
-                {/* Tài liệu đính kèm (nếu có) */}
                 {selectedLesson.resources &&
                   selectedLesson.resources.length > 0 && (
                     <div className="p-3 rounded-3 bg-light bg-opacity-50 border border-light">
@@ -328,4 +321,5 @@ const LessionTableLession = ({
     </div>
   );
 };
+
 export default LessionTableLession;

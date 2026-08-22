@@ -18,48 +18,48 @@ import styles from "./HomePage.module.css";
 const features = [
   {
     icon: BookOpen,
-    title: "Recorded & Live Courses",
+    title: "Khóa Học Video & Trực Tuyến",
     description:
-      "Learn at your own pace or join interactive live classes with expert instructors.",
+      "Tự học linh hoạt theo tiến độ cá nhân hoặc tham gia các lớp học trực tiếp tương tác cùng giảng viên.",
   },
   {
     icon: Bot,
-    title: "AI-Powered Quizzes",
+    title: "Trắc Nghiệm & Quiz AI",
     description:
-      "Auto-generate quizzes from PDFs and video transcripts to reinforce learning.",
+      "Tự động tạo bộ câu hỏi trắc nghiệm thông minh từ tài liệu PDF và phụ đề video giúp củng cố kiến thức.",
   },
   {
     icon: MessageSquare,
-    title: "Real-time Class Chat",
+    title: "Trò Chuyện Thời Gian Thực",
     description:
-      "Collaborate with classmates and instructors during live sessions instantly.",
+      "Trao đổi, thảo luận trực tiếp cùng bạn bè và giảng viên ngay trong suốt buổi học.",
   },
   {
     icon: Video,
-    title: "Live Classroom",
+    title: "Phòng Học Trực Tuyến (Live Class)",
     description:
-      "Join virtual classrooms with seamless video integration and class management.",
+      "Tham gia phòng học ảo tích hợp video chất lượng cao và quản lý lớp học toàn diện.",
   },
 ];
 
 const stats = [
-  { value: "10K+", label: "Active Learners" },
-  { value: "500+", label: "Courses" },
-  { value: "98%", label: "Satisfaction" },
-  { value: "50+", label: "Instructors" },
+  { value: "10.000+", label: "Học viên năng động" },
+  { value: "500+", label: "Khóa học chất lượng" },
+  { value: "98%", label: "Tỷ lệ hài lòng" },
+  { value: "50+", label: "Giảng viên chuyên gia" },
 ];
 
 const testimonials = [
   {
     name: "Minh Anh",
-    role: "English Learner",
-    text: "The AI quiz feature helped me review lessons faster. Everything feels modern and easy to use.",
+    role: "Học viên Lập trình",
+    text: "Tính năng bóc tách nội dung video và tạo Quiz AI giúp mình ôn bài nhanh gấp 3 lần. Giao diện trực quan và cực kỳ hiện đại!",
     rating: 5,
   },
   {
     name: "Hoàng Tuấn",
-    role: "Instructor",
-    text: "Managing live classes and students in one place saved me hours every week.",
+    role: "Giảng viên",
+    text: "Quản lý khóa học, bài giảng và lớp học trực tiếp trên cùng một hệ thống giúp tôi tiết kiệm hàng giờ mỗi tuần.",
     rating: 5,
   },
 ];
@@ -71,64 +71,61 @@ function HomePage() {
       <div className={styles.bgOrb1} />
       <div className={styles.bgOrb2} />
 
-      {/* Navbar */}
       <header className={styles.navbar}>
         <div className={styles.navInner}>
           <div className={styles.logo}>
             <div className={styles.logoIcon}>
-              <Sparkles size={18} />
+              <span className="font-black text-amber-400">N</span>
             </div>
-            <span>LinguaAI</span>
+            <span>Nexora LMS</span>
           </div>
 
           <nav className={styles.navLinks}>
-            <a href="#features">Features</a>
-            <a href="#how-it-works">How it works</a>
-            <a href="#testimonials">Reviews</a>
+            <a href="#features">Tính năng</a>
+            <a href="#how-it-works">Quy trình</a>
+            <a href="#testimonials">Đánh giá</a>
           </nav>
 
           <div className={styles.navActions}>
             <Link to="/login" className={styles.btnGhost}>
-              Sign in
+              Đăng nhập
             </Link>
             <Link to="/register" className={styles.btnPrimary}>
-              Get started
+              Bắt đầu ngay
               <ArrowRight size={16} />
             </Link>
           </div>
         </div>
       </header>
 
-      {/* Hero */}
       <section className={styles.hero}>
         <div className={styles.heroBadge}>
           <Zap size={14} />
-          <span>AI-enhanced learning platform</span>
+          <span>Nền tảng học tập thông minh &amp; AI LMS</span>
         </div>
 
         <h1 className={styles.heroTitle}>
-          Learn smarter with
-          <span className={styles.gradientText}> modern LMS</span>
+          Học thông minh hơn cùng
+          <span className={styles.gradientText}> Nexora LMS</span>
         </h1>
 
         <p className={styles.heroSubtitle}>
-          A complete learning platform for recorded courses, live classes, AI
-          quizzes, and real-time collaboration — built for students and
-          instructors.
+          Nền tảng học tập trực tuyến toàn diện kết hợp khóa học video, lớp học
+          trực tiếp, bài tập trắc nghiệm AI và tương tác thời gian thực dành cho
+          học viên và giảng viên.
         </p>
 
         <div className={styles.heroActions}>
           <Link to="/register" className={styles.btnPrimaryLg}>
-            Start learning free
+            Bắt đầu học miễn phí
             <ArrowRight size={18} />
           </Link>
           <a href="#features" className={styles.btnGlassLg}>
             <Play size={16} />
-            Explore features
+            Khám phá tính năng
           </a>
         </div>
 
-        {/* Hero preview card */}
         <div className={styles.heroPreview}>
           <div className={styles.previewGlass}>
             <div className={styles.previewHeader}>
@@ -137,7 +134,9 @@ function HomePage() {
                 <span />
                 <span />
               </div>
-              <span className={styles.previewLabel}>Dashboard Preview</span>
+              <span className={styles.previewLabel}>
+                Xem trước bảng điều khiển
+              </span>
             </div>
             <div className={styles.previewBody}>
               <div className={styles.previewSidebar}>
@@ -162,7 +161,6 @@ function HomePage() {
           </div>
         </div>
 
-        {/* Stats */}
         <div className={styles.statsRow}>
           {stats.map((stat) => (
             <div key={stat.label} className={styles.statItem}>
@@ -173,13 +171,13 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Features */}
       <section id="features" className={styles.section}>
         <div className={styles.sectionHeader}>
-          <span className={styles.sectionTag}>Features</span>
-          <h2>Everything you need to teach and learn</h2>
+          <span className={styles.sectionTag}>Tính năng nổi bật</span>
+          <h2>Tất cả những gì bạn cần để dạy và học hiệu quả</h2>
           <p>
-            From course creation to live sessions and AI-assisted assessments.
+            Từ tạo khóa học, quản lý lớp trực tuyến đến đánh giá năng lực tự động
+            với trợ lý AI.
           </p>
         </div>
 
@@ -196,12 +194,11 @@ function HomePage() {
         </div>
       </section>
 
-      {/* How it works */}
       <section id="how-it-works" className={styles.section}>
         <div className={styles.glassPanel}>
           <div className={styles.sectionHeader}>
-            <span className={styles.sectionTag}>How it works</span>
-            <h2>Get started in 3 simple steps</h2>
+            <span className={styles.sectionTag}>Quy trình đơn giản</span>
+            <h2>Bắt đầu hành trình chỉ với 3 bước</h2>
           </div>
 
           <div className={styles.stepsRow}>
@@ -209,20 +206,20 @@ function HomePage() {
               {
                 step: "01",
                 icon: Users,
-                title: "Create account",
-                desc: "Sign up as a student or instructor in seconds.",
+                title: "Tạo tài khoản",
+                desc: "Đăng ký tài khoản học viên hoặc giảng viên chỉ trong vài giây.",
               },
               {
                 step: "02",
                 icon: GraduationCap,
-                title: "Join or create",
-                desc: "Enroll in courses or build your own curriculum.",
+                title: "Chọn khóa học",
+                desc: "Ghi danh các khóa học yêu thích hoặc tự xây dựng giáo trình giảng dạy.",
               },
               {
                 step: "03",
                 icon: CheckCircle2,
-                title: "Learn & grow",
-                desc: "Attend classes, take AI quizzes, track progress.",
+                title: "Học tập & Bứt phá",
+                desc: "Tham gia lớp học, làm bài trắc nghiệm AI và nâng cao trình độ nhanh chóng.",
               },
             ].map((item) => (
               <div key={item.step} className={styles.stepCard}>
@@ -238,11 +235,10 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Testimonials */}
       <section id="testimonials" className={styles.section}>
         <div className={styles.sectionHeader}>
-          <span className={styles.sectionTag}>Testimonials</span>
-          <h2>Loved by learners and instructors</h2>
+          <span className={styles.sectionTag}>Đánh giá từ cộng đồng</span>
+          <h2>Được tin dùng bởi học viên và giảng viên</h2>
         </div>
 
         <div className={styles.testimonialGrid}>
@@ -268,29 +264,28 @@ function HomePage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className={styles.ctaSection}>
         <div className={styles.ctaCard}>
-          <h2>Ready to transform your learning experience?</h2>
-          <p>Join thousands of learners on LinguaAI today.</p>
+          <h2>Sẵn sàng nâng tầm trải nghiệm học tập của bạn?</h2>
+          <p>Tham gia cùng hơn 10.000+ học viên trên Nexora LMS ngay hôm nay.</p>
           <Link to="/register" className={styles.btnPrimaryLg}>
-            Get started for free
+            Bắt đầu miễn phí ngay
             <ArrowRight size={18} />
           </Link>
         </div>
       </section>
 
-      {/* Footer */}
       <footer className={styles.footer}>
         <div className={styles.footerInner}>
           <div className={styles.logo}>
             <div className={styles.logoIcon}>
-              <Sparkles size={16} />
+              <span className="font-black text-amber-400">N</span>
             </div>
-            <span>LinguaAI</span>
+            <span>Nexora LMS</span>
           </div>
           <p className={styles.footerCopy}>
-            &copy; 2026 LinguaAI. Demo homepage — independent preview.
+            &copy; 2026 Nexora LMS. Nền tảng công nghệ giáo dục trực tuyến thế hệ
+            mới.
           </p>
         </div>
       </footer>

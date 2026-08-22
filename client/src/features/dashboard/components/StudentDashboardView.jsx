@@ -16,9 +16,9 @@ const formatNumber = (value) => Number(value || 0).toLocaleString("vi-VN");
 const getUserName = () => {
   try {
     const userInfo = JSON.parse(localStorage.getItem("userInfor"));
-    return userInfo?.name || "Student";
+    return userInfo?.name || "Học viên";
   } catch {
-    return "Student";
+    return "Học viên";
   }
 };
 
@@ -127,7 +127,6 @@ const StudentDashboardView = ({ dashboard, loading }) => {
     },
   ];
 
-  // ── Loading Skeleton ──
   if (loading) {
     return (
       <div className="p-4 md:p-6">
@@ -154,7 +153,6 @@ const StudentDashboardView = ({ dashboard, loading }) => {
 
   return (
     <div className="p-4 md:p-6 space-y-6">
-      {/* <UserDropdown /> */}
       <section
         className="relative overflow-hidden rounded-3xl p-6 lg:p-8"
         style={{
@@ -165,9 +163,7 @@ const StudentDashboardView = ({ dashboard, loading }) => {
             "inset 0 1px 0 rgba(255,255,255,0.9), 0 16px 48px rgba(59,130,246,0.08)",
         }}
       >
-        {/* Top shimmer accent */}
         <div className="absolute top-0 left-16 right-16 h-[1px] bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
-        {/* Glow blob */}
         <div
           className="absolute -bottom-20 -right-20 w-64 h-64 rounded-full opacity-20 pointer-events-none"
           style={{
@@ -187,7 +183,7 @@ const StudentDashboardView = ({ dashboard, loading }) => {
               }}
             >
               <GraduationCap size={14} />
-              Student Dashboard
+              Tổng quan học viên
             </div>
             <h1
               className="mt-5 max-w-2xl text-4xl font-black leading-tight md:text-5xl"
@@ -215,7 +211,6 @@ const StudentDashboardView = ({ dashboard, loading }) => {
             </p>
           </div>
 
-          {/* Continue Learning Card */}
           <div
             className="rounded-3xl p-1 relative overflow-hidden"
             style={{
@@ -273,7 +268,6 @@ const StudentDashboardView = ({ dashboard, loading }) => {
         </div>
       </section>
 
-      {/* ── Stat Cards ── */}
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatCard
           icon={BookOpen}
@@ -291,7 +285,7 @@ const StudentDashboardView = ({ dashboard, loading }) => {
         />
         <StatCard
           icon={Video}
-          label="Lớp Live sắp tới"
+          label="Lớp trực tuyến sắp tới"
           value={formatNumber(overview.upcomingClasses)}
           helper="Đừng bỏ lỡ nhé"
           tone="orange"
@@ -305,9 +299,7 @@ const StudentDashboardView = ({ dashboard, loading }) => {
         />
       </section>
 
-      {/* ── Bottom Grid ── */}
       <section className="grid gap-6 xl:grid-cols-2">
-        {/* Live Classes Schedule */}
         <div
           className="rounded-3xl p-6"
           style={{
@@ -334,7 +326,7 @@ const StudentDashboardView = ({ dashboard, loading }) => {
                 className="mt-3 text-2xl font-black"
                 style={{ color: "#1e293b" }}
               >
-                Lớp Live sắp diễn ra
+                Lớp học trực tuyến sắp diễn ra
               </h2>
             </div>
             <div
@@ -357,7 +349,7 @@ const StudentDashboardView = ({ dashboard, loading }) => {
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-orange-50 text-orange-500 flex flex-col items-center justify-center font-bold">
                     <span className="text-xs uppercase">
-                      {cls.date === "Hôm nay" ? "TĐ" : "MAI"}
+                      {cls.date === "Hôm nay" ? "HÔM NAY" : "NGÀY MAI"}
                     </span>
                   </div>
                   <div>
@@ -382,7 +374,6 @@ const StudentDashboardView = ({ dashboard, loading }) => {
           </div>
         </div>
 
-        {/* Recommend / Latest Activity */}
         <div
           className="rounded-3xl p-6"
           style={{

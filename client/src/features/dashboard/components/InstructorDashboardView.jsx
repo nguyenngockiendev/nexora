@@ -23,13 +23,12 @@ const formatNumber = (value) => Number(value || 0).toLocaleString("vi-VN");
 const getUserName = () => {
   try {
     const userInfo = JSON.parse(localStorage.getItem("userInfor"));
-    return userInfo?.name || "Instructor";
+    return userInfo?.name || "Giảng viên";
   } catch {
-    return "Instructor";
+    return "Giảng viên";
   }
 };
 
-// ── Stat Card (Light Glass + Orange Accent) ──
 const StatCard = ({ icon: Icon, label, value, tone, helper }) => {
   const tones = {
     indigo: {
@@ -100,36 +99,38 @@ const StatCard = ({ icon: Icon, label, value, tone, helper }) => {
   );
 };
 
-// ── Status Pill (Light) ──
 const StatusPill = ({ status }) => {
   const styles = {
     completed: {
       bg: "rgba(16,185,129,0.1)",
       color: "#059669",
       border: "rgba(16,185,129,0.25)",
+      label: "Hoàn thành",
     },
     pending: {
       bg: "rgba(245,158,11,0.12)",
       color: "#d97706",
       border: "rgba(245,158,11,0.3)",
+      label: "Đang xử lý",
     },
   };
   const s = styles[status] || {
     bg: "rgba(239,68,68,0.1)",
     color: "#dc2626",
     border: "rgba(239,68,68,0.25)",
+    label: "Thất bại",
   };
 
   return (
     <span
-      className="inline-flex rounded-full px-2.5 py-1 text-xs font-bold capitalize"
+      className="inline-flex rounded-full px-2.5 py-1 text-xs font-bold"
       style={{
         background: s.bg,
         color: s.color,
         border: `1px solid ${s.border}`,
       }}
     >
-      {status}
+      {s.label || status}
     </span>
   );
 };
@@ -178,7 +179,6 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
     );
   }
 
-  // ── Error State ──
   if (error) {
     return (
       <div
@@ -204,13 +204,13 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
             <BarChart3 size={24} style={{ color: "#ea580c" }} />
           </div>
           <h2 className="mt-4 text-2xl font-black" style={{ color: "#1e293b" }}>
-            Dashboard is unavailable
+            Không thể tải bảng điều khiển
           </h2>
           <p className="mt-2 text-sm leading-6" style={{ color: "#64748b" }}>
             {error}
           </p>
           <button
-            className="mt-6 inline-flex items-center gap-2 rounded-2xl px-5 py-2.5 text-sm font-bold text-white"
+            className="mt-6 inline-flex items-center gap-2 rounded-2xl px-5 py-2.5 text-sm font-bold text-white cursor-pointer"
             style={{
               background:
                 "linear-gradient(135deg, rgba(249,115,22,0.8), rgba(251,146,60,0.7))",
@@ -220,7 +220,7 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
             onClick={onRetry}
           >
             <RefreshCw size={16} />
-            Try again
+            Thử lại
           </button>
         </div>
       </div>
@@ -229,7 +229,6 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
 
   return (
     <div className="p-4 md:p-6 space-y-5">
-      {/* ── Hero Banner ── */}
       <section
         className="relative overflow-hidden rounded-3xl p-6 lg:p-8"
         style={{
@@ -240,9 +239,7 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
             "inset 0 1px 0 rgba(255,255,255,0.9), 0 16px 48px rgba(194,110,30,0.08)",
         }}
       >
-        {/* Top shimmer accent */}
         <div className="absolute top-0 left-16 right-16 h-[1px] bg-gradient-to-r from-transparent via-orange-400/40 to-transparent" />
-        {/* Glow blob */}
         <div
           className="absolute -top-20 -right-20 w-64 h-64 rounded-full opacity-20 pointer-events-none"
           style={{
@@ -262,13 +259,13 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
               }}
             >
               <TrendingUp size={13} />
-              Instructor Dashboard
+              Tổng quan giảng viên
             </div>
             <h1
               className="mt-5 max-w-2xl text-4xl font-black leading-tight md:text-5xl"
               style={{ color: "#1e293b" }}
             >
-              Welcome back,{" "}
+              Chào mừng trở lại,{" "}
               <span
                 style={{
                   background:
@@ -284,12 +281,10 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
               className="mt-4 max-w-xl text-base leading-7"
               style={{ color: "#64748b" }}
             >
-              Track course performance, class activity, enrollments, and revenue
-              from one focused workspace.
+              Theo dõi hiệu quả khóa học, lớp trực tuyến, lượt đăng ký và doanh thu trong cùng một không gian làm việc.
             </p>
           </div>
 
-          {/* Revenue Card */}
           <div
             className="rounded-3xl p-5"
             style={{
@@ -305,7 +300,7 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
                 className="text-sm font-semibold"
                 style={{ color: "#64748b" }}
               >
-                Total revenue
+                Tổng doanh thu
               </span>
               <div
                 className="w-9 h-9 rounded-xl flex items-center justify-center"
@@ -327,7 +322,7 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
               className="mt-5 flex items-center justify-between border-t pt-4 text-sm"
               style={{ borderColor: "rgba(249,115,22,0.15)" }}
             >
-              <span style={{ color: "#64748b" }}>Completed orders</span>
+              <span style={{ color: "#64748b" }}>Đơn hàng hoàn tất</span>
               <span className="font-bold" style={{ color: "#1e293b" }}>
                 {formatNumber(overview.completedOrders)}
               </span>
@@ -336,41 +331,38 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
         </div>
       </section>
 
-      {/* ── Stat Cards ── */}
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatCard
           icon={BookOpen}
-          label="Courses"
+          label="Khóa học"
           value={formatNumber(overview.totalCourses)}
-          helper={`${formatNumber(overview.totalClasses)} live classes`}
+          helper={`${formatNumber(overview.totalClasses)} lớp trực tuyến`}
           tone="indigo"
         />
         <StatCard
           icon={Users}
-          label="Students"
+          label="Học viên"
           value={formatNumber(overview.totalStudents)}
-          helper={`${formatNumber(overview.totalEnrollments)} enrollments`}
+          helper={`${formatNumber(overview.totalEnrollments)} lượt đăng ký`}
           tone="blue"
         />
         <StatCard
           icon={CheckCircle2}
-          label="Active enrollments"
+          label="Đang theo học"
           value={formatNumber(overview.activeEnrollments)}
-          helper={`${formatNumber(overview.completedEnrollments)} completed`}
+          helper={`${formatNumber(overview.completedEnrollments)} đã hoàn thành`}
           tone="green"
         />
         <StatCard
           icon={Wallet}
-          label="Orders"
+          label="Đơn hàng"
           value={formatNumber(overview.totalOrders)}
-          helper={`${formatNumber(overview.pendingOrders)} pending`}
+          helper={`${formatNumber(overview.pendingOrders)} đang xử lý`}
           tone="purple"
         />
       </section>
 
-      {/* ── Bottom Grid ── */}
       <section className="grid gap-5 xl:grid-cols-[minmax(0,1.45fr)_minmax(320px,0.85fr)]">
-        {/* Course Performance */}
         <div
           className="rounded-3xl p-5"
           style={{
@@ -391,13 +383,13 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
                   border: "1px solid rgba(249,115,22,0.25)",
                 }}
               >
-                Performance
+                Hiệu quả
               </span>
               <h2
                 className="mt-3 text-2xl font-black"
                 style={{ color: "#1e293b" }}
               >
-                Course performance
+                Hiệu quả khóa học
               </h2>
             </div>
             <div
@@ -427,13 +419,13 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
                 className="mt-3 text-lg font-black"
                 style={{ color: "#1e293b" }}
               >
-                No course data yet
+                Chưa có dữ liệu khóa học
               </h3>
               <p
                 className="mt-2 max-w-sm text-sm leading-6"
                 style={{ color: "#64748b" }}
               >
-                Create courses and enroll students to see performance here.
+                Tạo khóa học và tuyển sinh để theo dõi hiệu quả tại đây.
               </p>
             </div>
           ) : (
@@ -448,10 +440,10 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
                   color: "#94a3b8",
                 }}
               >
-                <span>Course</span>
-                <span>Enrollments</span>
-                <span>Classes</span>
-                <span className="text-right">Revenue</span>
+                <span>Khóa học</span>
+                <span>Lượt đăng ký</span>
+                <span>Lớp học</span>
+                <span className="text-right">Doanh thu</span>
               </div>
               <div
                 className="divide-y"
@@ -492,7 +484,7 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
                               color: "#64748b",
                             }}
                           >
-                            {course.type}
+                            {course.type === "live" ? "Trực tuyến" : "Tự học"}
                           </span>
                           <span
                             className="rounded-full px-2 py-0.5 text-xs font-semibold capitalize"
@@ -501,7 +493,13 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
                               color: "#ea580c",
                             }}
                           >
-                            {course.level}
+                            {course.level === "beginner"
+                              ? "Cơ bản"
+                              : course.level === "intermediate"
+                                ? "Trung cấp"
+                                : course.level === "advanced"
+                                  ? "Nâng cao"
+                                  : course.level}
                           </span>
                         </div>
                       </div>
@@ -533,7 +531,6 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
           )}
         </div>
 
-        {/* Recent Orders */}
         <aside
           className="rounded-3xl p-5"
           style={{
@@ -554,13 +551,13 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
                   border: "1px solid rgba(249,115,22,0.25)",
                 }}
               >
-                Sales
+                Bán hàng
               </span>
               <h2
                 className="mt-3 text-2xl font-black"
                 style={{ color: "#1e293b" }}
               >
-                Recent orders
+                Đơn hàng gần đây
               </h2>
             </div>
             <div
@@ -587,13 +584,13 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
                 className="mt-3 text-lg font-black"
                 style={{ color: "#1e293b" }}
               >
-                No orders yet
+                Chưa có đơn hàng nào
               </h3>
               <p
                 className="mt-2 max-w-sm text-sm leading-6"
                 style={{ color: "#64748b" }}
               >
-                New student purchases will appear in this list.
+                Các giao dịch mua khóa học mới của học viên sẽ xuất hiện tại đây.
               </p>
             </div>
           ) : (
@@ -621,7 +618,7 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
                         boxShadow: "0 4px 12px rgba(249,115,22,0.25)",
                       }}
                     >
-                      {order.userId?.name?.charAt(0) || "S"}
+                      {order.userId?.name?.charAt(0) || "H"}
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-start justify-between gap-3">
@@ -629,7 +626,7 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
                           className="truncate text-sm font-bold"
                           style={{ color: "#1e293b" }}
                         >
-                          {order.userId?.name || "Student"}
+                          {order.userId?.name || "Học viên"}
                         </strong>
                         <StatusPill status={order.status} />
                       </div>
@@ -637,7 +634,7 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
                         className="mt-1 truncate text-sm"
                         style={{ color: "#64748b" }}
                       >
-                        {order.courseId?.title || "Course order"}
+                        {order.courseId?.title || "Đơn mua khóa học"}
                       </p>
                       <div
                         className="mt-3 flex items-center justify-between gap-3 border-t pt-3"

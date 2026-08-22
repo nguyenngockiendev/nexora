@@ -48,6 +48,7 @@ const AdminCourseQualityView = ({
 }) => {
   const displayList = filteredCourses || courses || [];
   const navigate = useNavigate();
+
   return (
     <div className="space-y-6 pb-12">
       <ToastContainer position="top-right" autoClose={3000} />
@@ -78,10 +79,10 @@ const AdminCourseQualityView = ({
             }}
           >
             <ShieldAlert size={14} className="text-orange-500 animate-pulse" />
-            Platform Content Quality Control
+            Kiểm soát chất lượng nội dung sàn
           </div>
           <h1 className="text-3xl md:text-4xl font-black text-slate-800 tracking-tight">
-            Course Quality & Moderation
+            Kiểm Duyệt &amp; Chất Lượng Khóa Học
           </h1>
           <p className="text-sm md:text-base font-semibold text-slate-500 max-w-xl">
             Giám sát chất lượng khóa học toàn sàn, kiểm tra các cảnh báo sao
@@ -89,7 +90,6 @@ const AdminCourseQualityView = ({
           </p>
         </div>
 
-        {/* Quick Stats Badges */}
         <div className="flex items-center gap-3 flex-wrap relative z-10">
           <div className="px-4 py-2.5 rounded-2xl bg-white/80 border border-slate-200 shadow-sm flex items-center gap-2">
             <BookOpen size={16} className="text-slate-400" />
@@ -125,7 +125,7 @@ const AdminCourseQualityView = ({
 
       {loading && (
         <div className="text-orange-500 font-bold animate-pulse px-2 text-sm">
-          Loading courses...
+          Đang tải danh sách khóa học...
         </div>
       )}
       {error && (
@@ -134,7 +134,6 @@ const AdminCourseQualityView = ({
         </div>
       )}
 
-      {/* ── Glass Filter Toolbar ── */}
       <div
         className="p-4 md:p-6 rounded-[2rem] shadow-[0_8px_30px_rgba(0,0,0,0.04)]"
         style={{
@@ -144,7 +143,6 @@ const AdminCourseQualityView = ({
         }}
       >
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-          {/* Search Input */}
           <div className="md:col-span-4 relative">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               <Search size={18} className="text-slate-400" />
@@ -153,13 +151,12 @@ const AdminCourseQualityView = ({
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search by course title or instructor..."
+              placeholder="Tìm kiếm theo tên khóa học hoặc giảng viên..."
               className="w-full pl-11 pr-4 py-3.5 rounded-full text-sm font-semibold bg-white/80 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-slate-800 shadow-sm"
               style={{ borderRadius: "9999px" }}
             />
           </div>
 
-          {/* Rating Alert Filter Dropdown */}
           <div className="md:col-span-3">
             <select
               value={ratingFilter}
@@ -167,13 +164,12 @@ const AdminCourseQualityView = ({
               className="w-full px-4 py-3.5 rounded-full text-sm font-bold bg-white/80 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-slate-800 shadow-sm cursor-pointer"
               style={{ borderRadius: "9999px" }}
             >
-              <option value="">All Rating Levels</option>
-              <option value="low">⚠️ Low Rating Alert (&lt; 3.0★)</option>
-              <option value="healthy">✓ Healthy (≥ 3.5★)</option>
+              <option value="">Tất cả mức đánh giá</option>
+              <option value="low">⚠️ Cảnh báo Sao thấp (&lt; 3.0★)</option>
+              <option value="healthy">✓ Đạt chuẩn (≥ 3.5★)</option>
             </select>
           </div>
 
-          {/* Course Type Select Dropdown */}
           <div className="md:col-span-2">
             <select
               value={typeFilter}
@@ -181,13 +177,12 @@ const AdminCourseQualityView = ({
               className="w-full px-4 py-3.5 rounded-full text-sm font-bold bg-white/80 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-slate-800 shadow-sm cursor-pointer"
               style={{ borderRadius: "9999px" }}
             >
-              <option value="">All Types</option>
-              <option value="live">🎥 Live Class</option>
-              <option value="recorded">📹 Recorded</option>
+              <option value="">Tất cả loại hình</option>
+              <option value="live">🎥 Lớp trực tuyến</option>
+              <option value="recorded">📹 Tự học (Video)</option>
             </select>
           </div>
 
-          {/* Status Select Dropdown */}
           <div className="md:col-span-2">
             <select
               value={statusFilter}
@@ -195,20 +190,19 @@ const AdminCourseQualityView = ({
               className="w-full px-4 py-3.5 rounded-full text-sm font-bold bg-white/80 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-slate-800 shadow-sm cursor-pointer"
               style={{ borderRadius: "9999px" }}
             >
-              <option value="">All Status</option>
-              <option value="active">Active</option>
-              <option value="paused">Paused</option>
-              <option value="banned">Banned</option>
+              <option value="">Tất cả trạng thái</option>
+              <option value="active">Đang hoạt động</option>
+              <option value="paused">Tạm dừng</option>
+              <option value="banned">Đã khóa</option>
             </select>
           </div>
 
-          {/* Reset Filters Button */}
           <div className="md:col-span-1">
             <button
               onClick={handleResetFilters}
-              className="w-full py-3.5 rounded-full text-sm font-bold text-slate-700 bg-white/80 border border-slate-200 hover:bg-white transition-all shadow-sm flex items-center justify-center"
+              className="w-full py-3.5 rounded-full text-sm font-bold text-slate-700 bg-white/80 border border-slate-200 hover:bg-white transition-all shadow-sm flex items-center justify-center cursor-pointer"
               style={{ borderRadius: "9999px" }}
-              title="Reset Filters"
+              title="Đặt lại bộ lọc"
             >
               <RotateCcw size={16} className="text-slate-500" />
             </button>
@@ -216,7 +210,6 @@ const AdminCourseQualityView = ({
         </div>
       </div>
 
-      {/* ── Modern Warm Glass Table Card ── */}
       <div
         className="rounded-[2rem] overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.04)]"
         style={{
@@ -225,21 +218,18 @@ const AdminCourseQualityView = ({
           backdropFilter: "blur(20px)",
         }}
       >
-        {/* Table Header */}
         <div className="hidden lg:grid grid-cols-12 gap-4 p-6 border-b border-slate-200/80 bg-white/60 text-xs md:text-sm font-extrabold text-slate-500 uppercase tracking-wider">
-          <div className="col-span-4">Course Details</div>
-          <div className="col-span-2">Star Rating</div>
-          <div className="col-span-2">Type & Students</div>
-          <div className="col-span-2">Health Status</div>
-          <div className="col-span-2 text-right">Actions</div>
+          <div className="col-span-4">Thông tin khóa học</div>
+          <div className="col-span-2">Đánh giá sao</div>
+          <div className="col-span-2">Loại &amp; Học viên</div>
+          <div className="col-span-2">Tình trạng chất lượng</div>
+          <div className="col-span-2 text-right">Thao tác</div>
         </div>
 
-        {/* Table Body */}
         <div className="divide-y divide-slate-200/70">
           {displayList.map((item) => {
             const ratingValue = item.avgRatting ?? item.rating ?? 0;
             const reviewCount = item.toatalcomment ?? item.totalReviews ?? 0;
-            const studentCount = item.studentsCount ?? 0;
             const isLowRating = ratingValue < 3.0 && reviewCount > 0;
             const isBanned =
               item.status === "inactive" || item.status === "banned";
@@ -249,7 +239,7 @@ const AdminCourseQualityView = ({
               item.instructorAvatar ||
               item.instructor?.avatar ||
               "https://ui-avatars.com/api/?name=" +
-                instructorName +
+                encodeURIComponent(instructorName) +
                 "&background=random";
 
             return (
@@ -265,7 +255,6 @@ const AdminCourseQualityView = ({
                 style={{ cursor: "pointer" }}
                 onClick={() => navigate(`/instructor/lessons/${item._id}`)}
               >
-                {/* Course Details */}
                 <div className="col-span-1 lg:col-span-4 flex items-center gap-4">
                   <img
                     src={
@@ -292,7 +281,6 @@ const AdminCourseQualityView = ({
                   </div>
                 </div>
 
-                {/* Star Rating */}
                 <div className="col-span-1 lg:col-span-2 flex items-center gap-2">
                   <div
                     className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-black border shadow-sm ${
@@ -306,30 +294,28 @@ const AdminCourseQualityView = ({
                     <span>{Number(ratingValue).toFixed(1)}</span>
                   </div>
                   <span className="text-xs font-semibold text-slate-400">
-                    ({reviewCount} reviews)
+                    ({reviewCount} đánh giá)
                   </span>
                 </div>
 
-                {/* Type & Students */}
                 <div className="col-span-1 lg:col-span-2 space-y-1">
                   <div>
                     {item.type === "live" ? (
                       <span className="inline-flex items-center gap-1 text-xs font-extrabold text-rose-600">
-                        <Radio size={13} className="animate-pulse" /> Live Class
+                        <Radio size={13} className="animate-pulse" /> Trực tuyến
                       </span>
                     ) : (
                       <span className="inline-flex items-center gap-1 text-xs font-extrabold text-blue-600">
-                        <Video size={13} /> Recorded
+                        <Video size={13} /> Tự học
                       </span>
                     )}
                   </div>
                   <div className="flex items-center gap-1.5 text-xs font-bold text-slate-600">
                     <Users size={13} className="text-slate-400" />
-                    <span>{item.studentsCount} Students</span>
+                    <span>{item.studentsCount || 0} Học viên</span>
                   </div>
                 </div>
 
-                {/* Health Status */}
                 <div className="col-span-1 lg:col-span-2 flex items-center">
                   {isBanned ? (
                     <span
@@ -341,7 +327,7 @@ const AdminCourseQualityView = ({
                         borderRadius: "9999px",
                       }}
                     >
-                      <Ban size={13} /> Banned
+                      <Ban size={13} /> ĐÃ KHÓA
                     </span>
                   ) : isLowRating ? (
                     <span
@@ -353,7 +339,7 @@ const AdminCourseQualityView = ({
                         borderRadius: "9999px",
                       }}
                     >
-                      <AlertTriangle size={13} /> Low Rating Alert
+                      <AlertTriangle size={13} /> CẢNH BÁO SAO THẤP
                     </span>
                   ) : (
                     <span
@@ -365,27 +351,24 @@ const AdminCourseQualityView = ({
                         borderRadius: "9999px",
                       }}
                     >
-                      <CheckCircle size={13} /> Healthy
+                      <CheckCircle size={13} /> ĐẠT CHUẨN
                     </span>
                   )}
                 </div>
 
-                {/* Actions */}
                 <div className="col-span-1 lg:col-span-2 flex items-center justify-start lg:justify-end gap-2">
-                  {/* Inspect Reviews Button */}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       setInspectCourse(item);
                     }}
-                    className="w-10 h-10 rounded-full bg-white text-slate-600 border border-slate-200 flex items-center justify-center transition-all hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300 shadow-sm hover:scale-105"
+                    className="w-10 h-10 rounded-full bg-white text-slate-600 border border-slate-200 flex items-center justify-center transition-all hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300 shadow-sm hover:scale-105 cursor-pointer"
                     style={{ borderRadius: "9999px" }}
-                    title="Inspect Ratings & Reviews"
+                    title="Xem chi tiết đánh giá & phản hồi"
                   >
                     <Eye size={18} />
                   </button>
 
-                  {/* Send Warning to Instructor */}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -394,27 +377,25 @@ const AdminCourseQualityView = ({
                         `Chào Giảng viên ${instructorName}, Khóa học "${item.title}" của bạn đang nhận nhiều phản hồi sao thấp (${Number(ratingValue).toFixed(1)}★). Vui lòng kiểm tra lại chất lượng video và bài học!`,
                       );
                     }}
-                    className="w-10 h-10 rounded-full bg-white text-amber-600 border border-slate-200 flex items-center justify-center transition-all hover:bg-amber-50 hover:border-amber-300 shadow-sm hover:scale-105"
+                    className="w-10 h-10 rounded-full bg-white text-amber-600 border border-slate-200 flex items-center justify-center transition-all hover:bg-amber-50 hover:border-amber-300 shadow-sm hover:scale-105 cursor-pointer"
                     style={{ borderRadius: "9999px" }}
-                    title="Send Improvement Notice to Instructor"
+                    title="Gửi nhắc nhở cho giảng viên"
                   >
                     <Send size={16} />
                   </button>
 
-                  {/* Lock / Ban Course Button */}
                   <button
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       handleToggleLockCourse(item);
                     }}
-                    className={`w-10 h-10 rounded-full flex items-center justify-center transition-all border shadow-sm hover:scale-105 ${
+                    className={`w-10 h-10 rounded-full flex items-center justify-center transition-all border shadow-sm hover:scale-105 cursor-pointer ${
                       isBanned
                         ? "bg-emerald-500 text-white border-emerald-600 hover:bg-emerald-600"
                         : "bg-white text-slate-400 border-slate-200 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-300"
                     }`}
                     style={{ borderRadius: "9999px" }}
-                    title={
-                      isBanned ? "Unban Course" : "Lock / Ban Entire Course"
-                    }
+                    title={isBanned ? "Mở khóa khóa học" : "Khóa khóa học này"}
                   >
                     {isBanned ? <CheckCircle size={18} /> : <Ban size={18} />}
                   </button>
@@ -423,7 +404,7 @@ const AdminCourseQualityView = ({
             );
           })}
 
-          {filteredCourses.length === 0 && (
+          {displayList.length === 0 && (
             <div className="p-12 text-center text-slate-500 text-sm font-bold">
               Không tìm thấy khóa học nào phù hợp với bộ lọc.
             </div>
@@ -431,120 +412,112 @@ const AdminCourseQualityView = ({
         </div>
       </div>
 
-      {inspectCourse &&
-        (console.log(inspectCourse),
-        (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fadeIn">
-            <div
-              className="w-full max-w-2xl rounded-[2.5rem] p-6 md:p-8 space-y-6 relative overflow-hidden shadow-2xl"
-              style={{
-                background: "rgba(255,255,255,0.95)",
-                border: "1px solid rgba(255,255,255,0.9)",
-                backdropFilter: "blur(30px)",
-              }}
-            >
-              {/* Modal Header */}
-              <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-                <div className="flex items-center gap-3">
-                  <div className="p-2.5 bg-orange-100 text-orange-600 rounded-2xl">
-                    <MessageSquare size={20} />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-black text-slate-800 line-clamp-1">
-                      {inspectCourse.title}
-                    </h3>
-                    <p className="text-xs font-semibold text-slate-500">
-                      Giảng viên:{" "}
-                      <strong className="text-slate-700">
-                        {inspectCourse.instructorName}
-                      </strong>
-                    </p>
-                  </div>
+      {inspectCourse && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fadeIn">
+          <div
+            className="w-full max-w-2xl rounded-[2.5rem] p-6 md:p-8 space-y-6 relative overflow-hidden shadow-2xl"
+            style={{
+              background: "rgba(255,255,255,0.95)",
+              border: "1px solid rgba(255,255,255,0.9)",
+              backdropFilter: "blur(30px)",
+            }}
+          >
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-orange-100 text-orange-600 rounded-2xl">
+                  <MessageSquare size={20} />
                 </div>
-
-                <button
-                  onClick={() => setInspectCourse(null)}
-                  className="w-9 h-9 rounded-full bg-slate-100 text-slate-400 hover:bg-slate-200 hover:text-slate-600 flex items-center justify-center transition-all"
-                  style={{ borderRadius: "9999px" }}
-                >
-                  <X size={18} />
-                </button>
-              </div>
-
-              {/* Rating Summary Bar */}
-              <div className="p-4 rounded-2xl bg-orange-50/60 border border-orange-100 flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="text-3xl font-black text-orange-600 flex items-center gap-1">
-                    <Star size={24} className="fill-current" />
-                    <span>
-                      {Number(
-                        inspectCourse?.avgRatting ?? inspectCourse?.rating ?? 0,
-                      ).toFixed(1)}
-                    </span>
-                  </div>
-                  <div className="text-xs font-bold text-slate-500">
-                    <p className="text-slate-800 font-extrabold">
-                      Đánh giá trung bình
-                    </p>
-                    <p>
-                      Dựa trên{" "}
-                      {inspectCourse?.toatalcomment ??
-                        inspectCourse?.totalReviews ??
-                        inspectCourse?.reviews?.length ??
-                        0}{" "}
-                      phản hồi
-                    </p>
-                  </div>
-                </div>
-
-                {(inspectCourse?.avgRatting ?? inspectCourse?.rating ?? 0) <
-                  3.0 && (
-                  <span className="px-3 py-1.5 rounded-full text-xs font-black bg-rose-100 text-rose-700 border border-rose-200 uppercase">
-                    ⚠️ Đạt ngưỡng Cảnh báo
-                  </span>
-                )}
-              </div>
-
-              <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
-                <h4 className="text-xs font-extrabold uppercase tracking-wider text-slate-400">
-                  Phản hồi chê từ học viên ({inspectCourse.reviews?.length || 0}
-                  )
-                </h4>
-
-                {inspectCourse.reviews.length > 0 ? (
-                  inspectCourse.reviews.map((rev) => (
-                    <div
-                      key={rev.id}
-                      className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm space-y-2"
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-extrabold text-slate-800">
-                          {rev.userId.name}
-                        </span>
-                        <div className="flex items-center gap-1 text-amber-500 text-xs font-bold">
-                          <Star size={13} className="fill-current" />
-                          <span>{rev.rating} sao</span>
-                          <span className="text-slate-300 ml-2">
-                            {rev.date}
-                          </span>
-                        </div>
-                      </div>
-                      <p className="text-xs font-semibold text-slate-600 italic">
-                        "{rev.comment}"
-                      </p>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-xs font-bold text-slate-400 italic">
-                    Chưa có bình luận đánh giá nào.
+                <div>
+                  <h3 className="text-lg font-black text-slate-800 line-clamp-1">
+                    {inspectCourse.title}
+                  </h3>
+                  <p className="text-xs font-semibold text-slate-500">
+                    Giảng viên:{" "}
+                    <strong className="text-slate-700">
+                      {inspectCourse.instructorName || "Giảng viên"}
+                    </strong>
                   </p>
-                )}
+                </div>
               </div>
+
+              <button
+                onClick={() => setInspectCourse(null)}
+                className="w-9 h-9 rounded-full bg-slate-100 text-slate-400 hover:bg-slate-200 hover:text-slate-600 flex items-center justify-center transition-all cursor-pointer"
+                style={{ borderRadius: "9999px" }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-orange-50/60 border border-orange-100 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="text-3xl font-black text-orange-600 flex items-center gap-1">
+                  <Star size={24} className="fill-current" />
+                  <span>
+                    {Number(
+                      inspectCourse?.avgRatting ?? inspectCourse?.rating ?? 0,
+                    ).toFixed(1)}
+                  </span>
+                </div>
+                <div className="text-xs font-bold text-slate-500">
+                  <p className="text-slate-800 font-extrabold">
+                    Đánh giá trung bình
+                  </p>
+                  <p>
+                    Dựa trên{" "}
+                    {inspectCourse?.toatalcomment ??
+                      inspectCourse?.totalReviews ??
+                      inspectCourse?.reviews?.length ??
+                      0}{" "}
+                    phản hồi
+                  </p>
+                </div>
+              </div>
+
+              {(inspectCourse?.avgRatting ?? inspectCourse?.rating ?? 0) <
+                3.0 && (
+                <span className="px-3 py-1.5 rounded-full text-xs font-black bg-rose-100 text-rose-700 border border-rose-200 uppercase">
+                  ⚠️ Đạt ngưỡng Cảnh báo
+                </span>
+              )}
+            </div>
+
+            <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
+              <h4 className="text-xs font-extrabold uppercase tracking-wider text-slate-400">
+                Phản hồi từ học viên ({inspectCourse.reviews?.length || 0})
+              </h4>
+
+              {inspectCourse.reviews && inspectCourse.reviews.length > 0 ? (
+                inspectCourse.reviews.map((rev) => (
+                  <div
+                    key={rev.id || rev._id}
+                    className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm space-y-2"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-extrabold text-slate-800">
+                        {rev.userId?.name || "Học viên ẩn danh"}
+                      </span>
+                      <div className="flex items-center gap-1 text-amber-500 text-xs font-bold">
+                        <Star size={13} className="fill-current" />
+                        <span>{rev.rating} sao</span>
+                        <span className="text-slate-300 ml-2">{rev.date}</span>
+                      </div>
+                    </div>
+                    <p className="text-xs font-semibold text-slate-600 italic">
+                      "{rev.comment}"
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-xs font-bold text-slate-400 italic">
+                  Chưa có bình luận đánh giá nào.
+                </p>
+              )}
             </div>
           </div>
-        ))}
+        </div>
+      )}
 
-      {/* ── MODAL 2: SEND WARNING TO INSTRUCTOR ── */}
       {warningCourse && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fadeIn">
           <form
@@ -558,7 +531,7 @@ const AdminCourseQualityView = ({
               <button
                 type="button"
                 onClick={() => setWarningCourse(null)}
-                className="w-8 h-8 rounded-full bg-slate-100 text-slate-400 hover:bg-slate-200 flex items-center justify-center"
+                className="w-8 h-8 rounded-full bg-slate-100 text-slate-400 hover:bg-slate-200 flex items-center justify-center cursor-pointer"
                 style={{ borderRadius: "9999px" }}
               >
                 <X size={16} />
@@ -582,14 +555,14 @@ const AdminCourseQualityView = ({
               <button
                 type="button"
                 onClick={() => setWarningCourse(null)}
-                className="px-5 py-2.5 rounded-full text-xs font-bold text-slate-500 bg-slate-100 hover:bg-slate-200"
+                className="px-5 py-2.5 rounded-full text-xs font-bold text-slate-500 bg-slate-100 hover:bg-slate-200 cursor-pointer"
                 style={{ borderRadius: "9999px" }}
               >
                 Hủy
               </button>
               <button
                 type="submit"
-                className="px-6 py-2.5 rounded-full text-xs font-extrabold text-white bg-gradient-to-r from-orange-500 to-amber-500 hover:scale-105 transition-all shadow-md"
+                className="px-6 py-2.5 rounded-full text-xs font-extrabold text-white bg-gradient-to-r from-orange-500 to-amber-500 hover:scale-105 transition-all shadow-md cursor-pointer"
                 style={{ borderRadius: "9999px" }}
               >
                 Gửi Cảnh Báo

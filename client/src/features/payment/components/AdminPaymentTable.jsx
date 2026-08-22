@@ -45,21 +45,21 @@ const AdminPaymentTable = ({
         return (
           <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs">
             <CheckCircle2 size={12} className="text-emerald-500" />
-            Paid
+            Đã thanh toán
           </span>
         );
       case "pending":
         return (
           <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200 shadow-2xs">
             <AlertCircle size={12} className="text-amber-500" />
-            Pending
+            Chờ xử lý
           </span>
         );
       case "failed":
         return (
           <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200 shadow-2xs">
             <XCircle size={12} className="text-rose-500" />
-            Failed
+            Thất bại
           </span>
         );
       default:
@@ -86,16 +86,14 @@ const AdminPaymentTable = ({
     <div className="w-full space-y-7 pb-16">
       <div>
         <h1 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
-          Payment History &amp; Billing
+          Lịch Sử Thanh Toán &amp; Doanh Thu
         </h1>
         <p className="text-xs sm:text-sm font-semibold text-slate-500 mt-1">
-          View all past purchases, student invoices, and revenue settlements
+          Xem toàn bộ lịch sử mua khóa học, hóa đơn học viên và thanh quyết toán doanh thu
         </p>
       </div>
 
-      {/* ── 3 Summary Status Cards ── */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {/* Card 1: Completed */}
         <div
           className="rounded-3xl p-6 relative overflow-hidden transition-all hover:scale-[1.01]"
           style={{
@@ -111,19 +109,18 @@ const AdminPaymentTable = ({
             </div>
             <div>
               <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                Total Completed
+                Tổng hoàn tất
               </p>
               <h3 className="text-2xl font-black text-slate-900 mt-0.5">
                 {formatPrice(totalComplete)}
               </h3>
               <span className="inline-block mt-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                {countComplete} Orders Paid
+                {countComplete} Đơn đã thanh toán
               </span>
             </div>
           </div>
         </div>
 
-        {/* Card 2: Failed / Cancelled */}
         <div
           className="rounded-3xl p-6 relative overflow-hidden transition-all hover:scale-[1.01]"
           style={{
@@ -139,19 +136,18 @@ const AdminPaymentTable = ({
             </div>
             <div>
               <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                Total Failed / Cancelled
+                Tổng thất bại / Đã hủy
               </p>
               <h3 className="text-2xl font-black text-slate-900 mt-0.5">
                 {formatPrice(totalFailed)}
               </h3>
               <span className="inline-block mt-1 text-[11px] font-bold text-rose-700 bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-200">
-                {countFailed} Orders Failed
+                {countFailed} Đơn thất bại
               </span>
             </div>
           </div>
         </div>
 
-        {/* Card 3: Pending */}
         <div
           className="rounded-3xl p-6 relative overflow-hidden transition-all hover:scale-[1.01]"
           style={{
@@ -167,13 +163,13 @@ const AdminPaymentTable = ({
             </div>
             <div>
               <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                Total Pending
+                Tổng chờ xử lý
               </p>
               <h3 className="text-2xl font-black text-slate-900 mt-0.5">
                 {formatPrice(totalPending)}
               </h3>
               <span className="inline-block mt-1 text-[11px] font-bold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
-                {countPending} Orders Awaiting
+                {countPending} Đơn chờ duyệt
               </span>
             </div>
           </div>
@@ -209,7 +205,7 @@ const AdminPaymentTable = ({
             }}
           >
             <Calendar size={15} className="text-orange-500" />
-            <span>Aug 1, 2026 - Aug 31, 2026</span>
+            <span>Tháng 8, 2026</span>
             <ChevronDown size={14} className="text-slate-400" />
           </div>
 
@@ -221,7 +217,7 @@ const AdminPaymentTable = ({
             }}
           >
             <Download size={14} />
-            <span>Download PDF Statements</span>
+            <span>Xuất Báo Cáo PDF</span>
           </button>
         </div>
       </div>
@@ -235,15 +231,14 @@ const AdminPaymentTable = ({
           boxShadow: "0 10px 35px rgba(194, 110, 30, 0.05)",
         }}
       >
-        {/* ── Fixed Aligned Column Header (No Order ID) ── */}
         <div className="hidden lg:grid grid-cols-[3fr_1.5fr_1.2fr_1.4fr_1fr_1.1fr_0.5fr] items-center gap-4 px-6 py-3 text-xs sm:text-sm font-black uppercase tracking-wider text-slate-400 select-none">
-          <div>Student</div>
-          <div>Date</div>
-          <div>Billing Period</div>
-          <div>Amount</div>
-          <div>Gateway</div>
-          <div>Status</div>
-          <div className="text-right">Actions</div>
+          <div>Học viên</div>
+          <div>Ngày giao dịch</div>
+          <div>Khóa học</div>
+          <div>Số tiền</div>
+          <div>Cổng thanh toán</div>
+          <div>Trạng thái</div>
+          <div className="text-right">Thao tác</div>
         </div>
 
         <div className="space-y-3 mt-1">
@@ -270,7 +265,7 @@ const AdminPaymentTable = ({
                   })
                 : "Hôm nay");
             const billingPeriod =
-              trx.billingPeriod || `${trx.items?.length || 1} Courses`;
+              trx.billingPeriod || `${trx.items?.length || 1} Khóa học`;
             const orderAmount = trx.Totalprice ?? trx.totalPrice ?? 0;
             const gateway = trx.paymentMethod?.toUpperCase() || "VNPAY";
 
@@ -288,7 +283,6 @@ const AdminPaymentTable = ({
                   className="flex items-center justify-between p-4 sm:p-5 md:p-6 cursor-pointer select-none"
                 >
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[3fr_1.5fr_1.2fr_1.4fr_1fr_1.1fr_0.5fr] items-center gap-4 w-full">
-                    {/* Student (with expand toggle) */}
                     <div className="flex items-center gap-3 min-w-0">
                       <span className="w-8 h-8 rounded-xl bg-slate-100/90 flex items-center justify-center text-slate-700 transition-transform duration-300 shadow-2xs flex-shrink-0">
                         {isExpanded ? (
@@ -312,32 +306,26 @@ const AdminPaymentTable = ({
                       </div>
                     </div>
 
-                    {/* Date */}
                     <div className="text-xs sm:text-sm font-semibold text-slate-600 truncate">
                       {orderDate}
                     </div>
 
-                    {/* Billing Period */}
                     <div className="text-xs sm:text-sm font-bold text-slate-700 truncate">
                       {billingPeriod}
                     </div>
 
-                    {/* Amount */}
                     <div className="text-sm sm:text-base md:text-lg font-black text-orange-600 truncate">
                       {formatPrice(orderAmount)}
                     </div>
 
-                    {/* Gateway */}
                     <div>
                       <span className="text-xs font-bold text-slate-700 px-3 py-1 rounded-full bg-slate-100/90 border border-slate-200/60 inline-block shadow-2xs">
                         {gateway}
                       </span>
                     </div>
 
-                    {/* Status */}
                     <div>{getStatusBadge(trx.status)}</div>
 
-                    {/* Actions */}
                     <div className="flex justify-end">
                       <button
                         type="button"
@@ -354,7 +342,7 @@ const AdminPaymentTable = ({
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-3">
                       <div className="lg:col-span-2 space-y-3.5">
                         <p className="text-xs sm:text-sm font-black text-slate-800 uppercase tracking-wider">
-                          Purchased Courses Breakdown ({trx.items?.length || 0})
+                          Chi tiết khóa học đã mua ({trx.items?.length || 0})
                         </p>
 
                         <div className="space-y-3">
@@ -390,7 +378,7 @@ const AdminPaymentTable = ({
                                       {courseTitle}
                                     </h4>
                                     <p className="text-xs text-slate-500 mt-0.5">
-                                      Instructor:{" "}
+                                      Giảng viên:{" "}
                                       <span className="font-semibold text-slate-700">
                                         {instructorName}
                                       </span>
@@ -403,7 +391,11 @@ const AdminPaymentTable = ({
                                     {formatPrice(item.price)}
                                   </span>
                                   <button
-                                  onClick={() =>navigate(`/instructor/lessons/${item.courseId._id}`)}
+                                    onClick={() =>
+                                      navigate(
+                                        `/instructor/lessons/${item.courseId?._id || item.courseId}`,
+                                      )
+                                    }
                                     type="button"
                                     className="px-4 py-2 rounded-full text-xs font-bold text-orange-600 bg-orange-50 border border-orange-200/80 hover:bg-orange-100 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer shadow-2xs"
                                   >
@@ -418,16 +410,16 @@ const AdminPaymentTable = ({
 
                       <div className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-white/95 border border-slate-200/70 shadow-xs space-y-3">
                         <p className="font-black text-sm sm:text-base text-slate-900 uppercase tracking-wider flex items-center justify-between">
-                          <span>VNPay Transaction</span>
+                          <span>Giao Dịch VNPay</span>
                           <span className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full font-black shadow-2xs">
-                            VERIFIED
+                            ĐÃ XÁC THỰC
                           </span>
                         </p>
 
                         <div className="space-y-2 text-xs sm:text-sm text-slate-600 pt-2">
                           <div className="flex justify-between items-center">
                             <span className="text-slate-500 font-medium">
-                              Payment Date:
+                              Ngày thanh toán:
                             </span>
                             <span className="font-bold text-slate-800">
                               {orderDate}
@@ -435,7 +427,7 @@ const AdminPaymentTable = ({
                           </div>
                           <div className="flex justify-between items-center">
                             <span className="text-slate-500 font-medium">
-                              Trans ID:
+                              Mã giao dịch:
                             </span>
                             <span className="font-mono font-black text-slate-900 text-xs sm:text-sm">
                               {trx.transactionId ||
@@ -444,15 +436,19 @@ const AdminPaymentTable = ({
                           </div>
                           <div className="flex justify-between items-center">
                             <span className="text-slate-500 font-medium">
-                              Status:
+                              Trạng thái:
                             </span>
                             <span className="font-black text-emerald-600 capitalize">
-                              {trx.status}
+                              {trx.status === "completed"
+                                ? "Hoàn tất"
+                                : trx.status === "pending"
+                                  ? "Chờ xử lý"
+                                  : "Thất bại"}
                             </span>
                           </div>
                           <div className="flex justify-between items-center">
                             <span className="text-slate-500 font-medium">
-                              Amount:
+                              Số tiền:
                             </span>
                             <span className="text-base sm:text-lg font-black text-orange-600">
                               {formatPrice(orderAmount)}
@@ -460,10 +456,10 @@ const AdminPaymentTable = ({
                           </div>
                           <div className="flex justify-between items-center border-t border-slate-100 pt-2.5">
                             <span className="text-slate-500 font-medium">
-                              Billing Info:
+                              Thông tin thanh toán:
                             </span>
                             <span className="font-bold text-slate-700">
-                              Direct VNPay Gateway
+                              Cổng thanh toán VNPay
                             </span>
                           </div>
                         </div>
@@ -476,14 +472,14 @@ const AdminPaymentTable = ({
                         className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100/70 px-3.5 py-1.5 rounded-xl transition-all cursor-pointer"
                       >
                         <Receipt size={16} className="text-slate-500" />
-                        <span>[View Receipt]</span>
+                        <span>Xem hóa đơn</span>
                       </button>
                       <button
                         type="button"
                         className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-orange-600 hover:text-orange-700 hover:bg-orange-50/70 px-3.5 py-1.5 rounded-xl transition-all cursor-pointer"
                       >
                         <FileText size={16} className="text-orange-500" />
-                        <span>[Download Invoice PDF]</span>
+                        <span>Tải hóa đơn PDF</span>
                       </button>
                     </div>
                   </div>
@@ -502,7 +498,7 @@ const AdminPaymentTable = ({
             &lt;
           </button>
           <span className="px-3 py-1 rounded-full text-xs font-bold text-slate-600 bg-white border border-slate-200 shadow-2xs">
-            1-5 of {transactions?.length || 5}
+            1-5 trên {transactions?.length || 5}
           </span>
           <button
             type="button"

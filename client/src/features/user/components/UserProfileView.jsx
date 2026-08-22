@@ -46,8 +46,8 @@ const UserProfileView = ({
     },
     {
       id: 3,
-      title: "Quiz High Scorer",
-      desc: "Đạt điểm tuyệt đối 100/100 trong 5 bài kiểm tra",
+      title: "Điểm Tuyệt Đối Quiz",
+      desc: "Đạt điểm tuyệt đối 100/100 trong 5 bài kiểm tra Quiz",
       date: "Tháng 6, 2026",
       icon: <GraduationCap className="w-8 h-8 text-purple-500" />,
       bg: "from-purple-500/10 to-indigo-500/5",
@@ -57,10 +57,8 @@ const UserProfileView = ({
 
   return (
     <div className="w-full p-4 sm:p-6 md:p-8 space-y-6 max-w-7xl mx-auto">
-      {/* 🌟 2-COLUMN BENTO GRID 🌟 */}
       <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-6 items-start">
         <div className="space-y-6">
-          {/* Identity Card (1:1 with design) */}
           <div
             className="rounded-3xl p-6 text-center relative overflow-hidden transition-all"
             style={{
@@ -115,7 +113,6 @@ const UserProfileView = ({
               </label>
             </div>
 
-            {/* Name & Role */}
             <h2 className="text-xl font-black text-slate-800 tracking-tight">
               {formData.fullName || userInfor?.name || "Chưa cập nhật tên"}
             </h2>
@@ -138,7 +135,6 @@ const UserProfileView = ({
               <span className="text-slate-600 font-bold">2026</span>
             </p>
 
-            {/* Quick Stats Pill Strip */}
             <div className="mt-5 pt-5 border-t border-slate-200/60 flex items-center justify-between text-center px-2">
               <div>
                 <p className="text-lg font-black text-slate-800">12</p>
@@ -163,7 +159,6 @@ const UserProfileView = ({
             </div>
           </div>
 
-          {/* Vertical Navigation Tabs (1:1 with design) */}
           <div
             className="rounded-3xl p-2.5 space-y-1.5"
             style={{
@@ -174,7 +169,6 @@ const UserProfileView = ({
               boxShadow: "0 10px 30px rgba(180, 100, 20, 0.06)",
             }}
           >
-            {/* Tab 1 */}
             <button
               type="button"
               onClick={() => setActiveTab("personal")}
@@ -192,10 +186,9 @@ const UserProfileView = ({
                     : "text-slate-400"
                 }
               />
-              <span>Personal Info</span>
+              <span>Thông Tin Cá Nhân</span>
             </button>
 
-            {/* Tab 2 */}
             <button
               type="button"
               onClick={() => setActiveTab("security")}
@@ -213,10 +206,9 @@ const UserProfileView = ({
                     : "text-slate-400"
                 }
               />
-              <span>Security &amp; Password</span>
+              <span>Bảo Mật &amp; Mật Khẩu</span>
             </button>
 
-            {/* Tab 3 */}
             <button
               type="button"
               onClick={() => setActiveTab("badges")}
@@ -232,7 +224,7 @@ const UserProfileView = ({
                   activeTab === "badges" ? "text-orange-600" : "text-slate-400"
                 }
               />
-              <span>Learning Badges</span>
+              <span>Huy Hiệu Học Tập</span>
             </button>
           </div>
         </div>
@@ -249,14 +241,13 @@ const UserProfileView = ({
               "0 20px 50px rgba(180, 100, 20, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.95)",
           }}
         >
-          {/* Top Amber Shimmer Line */}
           <div className="absolute top-0 left-12 right-12 h-[1px] bg-gradient-to-r from-transparent via-orange-400/40 to-transparent" />
 
           {activeTab === "personal" && (
             <form onSubmit={handleSaveProfile} className="space-y-6">
               <div>
                 <h3 className="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight font-serif">
-                  Personal Info
+                  Thông Tin Cá Nhân
                 </h3>
                 <p className="text-xs text-slate-400 mt-1">
                   Cập nhật thông tin cá nhân và tài khoản của bạn tại Nexora.
@@ -265,7 +256,7 @@ const UserProfileView = ({
 
               <div className="space-y-2">
                 <label className="block text-xs font-bold text-slate-700">
-                  Full Name
+                  Họ và tên
                 </label>
                 <div className="relative">
                   <User
@@ -287,7 +278,7 @@ const UserProfileView = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="block text-xs font-bold text-slate-700">
-                    Email Address
+                    Địa chỉ Email
                   </label>
                   <div className="relative">
                     <Mail
@@ -308,7 +299,7 @@ const UserProfileView = ({
 
                 <div className="space-y-2">
                   <label className="block text-xs font-bold text-slate-700">
-                    Phone Number
+                    Số điện thoại
                   </label>
                   <div className="relative">
                     <Phone
@@ -329,7 +320,7 @@ const UserProfileView = ({
 
               <div className="space-y-2">
                 <label className="block text-xs font-bold text-slate-700">
-                  Bio
+                  Giới thiệu bản thân
                 </label>
                 <textarea
                   name="bio"
@@ -360,12 +351,11 @@ const UserProfileView = ({
             </form>
           )}
 
-          {/* 🌟 TAB 2: SECURITY & PASSWORD 🌟 */}
           {activeTab === "security" && (
             <form onSubmit={handleSavePassword} className="space-y-6">
               <div>
                 <h3 className="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight font-serif">
-                  Security &amp; Password
+                  Bảo Mật &amp; Mật Khẩu
                 </h3>
                 <p className="text-xs text-slate-400 mt-1">
                   Đổi mật khẩu và quản lý các thiết lập bảo vệ tài khoản của
@@ -450,18 +440,17 @@ const UserProfileView = ({
                   }}
                 >
                   <Key size={18} />
-                  <span>Update Password</span>
+                  <span>Cập nhật mật khẩu</span>
                 </button>
               </div>
             </form>
           )}
 
-          {/* 🌟 TAB 3: LEARNING BADGES & ACHIEVEMENTS 🌟 */}
           {activeTab === "badges" && (
             <div className="space-y-6">
               <div>
                 <h3 className="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight font-serif">
-                  Learning Badges
+                  Huy Hiệu Học Tập
                 </h3>
                 <p className="text-xs text-slate-400 mt-1">
                   Bộ sưu tập thành tích và chứng nhận học tập của bạn tại

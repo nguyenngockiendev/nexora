@@ -18,16 +18,14 @@ const ManageClass = ({
 
   return (
     <div className="space-y-6 pb-10">
-      {/* ── Top Header Bar (Matching Design Mockup) ── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">
-            Live Class Management
+            Quản Lý Lớp Trực Tuyến
           </h1>
         </div>
 
         <div className="flex items-center gap-3 flex-wrap sm:flex-nowrap">
-          {/* Total Classes Stat Badge */}
           <div
             className="px-4 py-2 rounded-2xl flex items-center gap-3 shrink-0"
             style={{
@@ -38,14 +36,13 @@ const ManageClass = ({
             }}
           >
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-              Total Classes
+              Tổng số lớp
             </span>
             <span className="text-xl font-black text-orange-500">
               {listCourseLive?.length || 0}
             </span>
           </div>
 
-          {/* Option 1: Course Selector Pill Dropdown */}
           <div className="relative shrink-0">
             <select
               value={selectedCourseId || listCourseLive?.[0]?._id || ""}
@@ -55,13 +52,12 @@ const ManageClass = ({
             >
               {listCourseLive?.map((c) => (
                 <option key={c._id} value={c._id}>
-                  {c.title || "Select Course"}
+                  {c.title || "Chọn khóa học"}
                 </option>
               ))}
             </select>
           </div>
 
-          {/* Create Session Pill Button */}
           <button
             onClick={() => {
               const targetId = selectedCourseId || listCourseLive?.[0]?._id;
@@ -69,7 +65,7 @@ const ManageClass = ({
                 navigate(`/courses/create/class/${targetId}`);
               }
             }}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-full font-bold text-orange-600 text-sm transition-all duration-200 hover:scale-105 shrink-0"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-full font-bold text-orange-600 text-sm transition-all duration-200 hover:scale-105 shrink-0 cursor-pointer"
             style={{
               background: "rgba(255,255,255,0.85)",
               border: "1px solid rgba(249,115,22,0.3)",
@@ -78,12 +74,11 @@ const ManageClass = ({
             }}
           >
             <Plus size={16} className="text-orange-500" />
-            <span>Create Class</span>
+            <span>Tạo lớp học</span>
           </button>
         </div>
       </div>
 
-      {/* ── Search Bar (Optional Filter) ── */}
       <div className="relative max-w-md">
         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
           <Search size={16} className="text-slate-400" />
@@ -92,13 +87,12 @@ const ManageClass = ({
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Filter live courses..."
+          placeholder="Tìm kiếm khóa học trực tuyến..."
           className="w-full pl-10 pr-4 py-2.5 rounded-full text-xs font-medium bg-white/80 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-slate-700 shadow-sm"
           style={{ borderRadius: "9999px" }}
         />
       </div>
 
-      {/* ── Status Alerts ── */}
       {(error || loading) && (
         <div className="flex flex-col gap-3">
           {error && (
@@ -122,13 +116,12 @@ const ManageClass = ({
                 color: "#ea580c",
               }}
             >
-              Loading live courses...
+              Đang tải danh sách khóa học trực tuyến...
             </div>
           )}
         </div>
       )}
 
-      {/* ── Course Card List (Matching Design Mockup Exactly) ── */}
       <div className="flex flex-col gap-4">
         {(filteredCourses || listCourseLive)?.map((item) => {
           return (
@@ -142,7 +135,6 @@ const ManageClass = ({
                 boxShadow: "0 6px 24px rgba(194,110,30,0.05)",
               }}
             >
-              {/* Left: Course Thumbnail */}
               <div className="w-full sm:w-56 h-36 rounded-2xl overflow-hidden shrink-0 relative bg-slate-100 shadow-sm">
                 <img
                   src={
@@ -154,7 +146,6 @@ const ManageClass = ({
                 />
               </div>
 
-              {/* Center: Course Details */}
               <div className="flex-1 space-y-3 min-w-0 w-full text-left">
                 <div className="flex items-center gap-3 flex-wrap">
                   <span
@@ -164,7 +155,7 @@ const ManageClass = ({
                     }}
                   >
                     <span className="w-2 h-2 rounded-full bg-white animate-pulse" />{" "}
-                    LIVE
+                    TRỰC TUYẾN
                   </span>
                   <h3 className="text-xl font-bold text-slate-800 truncate">
                     {item?.title}
@@ -176,24 +167,23 @@ const ManageClass = ({
                     className="px-3 py-1 rounded-full text-xs font-semibold text-orange-600 border border-orange-200"
                     style={{ background: "rgba(249,115,22,0.08)" }}
                   >
-                    Full-stack
+                    {item?.category || "Lập trình"}
                   </span>
                   <span className="flex items-center gap-1.5 text-slate-600 font-semibold">
                     <Users size={14} className="text-slate-400" />
-                    {item?.numberClass || 120} Students
+                    {item?.numberClass || 0} Học viên
                   </span>
                   <span className="flex items-center gap-1.5 text-slate-600 font-semibold">
                     <Clock size={14} className="text-slate-400" />
-                    2:00 PM - 3:30 PM EST
+                    Lịch học định kỳ
                   </span>
                 </div>
               </div>
 
-              {/* Right: Enter Studio Action Button */}
               <div className="shrink-0 w-full sm:w-auto flex justify-end">
                 <button
                   onClick={() => navigate(`details/class/${item._id}`)}
-                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold text-orange-600 text-sm transition-all duration-200 hover:scale-105 group/btn"
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold text-orange-600 text-sm transition-all duration-200 hover:scale-105 group/btn cursor-pointer"
                   style={{
                     background: "rgba(255,255,255,0.9)",
                     border: "1px solid rgba(249,115,22,0.3)",
@@ -201,7 +191,7 @@ const ManageClass = ({
                     borderRadius: "9999px",
                   }}
                 >
-                  <span>Enter Studio</span>
+                  <span>Vào phòng quản lý</span>
                   <ChevronRight
                     size={16}
                     className="group-hover/btn:translate-x-1 transition-transform"
@@ -227,10 +217,10 @@ const ManageClass = ({
             className="mb-4"
           />
           <h4 className="text-lg font-bold mb-2 text-slate-800">
-            No live courses found
+            Không tìm thấy khóa học trực tuyến nào
           </h4>
           <p className="text-xs text-slate-500">
-            Create a new live course to start managing sessions.
+            Tạo một khóa học trực tuyến mới để bắt đầu quản lý các buổi học.
           </p>
         </div>
       )}

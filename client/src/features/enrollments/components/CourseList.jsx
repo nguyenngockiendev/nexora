@@ -15,9 +15,9 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
   const getUserName = () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem("userInfor"));
-      return userInfo?.name || "Student";
+      return userInfo?.name || "Học viên";
     } catch {
-      return "Student";
+      return "Học viên";
     }
   };
 
@@ -29,7 +29,7 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
         <div className="relative w-full lg:max-w-md -ml-3">
           <input
             type="text"
-            placeholder="Search Courses, Instructors..."
+            placeholder="Tìm kiếm khóa học, giảng viên..."
             onChange={(e) => setSearch && setSearch(e.target.value)}
             className="w-full pl-6 pr-12 py-3.5 rounded-full text-sm font-semibold bg-white/70 border border-white/90 shadow-[0_4px_20px_rgba(0,0,0,0.03)] backdrop-blur-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all text-slate-800 placeholder-slate-400"
             style={{ borderRadius: "9999px" }}
@@ -46,10 +46,10 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
               className="appearance-none pl-5 pr-10 py-3 rounded-full text-xs md:text-sm font-bold bg-white/70 border border-white/90 shadow-sm backdrop-blur-xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-slate-700 cursor-pointer"
               style={{ borderRadius: "9999px" }}
             >
-              <option value="All Courses">All Categories</option>
-              <option value="buy">Active Courses</option>
-              <option value="live">Live Classes</option>
-              <option value="recorded">Recorded Courses</option>
+              <option value="All Courses">Tất cả danh mục</option>
+              <option value="buy">Khóa học đang học</option>
+              <option value="live">Lớp trực tuyến</option>
+              <option value="recorded">Khóa học video</option>
             </select>
             <ChevronDown
               size={15}
@@ -62,9 +62,9 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
               className="appearance-none pl-5 pr-10 py-3 rounded-full text-xs md:text-sm font-bold bg-white/70 border border-white/90 shadow-sm backdrop-blur-xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-slate-700 cursor-pointer"
               style={{ borderRadius: "9999px" }}
             >
-              <option value="latest">Sort by: Latest</option>
-              <option value="progress">Sort by: Progress</option>
-              <option value="title">Sort by: Name</option>
+              <option value="latest">Sắp xếp: Mới nhất</option>
+              <option value="progress">Sắp xếp: Tiến độ</option>
+              <option value="title">Sắp xếp: Tên khóa học</option>
             </select>
             <ChevronDown
               size={15}
@@ -76,21 +76,19 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
 
       <div className="space-y-1">
         <h1 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
-          My Courses
+          Khóa Học Của Tôi
         </h1>
         <p className="text-sm md:text-base font-semibold text-slate-500">
-          Welcome back, {getUserName()}! •{" "}
+          Chào mừng trở lại, {getUserName()}! •{" "}
           <span className="text-orange-600 font-extrabold">
-            {activeCoursesCount} Active{" "}
-            {activeCoursesCount === 1 ? "Course" : "Courses"}
+            {activeCoursesCount} Khóa học đang tham gia
           </span>
         </p>
       </div>
 
       {loading && (
         <div className="flex items-center justify-center gap-3 py-12 text-orange-500 font-bold text-base">
-          <Loader2 className="animate-spin" size={26} /> Loading your learning
-          path...
+          <Loader2 className="animate-spin" size={26} /> Đang tải lộ trình học tập của bạn...
         </div>
       )}
 
@@ -103,11 +101,11 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-7">
         {courses?.map((item) => {
           const isLive = item?.type === "live";
-          const title = item?.courseId?.title || "Course Masterclass";
+          const title = item?.courseId?.title || "Khóa học";
           const instructorName =
             item?.instructor?.name ||
             item?.courseId?.instructorName ||
-            "Instructor";
+            "Giảng viên";
           const thumbnail =
             item?.courseId?.thumbnail ||
             (isLive
@@ -118,7 +116,7 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
           const totalLessonsCount =
             item?.numberStudy?.length || item?.totalLessons || 10;
           const nextLessonTitle =
-            item?.nextLesson?.title || "Core Architecture Fundamentals";
+            item?.nextLesson?.title || "Kiến trúc nền tảng bài học";
           const rating =
             item?.rating || item?.courseId?.rating || (isLive ? 4.8 : 4.5);
 
@@ -135,7 +133,7 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
               <div>
                 <div className="flex items-center justify-between mb-2.5">
                   <span className="text-xs font-bold text-slate-500 tracking-wide uppercase">
-                    {isLive ? "Live Class" : "Recorded Course"}
+                    {isLive ? "Lớp trực tuyến" : "Khóa học video"}
                   </span>
                   <div className="inline-flex items-center gap-1 text-xs font-black text-slate-800">
                     <span>{Number(rating).toFixed(1)}</span>
@@ -152,13 +150,13 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
                     <Clock size={13} />
                     <span>
                       {item?.courseId?.category ||
-                        (isLive ? "UI/UX & Code" : "Technology")}
+                        (isLive ? "UI/UX & Lập trình" : "Công nghệ")}
                     </span>
                   </div>
                   {isLive && (
                     <div className="flex items-center gap-1">
                       <Users size={13} />
-                      <span>{item?.studentsCount || 3} students</span>
+                      <span>{item?.studentsCount || 3} học viên</span>
                     </div>
                   )}
                 </div>
@@ -183,13 +181,13 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
                             borderRadius: "9999px",
                           }}
                         >
-                          <Radio size={12} className="animate-pulse" /> LIVE
+                          <Radio size={12} className="animate-pulse" /> TRỰC TUYẾN
                         </div>
                       </div>
                       <div className="absolute bottom-3 left-3 right-3 z-10">
                         <span className="text-xs font-bold text-white/95 line-clamp-1 drop-shadow-sm">
-                          Streaming Now:{" "}
-                          {item?.classId?.title || "Interactive Session"}
+                          Đang phát:{" "}
+                          {item?.classId?.title || "Buổi học tương tác"}
                         </span>
                       </div>
                     </>
@@ -202,38 +200,33 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
                   )}
                 </div>
 
-                {/* 5. Instructor Row */}
                 <div className="text-xs font-semibold text-slate-500 mb-3">
-                  Instructor:{" "}
+                  Giảng viên:{" "}
                   <strong className="text-slate-800 font-extrabold">
                     {instructorName}
                   </strong>
                 </div>
 
-                {/* 6. Dynamic Content Section */}
                 {isLive ? (
-                  /* Live Session Info */
                   <div className="space-y-1.5 mb-6">
                     <div className="text-xs font-semibold text-slate-600">
-                      Current Topic:{" "}
+                      Chủ đề hiện tại:{" "}
                       <strong className="text-slate-800 font-bold">
-                        {item?.classId?.topic || "Redux Toolkit & Architecture"}
+                        {item?.classId?.topic || "Kiến trúc & Thực hành"}
                       </strong>
                     </div>
                   </div>
                 ) : (
-                  /* Recorded Progress Bar & Next Lesson */
                   <div className="space-y-3.5 mb-6">
                     <div>
                       <div className="flex justify-between items-center text-xs font-extrabold text-slate-800 mb-1.5">
                         <span className="text-slate-700">
-                          {progress}% Completed
+                          {progress}% hoàn thành
                         </span>
                         <span className="text-slate-400 font-semibold">
-                          {completedCount}/{totalLessonsCount} Lessons
+                          {completedCount}/{totalLessonsCount} Bài học
                         </span>
                       </div>
-                      {/* Slim Smooth Progress Bar */}
                       <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
                         <div
                           className="h-full rounded-full transition-all duration-700 ease-out"
@@ -247,7 +240,7 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
                     </div>
 
                     <div className="text-xs font-medium text-slate-500 truncate">
-                      Next Lesson:{" "}
+                      Bài học tiếp theo:{" "}
                       <strong className="text-slate-800 font-bold">
                         {nextLessonTitle}
                       </strong>
@@ -256,10 +249,8 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
                 )}
               </div>
 
-              {/* 7. Action Button Section (1:1 Pill Buttons) */}
               <div className="pt-2">
                 {isLive ? (
-                  /* Live Card Button: Full-width Solid Orange Pill */
                   <Link
                     to={`live/class/${item?.classId?._id || item?.classId || ""}/item`}
                     className="block w-full"
@@ -271,13 +262,11 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
                         borderRadius: "9999px",
                       }}
                     >
-                      Join Live Room
+                      Vào lớp học
                     </button>
                   </Link>
                 ) : (
-                  /* Recorded Card: 2 Pill Buttons Side-by-Side */
                   <div className="flex items-center gap-2.5 w-full">
-                    {/* Learn Now Solid Orange Button */}
                     <Link
                       to={`courses/${item?.courseId?._id}/item`}
                       className="flex-1"
@@ -286,24 +275,23 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
                         className="w-full py-3 px-4 rounded-full text-xs md:text-sm font-black text-white shadow-md shadow-orange-500/25 hover:shadow-orange-500/40 hover:scale-[1.02] active:scale-95 transition-all text-center"
                         style={{
                           background:
-                            "linear-gradient(135deg, #f97316, #fb923c)",
+                            "linear-gradient(135deg, #f39a5a, #b35a12)",
                           borderRadius: "9999px",
                         }}
                       >
-                        Learn Now
+                        Học ngay
                       </button>
                     </Link>
 
-                    {/* Details Clean Glass Pill Button */}
                     <Link
-                      to={`/courses/details/recorded/${item?.courseId?._id}`}
+                      to={`/courses-all/details/recorded/${item?.courseId?._id}`}
                       className="flex-1"
                     >
                       <button
                         className="w-full py-3 px-4 rounded-full text-xs md:text-sm font-extrabold text-slate-700 bg-white/80 border border-slate-300 hover:bg-white hover:border-slate-400 hover:text-slate-900 hover:scale-[1.02] active:scale-95 transition-all shadow-sm text-center"
                         style={{ borderRadius: "9999px" }}
                       >
-                        Details
+                        Chi tiết
                       </button>
                     </Link>
                   </div>
@@ -315,19 +303,18 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
 
         {courses?.length === 0 && !loading && (
           <div className="col-span-full py-20 text-center text-slate-500 font-semibold text-sm">
-            No courses found matching your criteria.
+            Không tìm thấy khóa học nào phù hợp.
           </div>
         )}
       </div>
 
-      {/* ── 8. Bottom Pagination Bar (1:1 with Design) ── */}
       {courses && courses.length > 0 && (
         <div className="flex items-center justify-center gap-2 pt-6">
           <button
             className="px-3.5 py-1.5 rounded-full text-xs font-bold text-slate-400 hover:text-slate-700 transition-colors flex items-center gap-1"
             style={{ borderRadius: "9999px" }}
           >
-            <ChevronLeft size={14} /> Prev
+            <ChevronLeft size={14} /> Trước
           </button>
 
           <button
@@ -353,7 +340,7 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
             className="px-3.5 py-1.5 rounded-full text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1"
             style={{ borderRadius: "9999px" }}
           >
-            Next <ChevronRight size={14} />
+            Sau <ChevronRight size={14} />
           </button>
         </div>
       )}
