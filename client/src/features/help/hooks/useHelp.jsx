@@ -36,7 +36,6 @@ const useHelp = () => {
     }
   };
 
-  
   const sendHelpMessage = async (data) => {
     try {
       Setloading(true);
@@ -51,7 +50,6 @@ const useHelp = () => {
     }
   };
 
-  
   const getAllForAdmin = async () => {
     try {
       Setloading(true);
