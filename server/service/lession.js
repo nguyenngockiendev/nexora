@@ -178,7 +178,7 @@ const GetCoursewithLessionById = async (data) => {
 };
 const getLessionDetails = async (data) => {
   try {
-    if (data.role !== "instructor") {
+    if (data.role == "student") {
       throw { status: 404, message: "không có quyền!" };
     }
     const listlession = await Lessons.find({

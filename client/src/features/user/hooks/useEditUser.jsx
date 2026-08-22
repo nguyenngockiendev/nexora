@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { ChangePassWord, Changerole, UpdateProfileUser } from "../api/user-api";
+import {
+  ChangePassWord,
+  Changerole,
+  ChangeUserRole,
+  UpdateProfileUser,
+} from "../api/user-api";
 
 const useEditUsers = () => {
   const [loading, Setloading] = useState(false);
@@ -15,6 +20,23 @@ const useEditUsers = () => {
     } catch (error) {
       console.log(error);
       Seterror(error?.message || "An error occurred");
+    } finally {
+      Setloading(false);
+    }
+  };
+
+  const updateUserRole = async (userId, newRole) => {
+    try {
+      Setloading(true);
+      const res = await ChangeUserRole({
+        id: userId,
+        role: newRole,
+      });
+      return res;
+    } catch (error) {
+      console.log(error);
+      Seterror(error?.message || "Lỗi cập nhật vai trò");
+      return null;
     } finally {
       Setloading(false);
     }
@@ -46,6 +68,13 @@ const useEditUsers = () => {
     }
   };
 
-  return { loading, error, getchane, updateProfile, changepassword };
+  return {
+    loading,
+    error,
+    getchane,
+    updateUserRole,
+    updateProfile,
+    changepassword,
+  };
 };
 export default useEditUsers;

@@ -121,7 +121,7 @@ const UpdateroleByAdmin = async (data) => {
     if (data?.role !== "admin") {
       throw { status: 404, message: "You don't have enough authority." };
     }
-    if (data?.role === "admin") {
+    if (data?.roles === "admin") {
       throw {
         status: 404,
         message: "You are not allowed to change your main role!",

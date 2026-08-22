@@ -20,10 +20,18 @@ const GetAllCourses = async (data) => {
     const resultFinal = await Promise.all(
       course?.map(async (co) => {
         const numbserclass = await classs.find({ courseId: co?._id });
+        const rattingforcoure = await Rating.find({ courseId: co?._id });
+        const avgRting = rattingforcoure.reduce((sum, number) => {
+          const toatal = Math.round((sum += Number(number.rating)));
+          return toatal;
+        }, 0);
+        const avg = avgRting / rattingforcoure.length;
         return {
           ...co,
           instructor: co?.instructor?.name,
           numberClass: numbserclass.length,
+          Rattingleng: rattingforcoure.length,
+          rattingforcoure: avg,
         };
       }),
     );
@@ -50,10 +58,18 @@ const GetCourses = async (data) => {
     const resultFinal = await Promise.all(
       course?.map(async (co) => {
         const numbserclass = await classs.find({ courseId: co?._id });
+        const rattingforcoure = await Rating.find({ courseId: co?._id });
+        const avgRting = rattingforcoure.reduce((sum, number) => {
+          const toatal = Math.round((sum += Number(number.rating)));
+          return toatal;
+        }, 0);
+        const avg = avgRting / rattingforcoure.length;
         return {
           ...co,
           instructor: co?.instructor?.name,
           numberClass: numbserclass.length,
+          Rattingleng: rattingforcoure.length,
+          rattingforcoure: avg,
         };
       }),
     );
