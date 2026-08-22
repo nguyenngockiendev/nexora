@@ -48,7 +48,6 @@ const DetailsCourse = ({
 
   return (
     <div className="w-full max-w-6xl mx-auto space-y-10 pb-16">
-      {/* ── 1. Top Hero Overview Card (Exact 1:1 with Design Mockup) ── */}
       <section
         className="rounded-[2.5rem] p-6 lg:p-8 relative overflow-hidden flex flex-col lg:flex-row items-center gap-8 lg:gap-10 shadow-[0_20px_50px_rgba(194,110,30,0.06)]"
         style={{

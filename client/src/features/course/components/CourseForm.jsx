@@ -340,9 +340,9 @@ const CoursesForm = ({
                     disabled={paymentloading}
                     onClick={() => {
                       if (cou?.type === "recorded") {
-                        navigate(`details/recorded/${cou?._id}`);
+                        navigate(`/courses-all/details/recorded/${cou?._id}`);
                       } else {
-                        navigate(`details/class/live/${cou._id}`);
+                        navigate(`/courses-all/details/class/live/${cou._id}`);
                       }
                     }}
                     className="flex-1 py-2 px-3 rounded-full text-xs font-black text-white shadow-md shadow-orange-500/20 hover:shadow-orange-500/35 hover:scale-[1.02] active:scale-95 transition-all text-center"
