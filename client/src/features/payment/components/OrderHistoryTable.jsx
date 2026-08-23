@@ -69,7 +69,7 @@ const HistoryTable = ({
 
           <button
             type="button"
-            onClick={() => navigate("/courses")}
+            onClick={() => navigate("/courses-all")}
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold text-slate-700 bg-white/90 border border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition-all cursor-pointer shadow-2xs self-start sm:self-auto"
           >
             <ShoppingBag size={14} />
@@ -142,7 +142,7 @@ const HistoryTable = ({
               thị chi tiết tại đây.
             </p>
             <button
-              onClick={() => navigate("/courses")}
+              onClick={() => navigate("/courses-all")}
               className="px-6 py-3 rounded-full text-xs sm:text-sm font-black text-white shadow-lg shadow-orange-500/25 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
               style={{
                 background: "linear-gradient(135deg, #f97316, #ea580c)",
@@ -285,7 +285,7 @@ const HistoryTable = ({
                               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-black text-white shadow-md shadow-orange-500/20 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50"
                               style={{
                                 background:
-                                  "linear-gradient(135deg, #f97316, #ea580c)",
+                                  "linear-gradient(135deg, #f3a36a, #ab4006)",
                               }}
                             >
                               {actionLoadingId === order._id ? (

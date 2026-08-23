@@ -47,7 +47,7 @@ const SaveLessonProgress = async (data) => {
     );
     let completed = false;
     let date = "";
-    if (percen >= 70) {
+    if (percen >= 90) {
       completed = true;
       date = Date.now();
     }

@@ -210,8 +210,8 @@ const CreateLession = ({
                   isDraggingVideo
                     ? "border-orange-500 bg-orange-50/80 scale-[1.01]"
                     : selectedVideo
-                    ? "border-emerald-400/90 bg-emerald-50/50"
-                    : "border-slate-300/90 bg-white/80 hover:bg-white hover:border-orange-400 hover:shadow-sm"
+                      ? "border-emerald-400/90 bg-emerald-50/50"
+                      : "border-slate-300/90 bg-white/80 hover:bg-white hover:border-orange-400 hover:shadow-sm"
                 } shadow-xs`}
               >
                 {selectedVideo ? (
@@ -224,7 +224,8 @@ const CreateLession = ({
                         {selectedVideo.name}
                       </p>
                       <p className="text-xs text-slate-500 mt-0.5">
-                        {(selectedVideo.size / (1024 * 1024)).toFixed(1)} MB • Tệp video đã sẵn sàng
+                        {(selectedVideo.size / (1024 * 1024)).toFixed(1)} MB •
+                        Tệp video đã sẵn sàng
                       </p>
                     </div>
                     <div className="flex items-center justify-center gap-2 pt-1">
@@ -364,7 +365,9 @@ const CreateLession = ({
                 className="p-4 sm:p-5 rounded-2xl bg-white/80 border border-dashed border-slate-300 hover:border-orange-400 hover:bg-white transition-all cursor-pointer flex items-center justify-center gap-2 text-xs sm:text-sm font-bold text-slate-600 hover:text-orange-600 shadow-2xs"
               >
                 <Paperclip size={16} className="text-orange-500" />
-                <span>+ Đính kèm file giáo trình PDF, slide hoặc mã nguồn Zip</span>
+                <span>
+                  + Đính kèm file giáo trình PDF, slide hoặc mã nguồn Zip
+                </span>
               </div>
             )}
           </div>
@@ -409,4 +412,3 @@ const CreateLession = ({
 };
 
 export default CreateLession;
-

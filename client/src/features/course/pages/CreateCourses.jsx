@@ -56,12 +56,12 @@ const CreateCourses = () => {
         setExits(true);
         setnNotification({
           onConfirm: () => navigate(`/create-class/${result.result._id}`),
-          onCancel: () => navigate("/courses"),
+          onCancel: () => navigate("/courses-all"),
         });
         return;
       }
       toast.success("Tạo khóa học mới thành công!");
-      navigate("/courses");
+      navigate("/courses-all");
     } catch (err) {
       console.error(err);
     } finally {

@@ -224,7 +224,7 @@ const CreateCoursesForm = ({
                 </div>
               </div>
 
-              {/* Loại Khóa Học (Course Type) */}
+              
               <div className="space-y-2 pt-2">
                 <label className="block text-xs font-black text-slate-700 uppercase tracking-wider">
                   Hình thức khóa học <span className="text-rose-500">*</span>
