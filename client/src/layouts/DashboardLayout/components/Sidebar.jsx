@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import Nav_Sidebar from "../Nav_sidebar";
-import { ChevronLeft, Sparkles, LogOut } from "lucide-react";
+import { ChevronLeft, ChevronRight, LogOut } from "lucide-react";
 
 const Sidebar = ({
   collapsed,
@@ -21,71 +21,61 @@ const Sidebar = ({
         onClick={() => setMobileOpen(false)}
       />
 
-      {/* Sidebar */}
       <aside
-        className={`fixed top-3 left-3 bottom-3 z-50 flex flex-col transition-all duration-300 ease-in-out rounded-[28px] overflow-hidden
-          ${collapsed ? "w-[68px]" : "w-[248px]"}
+        className={`fixed top-3 left-3 bottom-3 z-50 flex flex-col transition-all duration-300 ease-in-out rounded-[28px]
+          ${collapsed ? "w-[72px]" : "w-[250px]"}
           ${mobileOpen ? "translate-x-0" : "-translate-x-[calc(100%+12px)] md:translate-x-0"}
         `}
         style={{
-          background: "rgba(255, 252, 248, 0.72)",
+          background: "rgba(255, 252, 248, 0.85)",
           backdropFilter: "blur(40px) saturate(200%)",
           WebkitBackdropFilter: "blur(40px) saturate(200%)",
-          border: "1px solid rgba(255, 255, 255, 0.85)",
+          border: "1px solid rgba(255, 255, 255, 0.9)",
           boxShadow:
-            "0 0 60px rgba(249,115,22,0.1), 0 24px 64px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.9)",
+            "0 0 40px rgba(249,115,22,0.08), 0 20px 48px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9)",
         }}
       >
-        {/* Logo */}
         <div
-          className={`flex items-center h-16 px-4 shrink-0 ${collapsed ? "justify-center" : "gap-3"}`}
+          className={`flex items-center h-16 shrink-0 transition-all ${
+            collapsed ? "justify-center px-2" : "justify-between px-4"
+          }`}
         >
           <div
-            className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
-            style={{
-              background: "linear-gradient(135deg, #f97316, #fb923c)",
-              boxShadow: "0 4px 14px rgba(249,115,22,0.4)",
-            }}
+            onClick={() => collapsed && setCollapsed(false)}
+            className={`flex items-center gap-3 cursor-pointer ${collapsed ? "justify-center" : ""}`}
+            title={collapsed ? "Nhấn để mở rộng menu" : undefined}
           >
-            <Sparkles size={15} className="text-white" />
+            <img
+              src="/logo.svg"
+              alt="Nexora Logo"
+              className="w-8 h-8 object-contain shrink-0 transition-transform hover:scale-105"
+            />
+            {!collapsed && (
+              <span className="font-extrabold text-base text-slate-800 tracking-tight whitespace-nowrap">
+                Nexora LMS
+              </span>
+            )}
           </div>
-
-          <span
-            className={`font-bold text-base text-slate-800 tracking-tight whitespace-nowrap transition-all duration-300 ${collapsed ? "w-0 opacity-0 overflow-hidden" : "opacity-100"}`}
-          >
-            LinguaAI
-          </span>
 
           {!collapsed && (
             <button
-              className="ml-auto w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-orange-500 transition-colors shrink-0"
+              className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-orange-500 hover:bg-orange-50 transition-all shrink-0 cursor-pointer"
               onClick={() => setCollapsed(true)}
-              aria-label="Collapse sidebar"
+              aria-label="Thu gọn thanh bên"
             >
-              <ChevronLeft size={15} />
+              <ChevronLeft size={16} />
             </button>
           )}
         </div>
 
-        {collapsed && (
-          <button
-            className="mx-auto mb-2 w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-orange-500 transition-colors shrink-0"
-            onClick={() => setCollapsed(false)}
-            aria-label="Expand sidebar"
-          >
-            <ChevronLeft size={15} className="rotate-180" />
-          </button>
-        )}
-
-        {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto overflow-x-hidden px-2 pb-2 flex flex-col gap-5">
+        <nav className="flex-1 overflow-y-auto overflow-x-hidden px-2.5 pb-2 flex flex-col gap-4 custom-scrollbar">
           {Nav_Sidebar.map((group, groupIndex) => (
             <div
               key={group.title || groupIndex}
-              className="flex flex-col gap-0.5"
+              className="flex flex-col gap-1"
             >
               {group.title && !collapsed && (
-                <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-slate-400 px-3 mb-1">
+                <p className="text-[9px] font-black uppercase tracking-[0.16em] text-slate-400 px-3 mb-1">
                   {group.title}
                 </p>
               )}
@@ -101,46 +91,48 @@ const Sidebar = ({
                     onClick={handleNavClick}
                     title={collapsed ? item.name : undefined}
                     className={({ isActive }) =>
-                      `nav-item-wave relative flex items-center gap-3 px-3 py-2.5 rounded-2xl
-                     transition-all duration-200 ease-out
-                     ${collapsed ? "justify-center" : ""}
-                     ${
-                       isActive
-                         ? "text-orange-600 -translate-y-px font-semibold"
-                         : "text-slate-500 hover:text-slate-800 hover:-translate-y-0.5"
-                     }`
+                      `flex items-center rounded-2xl transition-all duration-200 ease-out cursor-pointer no-underline outline-none focus:outline-none select-none
+                      ${
+                        collapsed
+                          ? "w-11 h-11 mx-auto justify-center"
+                          : "gap-3 px-3.5 py-2.5 w-full"
+                      }
+                      ${
+                        isActive
+                          ? "font-bold shadow-xs"
+                          : "text-slate-600 hover:text-orange-600 hover:bg-white/60"
+                      }`
                     }
-                    style={({ isActive }) =>
-                      isActive
+                    style={({ isActive }) => ({
+                      textDecoration: "none",
+                      outline: "none",
+                      ...(isActive
                         ? {
                             background:
-                              "linear-gradient(135deg, rgba(249,115,22,0.1), rgba(251,146,60,0.07))",
+                              "linear-gradient(135deg, rgba(249,115,22,0.15), rgba(251,146,60,0.08))",
+                            color: "#ea580c",
                           }
-                        : {}
-                    }
+                        : {
+                            color: "#475569",
+                          }),
+                    })}
                   >
                     {({ isActive }) => (
                       <>
-                        {isActive && (
+                        <span
+                          className="shrink-0 transition-colors"
+                          style={{ color: isActive ? "#ea580c" : "#64748b" }}
+                        >
+                          {item.icon && <item.icon size={19} />}
+                        </span>
+                        {!collapsed && (
                           <span
-                            className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 rounded-r-full"
-                            style={{
-                              background:
-                                "linear-gradient(to bottom, #f97316, #fb923c)",
-                              boxShadow: "0 0 8px rgba(249,115,22,0.6)",
-                            }}
-                          />
+                            className="text-sm font-semibold whitespace-nowrap truncate no-underline"
+                            style={{ color: isActive ? "#ea580c" : "#334155" }}
+                          >
+                            {item.name}
+                          </span>
                         )}
-                        <span
-                          className={`shrink-0 ${isActive ? "text-orange-500" : ""}`}
-                        >
-                          {item.icon && <item.icon size={18} />}
-                        </span>
-                        <span
-                          className={`text-sm whitespace-nowrap transition-all duration-200 ${collapsed ? "w-0 opacity-0 overflow-hidden" : "opacity-100"}`}
-                        >
-                          {item.name}
-                        </span>
                       </>
                     )}
                   </NavLink>
@@ -149,12 +141,28 @@ const Sidebar = ({
           ))}
         </nav>
 
-        {/* User */}
         <div
-          className={`px-2 pb-3 shrink-0 flex flex-col gap-1 ${collapsed ? "items-center" : ""}`}
+          className={`px-2 pb-3 shrink-0 flex flex-col gap-1.5 pt-2 border-t border-orange-100/50 ${
+            collapsed ? "items-center" : ""
+          }`}
         >
+          {collapsed && (
+            <button
+              onClick={() => setCollapsed(false)}
+              className="w-10 h-10 mx-auto rounded-xl flex items-center justify-center text-slate-400 hover:text-orange-500 hover:bg-orange-50 transition-all cursor-pointer mb-1"
+              title="Mở rộng menu"
+            >
+              <ChevronRight size={18} />
+            </button>
+          )}
+
           <div
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-2xl cursor-pointer hover:bg-orange-500/10 transition-colors ${collapsed ? "justify-center" : ""}`}
+            onClick={() => navigation("/profile")}
+            className={`flex items-center rounded-2xl cursor-pointer hover:bg-orange-500/10 transition-colors ${
+              collapsed
+                ? "w-11 h-11 justify-center mx-auto"
+                : "gap-3 px-3 py-2"
+            }`}
             title="Xem thông tin cá nhân"
           >
             {dashboard?.avatar ? (
@@ -174,34 +182,37 @@ const Sidebar = ({
                 {(dashboard?.name || "U")[0].toUpperCase()}
               </div>
             )}
-            <div
-              className={`min-w-0 transition-all duration-200 ${collapsed ? "w-0 opacity-0 overflow-hidden" : "opacity-100"}`}
-            >
-              <div className="text-sm font-semibold text-slate-800 truncate">
-                {dashboard?.name || "User Name"}
+            {!collapsed && (
+              <div className="min-w-0 flex-1">
+                <div className="text-sm font-bold text-slate-800 truncate">
+                  {dashboard?.name || "Học viên"}
+                </div>
+                <div className="text-xs text-slate-400">
+                  {dashboard?.role
+                    ? dashboard?.role.charAt(0).toUpperCase() +
+                      dashboard?.role.slice(1)
+                    : "Student"}
+                </div>
               </div>
-              <div className="text-xs text-slate-400">
-                {dashboard?.role
-                  ? dashboard?.role.charAt(0).toUpperCase() +
-                    dashboard?.role.slice(1)
-                  : "Student"}
-              </div>
-            </div>
+            )}
           </div>
 
           <button
-            className={`nav-item-wave relative flex items-center gap-2.5 px-3 py-2.5 rounded-2xl
-              transition-all duration-200 ease-out
-              text-slate-400 hover:text-red-500 hover:-translate-y-0.5
-              w-full ${collapsed ? "justify-center" : ""}`}
+            className={`flex items-center rounded-2xl transition-all duration-200 ease-out text-slate-400 hover:text-red-500 hover:bg-red-50 cursor-pointer ${
+              collapsed
+                ? "w-11 h-11 justify-center mx-auto"
+                : "gap-2.5 px-3 py-2 w-full"
+            }`}
             onClick={() => {
               localStorage.removeItem("token");
               navigation("/login");
             }}
-            title={collapsed ? "Log out" : undefined}
+            title={collapsed ? "Đăng xuất" : undefined}
           >
-            <LogOut size={16} />
-            {!collapsed && <span className="text-sm font-medium">Log out</span>}
+            <LogOut size={17} />
+            {!collapsed && (
+              <span className="text-sm font-semibold">Đăng xuất</span>
+            )}
           </button>
         </div>
       </aside>
