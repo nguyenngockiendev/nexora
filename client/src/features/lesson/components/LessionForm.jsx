@@ -1,28 +1,19 @@
-import { Link, useNavigate } from "react-router-dom";
 import {
   Download,
-  Edit,
-  Trash2,
   BookOpen,
   AlertCircle,
   FileText,
   FileArchive,
-  CheckCircle2,
 } from "lucide-react";
 
 const LessionForm = ({
   currentLesson,
-  handDelete,
   errorlession,
-  loadinglession,
-  role,
   videoRef,
   onplay,
   onpause,
   process,
 }) => {
-  const navigate = useNavigate();
-
   if (!currentLesson) {
     return (
       <div className="flex items-center justify-center h-full min-h-[50vh] p-4">
@@ -68,25 +59,6 @@ const LessionForm = ({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-2 shrink-0">
-          {role !== "student" && (
-            <div className="flex items-center gap-1.5">
-              <Link to={`/update_lession/${currentLesson._id}`}>
-                <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 hover:text-orange-600 transition-all shadow-xs">
-                  <Edit size={14} /> Edit
-                </button>
-              </Link>
-
-              <button
-                onClick={() => handDelete && handDelete(currentLesson._id)}
-                disabled={loadinglession}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-rose-600 bg-rose-50 border border-rose-200 hover:bg-rose-500 hover:text-white transition-all shadow-xs disabled:opacity-50"
-              >
-                <Trash2 size={14} /> {loadinglession ? "Deleting..." : "Delete"}
-              </button>
-            </div>
-          )}
-        </div>
       </div>
 
       {/* ── 2. Cinematic Video Player Container (Tăng 10% - Width 90% mx-auto) ── */}
@@ -109,7 +81,6 @@ const LessionForm = ({
         </video>
       </div>
 
-      {/* ── 3. Lesson Resources Section (Thu gọn hiển thị gọn gàng bên dưới) ── */}
       <div className="shrink-0 space-y-2 pt-1">
         <h3 className="text-sm font-extrabold text-slate-900 tracking-tight">
           Lesson Resources

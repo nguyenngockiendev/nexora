@@ -77,6 +77,8 @@ const {
   SaveProcess,
   GetProcess,
   GetAllProcess,
+  Getrecenlession,
+  GetDashboartfostudent,
 } = require("../controller/Process-controller");
 const { SenMessLimit } = require("../controller/message-controller");
 const { ResumePayment } = require("../service/payment-service");
@@ -247,5 +249,7 @@ Router.post("/User_send", authMiddleware, UsertSendNotifi);
 Router.post("/admin/Notification/:receiverId", authMiddleware, ReplybyAdmin);
 Router.get("/admin/getAll", authMiddleware, GetAllNotifi);
 Router.get("/user_getNotification", authMiddleware, GetNotifiByUser);
+Router.get("/user_recentlesson", authMiddleware, Getrecenlession);
+Router.get("/Student_Dashboart", authMiddleware, GetDashboartfostudent);
 
 module.exports = Router;

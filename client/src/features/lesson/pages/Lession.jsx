@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import SidebarLesson from "../components/LessionSibar";
@@ -7,8 +7,7 @@ import LessionForm from "../components/LessionForm";
 import useSibarLession from "../hooks/useSibarLession";
 import useDeleteLessionbyid from "../hooks/useDeletelession";
 import useUpdatelession from "../hooks/useUpdatelession";
-// import { useRef } from "react";
-// import useSaveProcess from "../../process/hooks/useSaveProcess";
+import useSaveProcess from "../../process/hooks/useSaveProcess";
 
 const Lession = () => {
   const role = localStorage.getItem("role");
@@ -26,43 +25,47 @@ const Lession = () => {
   const navigate = useNavigate();
   const [currentLesson, setCurrentLesson] = useState(null);
 
-  // const { SaveUpdate, exits } = useSaveProcess();
-  // const videoRef = useRef(null);
-  // const intervalRef = useRef(null);
+  const { SaveUpdate, GetProcess, process, FetchAllProcess, allProcess } =
+    useSaveProcess();
+  const videoRef = useRef(null);
+  const intervalRef = useRef(null);
 
-  // console.log("currentLesson", currentLesson);
-  // console.log(id);
-  // const handduration = () => {
-  //   if (videoRef.current) {
-  //     const duration = videoRef.current.duration;
-  //     console.log("Video duration:", duration, "seconds");
-  //   }
-  // };
+  useEffect(() => {
+    if (id) {
+      FetchAllProcess(id);
+    }
+  }, [id]);
 
-  // const handlePlay = () => {
-  //   if (!videoRef.current) return;
-  //   if (intervalRef.current) return;
-  //   console.log("Video is playing");
-  //   intervalRef.current = setInterval(() => {
-  //     SaveUpdate({
-  //       lastPosition: videoRef.current.currentTime,
-  //       lessonId: currentLesson._id,
-  //       courseId: currentLesson.courseId,
-  //     });
-  //     console.log("đang lưu", videoRef.current.currentTime);
-  //   }, 5000);
-  // };
-  // const handlePause = () => {
-  //   if (!videoRef.current) return;
-  //   console.log("Video is paused");
-  //   SaveUpdate({
-  //     lastPosition: videoRef.current.currentTime,
-  //     lessionId: currentLesson._id,
-  //     courseId: currentLesson.courseId,
-  //   });
-  //   clearInterval(intervalRef.current);
-  //   intervalRef.current = null;
-  // };
+  useEffect(() => {
+    if (currentLesson?._id) {
+      GetProcess(currentLesson._id);
+    }
+  }, [currentLesson]);
+
+  const handlePlay = () => {
+    if (!videoRef.current || !currentLesson) return;
+    if (intervalRef.current) return;
+    intervalRef.current = setInterval(() => {
+      SaveUpdate({
+        lastPosition: videoRef.current.currentTime,
+        lessonId: currentLesson._id,
+        courseId: currentLesson.courseId || id,
+      });
+    }, 5000);
+  };
+
+  const handlePause = () => {
+    if (!videoRef.current || !currentLesson) return;
+    SaveUpdate({
+      lastPosition: videoRef.current.currentTime,
+      lessonId: currentLesson._id,
+      courseId: currentLesson.courseId || id,
+    });
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  };
 
   const handUpdate = async (data) => {
     try {
@@ -102,12 +105,12 @@ const Lession = () => {
           setCurrentLesson={setCurrentLesson}
           id={id}
           role={role}
+          allProcess={allProcess}
         />
       </aside>
-      <main>
-        {" "}
+      <main className="flex-1 overflow-y-auto">
         <LessionForm
-          // videoRef={videoRef}
+          videoRef={videoRef}
           currentLesson={currentLesson}
           handDelete={handDelete}
           errorlession={errorlession}
@@ -116,10 +119,9 @@ const Lession = () => {
           errorupdate={errorupdate}
           handUpdate={handUpdate}
           role={role}
-          // handduration={handduration}
-          // onplay={handlePlay}
-          // onpause={handlePause}
-          // handcurentime={handcurentime}
+          onplay={handlePlay}
+          onpause={handlePause}
+          process={process}
         />
       </main>
     </div>
