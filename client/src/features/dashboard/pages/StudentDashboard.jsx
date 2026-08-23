@@ -1,39 +1,13 @@
-import { useState, useEffect } from "react";
 import StudentDashboardView from "../components/StudentDashboardView";
+import useStudentDashboard from "../hooks/useStudentDashboard";
 
 const StudentDashboard = () => {
-  const [dashboard, setDashboard] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const getDashboard = async () => {
-    try {
-      setLoading(true)
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      setDashboard({
-        overview: {
-          enrolledCourses: 4,
-          completedLessons: 42,
-          upcomingClasses: 2,
-          avgScore: 85
-        }
-      });
-      setError(null);
-    } catch (err) {
-      setError(err.message || "Không thể tải bảng điều khiển");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getDashboard();
-  }, []);
+  const { recentlesson, error, loading, dashboart } = useStudentDashboard();
 
   return (
     <StudentDashboardView
-      dashboard={dashboard}
+      dashboart={dashboart}
+      recentlesson={recentlesson}
       error={error}
       loading={loading}
     />

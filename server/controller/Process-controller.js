@@ -1,4 +1,10 @@
-const { SaveLessonProgress, getLessonProgress, getAllLessonProgress } = require("../service/Process-service");
+const {
+  SaveLessonProgress,
+  getLessonProgress,
+  getAllLessonProgress,
+  GetrecentLession,
+  DashboartforStudent,
+} = require("../service/Process-service");
 
 const SaveProcess = async (req, res) => {
   try {
@@ -45,4 +51,33 @@ const GetAllProcess = async (req, res) => {
   }
 };
 
-module.exports = { SaveProcess, GetProcess, GetAllProcess };
+const Getrecenlession = async (req, res) => {
+  try {
+    const data = {
+      userId: req.user.userId,
+    };
+    const result = await GetrecentLession(data);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
+
+const GetDashboartfostudent = async (req, res) => {
+  try {
+    const data = {
+      userId: req.user.userId,
+    };
+    const result = await DashboartforStudent(data);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
+module.exports = {
+  SaveProcess,
+  GetProcess,
+  GetAllProcess,
+  Getrecenlession,
+  GetDashboartfostudent,
+};
