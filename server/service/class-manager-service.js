@@ -159,16 +159,31 @@ const GetClassByStudent = async (data) => {
 };
 const CourseDetailsClass = async (data) => {
   try {
-    // if (data?.role !== "student") {
-    //   throw { status: 404, message: "fobiden!" };
-    // }
     const getClass = await classs
       .find({ courseId: data?.courseId })
-      .populate("courseId")
+      .populate({
+        path: "courseId",
+        populate: {
+          path: "instructor",
+          select: "-password -createdAt -updatedAt",
+        },
+      })
       .populate("instructorId", "-password -createdAt -updatedAt")
       .lean();
     if (getClass.length === 0) {
-      throw { status: 404, message: "you not have class!" };
+      const singleCourse = await Courses.findById(data?.courseId)
+        .populate("instructor", "-password -createdAt -updatedAt")
+        .lean();
+      if (singleCourse) {
+        return [
+          {
+            courseId: singleCourse,
+            instructorId: singleCourse.instructor,
+            _emptyClass: true,
+          },
+        ];
+      }
+      return [];
     }
 
     const converTime = (time) => {

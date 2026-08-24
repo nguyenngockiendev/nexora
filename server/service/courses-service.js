@@ -83,7 +83,7 @@ const GetCourses = async (data) => {
 
 const CreatenewCourses = async (data) => {
   try {
-    if (data?.role !== "instructor") {
+    if (data?.role !== "student") {
       throw { message: "you can not create courses!" };
     }
 
@@ -96,6 +96,35 @@ const CreatenewCourses = async (data) => {
     throw error;
   }
 };
+const EditCourse = async (data) => {
+  try {
+    const updatecourse = {
+      title: data.title,
+      description: data.description,
+      price: data.price || 0,
+      level: data.level,
+    };
+    if (data.thumbnail != null && data.thumbnail != "") {
+      updatecourse.thumbnail = data.thumbnail;
+    }
+    const update = await Courses.findOneAndUpdate(
+      {
+        _id: data.courseId,
+        instructor: data.userId,
+      },
+      {
+        $set: updatecourse,
+      },
+      { new: true },
+    );
+
+    return update;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 const GetLessonById = async (data) => {
   try {
     let result = [];
@@ -290,4 +319,5 @@ module.exports = {
   GetCourseForAdmin,
   UpdateisLookedCourse,
   GetCourses,
+  EditCourse
 };

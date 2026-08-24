@@ -14,6 +14,8 @@ import {
   Star,
   Send,
 } from "lucide-react";
+import { Link } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import CourseRating from "./CourseRating";
 
 const Detailscourse = ({
@@ -31,16 +33,44 @@ const Detailscourse = ({
   setExpandedSyllabus,
   totalDuration,
 }) => {
+  const token = localStorage.getItem("token");
+  let currentUserId = null;
+  if (token) {
+    try {
+      const decoded = jwtDecode(token);
+      currentUserId = decoded?.userId || decoded?.id;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const instructorId =
+    detalscourse?.instructor?._id || detalscourse?.instructor;
+  const isOwner =
+    currentUserId &&
+    instructorId &&
+    String(currentUserId) === String(instructorId);
+
   return (
-    <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8 bg-transparent text-slate-800">
-      {/* ── Grid Layout chính ── */}
+    <div className="p-4 md:p-6 lg:p-8 max-w-[1600px] mx-auto space-y-8 bg-transparent text-slate-800">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-        {/* CỘT TRÁI: THÔNG TIN CHI TIẾT KHÓA HỌC (Chiếm 2 phần) */}
         <div className="lg:col-span-2 space-y-8">
-          {/* ── Section 1: Header / Hero Info ── */}
           <div className="space-y-4">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-500/10 text-orange-600 border border-orange-500/20">
-              <BookOpen size={12} /> Khóa học Recorded
+            <div className="flex items-center justify-between">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-500/10 text-orange-600 border border-orange-500/20">
+                <BookOpen size={12} /> Khóa học Recorded
+              </div>
+              {isOwner && (
+                <Link
+                  to={`/course/update/${detalscourse?._id}`}
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-white shadow-sm hover:scale-105 transition-all"
+                  style={{
+                    background: "linear-gradient(135deg, #f97316, #ea580c)",
+                  }}
+                >
+                  Chỉnh sửa khóa học
+                </Link>
+              )}
             </div>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-black leading-tight text-slate-800">
               {detalscourse?.title}
@@ -337,17 +367,31 @@ const Detailscourse = ({
 
               {/* Purchase Action Buttons */}
               <div className="space-y-3">
-                <button
-                  onClick={() => payment(detalscourse)}
-                  className="w-full py-3.5 rounded-2xl text-sm font-black text-white shadow-lg shadow-orange-500/25 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
-                  style={{
-                    background: "linear-gradient(135deg, #f97316, #ea580c)",
-                  }}
-                >
-                  <ShoppingCart size={16} /> Đăng ký khóa học ngay
-                </button>
+                {isOwner ? (
+                  <Link
+                    to={`/course/update/${detalscourse?._id}`}
+                    className="w-full py-3.5 rounded-2xl text-sm font-black text-white shadow-lg shadow-orange-500/25 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 text-center"
+                    style={{
+                      background: "linear-gradient(135deg, #f97316, #ea580c)",
+                    }}
+                  >
+                    Cập nhật khóa học
+                  </Link>
+                ) : (
+                  <button
+                    onClick={() => payment(detalscourse)}
+                    className="w-full py-3.5 rounded-2xl text-sm font-black text-white shadow-lg shadow-orange-500/25 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    style={{
+                      background: "linear-gradient(135deg, #f97316, #ea580c)",
+                    }}
+                  >
+                    <ShoppingCart size={16} /> Đăng ký khóa học ngay
+                  </button>
+                )}
                 <p className="text-[11px] text-center font-bold text-slate-400">
-                  Cam kết hoàn tiền trong 7 ngày nếu không hài lòng
+                  {isOwner
+                    ? "Bạn đang xem khóa học do chính mình tạo"
+                    : "Cam kết hoàn tiền trong 7 ngày nếu không hài lòng"}
                 </p>
               </div>
 

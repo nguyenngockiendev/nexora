@@ -1,4 +1,3 @@
-const { request } = require("express");
 const {
   GetAllCourses,
   CreatenewCourses,
@@ -7,6 +6,7 @@ const {
   GetCourseForAdmin,
   UpdateisLookedCourse,
   GetCourses,
+  EditCourse,
 } = require("../service/courses-service");
 const uploadFile = require("../service/uploadfile-service");
 const { validationResult } = require("express-validator");
@@ -42,7 +42,7 @@ const CreateCourses = async (req, res) => {
     }
     let thumbnail = "";
     if (req?.file) {
-      thumbnail = await uploadFile(req?.file?.path ,false);
+      thumbnail = await uploadFile(req?.file?.path, false);
     }
     const data = {
       ...req.body,
@@ -99,7 +99,7 @@ const IsLookedCourseAndLession = async (req, res) => {
   try {
     const data = {
       role: req.user.role,
-      courseId:req.params.courseId,
+      courseId: req.params.courseId,
       status: req.body.status,
     };
     const result = await UpdateisLookedCourse(data);
@@ -110,6 +110,29 @@ const IsLookedCourseAndLession = async (req, res) => {
   }
 };
 
+const UpdateCourse = async (req, res) => {
+  try {
+    let thumbnail = undefined;
+    if (req.file) {
+      const uploadRes = await uploadFile(req.file.path, false);
+      thumbnail = uploadRes?.secure_url;
+    }
+    const data = {
+      userId: req.user.userId,
+      courseId: req.params.courseId,
+      title: req.body.title,
+      description: req.body.description,
+      price: req.body.price,
+      level: req.body.level,
+      thumbnail: thumbnail,
+    };
+    const result = await EditCourse(data);
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
 module.exports = {
   GetAllCourese,
   CreateCourses,
@@ -117,5 +140,6 @@ module.exports = {
   DetailsCourse,
   ManagerCourse,
   IsLookedCourseAndLession,
-  GetCoursesforevery
+  GetCoursesforevery,
+  UpdateCourse
 };

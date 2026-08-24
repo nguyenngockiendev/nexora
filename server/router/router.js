@@ -19,6 +19,7 @@ const {
   ManagerCourse,
   IsLookedCourseAndLession,
   GetCoursesforevery,
+  UpdateCourse,
 } = require("../controller/course-controller");
 const {
   payment,
@@ -244,12 +245,17 @@ Router.put(
 
 Router.patch("/user_change_pass", authMiddleware, ChangePassWord);
 
-
 Router.post("/User_send", authMiddleware, UsertSendNotifi);
 Router.post("/admin/Notification/:receiverId", authMiddleware, ReplybyAdmin);
 Router.get("/admin/getAll", authMiddleware, GetAllNotifi);
 Router.get("/user_getNotification", authMiddleware, GetNotifiByUser);
 Router.get("/user_recentlesson", authMiddleware, Getrecenlession);
 Router.get("/Student_Dashboart", authMiddleware, GetDashboartfostudent);
+Router.put(
+  "/update_course/:courseId",
+  authMiddleware,
+  upload.single("thumbnail"),
+  UpdateCourse,
+);
 
 module.exports = Router;

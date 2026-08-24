@@ -13,13 +13,16 @@ const CreateCourses = async (data) => {
   const res = await api.post(`/newcourses`, data);
   return res;
 };
+const UpdateCourses = async (courseId,data) => {
+  const res = await api.put(`/update_course/${courseId}`, data);
+  return res;
+};
 const GetLession = async (id) => {
   const res = await api.get(`/get_lession/${id}`);
   return res;
 };
 const GetDetailsCourse = async (courseId) => {
   const res = await api.get(`/details-course/${courseId}`);
- 
   return res;
 };
 
@@ -48,6 +51,7 @@ const IsLookedCourseAndLessionByAdmin = async (courseId, status) => {
 };
 
 export {
+  UpdateCourses,
   GetCourses,
   CreateCourses,
   GetLession,

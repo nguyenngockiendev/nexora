@@ -6,6 +6,7 @@ import DetailsCourseLive from "../pages/CourseDetailsLive";
 import CourseDetailsRecorded from "../pages/CourseDetailsRecorded";
 import Courses from "../pages/Courses";
 import CreateCourses from "../pages/CreateCourses";
+import UpdateCourse from "../pages/UpdateCourse";
 
 import AdminCourseQualityPage from "../pages/AdminCourseQualityPage";
 
@@ -23,6 +24,11 @@ const courseRoute = [
   {
     path: "course/create",
     element: <CreateCourses />,
+    icon: "",
+  },
+  {
+    path: "course/update/:courseId",
+    element: <UpdateCourse />,
     icon: "",
   },
   {

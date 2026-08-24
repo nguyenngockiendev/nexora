@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import CreateCourese from "../components/CreateCoursesForm";
 import useCoursesService from "../hooks/useCreateCourses";
@@ -15,6 +15,14 @@ const CreateCourses = () => {
       price: "",
     },
   });
+  const type = watch("type");
+  const isLive = type === "live";
+  useEffect(() => {
+    if (isLive) {
+      setValue("price", 0);
+    }
+  }, [isLive, setValue]);
+
   const { error, Create } = useCoursesService();
   const [loading, setLoading] = useState(false);
   const [thumbail, setThumbnail] = useState(null);
@@ -37,6 +45,7 @@ const CreateCourses = () => {
   const onSubmit = async (data) => {
     try {
       setLoading(true);
+
       const formdata = new FormData();
       formdata.append("title", data.title);
       formdata.append("description", data.description);
