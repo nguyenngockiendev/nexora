@@ -1,4 +1,3 @@
-// import DetailsCourseLive from "../pages/CourseDetailsLive";
 import LiveclassRoom from "../../class/pages/LiveClassRoomPage";
 import CourseEnrollments from "../../enrollments/pages/CourseEnrollmentsPage";
 import Lession from "../../lesson/pages/Lession";
