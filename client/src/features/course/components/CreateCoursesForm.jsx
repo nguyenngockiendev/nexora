@@ -1,8 +1,5 @@
 import {
-  BookOpen,
   Image as ImageIcon,
-  DollarSign,
-  Tag,
   Video,
   Radio,
   ArrowLeft,
@@ -189,9 +186,10 @@ const CreateCoursesForm = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                  <label className="block text-xs font-black text-slate-700 uppercase tracking-wider">
-                      Giá bán (VND) {!isLive && <span className="text-rose-500">*</span>}
-                  </label>
+                    <label className="block text-xs font-black text-slate-700 uppercase tracking-wider">
+                      Giá bán (VND){" "}
+                      {!isLive && <span className="text-rose-500">*</span>}
+                    </label>
                     {isLive && (
                       <span className="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full border border-orange-200/60">
                         Khóa Live: Học phí theo lớp
@@ -201,7 +199,11 @@ const CreateCoursesForm = ({
                   <div className="relative">
                     <input
                       type="number"
-                      placeholder={isLive ? "Khóa Live không có giá bán ngoài" : "Ví dụ: 250000"}
+                      placeholder={
+                        isLive
+                          ? "Khóa Live không có giá bán ngoài"
+                          : "Ví dụ: 250000"
+                      }
                       min="0"
                       autoComplete="price"
                       disabled={isLive}
@@ -254,7 +256,9 @@ const CreateCoursesForm = ({
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   {/* Live Class */}
-                  <label className={`relative ${isEdit ? "pointer-events-none opacity-75" : "cursor-pointer"}`}>
+                  <label
+                    className={`relative ${isEdit ? "pointer-events-none opacity-75" : "cursor-pointer"}`}
+                  >
                     <input
                       type="radio"
                       value="live"
@@ -277,7 +281,9 @@ const CreateCoursesForm = ({
                   </label>
 
                   {/* Recorded Videos */}
-                  <label className={`relative ${isEdit ? "pointer-events-none opacity-75" : "cursor-pointer"}`}>
+                  <label
+                    className={`relative ${isEdit ? "pointer-events-none opacity-75" : "cursor-pointer"}`}
+                  >
                     <input
                       type="radio"
                       value="recorded"
@@ -469,9 +475,9 @@ const CreateCoursesForm = ({
                         Lớp học trực tuyến
                       </span>
                     ) : (
-                    <span className="text-sm sm:text-base font-black text-orange-600">
-                      {formatPrice(watchedPrice)}
-                    </span>
+                      <span className="text-sm sm:text-base font-black text-orange-600">
+                        {formatPrice(watchedPrice)}
+                      </span>
                     )}
                   </div>
                 </div>
@@ -491,12 +497,18 @@ const CreateCoursesForm = ({
                   {loading ? (
                     <>
                       <Loader2 size={18} className="animate-spin" />
-                      <span>{isEdit ? "Đang Cập Nhật..." : "Đang Khởi Tạo Khóa Học..."}</span>
+                      <span>
+                        {isEdit
+                          ? "Đang Cập Nhật..."
+                          : "Đang Khởi Tạo Khóa Học..."}
+                      </span>
                     </>
                   ) : (
                     <>
                       <Plus size={18} />
-                      <span>{isEdit ? "Lưu Thay Đổi ✨" : "Tạo Khóa Học Ngay ✨"}</span>
+                      <span>
+                        {isEdit ? "Lưu Thay Đổi ✨" : "Tạo Khóa Học Ngay ✨"}
+                      </span>
                     </>
                   )}
                 </button>

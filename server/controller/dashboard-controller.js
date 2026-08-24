@@ -1,5 +1,6 @@
 const {
   getInstructorBusinessDashboard,
+  DashboartAdmin,
 } = require("../service/dashboard-service");
 
 const GetInstructorBusinessDashboard = async (req, res) => {
@@ -16,7 +17,19 @@ const GetInstructorBusinessDashboard = async (req, res) => {
     res.status(error.status || 500).json({ message: error.message });
   }
 };
+const DashboartforAdmin = async (req, res) => {
+  try {
+    const data = {
+      day: req.query.day,
+    };
+    const result = await DashboartAdmin(data);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
 
 module.exports = {
   GetInstructorBusinessDashboard,
+  DashboartforAdmin,
 };

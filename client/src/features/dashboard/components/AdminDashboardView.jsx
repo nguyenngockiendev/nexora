@@ -1,20 +1,16 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   Activity,
   BookOpen,
   DollarSign,
   GraduationCap,
-  Layout,
   RefreshCw,
   Shield,
   Users,
   UserCheck,
   CreditCard,
   Calendar,
-  Bell,
 } from "lucide-react";
-import useRequestIntructor from "../../user/hooks/useRequestIntructor";
+import { useOutletContext } from "react-router-dom";
 
 import {
   AreaChart,
@@ -37,15 +33,6 @@ const formatCurrency = (value) =>
   });
 
 const formatNumber = (value) => Number(value || 0).toLocaleString("vi-VN");
-
-const getUserName = () => {
-  try {
-    const userInfo = JSON.parse(localStorage.getItem("userInfor"));
-    return userInfo?.name || "Administrator";
-  } catch {
-    return "Administrator";
-  }
-};
 
 const StatCard = ({ icon: Icon, label, value, tone, helper }) => {
   const tones = {
@@ -177,95 +164,20 @@ const CustomTooltip = ({ active, payload, label, formatter }) => {
 };
 
 const AdminDashboardView = ({
-  dashboard,
+  dashboards,
   error,
   loading,
   onRetry,
   timeFilter,
   setTimeFilter,
 }) => {
-  const adminName = getUserName();
-  const navigate = useNavigate();
-
-  const { requestList, getRequests } = useRequestIntructor();
-
-  useEffect(() => {
-    getRequests();
-  }, []);
-
-  const overview = dashboard?.overview || {};
-  const revenueChart = dashboard?.revenueChart || [];
-  const userChart = dashboard?.userChart || [];
-
-  const newUsers = [
-    {
-      id: 1,
-      name: "Trần Bảo Lâm",
-      role: "instructor",
-      joined: "2 giờ trước",
-      avatar:
-        "https://ui-avatars.com/api/?name=Lam&background=6366f1&color=fff",
-    },
-    {
-      id: 2,
-      name: "Nguyễn Thị Mai",
-      role: "student",
-      joined: "4 giờ trước",
-      avatar:
-        "https://ui-avatars.com/api/?name=Mai&background=ec4899&color=fff",
-    },
-    {
-      id: 3,
-      name: "Lê Hoàng Phúc",
-      role: "student",
-      joined: "5 giờ trước",
-      avatar:
-        "https://ui-avatars.com/api/?name=Phuc&background=06b6d4&color=fff",
-    },
-    {
-      id: 4,
-      name: "Vũ Thanh Vân",
-      role: "instructor",
-      joined: "Hôm qua",
-      avatar:
-        "https://ui-avatars.com/api/?name=Van&background=8b5cf6&color=fff",
-    },
-  ];
-
-  const recentTransactions = [
-    {
-      id: "TRX-001",
-      user: "Phạm Văn Tuấn",
-      amount: 1500000,
-      status: "completed",
-      type: "Course Purchase",
-      date: "Vừa xong",
-    },
-    {
-      id: "TRX-002",
-      user: "Đinh Quỳnh Anh",
-      amount: 450000,
-      status: "pending",
-      type: "Live Class",
-      date: "15 phút trước",
-    },
-    {
-      id: "TRX-003",
-      user: "Lý Gia Hân",
-      amount: 2000000,
-      status: "completed",
-      type: "Subscription",
-      date: "1 giờ trước",
-    },
-    {
-      id: "TRX-004",
-      user: "Ngô Đức Minh",
-      amount: 750000,
-      status: "failed",
-      type: "Course Purchase",
-      date: "3 giờ trước",
-    },
-  ];
+  const { dashboard } = useOutletContext();
+  const data = dashboards;
+  const overview = data?.overview || data || {};
+  const revenueChart = data?.revenueChart || [];
+  const userChart = data?.userChart || [];
+  const newUsers = data?.newUsers || data?.totalUsers || [];
+  const recentTransactions = data?.recentTransactions || [];
 
   if (loading) {
     return (
@@ -393,7 +305,7 @@ const AdminDashboardView = ({
                 WebkitTextFillColor: "transparent",
               }}
             >
-              {adminName}
+              {dashboard?.name || "Quản Trị Viên"}
             </span>{" "}
             🛡️
           </h1>
@@ -421,9 +333,9 @@ const AdminDashboardView = ({
       </section>
 
       {/* ── Stat Cards ── */}
-      <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+      <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <div
-          className="rounded-3xl p-5 relative overflow-hidden flex flex-col justify-between md:col-span-2 lg:col-span-1"
+          className="rounded-3xl p-5 relative overflow-hidden flex flex-col justify-between"
           style={{
             background:
               "linear-gradient(135deg, rgba(168,85,247,0.85) 0%, rgba(217,70,239,0.85) 100%)",
@@ -453,36 +365,39 @@ const AdminDashboardView = ({
         <StatCard
           icon={Users}
           label="Người Dùng"
-          value={formatNumber(overview.totalUsers)}
+          value={formatNumber(
+            Array.isArray(overview.totalUsers)
+              ? overview.totalUsers.length
+              : overview.totalUsers || 0,
+          )}
           helper={`Đăng ký mới trong ${timeFilter === "week" ? "tuần" : "tháng"}`}
           tone="purple"
         />
         <StatCard
           icon={GraduationCap}
           label="Giảng Viên"
-          value={formatNumber(overview.totalInstructors)}
+          value={formatNumber(
+            Array.isArray(overview.totalInstructors)
+              ? overview.totalInstructors.length
+              : overview.totalInstructors || 0,
+          )}
           helper="Đối tác giảng dạy"
           tone="pink"
         />
         <StatCard
           icon={BookOpen}
           label="Khóa Học"
-          value={formatNumber(overview.totalCourses)}
-          helper="Đang hoạt động trên chợ"
+          value={formatNumber(
+            Array.isArray(overview.totalCourses)
+              ? overview.totalCourses.length
+              : overview.totalCourses || 0,
+          )}
+          helper="Đang hoạt động trên sàn"
           tone="indigo"
-        />
-        <StatCard
-          icon={Layout}
-          label="Trả Phí (Pro)"
-          value={formatNumber(overview.activeSubscriptions)}
-          helper="Gói thành viên"
-          tone="cyan"
         />
       </section>
 
-      {/* ── Charts Section ── */}
       <section className="grid gap-6 xl:grid-cols-[2fr_1fr]">
-        {/* Revenue Area Chart */}
         <div
           className="rounded-3xl p-5 md:p-6"
           style={{
@@ -506,51 +421,63 @@ const AdminDashboardView = ({
             </span>
           </div>
           <div className="h-[300px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart
-                data={revenueChart}
-                margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
-              >
-                <defs>
-                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#a855f7" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#a855f7" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  vertical={false}
-                  stroke="#f1f5f9"
-                />
-                <XAxis
-                  dataKey="name"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fontSize: 12, fill: "#94a3b8" }}
-                  dy={10}
-                />
-                <YAxis
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fontSize: 12, fill: "#94a3b8" }}
-                  tickFormatter={(val) => `${val / 1000000}M`}
-                />
-                <Tooltip
-                  content={
-                    <CustomTooltip formatter={(val) => formatCurrency(val)} />
-                  }
-                />
-                <Area
-                  type="monotone"
-                  dataKey="value"
-                  name="Doanh thu"
-                  stroke="#a855f7"
-                  strokeWidth={3}
-                  fillOpacity={1}
-                  fill="url(#colorRevenue)"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+            {revenueChart.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart
+                  data={revenueChart}
+                  margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                >
+                  <defs>
+                    <linearGradient
+                      id="colorRevenue"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
+                      <stop offset="5%" stopColor="#a855f7" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#a855f7" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    vertical={false}
+                    stroke="#f1f5f9"
+                  />
+                  <XAxis
+                    dataKey="name"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 12, fill: "#94a3b8" }}
+                    dy={10}
+                  />
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 12, fill: "#94a3b8" }}
+                    tickFormatter={(val) => `${val / 1000000}M`}
+                  />
+                  <Tooltip
+                    content={
+                      <CustomTooltip formatter={(val) => formatCurrency(val)} />
+                    }
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="value"
+                    name="Doanh thu"
+                    stroke="#a855f7"
+                    strokeWidth={3}
+                    fillOpacity={1}
+                    fill="url(#colorRevenue)"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-full flex items-center justify-center text-xs font-semibold text-slate-400">
+                Đang cập nhật biểu đồ phân tích doanh thu
+              </div>
+            )}
           </div>
         </div>
 
@@ -573,52 +500,58 @@ const AdminDashboardView = ({
             </p>
           </div>
           <div className="h-[300px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={userChart}
-                margin={{ top: 10, right: 10, left: -25, bottom: 0 }}
-              >
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  vertical={false}
-                  stroke="#f1f5f9"
-                />
-                <XAxis
-                  dataKey="name"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fontSize: 12, fill: "#94a3b8" }}
-                  dy={10}
-                />
-                <YAxis
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fontSize: 12, fill: "#94a3b8" }}
-                />
-                <Tooltip
-                  content={<CustomTooltip />}
-                  cursor={{ fill: "#f8fafc" }}
-                />
-                <Legend
-                  iconType="circle"
-                  wrapperStyle={{ fontSize: "12px", paddingTop: "10px" }}
-                />
-                <Bar
-                  dataKey="students"
-                  name="Học viên"
-                  fill="#3b82f6"
-                  radius={[4, 4, 0, 0]}
-                  barSize={12}
-                />
-                <Bar
-                  dataKey="instructors"
-                  name="Giảng viên"
-                  fill="#ec4899"
-                  radius={[4, 4, 0, 0]}
-                  barSize={12}
-                />
-              </BarChart>
-            </ResponsiveContainer>
+            {userChart.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={userChart}
+                  margin={{ top: 10, right: 10, left: -25, bottom: 0 }}
+                >
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    vertical={false}
+                    stroke="#f1f5f9"
+                  />
+                  <XAxis
+                    dataKey="name"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 12, fill: "#94a3b8" }}
+                    dy={10}
+                  />
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 12, fill: "#94a3b8" }}
+                  />
+                  <Tooltip
+                    content={<CustomTooltip />}
+                    cursor={{ fill: "#f8fafc" }}
+                  />
+                  <Legend
+                    iconType="circle"
+                    wrapperStyle={{ fontSize: "12px", paddingTop: "10px" }}
+                  />
+                  <Bar
+                    dataKey="students"
+                    name="Học viên"
+                    fill="#3b82f6"
+                    radius={[4, 4, 0, 0]}
+                    barSize={12}
+                  />
+                  <Bar
+                    dataKey="instructors"
+                    name="Giảng viên"
+                    fill="#ec4899"
+                    radius={[4, 4, 0, 0]}
+                    barSize={12}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-full flex items-center justify-center text-xs font-semibold text-slate-400">
+                Đang cập nhật biểu đồ người dùng
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -678,28 +611,42 @@ const AdminDashboardView = ({
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100/80">
-                {recentTransactions.map((trx) => (
-                  <tr
-                    key={trx.id}
-                    className="hover:bg-slate-50/50 transition-colors"
-                  >
-                    <td className="py-3 px-4 text-xs font-bold text-slate-400">
-                      {trx.id}
-                    </td>
-                    <td className="py-3 px-4 font-bold text-sm text-slate-800">
-                      {trx.user}
-                    </td>
-                    <td className="py-3 px-4 text-xs font-semibold text-slate-500">
-                      {trx.type}
-                    </td>
-                    <td className="py-3 px-4 text-right font-black text-slate-800 text-sm">
-                      {formatCurrency(trx.amount)}
-                    </td>
-                    <td className="py-3 px-4 text-center">
-                      <StatusPill status={trx.status} />
+                {recentTransactions.length > 0 ? (
+                  recentTransactions.map((trx) => (
+                    <tr
+                      key={trx.id || trx._id}
+                      className="hover:bg-slate-50/50 transition-colors"
+                    >
+                      <td className="py-3 px-4 text-xs font-bold text-slate-400">
+                        {trx.id || trx._id}
+                      </td>
+                      <td className="py-3 px-4 font-bold text-sm text-slate-800">
+                        {trx.user || trx.userId?.name}
+                      </td>
+                      <td className="py-3 px-4 text-xs font-semibold text-slate-500">
+                        {trx.type ||
+                          trx.items?.[0]?.type ||
+                          trx.items?.[0]?.courseId?.title ||
+                          "Khóa học"}
+                      </td>
+                      <td className="py-3 px-4 text-right font-black text-slate-800 text-sm">
+                        {formatCurrency(trx.Totalprice || trx.amount || 0)}
+                      </td>
+                      <td className="py-3 px-4 text-center">
+                        <StatusPill status={trx.status} />
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan={5}
+                      className="py-8 text-center text-xs font-semibold text-slate-400"
+                    >
+                      Chưa có giao dịch nào trong khoảng thời gian này
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
@@ -747,36 +694,47 @@ const AdminDashboardView = ({
           </div>
 
           <div className="space-y-3">
-            {newUsers.map((user) => (
-              <div
-                key={user.id}
-                className="flex items-center gap-4 p-3 rounded-2xl transition-all border border-transparent hover:border-pink-100 hover:bg-pink-50/30 hover:shadow-sm"
-              >
-                <img
-                  src={user.avatar}
-                  alt={user.name}
-                  className="w-12 h-12 rounded-xl object-cover shadow-sm border border-slate-200"
-                />
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-bold text-slate-800 text-sm">
-                    {user.name}
-                  </h4>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span
-                      className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${user.role === "instructor" ? "bg-indigo-100 text-indigo-700" : "bg-cyan-100 text-cyan-700"}`}
-                    >
-                      {user.role}
-                    </span>
-                    <span className="text-xs font-medium text-slate-400">
-                      {user.joined}
-                    </span>
+            {newUsers.length > 0 ? (
+              newUsers.map((user) => (
+                <div
+                  key={user.id || user._id}
+                  className="flex items-center gap-4 p-3 rounded-2xl transition-all border border-transparent hover:border-pink-100 hover:bg-pink-50/30 hover:shadow-sm"
+                >
+                  <img
+                    src={
+                      user.avatar ||
+                      `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || "User")}`
+                    }
+                    alt={user.name}
+                    className="w-12 h-12 rounded-xl object-cover shadow-sm border border-slate-200"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-bold text-slate-800 text-sm">
+                      {user.name}
+                    </h4>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span
+                        className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${user.role === "instructor" ? "bg-indigo-100 text-indigo-700" : "bg-cyan-100 text-cyan-700"}`}
+                      >
+                        {user.role}
+                      </span>
+                      <span className="text-xs font-medium text-slate-400">
+                        {user.joined ||
+                          (user.createdAt
+                            ? new Date(user.createdAt).toLocaleDateString(
+                                "vi-VN",
+                              )
+                            : "Mới đăng ký")}
+                      </span>
+                    </div>
                   </div>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 cursor-pointer hover:bg-pink-100 hover:text-pink-600 transition-colors">
-                  <UserCheck size={14} />
-                </div>
+              ))
+            ) : (
+              <div className="py-8 text-center text-xs font-semibold text-slate-400">
+                Chưa có người dùng mới trong khoảng thời gian này
               </div>
-            ))}
+            )}
           </div>
         </aside>
       </section>

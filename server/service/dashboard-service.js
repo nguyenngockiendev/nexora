@@ -215,28 +215,100 @@ const getInstructorBusinessDashboard = async (data) => {
   }
 };
 
-const getStudentDashboard = async (data) => {
+const DashboartAdmin = async (data) => {
   try {
-    if (data?.role !== "student") {
-      throw {
-        status: 403,
-        message: "Only student can view this dashboard",
-      };
+    const now = new Date();
+    let filterDate = new Date(0);
+    if (data.day === "week") {
+      filterDate = new Date(now.setDate(now.getDate() - 7));
+    } else if (data.day === "month") {
+      filterDate = new Date(now.setMonth(now.getMonth() - 1));
     }
-    const infoStudent = await User.findById(data.userId).lean();
-    const enroment = await Enrollment.findOne({ userId: data.userId });
-    const infoClass = await Class.find({ _id: enroment.classId });
-    const process = await ProcessLession.find({userId:data.userId})
 
-    return {
-      overview: {
-        enrolledCourses: infoStudent.enrolledCourses.length,
-        completedLessons: process.length,
-        upcomingClasses: infoClass.length,
-        avgScore: infoStudent.avgScore
-      }
+    const totalUsers = await User.find({
+      createdAt: { $gte: filterDate },
+    }).sort({ createdAt: -1 });
+
+    const recentTransactions = await Order.find({
+      createdAt: {
+        $gte: filterDate,
+      },
+    })
+      .populate("userId", "name email avatar")
+      .sort({ createdAt: -1 })
+      .limit(5);
+
+    const totalInstructors = await User.find({
+      role: "instructor",
+      createdAt: { $gte: filterDate },
+    });
+
+    const totalCourses = await Courses.find({
+      createdAt: { $gte: filterDate },
+    });
+
+    const revenueResult = await Order.find({
+      status: "completed",
+      createdAt: {
+        $gte: filterDate,
+      },
+    });
+
+    const totalRevenue = revenueResult.reduce((sum, e) => {
+      const items = e.items.reduce((sum2, e2) => {
+        return sum2 + (e2.price || 0);
+      }, 0);
+      return sum + items;
+    }, 0);
+    const dayNames = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
+    const revenueChart = [];
+    const userChart = [];
+    const numDays = data.day === "month" ? 30 : 7;
+
+    for (let i = numDays - 1; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      d.setHours(0, 0, 0, 0);
+
+      const nextD = new Date(d);
+      nextD.setDate(nextD.getDate() + 1);
+
+      const label =
+        data.day === "month"
+          ? `${d.getDate()}/${d.getMonth() + 1}`
+          : dayNames[d.getDay()];
+
+      const dayOrders = revenueResult.filter(
+        (o) => new Date(o.createdAt) >= d && new Date(o.createdAt) < nextD,
+      );
+      const dayRevenue = dayOrders.reduce((sum, o) => {
+        const itemSum = o.items.reduce((s, it) => s + (it.price || 0), 0);
+        return sum + itemSum;
+      }, 0);
+
+      const dayUsers = totalUsers.filter(
+        (u) => new Date(u.createdAt) >= d && new Date(u.createdAt) < nextD,
+      );
+      const students = dayUsers.filter((u) => u.role === "student").length;
+      const instructors = dayUsers.filter(
+        (u) => u.role === "instructor",
+      ).length;
+
+      revenueChart.push({ name: label, value: dayRevenue });
+      userChart.push({ name: label, students, instructors });
+    }
+
+    const finalresult = {
+      totalUsers: totalUsers,
+      newUsers: totalUsers.slice(0, 5),
+      totalInstructors: totalInstructors,
+      totalCourses: totalCourses,
+      totalRevenue: totalRevenue,
+      recentTransactions: recentTransactions,
+      revenueChart: revenueChart,
+      userChart: userChart,
     };
-
+    return finalresult;
   } catch (error) {
     console.log(error);
     throw error;
@@ -245,4 +317,5 @@ const getStudentDashboard = async (data) => {
 
 module.exports = {
   getInstructorBusinessDashboard,
+  DashboartAdmin,
 };

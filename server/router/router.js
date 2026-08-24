@@ -68,6 +68,7 @@ const {
 } = require("../controller/user-controllsers");
 const {
   GetInstructorBusinessDashboard,
+  DashboartforAdmin,
 } = require("../controller/dashboard-controller");
 
 const { authMiddleware } = require("../Middleware/Middleware");
@@ -257,5 +258,5 @@ Router.put(
   upload.single("thumbnail"),
   UpdateCourse,
 );
-
+Router.get("/admin_dashboart", DashboartforAdmin);
 module.exports = Router;

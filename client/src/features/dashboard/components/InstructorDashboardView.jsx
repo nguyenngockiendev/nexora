@@ -10,6 +10,7 @@ import {
   Users,
   Wallet,
 } from "lucide-react";
+import { useOutletContext } from "react-router-dom";
 
 const formatCurrency = (value) =>
   Number(value || 0).toLocaleString("vi-VN", {
@@ -19,15 +20,6 @@ const formatCurrency = (value) =>
   });
 
 const formatNumber = (value) => Number(value || 0).toLocaleString("vi-VN");
-
-const getUserName = () => {
-  try {
-    const userInfo = JSON.parse(localStorage.getItem("userInfor"));
-    return userInfo?.name || "Giảng viên";
-  } catch {
-    return "Giảng viên";
-  }
-};
 
 const StatCard = ({ icon: Icon, label, value, tone, helper }) => {
   const tones = {
@@ -139,7 +131,7 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
   const overview = dashboard?.overview || {};
   const coursePerformance = dashboard?.coursePerformance || [];
   const recentOrders = dashboard?.recentOrders || [];
-  const instructorName = getUserName();
+  const { dashboard: intructorname } = useOutletContext();
 
   if (loading) {
     return (
@@ -274,14 +266,15 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
                   WebkitTextFillColor: "transparent",
                 }}
               >
-                {instructorName}
+                {intructorname?.name}
               </span>
             </h1>
             <p
               className="mt-4 max-w-xl text-base leading-7"
               style={{ color: "#64748b" }}
             >
-              Theo dõi hiệu quả khóa học, lớp trực tuyến, lượt đăng ký và doanh thu trong cùng một không gian làm việc.
+              Theo dõi hiệu quả khóa học, lớp trực tuyến, lượt đăng ký và doanh
+              thu trong cùng một không gian làm việc.
             </p>
           </div>
 
@@ -590,7 +583,8 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
                 className="mt-2 max-w-sm text-sm leading-6"
                 style={{ color: "#64748b" }}
               >
-                Các giao dịch mua khóa học mới của học viên sẽ xuất hiện tại đây.
+                Các giao dịch mua khóa học mới của học viên sẽ xuất hiện tại
+                đây.
               </p>
             </div>
           ) : (
