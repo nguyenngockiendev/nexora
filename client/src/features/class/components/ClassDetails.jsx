@@ -7,18 +7,18 @@ const ClassDetails = ({ liststudents, handremoveStudent }) => {
       {/* ── Page Header ── */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h3 className="text-3xl font-black mb-1 text-slate-800">Removed Students</h3>
+          <h3 className="text-3xl font-black mb-1 text-slate-800">Danh Sách Học Viên Đã Rời Lớp</h3>
           <p className="text-sm font-medium text-slate-500">
-            Manage students who have been removed from this class
+            Quản lý và khôi phục các học viên đã rời khỏi lớp học này
           </p>
         </div>
 
         <button 
           onClick={() => window.history.back()}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold transition-all hover:bg-white hover:-translate-x-1 hover:shadow-md text-slate-600"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold transition-all hover:bg-white hover:-translate-x-1 hover:shadow-md text-slate-600 cursor-pointer"
           style={{ background: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.8)' }}
         >
-          <ArrowLeft size={18} /> Back to Class
+          <ArrowLeft size={18} /> Quay lại lớp học
         </button>
       </div>
 
@@ -28,21 +28,21 @@ const ClassDetails = ({ liststudents, handremoveStudent }) => {
         
         {/* Table Toolbar */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 p-6 border-b border-white/50" style={{ background: 'rgba(255,255,255,0.4)' }}>
-          <h5 className="text-xl font-bold text-slate-800">Inactive Roster</h5>
+          <h5 className="text-xl font-bold text-slate-800">Học Viên Đã Rời Lớp</h5>
           <div className="relative w-full md:w-80">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               <Search size={18} className="text-slate-400" />
             </div>
-            <input type="text" placeholder="Search by name or email..." className="w-full glass-input pl-11 py-3 text-sm rounded-xl" />
+            <input type="text" placeholder="Tìm kiếm theo tên hoặc email..." className="w-full glass-input pl-11 py-3 text-sm rounded-xl" />
           </div>
         </div>
 
         {/* Table Header (Hidden on Mobile) */}
         <div className="hidden md:grid grid-cols-12 gap-4 p-4 px-8 border-b border-white/30 text-xs font-bold uppercase tracking-wider text-slate-400">
-          <div className="col-span-4">Student Info</div>
-          <div className="col-span-4">Email Address</div>
-          <div className="col-span-2 text-center">Status</div>
-          <div className="col-span-2 text-right">Actions</div>
+          <div className="col-span-4">Thông tin học viên</div>
+          <div className="col-span-4">Địa chỉ Email</div>
+          <div className="col-span-2 text-center">Trạng thái</div>
+          <div className="col-span-2 text-right">Thao tác</div>
         </div>
 
         {/* Table Body */}
@@ -73,16 +73,16 @@ const ClassDetails = ({ liststudents, handremoveStudent }) => {
                 <div className="col-span-1 text-left md:text-center">
                   <span className="inline-flex items-center justify-center px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider"
                         style={{ background: 'rgba(225,29,72,0.1)', color: '#e11d48', border: '1px solid rgba(225,29,72,0.2)' }}>
-                    {item?.status || 'Removed'}
+                    Đã rời lớp
                   </span>
                 </div>
 
                 {/* Actions */}
                 <div className="col-span-1 md:col-span-2 flex justify-start md:justify-end gap-2 mt-3 md:mt-0">
                   <button onClick={() => handremoveStudent(item)}
-                          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all hover:bg-emerald-50 hover:text-emerald-600 text-slate-500"
+                          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all hover:bg-emerald-50 hover:text-emerald-600 text-slate-500 cursor-pointer"
                           style={{ border: '1px solid rgba(0,0,0,0.05)', background: 'rgba(255,255,255,0.5)' }}>
-                    <UserPlus size={16} /> Restore
+                    <UserPlus size={16} /> Khôi phục
                   </button>
                 </div>
               </div>
@@ -90,23 +90,23 @@ const ClassDetails = ({ liststudents, handremoveStudent }) => {
           ) : (
             <div className="p-12 text-center flex flex-col items-center justify-center text-slate-500">
               <UserX size={48} className="mb-4 opacity-30" />
-              <p className="text-lg font-bold text-slate-600">No removed students.</p>
-              <p className="text-sm">There are no students who have been removed from this class.</p>
+              <p className="text-lg font-bold text-slate-600">Không có học viên nào đã rời lớp.</p>
+              <p className="text-sm">Chưa có học viên nào bị xóa hoặc rời khỏi lớp học này.</p>
             </div>
           )}
         </div>
 
         {/* ── Pagination ── */}
         <div className="flex justify-between items-center p-6 border-t border-white/50" style={{ background: 'rgba(255,255,255,0.2)' }}>
-          <span className="text-sm font-medium text-slate-500">Showing {liststudents?.studentinactive?.length || 0} students</span>
+          <span className="text-sm font-medium text-slate-500">Hiển thị 1 đến {liststudents?.studentinactive?.length || 0} học viên</span>
           <div className="flex gap-1">
-            <button className="w-10 h-10 flex items-center justify-center rounded-xl transition-colors hover:bg-white text-slate-500" disabled>
+            <button className="w-10 h-10 flex items-center justify-center rounded-xl transition-colors hover:bg-white text-slate-500 hover:text-slate-800" disabled>
               <ChevronLeft size={18} />
             </button>
             <button className="w-10 h-10 flex items-center justify-center rounded-xl bg-orange-500 text-white font-bold shadow-md shadow-orange-500/20">
               1
             </button>
-            <button className="w-10 h-10 flex items-center justify-center rounded-xl transition-colors hover:bg-white text-slate-500">
+            <button className="w-10 h-10 flex items-center justify-center rounded-xl transition-colors hover:bg-white text-slate-600 hover:text-slate-800">
               <ChevronRight size={18} />
             </button>
           </div>

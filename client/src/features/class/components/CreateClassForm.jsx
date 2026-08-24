@@ -34,6 +34,19 @@ const CreateClassForm = ({
   const watchEndTime = useWatch({ control, name: "Endtime" });
   const watchPrice = useWatch({ control, name: "Price" });
 
+  const getDayLabel = (day) => {
+    const map = {
+      Monday: "Thứ Hai",
+      Tuesday: "Thứ Ba",
+      Wednesday: "Thứ Tư",
+      Thursday: "Thứ Năm",
+      Friday: "Thứ Sáu",
+      Saturday: "Thứ Bảy",
+      Sunday: "Chủ Nhật",
+    };
+    return map[day] || day || "Thứ Hai";
+  };
+
   return (
     <div className="w-full space-y-6 pb-12">
       {/* ── Top Header Bar ── */}
@@ -48,24 +61,24 @@ const CreateClassForm = ({
             }}
           >
             <Radio size={13} className="animate-pulse text-orange-500" />
-            Classroom Studio Setup
+            Thiết Lập Phòng Học Trực Tuyến
           </div>
           <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">
-            {classsdata ? "Update Live Class" : "Create Live Class"}
+            {classsdata ? "Cập Nhật Lớp Học Trực Tuyến" : "Tạo Lớp Học Trực Tuyến Mới"}
           </h1>
           <p className="text-xs md:text-sm font-medium text-slate-500 mt-1">
-            Setup your live learning classroom and session details
+            Thiết lập phòng học trực tuyến và thông tin chi tiết các buổi học
           </p>
         </div>
 
         <button
           type="button"
           onClick={() => navigate("/my/class")}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold text-slate-600 bg-white/80 border border-slate-200 hover:bg-white shadow-sm hover:scale-105 transition-all self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold text-slate-600 bg-white/80 border border-slate-200 hover:bg-white shadow-sm hover:scale-105 transition-all self-start sm:self-auto cursor-pointer"
           style={{ borderRadius: "9999px" }}
         >
           <ArrowLeft size={15} />
-          <span>Back to Classes</span>
+          <span>Quay lại danh sách</span>
         </button>
       </div>
 
@@ -78,14 +91,10 @@ const CreateClassForm = ({
         </div>
       )}
 
-  
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          
-         
           <div className="lg:col-span-8 space-y-6">
-            
-           
+            {/* SECTION 1: BASIC INFO */}
             <div
               className="p-6 md:p-8 rounded-[2rem] space-y-5 transition-all"
               style={{
@@ -100,7 +109,7 @@ const CreateClassForm = ({
                   <BookOpen size={18} />
                 </div>
                 <h3 className="text-lg font-bold text-slate-800">
-                  Basic Information
+                  1. Thông Tin Cơ Bản
                 </h3>
               </div>
 
@@ -108,11 +117,11 @@ const CreateClassForm = ({
                 {/* Class Name */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                    Class Name <span className="text-rose-500">*</span>
+                    Tên Lớp Học <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g., Nhập tên lớp"
+                    placeholder="Ví dụ: Lớp ReactJS Chuyên Sâu K12"
                     className="w-full px-4 py-3 rounded-2xl text-xs font-medium bg-white/80 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-slate-700 shadow-sm"
                     required
                     {...register("Classname")}
@@ -122,11 +131,11 @@ const CreateClassForm = ({
                 {/* Description */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                    Description
+                    Mô Tả Lớp Học
                   </label>
                   <textarea
                     rows={4}
-                    placeholder="This is a comprehensive React Bootcamp designed for beginners to master React.js..."
+                    placeholder="Mô tả mục tiêu, nội dung kiến thức và lộ trình học tập của lớp học này..."
                     className="w-full p-4 rounded-2xl text-xs font-medium bg-white/80 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-slate-700 shadow-sm resize-none"
                     {...register("Description")}
                   />
@@ -135,7 +144,7 @@ const CreateClassForm = ({
                 {/* Maximum Students */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                    Maximum Students <span className="text-rose-500">*</span>
+                    Số Lượng Học Viên Tối Đa <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -143,7 +152,7 @@ const CreateClassForm = ({
                     </div>
                     <input
                       type="number"
-                      placeholder="enter the maximum number of students allowed"
+                      placeholder="Nhập số lượng học viên tối đa (ví dụ: 20)"
                       className="w-full pl-10 pr-4 py-3 rounded-2xl text-xs font-medium bg-white/80 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-slate-700 shadow-sm"
                       required
                       {...register("Studentsnumber")}
@@ -168,7 +177,7 @@ const CreateClassForm = ({
                   <Calendar size={18} />
                 </div>
                 <h3 className="text-lg font-bold text-slate-800">
-                  Timeline & Meeting
+                  2. Thời Gian & Phòng Học
                 </h3>
               </div>
 
@@ -176,7 +185,7 @@ const CreateClassForm = ({
                 {/* Register Deadline */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                    Register Deadline <span className="text-rose-500">*</span>
+                    Hạn Chót Đăng Ký <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="date"
@@ -189,7 +198,7 @@ const CreateClassForm = ({
                 {/* Meeting Link */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                    Meeting Link <span className="text-rose-500">*</span>
+                    Đường Dẫn Phòng Học (Google Meet / Zoom) <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -208,7 +217,7 @@ const CreateClassForm = ({
                 {/* Start Date */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                    Start Date <span className="text-rose-500">*</span>
+                    Ngày Khai Giảng (Bắt đầu) <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="date"
@@ -221,7 +230,7 @@ const CreateClassForm = ({
                 {/* End Date */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                    End Date <span className="text-rose-500">*</span>
+                    Ngày Kết Thúc Dự Kiến <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="date"
@@ -248,7 +257,7 @@ const CreateClassForm = ({
                   <Clock size={18} />
                 </div>
                 <h3 className="text-lg font-bold text-slate-800">
-                  Weekly Schedule
+                  3. Lịch Học Hàng Tuần
                 </h3>
               </div>
 
@@ -256,28 +265,28 @@ const CreateClassForm = ({
                 {/* Day */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                    Day <span className="text-rose-500">*</span>
+                    Thứ trong tuần <span className="text-rose-500">*</span>
                   </label>
                   <select
                     className="w-full px-4 py-3 rounded-2xl text-xs font-medium bg-white/80 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-slate-700 shadow-sm"
                     required
                     {...register("Day")}
                   >
-                    <option value="">Select date</option>
-                    <option value="Monday">Monday</option>
-                    <option value="Tuesday">Tuesday</option>
-                    <option value="Wednesday">Wednesday</option>
-                    <option value="Thursday">Thursday</option>
-                    <option value="Friday">Friday</option>
-                    <option value="Saturday">Saturday</option>
-                    <option value="Sunday">Sunday</option>
+                    <option value="">Chọn thứ trong tuần</option>
+                    <option value="Monday">Thứ Hai</option>
+                    <option value="Tuesday">Thứ Ba</option>
+                    <option value="Wednesday">Thứ Tư</option>
+                    <option value="Thursday">Thứ Năm</option>
+                    <option value="Friday">Thứ Sáu</option>
+                    <option value="Saturday">Thứ Bảy</option>
+                    <option value="Sunday">Chủ Nhật</option>
                   </select>
                 </div>
 
                 {/* Start Time */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                    Start Time <span className="text-rose-500">*</span>
+                    Giờ Bắt Đầu <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="time"
@@ -290,7 +299,7 @@ const CreateClassForm = ({
                 {/* End Time */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                    End Time <span className="text-rose-500">*</span>
+                    Giờ Kết Thúc <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="time"
@@ -303,10 +312,8 @@ const CreateClassForm = ({
             </div>
           </div>
 
-          {/* ── RIGHT COLUMN (4 cols): PREVIEW CARD & SUBMIT PANEL ── */}
+          {/* ── RIGHT COLUMN: PREVIEW CARD & SUBMIT PANEL ── */}
           <div className="lg:col-span-4 space-y-6">
-            
-            {/* Live Class Interactive Preview Card */}
             <div
               className="p-6 rounded-[2rem] space-y-4 relative overflow-hidden sticky top-6"
               style={{
@@ -318,7 +325,7 @@ const CreateClassForm = ({
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400">
-                  Live Card Preview
+                  Xem Trước Thẻ Lớp Học
                 </span>
                 <span
                   className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase text-white shadow-sm"
@@ -331,26 +338,26 @@ const CreateClassForm = ({
               {/* Card Banner Preview */}
               <div className="p-5 rounded-2xl bg-gradient-to-br from-orange-500/10 via-amber-500/5 to-transparent border border-orange-200/60 relative overflow-hidden">
                 <h4 className="text-base font-extrabold text-slate-800 line-clamp-2 mb-2">
-                  {watchClassName || "React Bootcamp for Beginners"}
+                  {watchClassName || "Lớp Học Trực Tuyến Mẫu"}
                 </h4>
 
                 <div className="space-y-2 text-xs font-medium text-slate-600">
                   <div className="flex items-center gap-2">
                     <Users size={13} className="text-orange-500" />
-                    <span>Max: <strong className="text-slate-800">{watchStudents || "20"}</strong> Students</span>
+                    <span>Tối đa: <strong className="text-slate-800">{watchStudents || "20"}</strong> học viên</span>
                   </div>
 
                   <div className="flex items-center gap-2">
                     <Clock size={13} className="text-orange-500" />
                     <span>
-                      {watchDay || "Monday"} • {watchStartTime || "08:20"} - {watchEndTime || "10:20"}
+                      {getDayLabel(watchDay)} • {watchStartTime || "08:20"} - {watchEndTime || "10:20"}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-2 pt-1 border-t border-orange-200/40">
                     <DollarSign size={13} className="text-emerald-600" />
                     <span className="font-extrabold text-slate-800 text-sm">
-                      {watchPrice ? `$${watchPrice}` : "Free / Included"}
+                      {watchPrice ? `${Number(watchPrice).toLocaleString("vi-VN")} đ` : "Miễn phí"}
                     </span>
                   </div>
                 </div>
@@ -360,7 +367,7 @@ const CreateClassForm = ({
               <div className="space-y-4 pt-2">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                    Class Price <span className="text-rose-500">*</span>
+                    Học Phí Lớp Học (VNĐ) <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -368,7 +375,7 @@ const CreateClassForm = ({
                     </div>
                     <input
                       type="number"
-                      placeholder="enter price for class"
+                      placeholder="Nhập học phí (0 nếu miễn phí)"
                       className="w-full pl-10 pr-4 py-3 rounded-2xl text-xs font-medium bg-white/80 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-slate-700 shadow-sm"
                       required
                       {...register("Price")}
@@ -379,7 +386,7 @@ const CreateClassForm = ({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-sm font-bold text-white transition-all hover:scale-105 shadow-xl shadow-orange-500/30 active:scale-95 disabled:opacity-50"
+                  className="w-full inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-sm font-bold text-white transition-all hover:scale-105 shadow-xl shadow-orange-500/30 active:scale-95 disabled:opacity-50 cursor-pointer"
                   style={{
                     background: "linear-gradient(135deg, #f97316, #fb923c)",
                     borderRadius: "9999px",
@@ -388,20 +395,20 @@ const CreateClassForm = ({
                   <Sparkles size={16} />
                   <span>
                     {isSubmitting
-                      ? "Processing..."
+                      ? "Đang xử lý..."
                       : classsdata
-                      ? "Update Live Class"
-                      : "Create Live Class"}
+                      ? "Lưu Thay Đổi ✨"
+                      : "Tạo Lớp Học Ngay ✨"}
                   </span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => navigate("/my/class")}
-                  className="w-full py-3 rounded-full text-xs font-bold text-slate-500 bg-slate-100 hover:bg-slate-200 transition-all text-center"
+                  className="w-full py-3 rounded-full text-xs font-bold text-slate-500 bg-slate-100 hover:bg-slate-200 transition-all text-center cursor-pointer"
                   style={{ borderRadius: "9999px" }}
                 >
-                  Cancel
+                  Hủy bỏ
                 </button>
               </div>
 
@@ -409,8 +416,8 @@ const CreateClassForm = ({
               <div className="p-4 rounded-2xl bg-orange-50/60 border border-orange-100 flex items-start gap-3">
                 <Lightbulb size={16} className="text-orange-500 shrink-0 mt-0.5" />
                 <div className="text-[11px] font-semibold text-slate-600 space-y-1">
-                  <p className="font-bold text-slate-800">Instructor Tip:</p>
-                  <p>Double check your Google Meet link and start date to ensure smooth onboarding for your students.</p>
+                  <p className="font-bold text-slate-800">Mẹo dành cho Giảng viên:</p>
+                  <p>Vui lòng kiểm tra kỹ đường dẫn Google Meet / Zoom và ngày khai giảng để học viên vào học thuận tiện nhất.</p>
                 </div>
               </div>
             </div>

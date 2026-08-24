@@ -16,6 +16,7 @@ import {
   X,
   UploadCloud,
 } from "lucide-react";
+import { useEffect } from "react";
 
 const CreateCoursesForm = ({
   register,
@@ -31,12 +32,20 @@ const CreateCoursesForm = ({
   onConfirm,
   onCancel,
   exits,
+  isEdit = false,
 }) => {
   const watchedTitle = watch("title") || "";
   const watchedDescription = watch("description") || "";
   const watchedPrice = watch("price") || "";
   const watchedLevel = watch("level") || "beginner";
   const watchedType = watch("type") || "recorded";
+  const isLive = watchedType === "live";
+
+  useEffect(() => {
+    if (isLive && setValue) {
+      setValue("price", 0);
+    }
+  }, [isLive, setValue]);
 
   const formatPrice = (val) => {
     if (!val || isNaN(val)) return "0 ₫";
@@ -84,11 +93,12 @@ const CreateCoursesForm = ({
               <span>Giảng Viên Nexora • Khởi Tạo Nội Dung</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-              Tạo Khóa Học Mới
+              {isEdit ? "Chỉnh Sửa Khóa Học" : "Tạo Khóa Học Mới"}
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 font-medium">
-              Thiết kế, xây dựng và xuất bản khóa học chất lượng cao tới hàng
-              ngàn học viên
+              {isEdit
+                ? "Cập nhật và tối ưu hóa nội dung khóa học của bạn"
+                : "Thiết kế, xây dựng và xuất bản khóa học chất lượng cao tới hàng ngàn học viên"}
             </p>
           </div>
 
@@ -103,7 +113,6 @@ const CreateCoursesForm = ({
         </div>
       </div>
 
-      {/* ── ERROR NOTICE ── */}
       {error && (
         <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 font-bold text-xs sm:text-sm flex items-center gap-2">
           <X size={16} className="text-rose-500 shrink-0" />
@@ -111,12 +120,9 @@ const CreateCoursesForm = ({
         </div>
       )}
 
-      {/* ── BENTO GRID 2 COLUMNS ── */}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* 👈 CỘT TRÁI (65% WIDTH - FORM NHẬP LIỆU BENTO) */}
           <div className="lg:col-span-7 space-y-5">
-            {/* Card 1: Thông tin cơ bản */}
             <div
               className="rounded-[28px] p-6 sm:p-7 space-y-5 transition-all shadow-sm"
               style={{
@@ -134,7 +140,6 @@ const CreateCoursesForm = ({
                 </h3>
               </div>
 
-              {/* Tiêu đề khóa học */}
               <div className="space-y-1.5">
                 <label className="block text-xs font-black text-slate-700 uppercase tracking-wider">
                   Tiêu đề khóa học <span className="text-rose-500">*</span>
@@ -182,19 +187,31 @@ const CreateCoursesForm = ({
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Giá (VND) */}
                 <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
                   <label className="block text-xs font-black text-slate-700 uppercase tracking-wider">
-                    Giá bán (VND) <span className="text-rose-500">*</span>
+                      Giá bán (VND) {!isLive && <span className="text-rose-500">*</span>}
                   </label>
+                    {isLive && (
+                      <span className="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full border border-orange-200/60">
+                        Khóa Live: Học phí theo lớp
+                      </span>
+                    )}
+                  </div>
                   <div className="relative">
                     <input
                       type="number"
-                      placeholder="Ví dụ: 250000"
+                      placeholder={isLive ? "Khóa Live không có giá bán ngoài" : "Ví dụ: 250000"}
                       min="0"
                       autoComplete="price"
-                      {...register("price", { required: true })}
-                      className="w-full h-12 pl-4 pr-10 rounded-2xl text-xs sm:text-sm font-bold text-slate-800 bg-white border border-slate-200/90 focus:border-orange-500/60 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all shadow-2xs"
+                      disabled={isLive}
+                      value={isLive ? 0 : undefined}
+                      {...register("price", { required: !isLive })}
+                      className={`w-full h-12 pl-4 pr-10 rounded-2xl text-xs sm:text-sm font-bold transition-all shadow-2xs ${
+                        isLive
+                          ? "bg-slate-100/90 text-slate-400 cursor-not-allowed border-slate-200 select-none"
+                          : "text-slate-800 bg-white border border-slate-200/90 focus:border-orange-500/60 focus:ring-4 focus:ring-orange-500/10 outline-none"
+                      }`}
                     />
                     <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-black text-slate-400 pointer-events-none">
                       ₫
@@ -224,18 +241,24 @@ const CreateCoursesForm = ({
                 </div>
               </div>
 
-              
               <div className="space-y-2 pt-2">
-                <label className="block text-xs font-black text-slate-700 uppercase tracking-wider">
-                  Hình thức khóa học <span className="text-rose-500">*</span>
-                </label>
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-black text-slate-700 uppercase tracking-wider">
+                    Hình thức khóa học <span className="text-rose-500">*</span>
+                  </label>
+                  {isEdit && (
+                    <span className="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">
+                      🔒 Cố định hình thức khóa học
+                    </span>
+                  )}
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   {/* Live Class */}
-                  <label className="cursor-pointer relative">
+                  <label className={`relative ${isEdit ? "pointer-events-none opacity-75" : "cursor-pointer"}`}>
                     <input
                       type="radio"
                       value="live"
-                      {...register("type", { required: true })}
+                      {...register("type")}
                       className="peer sr-only"
                     />
                     <div className="p-4 rounded-2xl border-2 border-slate-200/90 bg-white/70 hover:bg-white text-slate-600 transition-all peer-checked:border-orange-500 peer-checked:bg-orange-50/90 peer-checked:text-orange-900 peer-checked:shadow-sm shadow-2xs flex items-center gap-3">
@@ -254,11 +277,11 @@ const CreateCoursesForm = ({
                   </label>
 
                   {/* Recorded Videos */}
-                  <label className="cursor-pointer relative">
+                  <label className={`relative ${isEdit ? "pointer-events-none opacity-75" : "cursor-pointer"}`}>
                     <input
                       type="radio"
                       value="recorded"
-                      {...register("type", { required: true })}
+                      {...register("type")}
                       className="peer sr-only"
                     />
                     <div className="p-4 rounded-2xl border-2 border-slate-200/90 bg-white/70 hover:bg-white text-slate-600 transition-all peer-checked:border-purple-500 peer-checked:bg-purple-50/90 peer-checked:text-purple-900 peer-checked:shadow-sm shadow-2xs flex items-center gap-3">
@@ -441,9 +464,15 @@ const CreateCoursesForm = ({
                       </span>
                     </div>
 
+                    {isLive ? (
+                      <span className="text-xs font-black text-orange-600 bg-orange-50 px-2.5 py-1 rounded-full border border-orange-200/60">
+                        Lớp học trực tuyến
+                      </span>
+                    ) : (
                     <span className="text-sm sm:text-base font-black text-orange-600">
                       {formatPrice(watchedPrice)}
                     </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -462,12 +491,12 @@ const CreateCoursesForm = ({
                   {loading ? (
                     <>
                       <Loader2 size={18} className="animate-spin" />
-                      <span>Đang Khởi Tạo Khóa Học...</span>
+                      <span>{isEdit ? "Đang Cập Nhật..." : "Đang Khởi Tạo Khóa Học..."}</span>
                     </>
                   ) : (
                     <>
                       <Plus size={18} />
-                      <span>Tạo Khóa Học Ngay ✨</span>
+                      <span>{isEdit ? "Lưu Thay Đổi ✨" : "Tạo Khóa Học Ngay ✨"}</span>
                     </>
                   )}
                 </button>

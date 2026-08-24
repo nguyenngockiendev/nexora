@@ -25,6 +25,19 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
     }
   };
 
+  const getDayLabel = (day) => {
+    const map = {
+      Monday: "Thứ Hai",
+      Tuesday: "Thứ Ba",
+      Wednesday: "Thứ Tư",
+      Thursday: "Thứ Năm",
+      Friday: "Thứ Sáu",
+      Saturday: "Thứ Bảy",
+      Sunday: "Chủ Nhật",
+    };
+    return map[day] || day || "Thứ Hai";
+  };
+
   return (
     <div className="space-y-8 pb-10">
       {/* ── Hero Banner (Frosted Dark Glass Background + Centered Pill Button) ── */}
@@ -42,14 +55,14 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
         <div className="absolute top-4 left-6 z-20">
           <button
             onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold text-white/90 bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm group"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold text-white/90 bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm group cursor-pointer"
             style={{ borderRadius: "9999px" }}
           >
             <ArrowLeft
               size={15}
               className="group-hover:-translate-x-1 transition-transform"
             />
-            <span>Back</span>
+            <span>Quay lại</span>
           </button>
         </div>
 
@@ -68,13 +81,13 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
 
         <div className="relative z-10 flex flex-col items-center gap-3 max-w-2xl">
           <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight drop-shadow-md">
-            {classs?.className || "React Bootcamp - Live Class"}
+            {classs?.className || "Phòng Học Trực Tuyến"}
           </h1>
         </div>
 
         <button
           onClick={() => window.open(classs?.meetingLink, "_blank")}
-          className="relative z-10 flex items-center gap-2.5 px-7 py-3 rounded-full font-bold text-white text-sm transition-all duration-300 hover:scale-105 hover:shadow-2xl group active:scale-95"
+          className="relative z-10 flex items-center gap-2.5 px-7 py-3 rounded-full font-bold text-white text-sm transition-all duration-300 hover:scale-105 hover:shadow-2xl group active:scale-95 cursor-pointer"
           style={{
             background: "linear-gradient(135deg, #f97316, #fb923c)",
             borderRadius: "9999px",
@@ -82,7 +95,7 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
           }}
         >
           <Video className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-          <span>Join Google Meet 🎥</span>
+          <span>Vào Phòng Học Google Meet 🎥</span>
         </button>
       </div>
 
@@ -105,13 +118,13 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
                 classs?.instructorId?.avatar ||
                 "https://ui-avatars.com/api/?name=Teacher&background=random"
               }
-              alt="Instructor"
+              alt="Giảng viên"
               className="w-16 h-16 rounded-full object-cover ring-4 ring-white/90 shadow-md shrink-0"
             />
             <div className="flex-1 min-w-0 space-y-1.5">
               <div className="flex items-center gap-1.5">
                 <h3 className="text-lg font-extrabold text-slate-800 truncate">
-                  {classs?.instructorId?.name || "Instructor Name"}
+                  {classs?.instructorId?.name || "Giảng viên Nexora"}
                 </h3>
                 <span className="w-4 h-4 rounded-full bg-blue-500 text-white flex items-center justify-center text-[9px] font-extrabold shrink-0 shadow-sm">
                   ✓
@@ -123,15 +136,13 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
                   className="px-3 py-1 bg-white/90 text-orange-600 rounded-full text-xs font-semibold border border-orange-200/80 shadow-sm flex items-center gap-1.5"
                   style={{ borderRadius: "9999px" }}
                 >
-                  <span className="text-orange-500 text-[11px]">⚛️</span> React
-                  Expert
+                  <span className="text-orange-500 text-[11px]">⚛️</span> Chuyên gia đào tạo
                 </span>
                 <span
                   className="px-3 py-1 bg-white/90 text-amber-700 rounded-full text-xs font-semibold border border-amber-200/80 shadow-sm flex items-center gap-1.5"
                   style={{ borderRadius: "9999px" }}
                 >
-                  <span className="text-amber-500 text-[11px]">🏆</span> Top
-                  Mentor
+                  <span className="text-amber-500 text-[11px]">🏆</span> Giảng viên xuất sắc
                 </span>
               </div>
             </div>
@@ -148,10 +159,10 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
             >
               <Activity className="text-emerald-500 mb-3" size={24} />
               <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">
-                Status
+                Trạng thái
               </p>
               <div className="inline-flex items-center justify-center px-2 py-1 rounded bg-emerald-100 text-emerald-600 text-xs font-bold border border-emerald-200 uppercase">
-                {classs?.status || "Active"}
+                {classs?.status === "open" ? "Đang mở" : classs?.status === "closed" ? "Đã đóng" : "Đang mở"}
               </div>
             </div>
             <Link
@@ -167,7 +178,7 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
             >
               <Users className="text-blue-500 mb-3" size={24} />
               <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">
-                Students
+                Sĩ số học viên
               </p>
               <h4 className="text-xl font-black text-slate-800">
                 {classs?.currentStudents || 0} / {classs?.maxStudents || 0}
@@ -183,10 +194,10 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
             >
               <Calendar className="text-orange-500 mb-3" size={24} />
               <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">
-                Start Date
+                Khai giảng
               </p>
               <h4 className="text-base font-bold text-slate-800">
-                {classs?.startDate || "N/A"}
+                {classs?.startDate || "Chưa cập nhật"}
               </h4>
             </div>
             <div
@@ -198,10 +209,10 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
             >
               <CheckCircle className="text-rose-500 mb-3" size={24} />
               <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">
-                End Date
+                Kết thúc
               </p>
               <h4 className="text-base font-bold text-slate-800">
-                {classs?.endDate || "N/A"}
+                {classs?.endDate || "Chưa cập nhật"}
               </h4>
             </div>
           </div>
@@ -219,7 +230,7 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
                 <FileText size={20} />
               </div>
               <h3 className="text-xl font-black text-slate-800">
-                Class Materials
+                Tài Liệu Học Tập
               </h3>
             </div>
 
@@ -234,10 +245,10 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
                 </div>
                 <div className="flex-1">
                   <h5 className="font-bold text-slate-800 mb-0.5">
-                    React Basics Notes.pdf
+                    Tài liệu tổng hợp kiến thức buổi học.pdf
                   </h5>
                   <p className="text-xs font-medium text-slate-500">
-                    2.4 MB • PDF Document
+                    2.4 MB • Tài liệu PDF
                   </p>
                 </div>
               </div>
@@ -251,10 +262,10 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
                 </div>
                 <div className="flex-1">
                   <h5 className="font-bold text-slate-800 mb-0.5">
-                    Homework Assignment #1
+                    Bài tập thực hành dự án #1
                   </h5>
                   <p className="text-xs font-medium text-slate-500">
-                    Word Document
+                    Tài liệu Word
                   </p>
                 </div>
               </div>
@@ -268,10 +279,10 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
                 </div>
                 <div className="flex-1">
                   <h5 className="font-bold text-slate-800 mb-0.5">
-                    Recording Session 1
+                    Video ghi lại buổi học số 1
                   </h5>
                   <p className="text-xs font-medium text-slate-500 text-purple-500">
-                    Processing...
+                    Đang xử lý...
                   </p>
                 </div>
               </div>
@@ -281,7 +292,7 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
 
         {/* RIGHT COLUMN (4 cols) */}
         <div className="lg:col-span-4 space-y-6">
-          {/* ── Live Class Chat Card (Pure UI - No Logic) ── */}
+          {/* ── Live Class Chat Card ── */}
           <div
             className="p-6 rounded-[2rem] flex flex-col h-[480px] relative overflow-hidden"
             style={{
@@ -297,7 +308,7 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
                 className="text-orange-500 animate-pulse"
                 size={20}
               />{" "}
-              Class Chatroom
+              Phòng Chat Lớp Học
             </h4>
 
             {/* Scrollable Message List */}
@@ -328,7 +339,7 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
                           </div>
                         )}
                         <span className="text-[10px] text-slate-400 font-black">
-                          {isMe ? "You" : msg.sender?.name || "Student"}
+                          {isMe ? "Bạn" : msg.sender?.name || "Học viên"}
                         </span>
                       </div>
                       <div
@@ -346,24 +357,24 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
               ) : (
                 <div className="h-full flex flex-col items-center justify-center text-slate-400 text-xs font-bold gap-2 py-20">
                   <MessageSquare size={28} className="opacity-40" />
-                  <span>Interactive chat is ready. Say hello!</span>
+                  <span>Phòng chat đã sẵn sàng. Hãy gửi lời chào nhé!</span>
                 </div>
               )}
             </div>
 
-            {/* Input Area (Pure UI) */}
+            {/* Input Area */}
             <div className="relative mt-auto z-10 pt-2 border-t border-slate-100">
               <input
                 type="text"
                 value={contenChat}
-                placeholder="Type your message..."
+                placeholder="Nhập tin nhắn của bạn..."
                 className="w-full pl-4 pr-12 py-3.5 rounded-2xl text-xs font-bold bg-white border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-slate-700 shadow-sm"
                 onChange={(e) => setContentChat(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handing()}
               />
               <button
                 onClick={handing}
-                className="absolute right-2 top-[13px] p-2 rounded-xl bg-orange-500 text-white hover:bg-orange-600 active:scale-95 transition-all shadow-md shadow-orange-500/20"
+                className="absolute right-2 top-[13px] p-2 rounded-xl bg-orange-500 text-white hover:bg-orange-600 active:scale-95 transition-all shadow-md shadow-orange-500/20 cursor-pointer"
               >
                 <Send size={12} />
               </button>
@@ -379,7 +390,7 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
             }}
           >
             <h4 className="text-lg font-black text-slate-800 mb-4 flex items-center gap-2 shrink-0">
-              <Calendar className="text-orange-500" size={20} /> Weekly Schedule
+              <Calendar className="text-orange-500" size={20} /> Lịch Học Trong Tuần
             </h4>
 
             {/* Scrollable Schedule List */}
@@ -387,14 +398,14 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
               <div className="p-4 rounded-2xl bg-white/80 border border-orange-200/60 shadow-sm">
                 <div className="flex items-center justify-between mb-1">
                   <span className="font-extrabold text-slate-800 text-sm">
-                    {classs?.className || "Main Live Session"}
+                    {classs?.className || "Buổi học trực tuyến"}
                   </span>
                   <span className="text-xs font-bold text-orange-600 bg-orange-50 px-2.5 py-0.5 rounded-full border border-orange-200">
-                    {classs?.startDate || "Active"}
+                    {classs?.startDate || "Đang mở"}
                   </span>
                 </div>
                 <div className="font-bold text-slate-700 text-xs mb-1">
-                  {classs?.schedule?.day || "Monday"}
+                  {getDayLabel(classs?.schedule?.day)}
                 </div>
                 <div className="text-slate-500 text-xs font-semibold flex items-center gap-1.5">
                   <Clock size={13} className="text-orange-500" />

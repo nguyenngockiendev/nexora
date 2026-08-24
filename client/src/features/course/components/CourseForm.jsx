@@ -86,7 +86,9 @@ const CoursesForm = ({
           </h1>
 
           <p className="text-sm md:text-base font-semibold text-slate-500 max-w-2xl mx-auto leading-relaxed">
-            Làm chủ kỹ năng mới với các lớp học trực tuyến tương tác hoặc học theo lộ trình riêng với các bài giảng chất lượng cao. Bắt đầu học ngay hôm nay!
+            Làm chủ kỹ năng mới với các lớp học trực tuyến tương tác hoặc học
+            theo lộ trình riêng với các bài giảng chất lượng cao. Bắt đầu học
+            ngay hôm nay!
           </p>
         </div>
       </section>
@@ -196,7 +198,8 @@ const CoursesForm = ({
 
       {loading && (
         <div className="flex items-center justify-center gap-3 py-16 text-orange-500 font-bold text-base">
-          <Loader2 className="animate-spin" size={26} /> Đang tải danh sách khóa học...
+          <Loader2 className="animate-spin" size={26} /> Đang tải danh sách khóa
+          học...
         </div>
       )}
 
@@ -254,7 +257,8 @@ const CoursesForm = ({
                             borderRadius: "9999px",
                           }}
                         >
-                          <Radio size={11} className="animate-pulse" /> TRỰC TUYẾN
+                          <Radio size={11} className="animate-pulse" /> TRỰC
+                          TUYẾN
                         </div>
                       ) : (
                         <div
@@ -299,9 +303,11 @@ const CoursesForm = ({
                       </span>
                     </div>
 
-                    <div className="text-base font-black text-orange-600">
-                      {priceFormatted}
-                    </div>
+                    {!isLive && (
+                      <div className="text-base font-black text-orange-600">
+                        {priceFormatted}
+                      </div>
+                    )}
                   </div>
                 </div>
 
