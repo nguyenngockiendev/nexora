@@ -235,6 +235,13 @@ const LoginForm = ({
                   Tạo tài khoản miễn phí
                 </Link>
               </p>
+
+              <div className="mt-4 pt-3 border-t border-slate-200 text-xs text-slate-600 space-y-1">
+                <p className="font-bold text-slate-800 m-0">Tài khoản test:</p>
+                <p className="m-0">Admin: admin@example.com - 1</p>
+                <p className="m-0">Giảng viên: instructor@example.com - 1</p>
+                <p className="m-0">Học viên: student@example.com - 1</p>
+              </div>
             </form>
           </div>
 
