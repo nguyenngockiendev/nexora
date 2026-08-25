@@ -4,9 +4,13 @@ import { useNavigate } from "react-router-dom";
 
 import useLogin from "../hooks/uselogin";
 import LoginForm from "../components/LoginForm";
-
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginShecma } from "../../../shared/validation/auth";
 const Login = () => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit,formState: { errors } } = useForm({
+    resolver: zodResolver(loginShecma),
+    mode: "onBlur",
+  });
   const { login, loading, error } = useLogin();
 
   const navigate = useNavigate();
@@ -33,6 +37,7 @@ const Login = () => {
       error={error}
       onSubmit={onSubmit}
       navigate={navigate}
+      errors={errors}
     />
   );
 };

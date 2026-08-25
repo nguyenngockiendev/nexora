@@ -15,7 +15,14 @@ import {
   ArrowLeft,
 } from "lucide-react";
 
-const LoginForm = ({ register, handleSubmit, loading, error, onSubmit }) => {
+const LoginForm = ({
+  register,
+  handleSubmit,
+  loading,
+  error,
+  onSubmit,
+  errors,
+}) => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
@@ -135,6 +142,12 @@ const LoginForm = ({ register, handleSubmit, loading, error, onSubmit }) => {
                     className="w-full pl-11 pr-4 py-3.5 text-sm font-semibold text-slate-900 placeholder-slate-400 bg-transparent outline-none rounded-2xl"
                   />
                 </div>
+                {errors.email && (
+                  <p className="text-xs text-rose-500 font-medium flex items-center gap-1 mt-1">
+                    <AlertCircle size={13} className="shrink-0" />
+                    <span>{errors.email.message}</span>
+                  </p>
+                )}
               </div>
 
               <div className="space-y-1.5">
@@ -161,6 +174,12 @@ const LoginForm = ({ register, handleSubmit, loading, error, onSubmit }) => {
                     {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
                   </button>
                 </div>
+                {errors.password && (
+                  <p className="text-xs text-rose-500 font-medium flex items-center gap-1 mt-1">
+                    <AlertCircle size={13} className="shrink-0" />
+                    <span>{errors.password.message}</span>
+                  </p>
+                )}
 
                 <div className="flex justify-end pt-1">
                   <Link
@@ -250,8 +269,12 @@ const LoginForm = ({ register, handleSubmit, loading, error, onSubmit }) => {
                 <p className="m-0">
                   Học viên: <strong>student@example.com - 1</strong>
                 </p>
-                 <p className="m-0">
-                  Note: <strong>Backend có thể mất khoảng 15 giây để khởi động ở lần truy cập đầu tiên.</strong>
+                <p className="m-0">
+                  Note:{" "}
+                  <strong>
+                    Backend có thể mất khoảng 15 giây để khởi động ở lần truy
+                    cập đầu tiên.
+                  </strong>
                 </p>
               </div>
             </form>

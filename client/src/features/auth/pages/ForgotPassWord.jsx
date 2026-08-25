@@ -1,9 +1,13 @@
 import { useForm } from "react-hook-form";
 import useForgotPassword from "../hooks/forgotpassword";
 import FogotPassWordForm from "../components/ForgotPasswordForm";
-
+import { zodResolver } from "@hookform/resolvers/zod";
+import { fogotShecma } from "../../../shared/validation/auth";
 const FogotPassword = () => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit,formState: { errors } } = useForm({
+    resolver: zodResolver(fogotShecma),
+    mode: 'onBlur'
+  });
   const { forgotpassword, error, status } = useForgotPassword();
 
   const onsubmit = async (data) => {
@@ -20,14 +24,15 @@ const FogotPassword = () => {
       <div className="fixed inset-0 bg-mesh pointer-events-none z-0" />
       <div className="fixed w-[500px] h-[500px] -top-[100px] -right-[100px] rounded-full bg-orb-1 pointer-events-none z-0" />
       <div className="fixed w-[400px] h-[400px] bottom-[10%] -left-[80px] rounded-full bg-orb-2 pointer-events-none z-0" />
-      
+
       <div className="w-full max-w-lg z-10 px-4">
-        <FogotPassWordForm 
+        <FogotPassWordForm
           register={register}
           handleSubmit={handleSubmit}
           onsubmit={onsubmit}
           error={error}
           status={status}
+          errors={errors}
         />
       </div>
     </div>

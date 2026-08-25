@@ -4,9 +4,14 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import useUserRegister from "../hooks/useregister";
 import RegisterForm from "../components/RegisterForm";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { registerShecma } from "../../../shared/validation/auth";
 
 const Register = () => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit,formState: { errors } } = useForm({
+    resolver: zodResolver(registerShecma),
+    mode: "onBlur",
+  });
   const { registers, error, loading } = useUserRegister();
   const [avatar, Setavatar] = useState(null);
   const navigate = useNavigate();
@@ -36,7 +41,7 @@ const Register = () => {
       <div className="fixed inset-0 bg-mesh pointer-events-none z-0" />
       <div className="fixed w-[500px] h-[500px] -top-[100px] -right-[100px] rounded-full bg-orb-1 pointer-events-none z-0" />
       <div className="fixed w-[400px] h-[400px] bottom-[10%] -left-[80px] rounded-full bg-orb-2 pointer-events-none z-0" />
-      
+
       <div className="w-full max-w-xl z-10 px-4">
         <RegisterForm
           register={register}
@@ -46,6 +51,7 @@ const Register = () => {
           navigate={navigate}
           Setavatar={Setavatar}
           loading={loading}
+          errors={errors}
         />
       </div>
     </div>

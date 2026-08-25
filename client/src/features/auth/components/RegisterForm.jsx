@@ -1,4 +1,13 @@
-import { Sparkles, User, Mail, Lock, ArrowLeft, ArrowRight, Image as ImageIcon } from "lucide-react";
+import {
+  Sparkles,
+  User,
+  Mail,
+  Lock,
+  ArrowLeft,
+  ArrowRight,
+  Image as ImageIcon,
+  AlertCircle,
+} from "lucide-react";
 
 const RegisterForm = ({
   register,
@@ -8,6 +17,7 @@ const RegisterForm = ({
   onSubmit,
   Setavatar,
   loading,
+  errors = {},
 }) => {
   return (
     <div className="glass-panel p-8 sm:p-10 w-full flex flex-col items-center">
@@ -18,8 +28,12 @@ const RegisterForm = ({
         <span>Nexora LMS</span>
       </div>
 
-      <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2">Tạo Tài Khoản Mới</h1>
-      <p className="text-slate-500 text-center mb-8">Tham gia cùng hàng ngàn học viên trên Nexora ngay hôm nay.</p>
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2">
+        Tạo Tài Khoản Mới
+      </h1>
+      <p className="text-slate-500 text-center mb-8">
+        Tham gia cùng hàng ngàn học viên trên Nexora ngay hôm nay.
+      </p>
 
       {error && (
         <div className="w-full p-3 mb-6 bg-rose-500/10 border border-rose-500/20 text-rose-600 rounded-xl text-sm text-center">
@@ -27,24 +41,37 @@ const RegisterForm = ({
         </div>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="w-full flex flex-col gap-5">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="w-full flex flex-col gap-5"
+      >
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-semibold text-slate-700">Họ và tên</label>
+          <label className="text-sm font-semibold text-slate-700">
+            Họ và tên
+          </label>
           <div className="relative">
             <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
               <User size={18} />
             </span>
             <input
-              className="glass-input w-full pl-10"
+              className={`glass-input w-full pl-10 ${errors.name ? "border-rose-400 ring-2 ring-rose-100" : ""}`}
               placeholder="Nhập họ và tên của bạn"
               autoComplete="name"
               {...register("name")}
             />
           </div>
+          {errors.name && (
+            <p className="text-xs text-rose-500 font-medium flex items-center gap-1 mt-1">
+              <AlertCircle size={13} className="shrink-0" />
+              <span>{errors.name.message}</span>
+            </p>
+          )}
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-semibold text-slate-700">Ảnh đại diện</label>
+          <label className="text-sm font-semibold text-slate-700">
+            Ảnh đại diện
+          </label>
           <div className="relative flex items-center glass-input p-0 overflow-hidden">
             <div className="pl-3 text-slate-400">
               <ImageIcon size={18} />
@@ -64,60 +91,82 @@ const RegisterForm = ({
               <Mail size={18} />
             </span>
             <input
-              className="glass-input w-full pl-10"
+              className={`glass-input w-full pl-10 ${errors.email ? "border-rose-400 ring-2 ring-rose-100" : ""}`}
               placeholder="vidu@email.com"
               autoComplete="email"
               {...register("email")}
             />
           </div>
+          {errors.email && (
+            <p className="text-xs text-rose-500 font-medium flex items-center gap-1 mt-1">
+              <AlertCircle size={13} className="shrink-0" />
+              <span>{errors.email.message}</span>
+            </p>
+          )}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-semibold text-slate-700">Mật khẩu</label>
+            <label className="text-sm font-semibold text-slate-700">
+              Mật khẩu
+            </label>
             <div className="relative">
               <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
                 <Lock size={18} />
               </span>
               <input
                 type="password"
-                className="glass-input w-full pl-10"
+                className={`glass-input w-full pl-10 ${errors.password ? "border-rose-400 ring-2 ring-rose-100" : ""}`}
                 placeholder="Nhập mật khẩu"
                 autoComplete="new-password"
                 {...register("password")}
               />
             </div>
+            {errors.password && (
+              <p className="text-xs text-rose-500 font-medium flex items-center gap-1 mt-1">
+                <AlertCircle size={13} className="shrink-0" />
+                <span>{errors.password.message}</span>
+              </p>
+            )}
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-semibold text-slate-700">Nhập lại mật khẩu</label>
+            <label className="text-sm font-semibold text-slate-700">
+              Nhập lại mật khẩu
+            </label>
             <div className="relative">
               <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
                 <Lock size={18} />
               </span>
               <input
                 type="password"
-                className="glass-input w-full pl-10"
+                className={`glass-input w-full pl-10 ${errors.repeatpassword ? "border-rose-400 ring-2 ring-rose-100" : ""}`}
                 placeholder="Xác nhận mật khẩu"
                 autoComplete="new-password"
                 {...register("repeatpassword")}
               />
             </div>
+            {errors.repeatpassword && (
+              <p className="text-xs text-rose-500 font-medium flex items-center gap-1 mt-1">
+                <AlertCircle size={13} className="shrink-0" />
+                <span>{errors.repeatpassword.message}</span>
+              </p>
+            )}
           </div>
         </div>
 
         <div className="flex flex-col sm:flex-row items-center gap-4 mt-4">
-          <button 
-            type="button" 
+          <button
+            type="button"
             className="w-full sm:flex-1 flex justify-center items-center gap-2 py-3 px-4 glass-card text-slate-700 font-semibold hover:bg-white/80 transition-colors cursor-pointer"
             onClick={() => navigate("/login")}
           >
             <ArrowLeft size={16} />
             Đăng nhập
           </button>
-          
-          <button 
-            type="submit" 
+
+          <button
+            type="submit"
             disabled={loading}
             className="w-full sm:flex-[1.5] flex justify-center items-center gap-2 py-3 px-4 bg-gradient-to-br from-orange-500 to-amber-500 text-white font-semibold rounded-xl shadow-lg shadow-orange-500/30 hover:-translate-y-0.5 hover:shadow-orange-500/40 transition-all disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none cursor-pointer"
           >
@@ -130,4 +179,4 @@ const RegisterForm = ({
   );
 };
 
-export default RegisterForm;
+export default RegisterForm;
