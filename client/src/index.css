@@ -2,11 +2,24 @@
 @import "tailwindcss";
 
 @layer base {
+  html {
+    zoom: 75%;
+    min-height: 100%;
+    background: #fdf8f4;
+  }
   body {
+    min-height: 100vh;
+    min-height: 100dvh;
     background: #fdf8f4;
     color: #1e293b;
     font-family: "Inter", system-ui, -apple-system, sans-serif;
     overflow-x: hidden;
+  }
+  #root {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
   }
   * {
     box-sizing: border-box;

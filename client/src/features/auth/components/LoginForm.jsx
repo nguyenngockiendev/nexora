@@ -27,7 +27,7 @@ const LoginForm = ({
 
   return (
     <div
-      className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 md:p-10 relative overflow-hidden select-none"
+      className="min-h-[133.4vh] w-full flex items-center justify-center p-4 sm:p-6 md:p-10 relative overflow-hidden select-none"
       style={{
         background:
           "linear-gradient(135deg, #fdf8f3 0%, #f7eee2 35%, #fae8d4 70%, #fdf4eb 100%)",
@@ -128,10 +128,10 @@ const LoginForm = ({
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-700 tracking-wide">
-                  Email
+                  Địa chỉ Email
                 </label>
-                <div className="relative rounded-2xl bg-white/90 border border-slate-200 shadow-2xs transition-all focus-within:border-orange-400 focus-within:ring-4 focus-within:ring-orange-500/15">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                <div className="relative rounded-2xl bg-white border border-slate-200 focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-100 transition-all shadow-2xs">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                     <Mail size={17} />
                   </div>
                   <input
@@ -139,23 +139,17 @@ const LoginForm = ({
                     required
                     placeholder="vidu@email.com"
                     {...register("email")}
-                    className="w-full pl-11 pr-4 py-3.5 text-sm font-semibold text-slate-900 placeholder-slate-400 bg-transparent outline-none rounded-2xl"
+                    className="w-full pl-10 pr-4 py-3.5 text-sm font-semibold text-slate-900 placeholder-slate-400 bg-transparent outline-none rounded-2xl"
                   />
                 </div>
-                {errors.email && (
-                  <p className="text-xs text-rose-500 font-medium flex items-center gap-1 mt-1">
-                    <AlertCircle size={13} className="shrink-0" />
-                    <span>{errors.email.message}</span>
-                  </p>
-                )}
               </div>
 
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-700 tracking-wide">
                   Mật khẩu
                 </label>
-                <div className="relative rounded-2xl bg-white/90 border border-slate-200 shadow-2xs transition-all focus-within:border-orange-400 focus-within:ring-4 focus-within:ring-orange-500/15">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                <div className="relative rounded-2xl bg-white border border-slate-200 focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-100 transition-all shadow-2xs">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                     <Lock size={17} />
                   </div>
                   <input
@@ -163,7 +157,7 @@ const LoginForm = ({
                     required
                     placeholder="••••••••"
                     {...register("password")}
-                    className="w-full pl-11 pr-11 py-3.5 text-sm font-semibold text-slate-900 placeholder-slate-400 bg-transparent outline-none rounded-2xl"
+                    className="w-full pl-10 pr-11 py-3.5 text-sm font-semibold text-slate-900 placeholder-slate-400 bg-transparent outline-none rounded-2xl"
                   />
                   <button
                     type="button"
@@ -174,12 +168,6 @@ const LoginForm = ({
                     {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
                   </button>
                 </div>
-                {errors.password && (
-                  <p className="text-xs text-rose-500 font-medium flex items-center gap-1 mt-1">
-                    <AlertCircle size={13} className="shrink-0" />
-                    <span>{errors.password.message}</span>
-                  </p>
-                )}
 
                 <div className="flex justify-end pt-1">
                   <Link
@@ -190,39 +178,6 @@ const LoginForm = ({
                   </Link>
                 </div>
               </div>
-
-              <div className="flex items-center my-2">
-                <div className="flex-1 border-t border-slate-200/80" />
-                <span className="px-3 text-xs font-semibold text-slate-400">
-                  hoặc
-                </span>
-                <div className="flex-1 border-t border-slate-200/80" />
-              </div>
-
-              <button
-                type="button"
-                className="w-full py-3 px-4 rounded-2xl bg-white/95 border border-slate-200 shadow-2xs hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center justify-center gap-2.5 text-xs sm:text-sm font-bold text-slate-700 cursor-pointer group"
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24">
-                  <path
-                    fill="#4285F4"
-                    d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"
-                  />
-                  <path
-                    fill="#34A853"
-                    d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"
-                  />
-                  <path
-                    fill="#FBBC05"
-                    d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.04 0 12s.45 3.82 1.25 5.42l4.03-3.15z"
-                  />
-                  <path
-                    fill="#EA4335"
-                    d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"
-                  />
-                </svg>
-                <span>Đăng nhập nhanh với Google</span>
-              </button>
 
               <button
                 type="submit"

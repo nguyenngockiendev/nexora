@@ -37,7 +37,7 @@ const Register = () => {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden py-12">
+    <div className="relative min-h-[133.4vh] flex items-center justify-center overflow-hidden py-12">
       <div className="fixed inset-0 bg-mesh pointer-events-none z-0" />
       <div className="fixed w-[500px] h-[500px] -top-[100px] -right-[100px] rounded-full bg-orb-1 pointer-events-none z-0" />
       <div className="fixed w-[400px] h-[400px] bottom-[10%] -left-[80px] rounded-full bg-orb-2 pointer-events-none z-0" />
