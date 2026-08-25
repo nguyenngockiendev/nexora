@@ -250,6 +250,9 @@ const LoginForm = ({ register, handleSubmit, loading, error, onSubmit }) => {
                 <p className="m-0">
                   Học viên: <strong>student@example.com - 1</strong>
                 </p>
+                 <p className="m-0">
+                  Note: <strong>Backend có thể mất khoảng 15 giây để khởi động ở lần truy cập đầu tiên.</strong>
+                </p>
               </div>
             </form>
           </div>
