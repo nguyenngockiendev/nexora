@@ -15,13 +15,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 
-const LoginForm = ({
-  register,
-  handleSubmit,
-  loading,
-  error,
-  onSubmit,
-}) => {
+const LoginForm = ({ register, handleSubmit, loading, error, onSubmit }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
@@ -92,7 +86,8 @@ const LoginForm = ({
               <div
                 className="w-9 h-9 rounded-xl flex items-center justify-center text-white shadow-md shadow-orange-500/25 flex-shrink-0"
                 style={{
-                  background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)",
+                  background:
+                    "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)",
                 }}
               >
                 <span className="font-black text-lg tracking-tighter text-amber-400">
@@ -115,7 +110,10 @@ const LoginForm = ({
 
             {error && (
               <div className="p-3.5 px-4 rounded-2xl bg-rose-50 border border-rose-200/80 text-rose-700 text-xs font-bold flex items-center gap-2.5 shadow-2xs">
-                <AlertCircle size={16} className="text-rose-500 flex-shrink-0" />
+                <AlertCircle
+                  size={16}
+                  className="text-rose-500 flex-shrink-0"
+                />
                 <span>{error}</span>
               </div>
             )}
@@ -176,7 +174,9 @@ const LoginForm = ({
 
               <div className="flex items-center my-2">
                 <div className="flex-1 border-t border-slate-200/80" />
-                <span className="px-3 text-xs font-semibold text-slate-400">hoặc</span>
+                <span className="px-3 text-xs font-semibold text-slate-400">
+                  hoặc
+                </span>
                 <div className="flex-1 border-t border-slate-200/80" />
               </div>
 
@@ -210,7 +210,8 @@ const LoginForm = ({
                 disabled={loading}
                 className="w-full py-3.5 px-6 rounded-full text-white text-xs sm:text-sm font-black shadow-lg shadow-orange-500/30 hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 mt-2"
                 style={{
-                  background: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+                  background:
+                    "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
                 }}
               >
                 {loading ? (
@@ -238,9 +239,17 @@ const LoginForm = ({
 
               <div className="mt-4 pt-3 border-t border-slate-200 text-xs text-slate-600 space-y-1">
                 <p className="font-bold text-slate-800 m-0">Tài khoản test:</p>
-                <p className="m-0">Admin: admin@example.com - 1</p>
-                <p className="m-0">Giảng viên: instructor@example.com - 1</p>
-                <p className="m-0">Học viên: student@example.com - 1</p>
+                <p className="m-0">
+                  {" "}
+                  Admin: <strong>admin@example.com - 1 </strong>
+                </p>
+                <p className="m-0">
+                  {" "}
+                  Giảng viên:<strong>instructor@example.com - 1</strong>{" "}
+                </p>
+                <p className="m-0">
+                  Học viên: <strong>student@example.com - 1</strong>
+                </p>
               </div>
             </form>
           </div>
@@ -271,7 +280,11 @@ const LoginForm = ({
                     </h3>
                     <div className="flex items-center gap-0.5 text-amber-500 mt-0.5">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} size={13} className="fill-amber-400 text-amber-400" />
+                        <Star
+                          key={i}
+                          size={13}
+                          className="fill-amber-400 text-amber-400"
+                        />
                       ))}
                     </div>
                   </div>
@@ -326,7 +339,11 @@ const LoginForm = ({
                   <div className="flex items-center gap-1 text-xs font-bold text-slate-800 mt-0.5">
                     <div className="flex text-amber-500">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} size={11} className="fill-amber-400 text-amber-400" />
+                        <Star
+                          key={i}
+                          size={11}
+                          className="fill-amber-400 text-amber-400"
+                        />
                       ))}
                     </div>
                     <span>Xuất sắc!</span>
@@ -376,9 +393,7 @@ const LoginForm = ({
           <p className="text-[9px] uppercase font-bold tracking-wider text-slate-400">
             Lớp học sắp bắt đầu
           </p>
-          <p className="text-xs font-black text-slate-900">
-            Digital Marketing
-          </p>
+          <p className="text-xs font-black text-slate-900">Digital Marketing</p>
           <p className="text-xs font-black text-orange-600 font-mono">
             03m 45s
           </p>
