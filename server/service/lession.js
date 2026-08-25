@@ -1,13 +1,11 @@
 const Lessons = require("../model/Lessons");
 const Courses = require("../model/Courses");
-const order = require("../model/Orders");
-const errollment = require("../model/Enrollments");
-const user = require("../model/Users");
-const classs = require("../model/Class");
+
 const quizz = require("../model/Quizz");
-const { ChunkingVideo } = require("./changTotext-service");
+
 const { default: mongoose } = require("mongoose");
 const { Worker2 } = require("./Worker/worker.service");
+const LessonTranscripts = require("../model/LessonTranscripts");
 
 const GetLession = async (data) => {
   try {
@@ -66,6 +64,7 @@ const DeleteLessionByid = async (data) => {
       throw { status: 403, message: "forbidden" };
     }
     const deletelession = await Lessons.findByIdAndDelete(data._id);
+    await LessonTranscripts.deleteMany({ lessonId: deletelession._id });
     if (deletelession) {
       return { message: "Delete Lession Succesfully!" };
     }
@@ -86,6 +85,10 @@ const UpdateLessionByid = async (data) => {
         updateData[item] = data[item];
       }
     }
+    if (data.videoUrl) {
+      updateData.videoUrl = data.videoUrl;
+      await LessonTranscripts.deleteMany({ lessonId: data.lessionId });
+    }
     const updatelession = await Lessons.findByIdAndUpdate(
       data.lessionId,
       {
@@ -96,6 +99,7 @@ const UpdateLessionByid = async (data) => {
       },
     );
     if (data.status === "PROCESSING") {
+      await LessonTranscripts.deleteMany({ lessonId: data.lessionId });
       if (Worker2) {
         Worker2({ _id: updatelession._id.toString() }, data.io);
       }

@@ -28,6 +28,8 @@ const CreateLession = ({
   setResource,
   loading,
   setVideoFile,
+  isuploading,
+  uploadPercent,
 }) => {
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [isDraggingVideo, setIsDraggingVideo] = useState(false);
@@ -257,6 +259,21 @@ const CreateLession = ({
                     </div>
                   </div>
                 )}
+
+                {isuploading && (
+                  <div className="w-full mt-4 space-y-1.5 max-w-sm mx-auto">
+                    <div className="flex justify-between text-xs font-bold text-orange-600">
+                      <span>Đang tải lên Cloud...</span>
+                      <span>{uploadPercent}%</span>
+                    </div>
+                    <div className="w-full h-2 bg-orange-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-orange-500 to-amber-500 rounded-full transition-all duration-300"
+                        style={{ width: `${uploadPercent}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -375,7 +392,7 @@ const CreateLession = ({
           <div className="flex items-center justify-between gap-4 pt-6 border-t border-amber-200/60">
             <button
               type="button"
-              disabled={loading}
+              disabled={loading || isuploading}
               onClick={() => navigate(-1)}
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs sm:text-sm font-bold text-slate-700 bg-white/90 border border-slate-200/80 hover:bg-slate-100 hover:text-slate-900 transition-all cursor-pointer shadow-xs"
             >
@@ -385,17 +402,19 @@ const CreateLession = ({
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || isuploading}
               className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-xs sm:text-sm font-black text-white shadow-lg shadow-orange-500/30 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer disabled:opacity-50"
               style={{
-                background: "linear-gradient(135deg, #eca776, #9a3b08)",
+                background: "linear-gradient(135deg, #f97316, #ea580c)",
                 borderRadius: "9999px",
               }}
             >
-              {loading ? (
+              {isuploading || loading ? (
                 <>
                   <Loader2 size={16} className="animate-spin" />
-                  <span>Đang lưu bài học...</span>
+                  <span>
+                    {isuploading ? `Đang tải lên... ${uploadPercent}%` : "Đang lưu bài học..."}
+                  </span>
                 </>
               ) : (
                 <>

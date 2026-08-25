@@ -1,20 +1,16 @@
 import {
   Calendar,
   Clock,
-  Users,
   Video,
   Radio,
-  Sparkles,
   ArrowRight,
-  CheckCircle2,
   AlertCircle,
   Loader2,
   CalendarDays,
   Hourglass,
-  Tag,
   ShoppingCart,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { useCart } from "../../cart/hooks/useCart";
 
@@ -29,9 +25,15 @@ const DetailsCourse = ({
   const { addToCart } = useCart();
   const courseInfo = detalscourse?.[0]?.courseId || {};
   const instructor =
-    (courseInfo?.instructor && typeof courseInfo.instructor === "object" && courseInfo.instructor) ||
-    (detalscourse?.[0]?.instructorId && typeof detalscourse[0].instructorId === "object" && detalscourse[0].instructorId) ||
-    (courseInfo?.instructorId && typeof courseInfo.instructorId === "object" && courseInfo.instructorId) ||
+    (courseInfo?.instructor &&
+      typeof courseInfo.instructor === "object" &&
+      courseInfo.instructor) ||
+    (detalscourse?.[0]?.instructorId &&
+      typeof detalscourse[0].instructorId === "object" &&
+      detalscourse[0].instructorId) ||
+    (courseInfo?.instructorId &&
+      typeof courseInfo.instructorId === "object" &&
+      courseInfo.instructorId) ||
     null;
 
   const getDayLabel = (day) => {
@@ -47,6 +49,7 @@ const DetailsCourse = ({
     return map[day] || day || "Thứ Hai";
   };
 
+  const { dashboard } = useOutletContext();
   const token = localStorage.getItem("token");
   let currentUserId = null;
   if (token) {
@@ -172,10 +175,15 @@ const DetailsCourse = ({
                 {instructor?.name || "Giảng viên Nexora"}
               </h4>
               <p className="text-[11px] font-bold text-slate-500 truncate">
-                {instructor?.email || (instructor?.role === "instructor" ? "Giảng viên chuyên môn" : "Giảng viên Nexora")}
+                {instructor?.email ||
+                  (instructor?.role === "instructor"
+                    ? "Giảng viên chuyên môn"
+                    : "Giảng viên Nexora")}
               </p>
               <p className="text-[10px] font-semibold text-orange-600">
-                {instructor?.role === "instructor" ? "Giảng viên chính thức • Nexora" : "Chuyên gia đào tạo"}
+                {instructor?.role === "instructor"
+                  ? "Giảng viên chính thức • Nexora"
+                  : "Chuyên gia đào tạo"}
               </p>
             </div>
           </div>
@@ -230,7 +238,8 @@ const DetailsCourse = ({
         {/* Loading Spinner */}
         {loading && (
           <div className="flex items-center justify-center p-12 text-orange-600 font-bold text-sm gap-2">
-            <Loader2 className="animate-spin" size={26} /> Đang tải danh sách lớp học...
+            <Loader2 className="animate-spin" size={26} /> Đang tải danh sách
+            lớp học...
           </div>
         )}
 
@@ -241,10 +250,10 @@ const DetailsCourse = ({
           </div>
         )}
 
-        {/* ── 3-Column Class Schedules Grid ── */}
         {!loading && availableClasses.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {availableClasses.map((item) => {
+              console.log("item", item);
               const isClosed =
                 item?.status?.toLowerCase() === "closed" ||
                 item?.status?.toLowerCase() === "ended";
@@ -288,7 +297,11 @@ const DetailsCourse = ({
                         {!isClosed && (
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                         )}
-                        {isClosed ? "ĐÃ ĐÓNG" : item?.status === "open" ? "ĐANG MỞ" : item?.status || "ĐANG MỞ"}
+                        {isClosed
+                          ? "ĐÃ ĐÓNG"
+                          : item?.status === "open"
+                            ? "ĐANG MỞ"
+                            : item?.status || "ĐANG MỞ"}
                       </span>
                     </div>
 
@@ -316,7 +329,6 @@ const DetailsCourse = ({
                       </div>
                     </div>
 
-                    {/* Schedule Metadata List */}
                     <div className="space-y-2 text-xs font-semibold text-slate-600 pt-2">
                       <div className="flex items-center gap-2">
                         <Calendar
@@ -370,20 +382,8 @@ const DetailsCourse = ({
                     </div>
                   </div>
 
-                  {/* Price & Action Button */}
-                  <div className="space-y-3 pt-5 border-t border-slate-100/80 mt-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-black uppercase tracking-wider text-slate-400">
-                        Học phí lớp
-                      </span>
-                      <span className="text-xl font-black text-orange-600">
-                        {Number(item?.price || 0).toLocaleString("vi-VN")} đ
-                      </span>
-                    </div>
-
-                    {/* 2 Action Buttons (Add to Cart + Buy Now) */}
+                  {dashboard.role != "instructor" ? (
                     <div className="flex items-center gap-2.5 w-full">
-                      {/* Add to Cart Button */}
                       <button
                         disabled={isClosed}
                         onClick={() =>
@@ -406,10 +406,16 @@ const DetailsCourse = ({
                         <ShoppingCart size={15} /> Thêm vào giỏ
                       </button>
 
-                      {/* Buy Now / Enroll Button */}
                       <button
                         disabled={paymentloading || isClosed}
-                        onClick={() => payment(item)}
+                        onClick={() =>
+                          payment({
+                            ...item,
+                            courseId: item.courseId?._id || item.courseId,
+                            classId: item._id,
+                            type: "live",
+                          })
+                        }
                         className="flex-1 py-2.5 px-3.5 rounded-full text-xs font-black text-white shadow-md shadow-orange-500/25 hover:shadow-orange-500/40 hover:scale-[1.02] active:scale-95 transition-all text-center flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                         style={{
                           background: isClosed
@@ -420,8 +426,8 @@ const DetailsCourse = ({
                       >
                         {paymentloading ? (
                           <>
-                            <Loader2 size={15} className="animate-spin" />{" "}
-                            Đang xử lý...
+                            <Loader2 size={15} className="animate-spin" /> Đang
+                            xử lý...
                           </>
                         ) : isClosed ? (
                           "Đã đóng lớp"
@@ -429,6 +435,17 @@ const DetailsCourse = ({
                           "Đăng ký ngay"
                         )}
                       </button>
+                    </div>
+                  ) : null}
+
+                  <div className="space-y-3 pt-5 border-t border-slate-100/80 mt-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-black uppercase tracking-wider text-slate-400">
+                        Học phí lớp
+                      </span>
+                      <span className="text-xl font-black text-orange-600">
+                        {Number(item?.price || 0).toLocaleString("vi-VN")} đ
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -445,7 +462,8 @@ const DetailsCourse = ({
               Chưa có lớp học nào được lên lịch
             </h4>
             <p className="text-xs md:text-sm font-semibold text-slate-500">
-              Vui lòng quay lại sau hoặc liên hệ với giảng viên để biết thêm thông tin về các đợt mở lớp tiếp theo.
+              Vui lòng quay lại sau hoặc liên hệ với giảng viên để biết thêm
+              thông tin về các đợt mở lớp tiếp theo.
             </p>
           </div>
         )}

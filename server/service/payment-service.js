@@ -44,9 +44,7 @@ const paymemtCourese = async (data) => {
     let finalTotal = 0;
     for (const item of data.items) {
       const course = await Courses.findById(item.courseId);
-      const PriceClas = await Class.findOne({
-        courseId: item.classId,
-      });
+      const PriceClas = await Class.findById(item.classId);
       const finalPrice = Number(PriceClas?.price || course?.price || 0);
       finalTotal += finalPrice;
 

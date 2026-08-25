@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import useUpdatelession from "../hooks/useUpdatelession";
-import { Col, Container, Row } from "react-bootstrap";
 import UpdateLessonForm from "../components/UpdateLessonForm";
 import { toast } from "react-toastify";
 import useShareSocket from "../../../shared/hooks/useSocket";
@@ -87,29 +86,22 @@ const UpdateLessonPage = () => {
   };
 
   return (
-    <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
-      <Container>
-        <Row className="justify-content-center">
-          <Col md={12}>
-            <UpdateLessonForm
-              isuploading={isuploading}
-              uploadPercent={uploadPercent}
-              Setvideo={Setvideo}
-              loading={loading}
-              error={error}
-              handleupdate={handleupdate}
-              register={register}
-              handleSubmit={handleSubmit}
-              setResource={setResource}
-              navigate={navigate}
-              resource={resource}
-              setResource={setResource}
-              setValue={setValue}
-              lession={lession}
-            />
-          </Col>
-        </Row>
-      </Container>
+    <div className="w-full min-h-screen py-6 md:py-8">
+      <UpdateLessonForm
+        isuploading={isuploading}
+        uploadPercent={uploadPercent}
+        Setvideo={Setvideo}
+        loading={loading}
+        error={error}
+        handleupdate={handleupdate}
+        register={register}
+        handleSubmit={handleSubmit}
+        setResource={setResource}
+        navigate={navigate}
+        resource={resource}
+        setValue={setValue}
+        lession={lession}
+      />
     </div>
   );
 };
