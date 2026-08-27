@@ -104,7 +104,6 @@ const Detailscourse = ({
             </div>
           </div>
 
-          {/* ── Section 2: Bạn sẽ học được gì (Benefits) ── */}
           <div
             className="p-6 md:p-8 rounded-3xl space-y-4"
             style={{
@@ -340,9 +339,7 @@ const Detailscourse = ({
               </span>
             </div>
 
-            {/* Purchase details body */}
             <div className="p-6 pt-4 space-y-6">
-              {/* Price Tag */}
               <div className="space-y-1">
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
                   Giá trọn gói
@@ -395,7 +392,6 @@ const Detailscourse = ({
                 </p>
               </div>
 
-              {/* Core Features list */}
               <div className="pt-5 border-t border-slate-100 space-y-3.5 text-xs font-semibold text-slate-500">
                 <div className="flex items-center gap-3">
                   <div className="w-6 h-6 rounded-lg bg-orange-50 text-orange-500 flex items-center justify-center">

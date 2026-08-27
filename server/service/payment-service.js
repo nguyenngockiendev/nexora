@@ -1,3 +1,4 @@
+require("dotenv").config();
 const Courses = require("../model/Courses");
 const order = require("../model/Orders");
 const errollment = require("../model/Enrollments");
@@ -11,7 +12,7 @@ const {
 } = require("vnpay");
 const Orders = require("../model/Orders");
 const Class = require("../model/Class");
-const mongoose = require("mongoose");
+
 const paymemtCourese = async (data) => {
   try {
     for (const item of data.items) {
@@ -63,7 +64,7 @@ const paymemtCourese = async (data) => {
       items: newItems,
 
       status: "pending",
-      paymentMethod: "vnpay",
+      paymentMethod: "QR",
     });
 
     await neworder.save();
@@ -74,31 +75,47 @@ const paymemtCourese = async (data) => {
   }
 };
 
-const createVNPayPaymentUrl = async (data) => {
-  try {
-    const vnpay = new VNPay({
-      tmnCode: "6NZPQZ03",
-      secureSecret: "NV6V6GQJZOU8T2TRKFZAOOGMUARDTN4X",
-      vnpayHost: "https://sandbox.vnpayment.vn",
-      testMode: true,
-      hashAlgorithm: "SHA512",
-      loggerFn: ignoreLogger,
-    });
+// const createVNPayPaymentUrl = async (data) => {
+//   try {
+//     const vnpay = new VNPay({
+//       tmnCode: "6NZPQZ03",
+//       secureSecret: "NV6V6GQJZOU8T2TRKFZAOOGMUARDTN4X",
+//       vnpayHost: "https://sandbox.vnpayment.vn",
+//       testMode: true,
+//       hashAlgorithm: "SHA512",
+//       loggerFn: ignoreLogger,
+//     });
 
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const vnpayResponse = vnpay.buildPaymentUrl({
-      vnp_Amount: Number(data.Totalprice || data.price || 0),
-      vnp_IpAddr: "127.0.0.1",
-      vnp_TxnRef: `${data._id}`,
-      vnp_OrderInfo: `Course payment successful_${data.courseId || "cart"}_${data.classId || "items"}`,
-      vnp_OrderType: ProductCode.Other,
-      vnp_ReturnUrl: `http://localhost:5000/api/payment/vnpay-callback`,
-      vnp_Locale: VnpLocale.VN,
-      vnp_CreateDate: dateFormat(new Date()),
-      vnp_ExpireDate: dateFormat(tomorrow),
-    });
-    return vnpayResponse;
+//     const tomorrow = new Date();
+//     tomorrow.setDate(tomorrow.getDate() + 1);
+//     const vnpayResponse = vnpay.buildPaymentUrl({
+//       vnp_Amount: Number(data.Totalprice || data.price || 0),
+//       vnp_IpAddr: "127.0.0.1",
+//       vnp_TxnRef: `${data._id}`,
+//       vnp_OrderInfo: `Course payment successful_${data.courseId || "cart"}_${data.classId || "items"}`,
+//       vnp_OrderType: ProductCode.Other,
+//       vnp_ReturnUrl: `http://localhost:5000/api/payment/vnpay-callback`,
+//       vnp_Locale: VnpLocale.VN,
+//       vnp_CreateDate: dateFormat(new Date()),
+//       vnp_ExpireDate: dateFormat(tomorrow),
+//     });
+//     return vnpayResponse;
+//   } catch (error) {
+//     console.log(error);
+//     throw error;
+//   }
+// };
+
+const createSepayPaymentUrl = async (data) => {
+  try {
+    const bank = process.env.SEPAY_BANK_NAME;
+    const acc = process.env.SEPAY_ACC_NUMBER;
+    const amount = Number(data.Totalprice || data.price || 0);
+    const holder = process.env.SEPAY_ACC_NAME;
+
+    const des = `NEX${data._id}`;
+    const qrUrl = `https://qr.sepay.vn/img?acc=${acc}&bank=${bank}&amount=${amount}&des=${des}&template=compact&showinfo=true`;
+    return qrUrl;
   } catch (error) {
     console.log(error);
     throw error;
@@ -107,15 +124,16 @@ const createVNPayPaymentUrl = async (data) => {
 
 const updateorder = async (data) => {
   try {
-    const orderpayment = await order.findById(data.vnp_TxnRef);
+    const sepaycontent = data.content.replace("NEX", "").trim();
+    const orderpayment = await order.findById(sepaycontent);
 
-    if (data.vnp_ResponseCode == "00") {
-      if (Number(data.vnp_Amount) === Number(orderpayment.Totalprice) * 100) {
+    if (data.transferType === "in") {
+      if (Number(data.transferAmount) === Number(orderpayment.Totalprice)) {
         orderpayment.status = "completed";
         await orderpayment.save();
 
         for (const item of orderpayment.items) {
-          const newerrollment = await errollment.create({
+          await errollment.create({
             userId: orderpayment.userId,
             courseId: item.courseId,
             classId: item?.classId || null,
@@ -135,13 +153,13 @@ const updateorder = async (data) => {
         }
 
         return {
-          message: data.vnp_OrderInfo.split("_")[0],
+          message: "Thanh toán thành công!",
         };
       }
     } else {
       orderpayment.status = "failed";
       await orderpayment.save();
-      return { message: "payment failed!" };
+      return { message: "Thanh toán thất bại!" };
     }
   } catch (error) {
     console.log(error);
@@ -156,7 +174,7 @@ const ResumePayment = async (data) => {
     if (!ExitsOrder) {
       throw { status: 404, message: "không tìm thấy đơn hàng này!" };
     }
-    const Resumepayment = await createVNPayPaymentUrl(ExitsOrder);
+    const Resumepayment = await createSepayPaymentUrl(ExitsOrder);
     return Resumepayment;
   } catch (error) {
     console.log(error);
@@ -264,9 +282,10 @@ const GethhistorysForAdmin = async (data) => {
 
 module.exports = {
   paymemtCourese,
-  createVNPayPaymentUrl,
+  // createVNPayPaymentUrl,
   updateorder,
   ResumePayment,
   DeleteOrder,
   GethhistorysForAdmin,
+  createSepayPaymentUrl,
 };

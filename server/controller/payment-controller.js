@@ -1,26 +1,28 @@
+require("dotenv").config();
 const {
   paymemtCourese,
-  createVNPayPaymentUrl,
+
   updateorder,
   ResumePayment,
   DeleteOrder,
   GethhistorysForAdmin,
+  createSepayPaymentUrl,
 } = require("../service/payment-service");
+require("dotenv").config();
 
 const payment = async (req, res) => {
   try {
     const data = {
       userId: req.user.userId,
-
       items: req.body.items,
     };
 
     const result = await paymemtCourese(data);
     if (!result) {
-      throw { message: "not have course!" };
+      throw { message: "không có khóa học!" };
     }
-    const paymentcourse = await createVNPayPaymentUrl(result);
-
+    const paymentcourse = await createSepayPaymentUrl(result);
+    console.log(paymentcourse)
     res.status(200).json({ url: paymentcourse });
   } catch (error) {
     console.log(error);
@@ -28,16 +30,17 @@ const payment = async (req, res) => {
   }
 };
 
-const vnpayCallback = async (req, res) => {
+const sepayCallback = async (req, res) => {
   try {
-    const vnpay = req.query;
-    const createerollment = await updateorder(vnpay);
-    if (!createerollment) {
-      throw { message: "payment failed!" };
+    const sepay = req.body;
+    console.log(sepay)
+    const createerollment = await updateorder(sepay);
+    const io = req.app.get("io");
+    if (io) {
+      io.emit("payment_success", { message: "Thanh toán thành công!" });
     }
-    res.redirect(
-      `http://localhost:5173/courses?payment=${createerollment.message}`,
-    );
+
+    res.status(200).json({ success: true, message: createerollment.message });
   } catch (error) {
     console.log(error);
     res.status(error.status || 500).json({ message: error.message });
@@ -82,8 +85,8 @@ const GetHistoryByadmin = async (req, res) => {
 };
 module.exports = {
   payment,
-  vnpayCallback,
+  sepayCallback,
   ResumePay,
   DeleteOrderbyUser,
-  GetHistoryByadmin
+  GetHistoryByadmin,
 };

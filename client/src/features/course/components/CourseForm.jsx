@@ -16,11 +16,9 @@ import { useCart } from "../../cart/hooks/useCart";
 const CoursesForm = ({
   courses = [],
   loading,
-  payment,
   paymentloading,
   setSearch,
   setFilter,
-  role,
   navigate,
   errorPayment,
   messagepayment,

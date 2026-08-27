@@ -27,6 +27,7 @@ const {
   ResumePay,
   DeleteOrderbyUser,
   GetHistoryByadmin,
+  sepayCallback,
 } = require("../controller/payment-controller");
 const {
   Getorderbyuser,
@@ -142,7 +143,7 @@ Router.get(
 
 Router.put("/create-payment", authMiddleware, payment);
 
-Router.get("/payment/vnpay-callback", vnpayCallback);
+Router.post("/payment/sepay-webhook", sepayCallback);
 Router.get("/enrollments", authMiddleware, Getorderbyuser);
 Router.get("/courses/:courseId/lession", authMiddleware, Getcheckenrollment);
 Router.post("/create-class/:courseId", authMiddleware, CreateClass);

@@ -11,6 +11,7 @@ const usePayment = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [order, setOrder] = useState([]);
+  const [qrpayment, setQrpayment] = useState(null);
 
   const orderhistory = async () => {
     try {
@@ -36,14 +37,7 @@ const usePayment = () => {
       setLoading(true);
       setError(null);
       const res = await paymentCourse(newdata);
-
-      setLoading(false);
-
-      if (res && res.url) {
-        window.location.href = res.url;
-      } else if (res && res.data && res.data.url) {
-        window.location.href = res.data.url;
-      }
+      setQrpayment(res);
     } catch (error) {
       const message = error.response?.data?.message || "payment failed!";
       setError(message);
@@ -58,14 +52,7 @@ const usePayment = () => {
       setLoading(true);
       setError(null);
       const res = await resumepaymentCourse(orderId);
-      console.log("payment res", res);
-      setLoading(false);
-
-      if (res && res.url) {
-        window.location.href = res.url;
-      } else if (res && res.data && res.data.url) {
-        window.location.href = res.data.url;
-      }
+      setQrpayment(res);
     } catch (error) {
       console.log("payment error", error);
       const message = error.response?.data?.message || "payment failed!";
@@ -100,6 +87,7 @@ const usePayment = () => {
     }
   };
   return {
+    qrpayment,
     payment,
     error,
     loading,

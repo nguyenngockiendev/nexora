@@ -4,9 +4,18 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import CreateCourese from "../components/CreateCoursesForm";
 import useCoursesService from "../hooks/useCreateCourses";
-
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CourseShecma } from "../../../shared/validation/Course";
 const CreateCourses = () => {
-  const { register, handleSubmit, watch, setValue } = useForm({
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(CourseShecma),
+    mode: "onBlur",
     defaultValues: {
       type: "recorded",
       level: "beginner",
@@ -55,6 +64,10 @@ const CreateCourses = () => {
       if (thumbail) {
         formdata.append("thumbnail", thumbail);
       }
+      if (!thumbail) {
+        toast.error("Ảnh bìa không được để trống");
+        return;
+      }
       const result = await Create(formdata);
 
       if (!result) {
@@ -93,6 +106,7 @@ const CreateCourses = () => {
       onConfirm={notification.onConfirm}
       onCancel={notification.onCancel}
       exits={exits}
+      errors={errors}
     />
   );
 };

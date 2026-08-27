@@ -12,6 +12,7 @@ import {
   GraduationCap,
   X,
   UploadCloud,
+  AlertCircle,
 } from "lucide-react";
 import { useEffect } from "react";
 
@@ -30,6 +31,7 @@ const CreateCoursesForm = ({
   onCancel,
   exits,
   isEdit = false,
+  errors,
 }) => {
   const watchedTitle = watch("title") || "";
   const watchedDescription = watch("description") || "";
@@ -165,7 +167,6 @@ const CreateCoursesForm = ({
               </div>
             </div>
 
-            {/* Card 2: Định giá, Cấp độ & Loại khóa học */}
             <div
               className="rounded-[28px] p-6 sm:p-7 space-y-5 transition-all shadow-sm"
               style={{
@@ -215,6 +216,7 @@ const CreateCoursesForm = ({
                           : "text-slate-800 bg-white border border-slate-200/90 focus:border-orange-500/60 focus:ring-4 focus:ring-orange-500/10 outline-none"
                       }`}
                     />
+
                     <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-black text-slate-400 pointer-events-none">
                       ₫
                     </div>
@@ -265,6 +267,7 @@ const CreateCoursesForm = ({
                       {...register("type")}
                       className="peer sr-only"
                     />
+
                     <div className="p-4 rounded-2xl border-2 border-slate-200/90 bg-white/70 hover:bg-white text-slate-600 transition-all peer-checked:border-orange-500 peer-checked:bg-orange-50/90 peer-checked:text-orange-900 peer-checked:shadow-sm shadow-2xs flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center shrink-0">
                         <Radio size={20} className="animate-pulse" />
@@ -290,6 +293,7 @@ const CreateCoursesForm = ({
                       {...register("type")}
                       className="peer sr-only"
                     />
+
                     <div className="p-4 rounded-2xl border-2 border-slate-200/90 bg-white/70 hover:bg-white text-slate-600 transition-all peer-checked:border-purple-500 peer-checked:bg-purple-50/90 peer-checked:text-purple-900 peer-checked:shadow-sm shadow-2xs flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center shrink-0">
                         <Video size={20} />

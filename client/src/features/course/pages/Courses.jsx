@@ -49,8 +49,6 @@ const Courses = ({ mode }) => {
         result = result.sort((a, b) => a.price - b.price);
       }
 
-
-
       if (star !== "all") {
         result = result.filter(
           (item) => Number(item.rattingforcoure) >= Number(star),

@@ -8,23 +8,24 @@ import {
   Video,
   BookOpen,
   QrCode,
-  CreditCard,
-  Wallet,
   Loader2,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useCart } from "../hooks/useCart";
-import usePayment from "../../payment/hooks/usePayment";
 
-const CartView = () => {
+const CartView = ({
+  cartItems = [],
+  removeFromCart = () => {},
+  clearCart = () => {},
+  totalPrice = 0,
+  paymentLoading = false,
+  qrUrl = null,
+  handlePayment = () => {},
+}) => {
   const navigate = useNavigate();
-  const { cartItems, removeFromCart, clearCart, totalPrice } = useCart();
-  const { payment, loading: paymentLoading } = usePayment();
 
   const [couponCode, setCouponCode] = useState("");
   const [discount, setDiscount] = useState(0);
-  const [selectedPayment, setSelectedPayment] = useState("vnpay");
-
+  const [selectedPayment, setSelectedPayment] = useState("qr");
   return (
     <div className="w-full max-w-6xl mx-auto space-y-8 pb-16">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -115,7 +116,8 @@ const CartView = () => {
                         <span>•</span>
                         {isLive ? (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-100 text-red-600 text-[10px] font-black uppercase tracking-wide">
-                            <Radio size={10} className="animate-pulse" /> TRỰC TUYẾN
+                            <Radio size={10} className="animate-pulse" /> TRỰC
+                            TUYẾN
                           </span>
                         ) : (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-100 text-orange-600 text-[10px] font-black uppercase tracking-wide">
@@ -136,8 +138,8 @@ const CartView = () => {
                         </div>
                         <span>{Number(item?.rating || 4.8).toFixed(1)}</span>
                         <span className="text-slate-300 font-normal">
-                          ({item?.reviewsCount || item?.totalReviews || 5}{" "}
-                          đánh giá)
+                          ({item?.reviewsCount || item?.totalReviews || 5} đánh
+                          giá)
                         </span>
                       </div>
                     </div>
@@ -247,51 +249,6 @@ const CartView = () => {
               <div className="grid grid-cols-3 gap-2.5">
                 <button
                   type="button"
-                  onClick={() => setSelectedPayment("vnpay")}
-                  className={`flex flex-col items-center justify-center p-3 rounded-2xl border transition-all cursor-pointer ${
-                    selectedPayment === "vnpay"
-                      ? "border-orange-500 bg-orange-50/60 shadow-2xs ring-2 ring-orange-500/20"
-                      : "border-slate-200 bg-white/70 hover:bg-white"
-                  }`}
-                >
-                  <CreditCard
-                    size={20}
-                    className={
-                      selectedPayment === "vnpay"
-                        ? "text-orange-600"
-                        : "text-slate-400"
-                    }
-                  />
-                  <span className="text-[11px] font-black text-slate-800 mt-1">
-                    VNPay
-                  </span>
-                </button>
-
-                <button
-                  type="button"
-                  disabled
-                  onClick={() => setSelectedPayment("momo")}
-                  className={`flex flex-col items-center justify-center p-3 rounded-2xl border transition-all cursor-pointer ${
-                    selectedPayment === "momo"
-                      ? "border-orange-500 bg-orange-50/60 shadow-2xs ring-2 ring-orange-500/20"
-                      : "border-slate-200 bg-white/70 hover:bg-white"
-                  }`}
-                >
-                  <Wallet
-                    size={20}
-                    className={
-                      selectedPayment === "momo"
-                        ? "text-pink-600"
-                        : "text-slate-400"
-                    }
-                  />
-                  <span className="text-[11px] font-black text-slate-800 mt-1">
-                    MoMo
-                  </span>
-                </button>
-
-                <button
-                  type="button"
                   onClick={() => setSelectedPayment("qr")}
                   className={`flex flex-col items-center justify-center p-3 rounded-2xl border transition-all cursor-pointer ${
                     selectedPayment === "qr"
@@ -316,12 +273,7 @@ const CartView = () => {
 
             <button
               disabled={paymentLoading || cartItems?.length === 0}
-              onClick={async () => {
-                const reeult = await payment(cartItems);
-                if (reeult) {
-                  clearCart();
-                }
-              }}
+              onClick={handlePayment}
               className="w-full py-4 px-6 rounded-full text-sm font-black text-white shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:scale-[1.02] active:scale-95 transition-all text-center flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 background: "linear-gradient(135deg, #f97316, #ea580c)",
@@ -340,6 +292,15 @@ const CartView = () => {
                 </>
               )}
             </button>
+            {qrUrl && (
+              <div className="mt-5 p-1.5 rounded-[26px] bg-white border-2 border-orange-200 shadow-lg text-center overflow-hidden">
+                <img
+                  src={qrUrl}
+                  alt="Mã VietQR Thanh Toán"
+                  className="w-full h-auto object-contain rounded-[20px] scale-[1.02]"
+                />
+              </div>
+            )}
 
             <p className="text-[11px] font-semibold text-center text-slate-400">
               Cam kết hoàn tiền trong 30 ngày • Sở hữu khóa học trọn đời
@@ -362,7 +323,8 @@ const CartView = () => {
             Giỏ Hàng Đang Trống
           </h2>
           <p className="text-xs sm:text-sm font-semibold text-slate-500 max-w-sm">
-            Khám phá các khóa học hấp dẫn và bắt đầu nâng cao kỹ năng ngay hôm nay!
+            Khám phá các khóa học hấp dẫn và bắt đầu nâng cao kỹ năng ngay hôm
+            nay!
           </p>
           <button
             onClick={() => navigate("/courses")}

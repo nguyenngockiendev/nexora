@@ -5,8 +5,8 @@ const useShareSocket = () => {
   const [socket, setSocket] = useState(null);
   useEffect(() => {
     const socketUrl =
-      import.meta.env.VITE_SOCKET_URL || "http://localhost:5000";
-    const newsocket = io(socketUrl);
+      import.meta.env.VITE_SOCKET_URL;
+      const newsocket = io(socketUrl);
 
     newsocket.on("system_message", (data) => {
       toast.info(data);
