@@ -113,8 +113,8 @@ const createSepayPaymentUrl = async (data) => {
     const amount = Number(data.Totalprice || data.price || 0);
     const holder = process.env.SEPAY_ACC_NAME;
 
-    const des = `NEX${data._id}`;
-    const qrUrl = `https://qr.sepay.vn/img?acc=${acc}&bank=${bank}&amount=${amount}&des=${des}&template=compact&showinfo=true`;
+    const des = `${data._id}_SEVQR`;
+    const qrUrl = `https://qr.sepay.vn/img?acc=${acc}&bank=${bank}&amount=${amount}&holder=${holder}&des=${des}&template=compact&showinfo=true`;
     return qrUrl;
   } catch (error) {
     console.log(error);
@@ -124,7 +124,7 @@ const createSepayPaymentUrl = async (data) => {
 
 const updateorder = async (data) => {
   try {
-    const sepaycontent = data.content.replace("NEX", "").trim();
+    const sepaycontent = data.content.split("_SEVQR")[0];
     const orderpayment = await order.findById(sepaycontent);
 
     if (data.transferType === "in") {
