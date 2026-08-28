@@ -203,120 +203,128 @@ const LessionTableLession = ({
         </Card.Body>
       </Card>
       {selectedLesson && (
-        <Modal
-          show={!!selectedLesson}
-          onHide={onClose}
-          size="lg"
-          centered
-          contentClassName="border-0 rounded-4 shadow-lg overflow-hidden"
-          style={{ backdropFilter: "blur(6px)" }}
+        <div
+          className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-in fade-in duration-200"
+          onClick={onClose}
         >
-          <Modal.Header
-            closeButton
-            className="border-bottom-0 pb-2 pt-4 px-4 bg-white"
+          <div
+            className="w-full max-w-4xl bg-white rounded-3xl overflow-hidden shadow-2xl relative border border-slate-100 animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
           >
-            <Modal.Title className="fw-bold fs-5 text-slate-800 d-flex align-items-center gap-2">
-              <span className="p-2 rounded-circle bg-warning bg-opacity-10 text-warning fs-6">
-                👁️
-              </span>
-              <span>
-                Xem trước bài học:{" "}
-                <span className="text-primary">{selectedLesson.title}</span>
-              </span>
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body className="p-4 bg-white">
-            <div className="row g-4">
-              <div className="col-12 col-md-7">
-                {selectedLesson.videoUrl ? (
-                  <div className="ratio ratio-16x9 rounded-3 overflow-hidden shadow-sm border border-light bg-black">
-                    <video
-                      controls
-                      src={selectedLesson.videoUrl}
-                      poster=""
-                      className="w-100 h-100"
-                    />
-                  </div>
-                ) : (
-                  <div className="ratio ratio-16x9 rounded-3 d-flex flex-column align-items-center justify-content-center bg-light border text-muted">
-                    <span className="fs-1 mb-2">🎥</span>
-                    <span className="fw-semibold small">
-                      Chưa có video cho bài học này!
-                    </span>
-                  </div>
-                )}
+            {/* Header */}
+            <div className="flex items-center justify-between p-5 border-b border-slate-100">
+              <div className="flex items-center gap-2.5">
+                <span className="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-sm font-bold">
+                  👁️
+                </span>
+                <h3 className="text-base font-bold text-slate-800 m-0">
+                  Xem trước bài học:{" "}
+                  <span className="text-orange-600 font-bold">{selectedLesson.title}</span>
+                </h3>
               </div>
-              <div className="col-12 col-md-5 d-flex flex-column gap-3">
-                <div className="p-3 rounded-3 bg-light bg-opacity-50 border border-light">
-                  <small className="text-muted fw-semibold d-block mb-1">
-                    Trạng thái bài học:
-                  </small>
-                  <Badge
-                    pill
-                    bg={
-                      selectedLesson.status === "TRANSCRIPT_READY"
-                        ? "success"
-                        : selectedLesson.status === "PROCESSING"
-                          ? "warning"
-                          : "secondary"
-                    }
-                    className="px-3 py-2 fw-semibold"
-                  >
-                    {selectedLesson.status === "TRANSCRIPT_READY"
-                      ? "✓ Đã tạo phụ đề"
-                      : selectedLesson.status === "PROCESSING"
-                        ? "⌛ Đang bóc tách ngầm..."
-                        : "● Chờ xử lý"}
-                  </Badge>
-                </div>
+              <button
+                type="button"
+                onClick={onClose}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-700 flex items-center justify-center transition-colors cursor-pointer border-0"
+              >
+                ✕
+              </button>
+            </div>
 
-                <div className="p-3 rounded-3 bg-light bg-opacity-50 border border-light flex-grow-1">
-                  <small className="text-muted fw-semibold d-block mb-1">
-                    📝 Nội dung bài học:
-                  </small>
-                  <p className="small text-slate-700 mb-0 lh-base">
-                    {selectedLesson.content ||
-                      "Chưa có mô tả nội dung cho bài học này."}
-                  </p>
-                </div>
-
-                {selectedLesson.resources &&
-                  selectedLesson.resources.length > 0 && (
-                    <div className="p-3 rounded-3 bg-light bg-opacity-50 border border-light">
-                      <small className="text-muted fw-semibold d-block mb-2">
-                        📎 Tài liệu đính kèm:
-                      </small>
-                      {selectedLesson.resources.map((res, i) => (
-                        <div
-                          key={i}
-                          className="small d-flex align-items-center gap-2"
-                        >
-                          <span>📄</span>
-                          <a
-                            href={res.url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-decoration-none fw-semibold text-primary text-truncate"
-                          >
-                            {res.title || "Tải tài liệu đính kèm"}
-                          </a>
-                        </div>
-                      ))}
+            {/* Body */}
+            <div className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                <div className="md:col-span-7">
+                  {selectedLesson.videoUrl ? (
+                    <div className="aspect-video rounded-2xl overflow-hidden shadow-sm border border-slate-200 bg-black">
+                      <video
+                        controls
+                        src={selectedLesson.videoUrl}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="aspect-video rounded-2xl flex flex-col items-center justify-center bg-slate-50 border border-dashed border-slate-200 text-slate-400">
+                      <span className="text-3xl mb-2">🎥</span>
+                      <span className="text-xs font-semibold">
+                        Chưa có video cho bài học này!
+                      </span>
                     </div>
                   )}
+                </div>
+
+                <div className="md:col-span-5 flex flex-col gap-3.5">
+                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                    <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider block">
+                      Trạng thái bài học:
+                    </span>
+                    <span
+                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
+                        selectedLesson.status === "TRANSCRIPT_READY"
+                          ? "bg-emerald-100 text-emerald-700"
+                          : selectedLesson.status === "PROCESSING"
+                          ? "bg-amber-100 text-amber-700"
+                          : "bg-slate-100 text-slate-600"
+                      }`}
+                    >
+                      {selectedLesson.status === "TRANSCRIPT_READY"
+                        ? "✓ Đã tạo phụ đề"
+                        : selectedLesson.status === "PROCESSING"
+                        ? "⌛ Đang bóc tách ngầm..."
+                        : "● Chờ xử lý"}
+                    </span>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 flex-grow space-y-1">
+                    <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider block">
+                      📝 Nội dung bài học:
+                    </span>
+                    <p className="text-xs text-slate-600 m-0 leading-relaxed max-h-32 overflow-y-auto">
+                      {selectedLesson.content ||
+                        "Chưa có mô tả nội dung cho bài học này."}
+                    </p>
+                  </div>
+
+                  {selectedLesson.resources &&
+                    selectedLesson.resources.length > 0 && (
+                      <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1.5">
+                        <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider block">
+                          📎 Tài liệu đính kèm:
+                        </span>
+                        {selectedLesson.resources.map((res, i) => (
+                          <div
+                            key={i}
+                            className="text-xs flex items-center gap-2"
+                          >
+                            <span>📄</span>
+                            <a
+                              href={res.url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="no-underline font-bold text-orange-600 hover:text-orange-700 truncate"
+                            >
+                              {res.title || "Tải tài liệu đính kèm"}
+                            </a>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                </div>
               </div>
             </div>
-          </Modal.Body>
-          <Modal.Footer className="border-top-0 pt-0 pb-4 px-4 bg-white justify-content-end">
-            <Button
-              variant="light"
-              className="quiz-btn-soft rounded-pill px-4 fw-semibold border-0"
-              onClick={onClose}
-            >
-              Đóng xem trước
-            </Button>
-          </Modal.Footer>
-        </Modal>
+
+            {/* Footer */}
+            <div className="p-4 px-6 bg-slate-50/60 border-t border-slate-100 flex justify-end">
+              <button
+                type="button"
+                className="px-5 py-2 rounded-xl text-xs font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-100 transition-all cursor-pointer shadow-xs"
+                onClick={onClose}
+              >
+                Đóng xem trước
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

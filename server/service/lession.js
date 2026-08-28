@@ -61,13 +61,25 @@ const CreateLession = async (data) => {
 const DeleteLessionByid = async (data) => {
   try {
     if (data?.role !== "instructor") {
-      throw { status: 403, message: "forbidden" };
+      throw { status: 403, message: "Bạn không có quyền giảng viên!" };
+    }
+    const lession = await Lessons.findById(data._id);
+    if (!lession) {
+      throw { status: 404, message: "Bài học không tồn tại!" };
+    }
+    const isOwner = await Courses.findOne({
+      _id: lession.courseId,
+      instructor: data.userId,
+    });
+    if (!isOwner) {
+      throw {
+        status: 403,
+        message: "Bạn không có quyền xóa bài học của giảng viên khác!",
+      };
     }
     const deletelession = await Lessons.findByIdAndDelete(data._id);
     await LessonTranscripts.deleteMany({ lessonId: deletelession._id });
-    if (deletelession) {
-      return { message: "Delete Lession Succesfully!" };
-    }
+    return { message: "Xóa bài học thành công!" };
   } catch (error) {
     console.log(error);
     throw error;
@@ -76,8 +88,23 @@ const DeleteLessionByid = async (data) => {
 const UpdateLessionByid = async (data) => {
   try {
     if (data?.role !== "instructor") {
-      throw { status: 403, message: "forbidden" };
+      throw { status: 403, message: "Bạn không có quyền giảng viên!" };
     }
+    const lession = await Lessons.findById(data.lessionId);
+    if (!lession) {
+      throw { status: 404, message: "Bài học không tồn tại!" };
+    }
+    const isOwner = await Courses.findOne({
+      _id: lession.courseId,
+      instructor: data.userId,
+    });
+    if (!isOwner) {
+      throw {
+        status: 403,
+        message: "Bạn không có quyền thay đổi bài học của giảng viên khác!",
+      };
+    }
+
     const updateData = {};
 
     for (let item in data) {
@@ -89,8 +116,10 @@ const UpdateLessionByid = async (data) => {
       updateData.videoUrl = data.videoUrl;
       await LessonTranscripts.deleteMany({ lessonId: data.lessionId });
     }
+
     const updatelession = await Lessons.findByIdAndUpdate(
       data.lessionId,
+
       {
         $set: updateData,
       },

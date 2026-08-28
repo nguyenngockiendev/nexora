@@ -28,7 +28,11 @@ const CreateLessons = async (req, res) => {
     let videoUrl = "";
     let resourceUrl = "";
     if (req.files?.videoUrl) {
-      videoUrl = await uploadFile(req.files.videoUrl[0].path, true, req.app.get("io"));
+      videoUrl = await uploadFile(
+        req.files.videoUrl[0].path,
+        true,
+        req.app.get("io"),
+      );
     }
     if (req.files?.resourcesurl) {
       resourceUrl = await uploadFile(req.files.resourcesurl[0].path, false);
@@ -66,6 +70,7 @@ const DeleteLession = async (req, res) => {
   try {
     const data = {
       role: req.user.role,
+      userId: req.user.userId,
       _id: req.params.id,
     };
     const result = await DeleteLessionByid(data);
@@ -80,7 +85,11 @@ const UpdateLession = async (req, res) => {
     let videoUrl = null;
     let resourceUrl = null;
     if (req.files?.video) {
-      videoUrl = await uploadFile(req.files.video[0].path, true, req.app.get("io"));
+      videoUrl = await uploadFile(
+        req.files.video[0].path,
+        true,
+        req.app.get("io"),
+      );
     }
     if (req.files?.resourcesurl) {
       resourceUrl = await uploadFile(req.files.resourcesurl[0].path, false);
@@ -91,6 +100,7 @@ const UpdateLession = async (req, res) => {
       duration: videoUrl?.duration,
       videoUrl: videoUrl?.secure_url,
       role: req.user.role,
+      userId: req.user.userId,
       lessionId: req.params.lessionId,
 
       resourceType: body.resourcestype,
