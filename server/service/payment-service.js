@@ -86,10 +86,27 @@ const createSepayPaymentUrl = async (data) => {
 
 const updateorder = async (data) => {
   try {
-    const sepaycontent = data.content.split("SEVQR")[1].trim();
+    const rawCode = (data.content || "").split("SEVQR")[1] || "";
+    const sepaycontent = rawCode.replace(/^_+/, "").trim();
 
     const orderpayment = await order.findOne({ paymentCode: sepaycontent });
+    if (!orderpayment) {
+      throw {
+        status: 404,
+        message: "Không tìm thấy đơn hàng tương ứng với mã thanh toán!",
+      };
+    }
 
+    const isExpired =
+      Date.now() - new Date(orderpayment.createdAt).getTime() > 15 * 60 * 1000;
+    if (isExpired && orderpayment.status === "pending") {
+      orderpayment.status = "failed";
+      await orderpayment.save();
+      throw {
+        status: 400,
+        message: "Đơn hàng đã hết hạn thanh toán (quá 15 phút)!",
+      };
+    }
     if (data.transferType === "in") {
       if (Number(data?.transferAmount) === Number(orderpayment?.Totalprice)) {
         orderpayment.status = "completed";

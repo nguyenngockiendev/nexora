@@ -88,6 +88,7 @@ const usePayment = () => {
   };
   return {
     qrpayment,
+    setQrpayment,
     payment,
     error,
     loading,
