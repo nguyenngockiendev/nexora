@@ -6,7 +6,7 @@ const SennotificationbyStudent = async (data) => {
   try {
     const isuser = await Users.findById(data.userId);
     if (!isuser) {
-      throw { status: 404, message: "không tìm thấy!" };
+      throw { status: 404, message: "không tìm thấy người dùng!" };
     }
     const newNotifi = await Notifications.create({
       receiverId: null,
@@ -14,7 +14,7 @@ const SennotificationbyStudent = async (data) => {
       title: data.title,
       message: data.message,
       type: "help_request",
-      targetRole: data.role,
+      targetRole: "admin",
     });
     return newNotifi;
   } catch (error) {
@@ -24,20 +24,22 @@ const SennotificationbyStudent = async (data) => {
 const ReplyForuser = async (data) => {
   try {
     if (data.role !== "admin") {
-      throw { status: 404, message: "không đủ quyền!" };
+      throw { status: 403, message: "Không đủ quyền truy cập!" };
     }
     const isuser = await Users.findById(data.userId);
     if (!isuser) {
-      throw { status: 404, message: "không tìm thấy!" };
+      throw { status: 404, message: "không tìm thấy người dùng!" };
     }
-    const reRole = await Users.findById(data.receiverId).select("role").lean();
+    const reRole = data.receiverId
+      ? await Users.findById(data.receiverId).select("role").lean()
+      : null;
     const newNotifi = await Notifications.create({
       receiverId: data.receiverId || null,
       senderId: data.userId,
       title: data.title,
       message: data.message,
       type: data.type || (data.receiverId ? "admin_note" : "broadcast"),
-      targetRole: reRole.role || "all",
+      targetRole: reRole?.role || "all",
     });
     return newNotifi;
   } catch (error) {
@@ -48,10 +50,10 @@ const ReplyForuser = async (data) => {
 const GetALLNotification = async (data) => {
   try {
     if (data.role !== "admin") {
-      throw { status: 404, message: "không đủ quyền!" };
+      throw { status: 403, message: "Không đủ quyền truy cập!" };
     }
     const getall = await Notifications.find()
-      .populate("senderId")
+      .populate("senderId", "name email avatar")
       .sort({ createdAt: -1 })
       .lean();
 
@@ -66,8 +68,9 @@ const GetNotificationbyuser = async (data) => {
     const getnote = await Notifications.find({
       $or: [
         { receiverId: data.userId },
+        { senderId: data.userId, type: "help_request" },
         { targetRole: "all" },
-        { targetRole: data.role },
+        { targetRole: data.role, type: "broadcast" },
       ],
     })
       .sort({
@@ -77,10 +80,8 @@ const GetNotificationbyuser = async (data) => {
     const reqTeach = await TeacherRequests.find({ userId: data.userId })
       .sort({ createdAt: -1 })
       .lean();
-    if (getnote.length < 0) {
-      throw { status: 404, message: "Không có thông báo nào cả!" };
-    }
-    return { getnote: getnote, reqTeach: reqTeach };
+
+    return { getnote: getnote || [], reqTeach: reqTeach || [] };
   } catch (error) {
     throw error;
   }

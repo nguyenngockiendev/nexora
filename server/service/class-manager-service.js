@@ -8,7 +8,7 @@ const classs = require("../model/Class");
 const CreateClassbyIntructor = async (data) => {
   try {
     if (data.role !== "instructor") {
-      throw { status: 403, message: "Only instructors can create classes" };
+      throw { status: 403, message: "Chỉ giảng viên mới có quyền tạo lớp học" };
     }
 
     const resultclass = await classs.findOne({
@@ -23,14 +23,14 @@ const CreateClassbyIntructor = async (data) => {
       return {
         result: resultclass,
         message:
-          "The class schedule has conflicting information. Please create a different schedule than the current one.",
+          "Lịch học có thông tin bị trùng lặp. Vui lòng tạo một lịch học khác với lịch hiện tại.",
       };
     }
 
     const newclass = await classs.create(data);
     return {
       result: newclass,
-      message: "Create class successfully",
+      message: "Tạo lớp học thành công!",
     };
   } catch (error) {
     console.log(error);
@@ -40,7 +40,10 @@ const CreateClassbyIntructor = async (data) => {
 const GetClassbyInstructor = async (data) => {
   try {
     if (data?.role !== "instructor") {
-      throw { status: 403, message: "Only instructors can view their classes" };
+      throw {
+        status: 403,
+        message: "Chỉ giảng viên mới có thể xem các lớp học của mình",
+      };
     }
     const result = await classs
       .find({ instructorId: data.intructor, courseId: data.courseId })
@@ -49,7 +52,7 @@ const GetClassbyInstructor = async (data) => {
     if (!result || result === 0) {
       throw {
         status: 403,
-        message: "You don't have a class yet! Please create a new one.",
+        message: "Bạn chưa có lớp học nào! Vui lòng tạo một lớp học mới.",
       };
     }
     const converTime = (time) => {
@@ -76,17 +79,27 @@ const GetClassbyInstructor = async (data) => {
 const UpdateclassByrole = async (data) => {
   try {
     if (data?.role === "student") {
-      throw { status: 403, message: "You are not allowed to edit!" };
+      throw { status: 403, message: "Bạn không có quyền chỉnh sửa lớp học!" };
     }
     const result = await classs.findById(data?.classId);
     if (!result) {
-      throw { status: 404, message: "The class doesn't exist!" };
+      throw { status: 404, message: "Lớp học không tồn tại!" };
+    }
+    if (
+      data?.role !== "admin" &&
+      result.instructorId.toString() !==
+        (data.instructorId || data.userId || "").toString()
+    ) {
+      throw {
+        status: 403,
+        message: "Bạn không có quyền chỉnh sửa lớp học của giảng viên khác!",
+      };
     }
     if (result?.currentStudents < data?.currentStudents) {
       throw {
-        status: 404,
+        status: 400,
         message:
-          "The maximum number of students must not be less than the number of students who have registered.!",
+          "Số lượng học viên tối đa không được nhỏ hơn số học viên đã đăng ký!",
       };
     }
 
@@ -103,14 +116,35 @@ const UpdateclassByrole = async (data) => {
 const ChangeStatusClass = async (data) => {
   try {
     if (data?.role === "student") {
-      throw { status: 403, message: "You are not allowed to edit!" };
+      throw {
+        status: 403,
+        message: "Bạn không có quyền chỉnh sửa trạng thái lớp học!",
+      };
+    }
+    const result = await classs.findById(data?.classId);
+    if (!result) {
+      throw { status: 404, message: "Lớp học không tồn tại!" };
+    }
+    if (
+      data?.role !== "admin" &&
+      result.instructorId.toString() !==
+        (data.instructorId || data.userId || "").toString()
+    ) {
+      throw {
+        status: 403,
+        message:
+          "Bạn không có quyền thay đổi trạng thái lớp học của giảng viên khác!",
+      };
     }
     const changestatus = await classs.findByIdAndUpdate(
       data?.classId,
       { status: data?.status },
       { new: true },
     );
-    return { message: "Change success", changestatus: changestatus };
+    return {
+      message: "Cập nhật trạng thái lớp học thành công!",
+      changestatus: changestatus,
+    };
   } catch (error) {
     console.log(error);
     throw error;
@@ -126,7 +160,7 @@ const GetClassByStudent = async (data) => {
       .populate("courseId")
       .lean();
     if (!getClass) {
-      throw { status: 404, message: "you not have class!" };
+      throw { status: 404, message: "Không tìm thấy lớp học của bạn!" };
     }
 
     const intructor = await user
@@ -185,7 +219,14 @@ const CourseDetailsClass = async (data) => {
       }
       return [];
     }
-
+    const isEnroillment = await errollment.find({
+      userId: data.userId,
+      courseId: data?.courseId,
+      status: "active",
+    });
+    const isClass = isEnroillment
+      .filter((e) => e.type === "live")
+      .map((e) => e.classId?.toString());
     const converTime = (time) => {
       const hour = Math.floor(time / 60);
       const minute = time % 60;
@@ -195,6 +236,7 @@ const CourseDetailsClass = async (data) => {
 
     const finnalResult = getClass.map((item) => ({
       ...item,
+      isJoined: isClass.includes(item?._id?.toString()),
       registerDeadline: new Date(item?.registerDeadline).toLocaleDateString(
         "vi-VN",
       ),

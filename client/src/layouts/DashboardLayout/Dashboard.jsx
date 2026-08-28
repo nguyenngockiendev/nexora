@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
+import { Menu } from "lucide-react";
 
 import useDashboats from "../../features/dashboard/hooks/useDashboats";
 import CornerOrangeButton from "./components/ButtonInfor";
@@ -9,7 +10,7 @@ import NotificationBell from "./components/Notification";
 const Dashboard = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { dashboard, setDashboard ,loading} = useDashboats();
+  const { dashboard, setDashboard, loading } = useDashboats();
   return (
     <div
       className="relative min-h-screen flex overflow-hidden"
@@ -35,11 +36,23 @@ const Dashboard = () => {
         className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out z-10 ${collapsed ? "md:ml-[80px]" : "md:ml-[260px]"} ml-0`}
       >
         <main className="relative flex-1 p-3 md:p-5 overflow-x-hidden">
+          {/* Top bar controls on mobile */}
+          <div className="flex items-center justify-between md:hidden mb-3">
+            <button
+              type="button"
+              onClick={() => setMobileOpen(true)}
+              className="flex items-center justify-center w-10 h-10 rounded-2xl bg-white/80 backdrop-blur-md border border-white/90 shadow-sm text-slate-700 hover:text-orange-600 active:scale-95 transition-all cursor-pointer"
+              aria-label="Mở menu"
+            >
+              <Menu size={20} />
+            </button>
+          </div>
+
           <div className="absolute top-3 right-20 sm:right-24 z-40">
-            <NotificationBell  user={dashboard}/>
+            <NotificationBell user={dashboard} />
           </div>
           <CornerOrangeButton dashboard={dashboard} />
-          <Outlet context={{ dashboard, setDashboard ,loading}} />
+          <Outlet context={{ dashboard, setDashboard, loading }} />
         </main>
       </div>
     </div>

@@ -99,7 +99,9 @@ const DetaiCourseClass = async(req,res) =>{
   try {
     const data ={
       role: req.user.role,
+      userId: req.user.userId,
       courseId: req.params.courseId,
+
     };
     const result = await CourseDetailsClass(data);
     res.status(200).json(result);

@@ -11,8 +11,8 @@ const loginUser = async (email, password) => {
     }
     if (user.status === "inactive") {
       throw {
-        status: 401,
-        message: "Tài khoản bị cấm hoặc chưa được kích hoạt !",
+        status: 403,
+        message: "Tài khoản của bạn đã bị khóa hoặc chưa được kích hoạt!",
       };
     }
     const passwordMatch = await bcrypt.compare(password, user.password);
@@ -54,7 +54,7 @@ const registerUser = async (data) => {
     });
 
     await newUser.save();
-    return { message: "Create account succesfully" };
+    return { message: "Tạo tài khoản thành công!" };
   } catch (error) {
     console.error("Error occurred while registering user:", error);
     throw error;
