@@ -24,7 +24,7 @@ const GetorderByUserId = async (data) => {
     if (!result || result.length === 0) {
       throw {
         status: 404,
-        message: "You don't have any courses. Please start buying new courses.",
+        message: "Bạn chưa đăng ký khóa học nào! Vui lòng khám phá và đăng ký các khóa học mới.",
       };
     }
 
@@ -83,7 +83,7 @@ const CheckEnrollment = async (data) => {
       .findOne({ userId: data?.userId, courseId: data?.courseId })
       .lean();
     if (!result) {
-      throw { status: 404, message: "You are not enrolled in this course." };
+      throw { status: 404, message: "Bạn chưa tham gia khóa học này!" };
     }
     const fullLesons = await Lessons.find({ courseId: data?.courseId }).lean();
     return fullLesons;

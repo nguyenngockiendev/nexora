@@ -11,7 +11,7 @@ const getInstructorBusinessDashboard = async (data) => {
     if (data?.role !== "instructor") {
       throw {
         status: 403,
-        message: "Only instructors can view this dashboard",
+        message: "Chỉ giảng viên mới có quyền xem bảng điều khiển này!",
       };
     }
 

@@ -18,6 +18,8 @@ useEffect(() => {
     } catch (error) {
       const message = error.response?.data?.message || "no result courses";
       setError(message);
+    } finally {
+      setLoading(false);
     }
   };
   checkEnrollments();
