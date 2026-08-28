@@ -68,37 +68,6 @@ const paymemtCourese = async (data) => {
   }
 };
 
-// const createVNPayPaymentUrl = async (data) => {
-//   try {
-//     const vnpay = new VNPay({
-//       tmnCode: "6NZPQZ03",
-//       secureSecret: "NV6V6GQJZOU8T2TRKFZAOOGMUARDTN4X",
-//       vnpayHost: "https://sandbox.vnpayment.vn",
-//       testMode: true,
-//       hashAlgorithm: "SHA512",
-//       loggerFn: ignoreLogger,
-//     });
-
-//     const tomorrow = new Date();
-//     tomorrow.setDate(tomorrow.getDate() + 1);
-//     const vnpayResponse = vnpay.buildPaymentUrl({
-//       vnp_Amount: Number(data.Totalprice || data.price || 0),
-//       vnp_IpAddr: "127.0.0.1",
-//       vnp_TxnRef: `${data._id}`,
-//       vnp_OrderInfo: `Course payment successful_${data.courseId || "cart"}_${data.classId || "items"}`,
-//       vnp_OrderType: ProductCode.Other,
-//       vnp_ReturnUrl: `http://localhost:5000/api/payment/vnpay-callback`,
-//       vnp_Locale: VnpLocale.VN,
-//       vnp_CreateDate: dateFormat(new Date()),
-//       vnp_ExpireDate: dateFormat(tomorrow),
-//     });
-//     return vnpayResponse;
-//   } catch (error) {
-//     console.log(error);
-//     throw error;
-//   }
-// };
-
 const createSepayPaymentUrl = async (data) => {
   try {
     const bank = process.env.SEPAY_BANK_NAME;
@@ -117,11 +86,12 @@ const createSepayPaymentUrl = async (data) => {
 
 const updateorder = async (data) => {
   try {
-    const sepaycontent = data.content.lastIndexOf("SEVQR");
+    const sepaycontent = data.content.split("SEVQR")[1].trim();
+
     const orderpayment = await order.findOne({ paymentCode: sepaycontent });
 
     if (data.transferType === "in") {
-      if (Number(data.transferAmount) === Number(orderpayment.Totalprice)) {
+      if (Number(data?.transferAmount) === Number(orderpayment?.Totalprice)) {
         orderpayment.status = "completed";
         await orderpayment.save();
 
