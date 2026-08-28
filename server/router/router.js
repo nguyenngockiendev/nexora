@@ -197,7 +197,7 @@ Router.get("/process/course/:courseId", authMiddleware, GetAllProcess);
 
 Router.put("/resume-payment/:orderId", ResumePay);
 Router.delete("/delete-order/:orderId", DeleteOrderbyUser);
-Router.get("/details-course/:courseId", DetailsCourse);
+Router.get("/details-course/:courseId",authMiddleware, DetailsCourse);
 Router.post(
   "/become-instructor",
   authMiddleware,

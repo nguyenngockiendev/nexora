@@ -1,6 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import Nav_Sidebar from "../Nav_sidebar";
 import { ChevronLeft, ChevronRight, LogOut } from "lucide-react";
+import { useCart } from "../../../features/cart/hooks/useCart";
 
 const Sidebar = ({
   collapsed,
@@ -9,6 +10,7 @@ const Sidebar = ({
   setMobileOpen,
   dashboard,
 }) => {
+  const { cartItems } = useCart();
   const handleNavClick = () => {
     if (window.innerWidth <= 768) setMobileOpen(false);
   };
@@ -88,6 +90,7 @@ const Sidebar = ({
                   <NavLink
                     key={item.path}
                     to={item.path}
+                    end
                     onClick={handleNavClick}
                     title={collapsed ? item.name : undefined}
                     className={({ isActive }) =>
@@ -120,18 +123,30 @@ const Sidebar = ({
                     {({ isActive }) => (
                       <>
                         <span
-                          className="shrink-0 transition-colors"
+                          className="relative shrink-0 transition-colors flex items-center justify-center"
                           style={{ color: isActive ? "#ea580c" : "#64748b" }}
                         >
                           {item.icon && <item.icon size={19} />}
+                          {collapsed && item.path === "cart" && cartItems?.length > 0 && (
+                            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-orange-500 text-white text-[9px] font-black flex items-center justify-center shadow-xs">
+                              {cartItems.length > 9 ? "9+" : cartItems.length}
+                            </span>
+                          )}
                         </span>
                         {!collapsed && (
-                          <span
-                            className="text-sm font-semibold whitespace-nowrap truncate no-underline"
-                            style={{ color: isActive ? "#ea580c" : "#334155" }}
-                          >
-                            {item.name}
-                          </span>
+                          <div className="flex items-center justify-between flex-1 min-w-0">
+                            <span
+                              className="text-sm font-semibold whitespace-nowrap truncate no-underline"
+                              style={{ color: isActive ? "#ea580c" : "#334155" }}
+                            >
+                              {item.name}
+                            </span>
+                            {item.path === "cart" && cartItems?.length > 0 && (
+                              <span className="ml-auto px-2 py-0.5 rounded-full bg-orange-500 text-white text-[10px] font-black shadow-xs shrink-0">
+                                {cartItems.length > 9 ? "9+" : cartItems.length}
+                              </span>
+                            )}
+                          </div>
                         )}
                       </>
                     )}

@@ -13,6 +13,7 @@ const CreateQuiz = async (req, res) => {
     const data = {
       lessonId: req.params.lessionId,
       role: req.user.role,
+      userId: req.user.userId,
       ...req.body,
     };
     const result = await CreateQuizByIntructor(data);
@@ -39,6 +40,7 @@ const UpdateQuizz = async (req, res) => {
   try {
     const data = {
       lessonId: req.params.lessonId,
+      userId: req.user.userId,
       role: req.user.role,
       ...req.body,
     };

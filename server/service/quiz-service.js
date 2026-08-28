@@ -7,40 +7,42 @@ const classs = require("../model/Class");
 const quizz = require("../model/Quizz");
 const attempQuizz = require("../model/QuizAttempts");
 
-const converttimeP = (time = "00:00") => {
-  const [h, p] = time.split(":").map(Number);
-  return h * 60 + p;
-};
-const converTimeH = (time) => {
-  const hour = Math.floor(time / 60);
-  const minute = time % 60;
-
-  return `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
-};
 const CreateQuizByIntructor = async (data) => {
   try {
-    if (data?.role !== "instructor") {
-      throw { status: 404, message: "you not have auth!" };
+    if (data?.role !== "instructor" && data?.role !== "admin") {
+      throw { status: 403, message: "Bạn không có quyền tạo bài kiểm tra!" };
     }
 
     const checkLession = await Lessons.findById(data?.lessonId);
+    if (!checkLession) {
+      throw { status: 404, message: "Bài học không tồn tại!" };
+    }
+
+    const isOwner = await Courses.findOne({
+      _id: checkLession.courseId,
+      instructor: data.userId,
+    });
+    if (!isOwner) {
+      throw {
+        status: 403,
+        message:
+          "Bạn không có quyền tạo bài kiểm tra cho khóa học của giảng viên khác!",
+      };
+    }
+
     const resultForm = {
       ...data,
       status: "draft",
       courseId: checkLession.courseId,
     };
     const result = await quizz(resultForm).save();
-    if (!checkLession) {
-      throw { status: 400, message: "not found!" };
-    }
 
     if (!result) {
-      throw { status: 404, message: "create quizz failed!" };
+      throw { status: 400, message: "Tạo bài kiểm tra thất bại!" };
     }
-    return { result: result, message: "Create successfuly!" };
+    return { result: result, message: "Tạo bài kiểm tra thành công!" };
   } catch (error) {
     throw error;
-    console.log(error);
   }
 };
 
@@ -52,7 +54,7 @@ const GetQuizzById = async (data) => {
       .populate("courseId", "title")
       .lean();
     if (!res) {
-      throw { status: 404, message: "not have quizz!" };
+      throw { status: 404, message: "Bài học này chưa có bài kiểm tra!" };
     }
     const result = {
       ...res,
@@ -65,13 +67,31 @@ const GetQuizzById = async (data) => {
 };
 const UpdateQuizzbyIntructor = async (data) => {
   try {
-    if (data?.role !== "instructor") {
-      throw { status: 404, message: "you not have auth!" };
+    if (data?.role !== "instructor" && data?.role !== "admin") {
+      throw {
+        status: 403,
+        message: "Bạn không có quyền chỉnh sửa bài kiểm tra!",
+      };
     }
     const checkLession = await Lessons.findById(data?.lessonId);
+    if (!checkLession) {
+      throw { status: 404, message: "Bài học không tồn tại!" };
+    }
+
+    const isOwner = await Courses.findOne({
+      _id: checkLession.courseId,
+      instructor: data.userId,
+    });
+    if (!isOwner) {
+      throw {
+        status: 403,
+        message:
+          "Bạn không có quyền chỉnh sửa bài kiểm tra của giảng viên khác!",
+      };
+    }
+
     const update = await quizz.findOneAndUpdate(
       { lessonId: data?.lessonId },
-
       {
         ...data,
         courseId: checkLession?.courseId,
@@ -79,7 +99,7 @@ const UpdateQuizzbyIntructor = async (data) => {
       },
       { new: true },
     );
-    return { message: "Cập nhật thành công!", result: update };
+    return { message: "Cập nhật bài kiểm tra thành công!", result: update };
   } catch (error) {
     console.log(error);
     throw error;
