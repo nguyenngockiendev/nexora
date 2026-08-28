@@ -22,6 +22,11 @@ const orderSchema = new mongoose.Schema(
       required: true,
       default: "QR",
     },
+    paymentCode: {
+      type: String,
+      unique: true,
+      index: true,
+    },
     items: [
       {
         courseId: {

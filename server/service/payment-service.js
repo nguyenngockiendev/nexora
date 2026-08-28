@@ -3,13 +3,7 @@ const Courses = require("../model/Courses");
 const order = require("../model/Orders");
 const errollment = require("../model/Enrollments");
 const classs = require("../model/Class");
-const {
-  VNPay,
-  ignoreLogger,
-  ProductCode,
-  VnpLocale,
-  dateFormat,
-} = require("vnpay");
+const crypto = require("crypto");
 const Orders = require("../model/Orders");
 const Class = require("../model/Class");
 
@@ -56,15 +50,14 @@ const paymemtCourese = async (data) => {
         price: finalPrice,
       });
     }
-
+    const paymentCode = crypto.randomBytes(6).toString("hex").toUpperCase();
     const neworder = new order({
       userId: data.userId,
       Totalprice: finalTotal,
-
       items: newItems,
-
       status: "pending",
       paymentMethod: "QR",
+      paymentCode: paymentCode,
     });
 
     await neworder.save();
@@ -113,7 +106,7 @@ const createSepayPaymentUrl = async (data) => {
     const amount = Number(data.Totalprice || data.price || 0);
     const holder = process.env.SEPAY_ACC_NAME;
 
-    const des = `SEVQR_${data._id}`;
+    const des = `SEVQR_${data.paymentCode}`;
     const qrUrl = `https://qr.sepay.vn/img?acc=${acc}&bank=${bank}&amount=${amount}&holder=${holder}&des=${des}&template=compact&showinfo=true`;
     return qrUrl;
   } catch (error) {
@@ -124,8 +117,8 @@ const createSepayPaymentUrl = async (data) => {
 
 const updateorder = async (data) => {
   try {
-    const sepaycontent = data.content.split("_SEVQR")[0];
-    const orderpayment = await order.findById(sepaycontent);
+    const sepaycontent = data.content.lastIndexOf("SEVQR");
+    const orderpayment = await order.findOne({ paymentCode: sepaycontent });
 
     if (data.transferType === "in") {
       if (Number(data.transferAmount) === Number(orderpayment.Totalprice)) {
