@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Calendar,
   Clock,
@@ -13,6 +14,7 @@ import {
 import { Link, useOutletContext } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { useCart } from "../../cart/hooks/useCart";
+import PaymentQRModal from "../../payment/components/PaymentQRModal";
 
 const DetailsCourse = ({
   detalscourse = [],
@@ -21,7 +23,11 @@ const DetailsCourse = ({
   payment,
   errorPayment,
   paymentloading,
+  qrUrl,
+  setQrpayment,
 }) => {
+  const [loadingClassId, setLoadingClassId] = useState(null);
+  const [selectedTitle, setSelectedTitle] = useState("");
   const { addToCart } = useCart();
   const courseInfo = detalscourse?.[0]?.courseId || {};
   const instructor =
@@ -214,7 +220,6 @@ const DetailsCourse = ({
         </div>
       </section>
 
-      {/* ── 2. AVAILABLE LIVE CLASSES SECTION ── */}
       <div id="available-classes-section" className="space-y-6 pt-4">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
@@ -227,7 +232,6 @@ const DetailsCourse = ({
           </div>
         </div>
 
-        {/* Payment Error Alert */}
         {errorPayment && (
           <div className="p-4 rounded-2xl bg-red-50/80 border border-red-200 text-red-600 font-bold text-xs flex items-center gap-2 shadow-xs backdrop-blur-md">
             <AlertCircle size={18} />
@@ -235,7 +239,6 @@ const DetailsCourse = ({
           </div>
         )}
 
-        {/* Loading Spinner */}
         {loading && (
           <div className="flex items-center justify-center p-12 text-orange-600 font-bold text-sm gap-2">
             <Loader2 className="animate-spin" size={26} /> Đang tải danh sách
@@ -243,7 +246,6 @@ const DetailsCourse = ({
           </div>
         )}
 
-        {/* Error State */}
         {error && (
           <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-600 font-bold text-xs">
             {error}
@@ -253,7 +255,6 @@ const DetailsCourse = ({
         {!loading && availableClasses.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {availableClasses.map((item) => {
-              console.log("item", item);
               const isClosed =
                 item?.status?.toLowerCase() === "closed" ||
                 item?.status?.toLowerCase() === "ended";
@@ -275,7 +276,6 @@ const DetailsCourse = ({
                   }}
                 >
                   <div className="space-y-4">
-                    {/* Header: Class Name & Status Badge */}
                     <div className="flex items-start justify-between gap-2">
                       <div>
                         <h3 className="text-lg font-black text-slate-900 line-clamp-1 leading-snug group-hover:text-orange-600 transition-colors">
@@ -305,7 +305,6 @@ const DetailsCourse = ({
                       </span>
                     </div>
 
-                    {/* Seat Capacity Bar */}
                     <div className="space-y-1.5">
                       <div className="flex justify-between items-center text-xs font-bold text-slate-700">
                         <span>Số chỗ</span>
@@ -384,57 +383,76 @@ const DetailsCourse = ({
 
                   {dashboard.role != "instructor" ? (
                     <div className="flex items-center gap-2.5 w-full">
-                      <button
-                        disabled={isClosed}
-                        onClick={() =>
-                          addToCart &&
-                          addToCart({
-                            _id: item._id,
-                            courseId: item.courseId?._id || item.courseId,
-                            classId: item._id,
-                            title: `${courseInfo?.title || "Khóa Học Live"} - ${item.className || "Lớp học"}`,
-                            className: item.className,
-                            type: "live",
-                            price: Number(item.price || 0),
-                            thumbnail: courseInfo?.thumbnail,
-                            schedule: item.schedule,
-                          })
-                        }
-                        className="flex-1 py-2.5 px-3.5 rounded-full text-xs font-black text-slate-700 bg-white/90 border border-slate-300 hover:bg-white hover:border-slate-400 hover:text-slate-900 shadow-2xs hover:scale-[1.02] active:scale-95 transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                        style={{ borderRadius: "9999px" }}
-                      >
-                        <ShoppingCart size={15} /> Thêm vào giỏ
-                      </button>
-
-                      <button
-                        disabled={paymentloading || isClosed}
-                        onClick={() =>
-                          payment({
-                            ...item,
-                            courseId: item.courseId?._id || item.courseId,
-                            classId: item._id,
-                            type: "live",
-                          })
-                        }
-                        className="flex-1 py-2.5 px-3.5 rounded-full text-xs font-black text-white shadow-md shadow-orange-500/25 hover:shadow-orange-500/40 hover:scale-[1.02] active:scale-95 transition-all text-center flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-                        style={{
-                          background: isClosed
-                            ? "#94a3b8"
-                            : "linear-gradient(135deg, #f97316, #ea580c)",
-                          borderRadius: "9999px",
-                        }}
-                      >
-                        {paymentloading ? (
-                          <>
-                            <Loader2 size={15} className="animate-spin" /> Đang
-                            xử lý...
-                          </>
-                        ) : isClosed ? (
-                          "Đã đóng lớp"
-                        ) : (
-                          "Đăng ký ngay"
-                        )}
-                      </button>
+                      {!item.isJoined ? (
+                        <>
+                          {" "}
+                          <button
+                            disabled={isClosed}
+                            onClick={() =>
+                              addToCart &&
+                              addToCart({
+                                _id: item._id,
+                                courseId: item.courseId?._id || item.courseId,
+                                classId: item._id,
+                                title: `${courseInfo?.title || "Khóa Học Live"} - ${item.className || "Lớp học"}`,
+                                className: item.className,
+                                type: "live",
+                                price: Number(item.price || 0),
+                                thumbnail: courseInfo?.thumbnail,
+                                schedule: item.schedule,
+                              })
+                            }
+                            className="flex-1 py-2.5 px-3.5 rounded-full text-xs font-black text-slate-700 bg-white/90 border border-slate-300 hover:bg-white hover:border-slate-400 hover:text-slate-900 shadow-2xs hover:scale-[1.02] active:scale-95 transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                            style={{ borderRadius: "9999px" }}
+                          >
+                            <ShoppingCart size={15} /> Thêm vào giỏ
+                          </button>
+                          <button
+                            disabled={loadingClassId === item._id || isClosed}
+                            onClick={async () => {
+                              setLoadingClassId(item._id);
+                              setSelectedTitle(
+                                item?.className
+                                  ? `${courseInfo?.title || "Khóa Học Live"} - ${item.className}`
+                                  : courseInfo?.title || "Lớp học",
+                              );
+                              try {
+                                await payment({
+                                  ...item,
+                                  courseId: item.courseId?._id || item.courseId,
+                                  classId: item._id,
+                                  type: "live",
+                                });
+                              } finally {
+                                setLoadingClassId(null);
+                              }
+                            }}
+                            className="flex-1 py-2.5 px-3.5 rounded-full text-xs font-black text-white shadow-md shadow-orange-500/25 hover:shadow-orange-500/40 hover:scale-[1.02] active:scale-95 transition-all text-center flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                            style={{
+                              background: isClosed
+                                ? "#94a3b8"
+                                : "linear-gradient(135deg, #f97316, #ea580c)",
+                              borderRadius: "9999px",
+                            }}
+                          >
+                            {loadingClassId === item._id ? (
+                              <>
+                                <Loader2 size={15} className="animate-spin" />
+                                <span>Đang xử lý...</span>
+                              </>
+                            ) : isClosed ? (
+                              "Đã đóng lớp"
+                            ) : (
+                              "Đăng ký ngay"
+                            )}
+                          </button>{" "}
+                        </>
+                      ) : (
+                        <div className="w-full py-2.5 px-4 rounded-full text-xs font-black bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center gap-1.5 shadow-2xs select-none">
+                          <span>✓</span>
+                          <span>Đã tham gia lớp học này</span>
+                        </div>
+                      )}
                     </div>
                   ) : null}
 
@@ -454,7 +472,15 @@ const DetailsCourse = ({
           </div>
         )}
 
-        {/* Empty State */}
+        {/* Modal Popup VietQR */}
+        {qrUrl && (
+          <PaymentQRModal
+            qrUrl={qrUrl}
+            courseTitle={selectedTitle}
+            onClose={() => setQrpayment(null)}
+          />
+        )}
+
         {!loading && availableClasses.length === 0 && (
           <div className="flex flex-col items-center justify-center text-center p-14 rounded-[2.5rem] bg-white/60 backdrop-blur-2xl border border-dashed border-orange-200">
             <Video size={36} className="text-orange-400 mb-2 opacity-70" />

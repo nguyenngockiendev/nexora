@@ -2,6 +2,7 @@ const Courses = require("../model/Courses");
 const Lessons = require("../model/Lessons");
 const classs = require("../model/Class");
 const Rating = require("../model/Ratings");
+const Enrollments = require("../model/Enrollments");
 
 const GetAllCourses = async (data) => {
   try {
@@ -64,12 +65,23 @@ const GetCourses = async (data) => {
           return toatal;
         }, 0);
         const avg = avgRting / rattingforcoure.length;
+        const isEnroiment = await Enrollments.find({
+          userId: data.userId,
+          courseId: co?._id,
+          status: "active",
+        });
+        const isClass = isEnroiment
+          .filter((e) => e.classId)
+          .map((e) => e.classId.toString());
+        const isRecode = isEnroiment.some((item) => item.type === "recorded");
         return {
           ...co,
           instructor: co?.instructor?.name,
           numberClass: numbserclass.length,
           Rattingleng: rattingforcoure.length,
           rattingforcoure: avg,
+          isClass: isClass,
+          isRecode: isRecode,
         };
       }),
     );
@@ -84,13 +96,13 @@ const GetCourses = async (data) => {
 const CreatenewCourses = async (data) => {
   try {
     if (data?.role !== "student") {
-      throw { message: "you can not create courses!" };
+      throw { message: "Bạn không có quyền tạo khóa học!" };
     }
 
     const newCourses = new Courses(data);
 
     await newCourses.save();
-    return { message: " Create Courses successfully!", result: newCourses };
+    return { message: " Tạo khóa học thành công!", result: newCourses };
   } catch (error) {
     console.log(error);
     throw error;
@@ -144,11 +156,18 @@ const GetDetailsCourse = async (data) => {
       .populate("instructor")
       .lean();
     if (!list) {
-      throw { status: 404, message: "Course không tồn tại!" };
+      throw { status: 404, message: "Khóa học không tồn tại!" };
     }
     const lessionbycou = await Lessons.find({ courseId: list._id }).lean();
+    const isEnroillment = await Enrollments.find({
+      userId: data.userId,
+      courseId: list._id,
+      status: "active",
+    });
+    const isRecode = isEnroillment.some((item) => item.type === "recorded");
     const result = {
       ...list,
+      isRecode: isRecode,
       lessons: lessionbycou,
     };
     return result;
@@ -319,5 +338,5 @@ module.exports = {
   GetCourseForAdmin,
   UpdateisLookedCourse,
   GetCourses,
-  EditCourse
+  EditCourse,
 };

@@ -9,12 +9,10 @@ import {
   User,
   ShoppingCart,
   X,
-  ChevronDown,
-  ChevronUp,
   Star,
   Send,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import CourseRating from "./CourseRating";
 
@@ -43,7 +41,7 @@ const Detailscourse = ({
       console.log(err);
     }
   }
-
+  const navigate = useNavigate();
   const instructorId =
     detalscourse?.instructor?._id || detalscourse?.instructor;
   const isOwner =
@@ -60,17 +58,6 @@ const Detailscourse = ({
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-500/10 text-orange-600 border border-orange-500/20">
                 <BookOpen size={12} /> Khóa học Recorded
               </div>
-              {isOwner && (
-                <Link
-                  to={`/course/update/${detalscourse?._id}`}
-                  className="px-4 py-2 rounded-xl text-xs font-bold text-white shadow-sm hover:scale-105 transition-all"
-                  style={{
-                    background: "linear-gradient(135deg, #f97316, #ea580c)",
-                  }}
-                >
-                  Chỉnh sửa khóa học
-                </Link>
-              )}
             </div>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-black leading-tight text-slate-800">
               {detalscourse?.title}
@@ -79,7 +66,6 @@ const Detailscourse = ({
               {detalscourse?.description}
             </p>
 
-            {/* Meta Info */}
             <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-400 pt-2">
               <div className="flex items-center gap-1">
                 <User size={14} /> Giảng viên:{" "}
@@ -132,84 +118,84 @@ const Detailscourse = ({
             </div>
           </div>
 
-          {/* ── Section 3: Đề cương khóa học (Syllabus) ── */}
           <div
-            className="rounded-3xl overflow-hidden"
+            className="rounded-3xl overflow-hidden shadow-[0_8px_32px_rgba(194,110,30,0.04)]"
             style={{
-              background: "rgba(255,255,255,0.55)",
-              border: "1px solid rgba(255,255,255,0.75)",
+              background: "rgba(255,255,255,0.65)",
+              border: "1px solid rgba(255,255,255,0.85)",
               backdropFilter: "blur(20px)",
-              boxShadow: "0 8px 32px rgba(194,110,30,0.04)",
             }}
           >
             {/* Header Accordion */}
             <div
               onClick={() => setExpandedSyllabus(!expandedSyllabus)}
-              className="p-5 flex items-center justify-between cursor-pointer hover:bg-orange-500/[0.01] transition-colors"
+              className="p-5 flex items-center justify-between cursor-pointer hover:bg-orange-500/[0.02] transition-colors"
               style={{
                 background: "rgba(249,115,22,0.03)",
-                borderBottom: "1px solid rgba(255,255,255,0.6)",
+                borderBottom: expandedSyllabus
+                  ? "1px solid rgba(241,245,249,0.8)"
+                  : "none",
               }}
             >
               <div>
                 <h3 className="text-lg font-bold text-slate-800 mb-1">
                   Nội dung khóa học
                 </h3>
-                <p className="text-xs text-slate-400 font-bold uppercase tracking-wider flex items-center gap-4">
+                <p className="text-xs text-slate-400 font-bold uppercase tracking-wider flex items-center gap-2.5">
                   <span>{(detalscourse?.lessons || []).length} bài học</span>
                   <span>•</span>
                   <span>
-                    Tổng thời lượng: {Math.round(totalDuration / 60)} giờ{" "}
-                    {totalDuration % 60} phút
+                    Tổng thời lượng:{" "}
+                    {Math.floor(Math.round(totalDuration || 0) / 60) > 0
+                      ? `${Math.floor(Math.round(totalDuration || 0) / 60)} giờ `
+                      : ""}
+                    {Math.round(totalDuration || 0) % 60} phút
                   </span>
                 </p>
               </div>
-              <button className="p-2 rounded-xl bg-white/80 shadow-sm border border-slate-100 text-slate-500">
-                {expandedSyllabus ? (
-                  <ChevronUp size={16} />
-                ) : (
-                  <ChevronDown size={16} />
-                )}
-              </button>
             </div>
 
-            {/* List Lessons */}
             {expandedSyllabus && (
-              <div className="divide-y divide-slate-100/60">
-                {(detalscourse?.lessons || []).map((lesson) => (
-                  <div
-                    key={lesson._id}
-                    className="p-4 flex items-center justify-between gap-4 hover:bg-orange-500/[0.02] transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-orange-500/10 text-orange-500 flex items-center justify-center flex-shrink-0 font-black text-sm">
-                        {lesson.order}
+              <div className="max-h-[420px] overflow-y-auto custom-scrollbar divide-y divide-slate-100/60 pr-1">
+                {[...(detalscourse?.lessons || [])]
+                  .sort(
+                    (a, b) => (Number(a.order) || 0) - (Number(b.order) || 0),
+                  )
+                  .map((lesson) => (
+                    <div
+                      key={lesson._id}
+                      className="p-4 flex items-center justify-between gap-4 hover:bg-orange-500/[0.02] transition-colors"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-8 h-8 rounded-lg bg-orange-500/10 text-orange-500 flex items-center justify-center flex-shrink-0 font-black text-sm">
+                          {lesson.order}
+                        </div>
+                        <span className="text-sm font-semibold text-slate-700 truncate">
+                          {lesson.title}
+                        </span>
                       </div>
-                      <span className="text-sm font-semibold text-slate-700">
-                        {lesson.title}
-                      </span>
-                    </div>
 
-                    <div className="flex items-center gap-3 flex-shrink-0">
-                      <span className="text-xs font-semibold text-slate-400 flex items-center gap-1">
-                        <Clock size={12} /> {lesson.duration} phút
-                      </span>
-                      {lesson.isPreview && lesson.videoUrl && (
-                        <button
-                          onClick={() => handleOpenPreview(lesson.videoUrl)}
-                          className="px-2.5 py-1 text-xs font-bold rounded-lg text-emerald-600 bg-emerald-50 hover:bg-emerald-100 transition-colors flex items-center gap-1 border border-emerald-200"
-                        >
-                          <Play size={10} className="fill-current" /> Học thử
-                        </button>
-                      )}
+                      <div className="flex items-center gap-3 flex-shrink-0">
+                        <span className="text-xs font-semibold text-slate-400 flex items-center gap-1">
+                          <Clock size={12} /> {Math.round(lesson.duration || 0)}{" "}
+                          phút
+                        </span>
+                        {lesson.isPreview && lesson.videoUrl && (
+                          <button
+                            type="button"
+                            onClick={() => handleOpenPreview(lesson.videoUrl)}
+                            className="px-2.5 py-1 text-xs font-bold rounded-lg text-emerald-600 bg-emerald-50 hover:bg-emerald-100 transition-colors flex items-center gap-1 border border-emerald-200 cursor-pointer shadow-2xs"
+                          >
+                            <Play size={10} className="fill-current" /> Học thử
+                          </button>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             )}
           </div>
 
-          {/* ── Section 4: Giảng viên (Instructor) ── */}
           <div
             className="p-6 md:p-8 rounded-3xl space-y-6"
             style={{
@@ -239,7 +225,6 @@ const Detailscourse = ({
                   {detalscourse?.instructor?.title}
                 </p>
 
-                {/* Stats */}
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
@@ -305,9 +290,7 @@ const Detailscourse = ({
           </div>
         </div>
 
-        {/* CỘT PHẢI: THẺ MUA KHÓA HỌC STICKY (Chiếm 1 phần) */}
         <div className="lg:sticky lg:top-8 space-y-6">
-          {/* THẺ 1: THẺ MUA KHÓA HỌC */}
           <div
             className="rounded-[2rem] overflow-hidden"
             style={{
@@ -358,11 +341,38 @@ const Detailscourse = ({
                   ₫
                 </h2>
                 <div className="flex items-center gap-1.5 text-xs font-bold text-amber-500 pt-1">
-                  <Star size={14} fill="currentColor" /> 4.8 / 5.0 (25 đánh giá)
+                  <Star size={14} fill="currentColor" />{" "}
+                  {Number(
+                    ratings?.avgRatingcou ||
+                      ratings?.averageRating ||
+                      detalscourse?.rattingforcoure ||
+                      ((Array.isArray(ratings)
+                        ? ratings
+                        : ratings?.ratings || []
+                      ).length > 0
+                        ? (Array.isArray(ratings)
+                            ? ratings
+                            : ratings?.ratings || []
+                          ).reduce(
+                            (acc, r) =>
+                              acc + Number(r.rating || r.instructorRating || 5),
+                            0,
+                          ) /
+                          (Array.isArray(ratings)
+                            ? ratings
+                            : ratings?.ratings || []
+                          ).length
+                        : 5.0),
+                  ).toFixed(1)}{" "}
+                  / 5.0 (
+                  {(Array.isArray(ratings) ? ratings : ratings?.ratings || [])
+                    .length ||
+                    detalscourse?.reviewCount ||
+                    0}{" "}
+                  đánh giá)
                 </div>
               </div>
 
-              {/* Purchase Action Buttons */}
               <div className="space-y-3">
                 {isOwner ? (
                   <Link
@@ -374,7 +384,7 @@ const Detailscourse = ({
                   >
                     Cập nhật khóa học
                   </Link>
-                ) : (
+                ) : !detalscourse.isRecode ? (
                   <button
                     onClick={() => payment(detalscourse)}
                     className="w-full py-3.5 rounded-2xl text-sm font-black text-white shadow-lg shadow-orange-500/25 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
@@ -383,6 +393,18 @@ const Detailscourse = ({
                     }}
                   >
                     <ShoppingCart size={16} /> Đăng ký khóa học ngay
+                  </button>
+                ) : (
+                  <button
+                    onClick={() =>
+                      navigate(`/student/courses/${detalscourse._id}/item`)
+                    }
+                    className="w-full py-3.5 rounded-2xl text-sm font-black text-white shadow-lg shadow-orange-500/25 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    style={{
+                      background: "linear-gradient(135deg, #f97316, #ea580c)",
+                    }}
+                  >
+                    <ShoppingCart size={16} /> Vào học
                   </button>
                 )}
                 <p className="text-[11px] text-center font-bold text-slate-400">
@@ -433,7 +455,6 @@ const Detailscourse = ({
         </div>
       </div>
 
-      {/* ── 5. PREVIEW VIDEO POPUP MODAL ── */}
       {showPreviewModal && (
         <div
           className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[9999] p-4"
@@ -448,7 +469,6 @@ const Detailscourse = ({
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Modal Header */}
             <div className="p-4 flex items-center justify-between border-b border-slate-100">
               <h4 className="font-bold text-sm text-slate-700">
                 Học thử bài học
@@ -461,7 +481,6 @@ const Detailscourse = ({
               </button>
             </div>
 
-            {/* Video Player */}
             <div className="aspect-video bg-black">
               <video
                 src={previewVideoUrl}

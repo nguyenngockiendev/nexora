@@ -6,7 +6,6 @@ import {
   Clock,
   Radio,
   Video,
-  ShoppingCart,
   CheckCircle2,
   AlertCircle,
   Loader2,
@@ -26,7 +25,7 @@ const CoursesForm = ({
   setPrice,
 }) => {
   const [selectedSort, setSelectedSort] = useState("latest");
-  const { addToCart, cartItems } = useCart();
+  const { addToCart } = useCart();
 
   return (
     <div className="w-full space-y-8 pb-16">
@@ -39,22 +38,6 @@ const CoursesForm = ({
           boxShadow: "0 20px 50px rgba(194, 110, 30, 0.06)",
         }}
       >
-        <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20">
-          <button
-            onClick={() => navigate("/cart")}
-            className="relative inline-flex items-center justify-center p-3 rounded-full text-slate-700 bg-white/85 border border-white/95 shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all backdrop-blur-xl cursor-pointer group"
-            style={{ borderRadius: "9999px" }}
-            title="Giỏ hàng"
-          >
-            <ShoppingCart
-              size={20}
-              className="text-slate-700 group-hover:text-orange-500 transition-colors"
-            />
-            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-orange-500 text-white text-[10px] font-black flex items-center justify-center shadow-sm">
-              {cartItems.length}
-            </span>
-          </button>
-        </div>
         <div
           className="absolute -top-24 -left-24 w-80 h-80 rounded-full opacity-25 pointer-events-none blur-[70px]"
           style={{
@@ -310,7 +293,7 @@ const CoursesForm = ({
                 </div>
 
                 <div className="flex items-center gap-2 w-full pt-1">
-                  {cou.type !== "live" && (
+                  {cou.type !== "live" && !cou.isRecode && (
                     <button
                       onClick={() => addToCart(cou)}
                       className="flex-1 py-2 px-3 rounded-full text-xs font-extrabold text-slate-700 bg-white/90 border border-slate-300 hover:bg-white hover:border-slate-400 hover:text-slate-900 hover:scale-[1.02] active:scale-95 transition-all shadow-2xs text-center"

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import {
   Search,
   ChevronDown,
@@ -6,20 +6,13 @@ import {
   Clock,
   Users,
   Radio,
-  Loader2,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
 
 const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
-  const getUserName = () => {
-    try {
-      const userInfo = JSON.parse(localStorage.getItem("userInfor"));
-      return userInfo?.name || "Học viên";
-    } catch {
-      return "Học viên";
-    }
-  };
+  
+  const {dashboard} = useOutletContext();
 
   const activeCoursesCount = courses?.length || 0;
 
@@ -79,18 +72,12 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
           Khóa Học Của Tôi
         </h1>
         <p className="text-sm md:text-base font-semibold text-slate-500">
-          Chào mừng trở lại, {getUserName()}! •{" "}
+          Chào mừng trở lại, {dashboard?.name} •{" "}
           <span className="text-orange-600 font-extrabold">
             {activeCoursesCount} Khóa học đang tham gia
           </span>
         </p>
       </div>
-
-      {loading && (
-        <div className="flex items-center justify-center gap-3 py-12 text-orange-500 font-bold text-base">
-          <Loader2 className="animate-spin" size={26} /> Đang tải lộ trình học tập của bạn...
-        </div>
-      )}
 
       {error && (
         <div className="p-5 rounded-3xl bg-red-50/80 border border-red-200 text-red-600 font-bold text-sm backdrop-blur-md">
@@ -181,7 +168,8 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
                             borderRadius: "9999px",
                           }}
                         >
-                          <Radio size={12} className="animate-pulse" /> TRỰC TUYẾN
+                          <Radio size={12} className="animate-pulse" /> TRỰC
+                          TUYẾN
                         </div>
                       </div>
                       <div className="absolute bottom-3 left-3 right-3 z-10">

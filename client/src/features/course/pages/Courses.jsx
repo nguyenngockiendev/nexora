@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import CoursesForm from "../components/CourseForm";
 import useGetCourses from "../hooks/useCourse";
 import usePayment from "../../payment/hooks/usePayment";
+import PaymentQRModal from "../../payment/components/PaymentQRModal";
+import useShareSocket from "../../../shared/hooks/useSocket";
+import { toast } from "react-toastify";
 
 const Courses = ({ mode }) => {
   const [statusmessage] = useSearchParams();
@@ -23,12 +26,27 @@ const Courses = ({ mode }) => {
   }, []);
   const {
     payment,
+    qrpayment,
+    setQrpayment,
     error: errorPayment,
     loading: paymentloading,
   } = usePayment();
   const messagepayment = statusmessage.get("payment");
   const role = localStorage.getItem("role");
   const navigate = useNavigate();
+  const socket = useShareSocket();
+
+  const qrUrl =
+    qrpayment?.url || (typeof qrpayment === "string" ? qrpayment : null);
+
+  useEffect(() => {
+    if (!socket) return;
+    socket.on("payment_success", (data) => {
+      toast.success(data?.message || "Thanh toán thành công!");
+      navigate("/student");
+    });
+    return () => socket.off("payment_success");
+  }, [socket, navigate]);
 
   useEffect(() => {
     const handfilter = () => {
@@ -83,6 +101,7 @@ const Courses = ({ mode }) => {
     <div className="w-full min-h-screen py-6 md:py-8">
       {mode == "all" ? (
         <CoursesForm
+          qrpayment={qrpayment}
           setPrice={setPrice}
           setStar={setStar}
           messagepayment={messagepayment}
@@ -112,6 +131,14 @@ const Courses = ({ mode }) => {
           setSearch={setSearch}
           setFilter={setFilter}
           navigate={navigate}
+        />
+      )}
+
+      {/* Modal Popup VietQR */}
+      {qrUrl && (
+        <PaymentQRModal
+          qrUrl={qrUrl}
+          onClose={() => setQrpayment(null)}
         />
       )}
     </div>

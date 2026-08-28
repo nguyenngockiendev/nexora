@@ -5,7 +5,7 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
   return (
     <div className="p-4 md:p-6 space-y-6 min-h-screen">
 
-      {/* ── Page Header ── */}
+    
       <div
         className="relative overflow-hidden rounded-3xl p-6"
         style={{

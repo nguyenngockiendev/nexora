@@ -141,5 +141,5 @@ module.exports = {
   ManagerCourse,
   IsLookedCourseAndLession,
   GetCoursesforevery,
-  UpdateCourse
+  UpdateCourse,
 };

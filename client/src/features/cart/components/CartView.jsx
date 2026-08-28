@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Trash2,
   ArrowRight,
@@ -9,6 +9,7 @@ import {
   BookOpen,
   QrCode,
   Loader2,
+  Clock,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -26,6 +27,27 @@ const CartView = ({
   const [couponCode, setCouponCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [selectedPayment, setSelectedPayment] = useState("qr");
+  const [time, setTime] = useState(300); // 5 phút = 300 giây
+
+  useEffect(() => {
+    if (!qrUrl) {
+      setTime(300);
+      return;
+    }
+    if (time <= 0) return;
+
+    const timer = setInterval(() => {
+      setTime((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [qrUrl, time]);
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
   return (
     <div className="w-full max-w-6xl mx-auto space-y-8 pb-16">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -293,12 +315,36 @@ const CartView = ({
               )}
             </button>
             {qrUrl && (
-              <div className="mt-5 p-1.5 rounded-[26px] bg-white border-2 border-orange-200 shadow-lg text-center overflow-hidden">
-                <img
-                  src={qrUrl}
-                  alt="Mã VietQR Thanh Toán"
-                  className="w-full h-auto object-contain rounded-[20px] scale-[1.02]"
-                />
+              <div className="mt-5 space-y-2.5">
+                {time > 0 ? (
+                  <div className="flex items-center justify-between px-4 py-2 rounded-xl bg-orange-50/80 border border-orange-100 text-xs font-semibold">
+                    <span className="flex items-center gap-1.5 text-slate-500 text-[11px]">
+                      <Clock size={13} className="text-orange-500" /> Thời gian quét mã:
+                    </span>
+                    <span className="font-mono font-black text-orange-600 tracking-wider">
+                      {formatTime(time)}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between px-4 py-2 rounded-xl bg-rose-50 border border-rose-200 text-xs font-bold text-rose-600">
+                    <span>Mã thanh toán đã hết hạn!</span>
+                    <button
+                      type="button"
+                      onClick={handlePayment}
+                      className="px-2.5 py-1 rounded-lg bg-rose-600 text-white text-[11px] hover:bg-rose-700 transition-colors cursor-pointer"
+                    >
+                      Tạo mã mới
+                    </button>
+                  </div>
+                )}
+
+                <div className={`p-1.5 rounded-[26px] bg-white border-2 border-orange-200 shadow-lg text-center overflow-hidden transition-all ${time === 0 ? "opacity-30 grayscale pointer-events-none" : ""}`}>
+                  <img
+                    src={qrUrl}
+                    alt="Mã VietQR Thanh Toán"
+                    className="w-full h-auto object-contain rounded-[20px] scale-[1.02]"
+                  />
+                </div>
               </div>
             )}
 
