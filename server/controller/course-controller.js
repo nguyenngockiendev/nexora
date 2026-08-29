@@ -75,6 +75,7 @@ const DetailsCourse = async (req, res) => {
   try {
     const data = {
       courseId: req.params.courseId,
+      userId: req.user.userId,
     };
     const result = await GetDetailsCourse(data);
     res.status(200).json(result);

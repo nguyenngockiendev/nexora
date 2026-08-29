@@ -27,7 +27,7 @@ const CartView = ({
   const [couponCode, setCouponCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [selectedPayment, setSelectedPayment] = useState("qr");
-  const [time, setTime] = useState(300); // 5 phút = 300 giây
+  const [time, setTime] = useState(300);
 
   useEffect(() => {
     if (!qrUrl) {
