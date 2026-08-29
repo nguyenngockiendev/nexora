@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Search,
   ChevronDown,
@@ -24,7 +23,6 @@ const CoursesForm = ({
   setStar,
   setPrice,
 }) => {
-  const [selectedSort, setSelectedSort] = useState("latest");
   const { addToCart } = useCart();
 
   return (
@@ -124,7 +122,6 @@ const CoursesForm = ({
 
           <div className="relative">
             <select
-              value={selectedSort}
               onChange={(e) => setPrice && setPrice(e.target.value)}
               className="appearance-none pl-4 pr-9 py-2.5 rounded-full text-xs md:text-sm font-bold bg-white/80 border border-white/90 shadow-sm backdrop-blur-xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-slate-700 cursor-pointer"
               style={{ borderRadius: "9999px" }}

@@ -88,7 +88,13 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-7">
         {courses?.map((item) => {
           const isLive = item?.type === "live";
-          const title = item?.courseId?.title || "Khóa học";
+          const courseTitle = item?.courseId?.title || "Khóa học";
+          const className = item?.classId?.className || "";
+          const title = isLive
+            ? className
+              ? `${courseTitle} - ${className}`
+              : courseTitle
+            : courseTitle;
           const instructorName =
             item?.instructor?.name ||
             item?.courseId?.instructorName ||
@@ -101,11 +107,13 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
           const progress = Number(item?.process || 0);
           const completedCount = item?.completed?.length || 0;
           const totalLessonsCount =
-            item?.numberStudy?.length || item?.totalLessons || 10;
+            item?.numberStudy?.length || item?.totalLessons || 0;
           const nextLessonTitle =
-            item?.nextLesson?.title || "Kiến trúc nền tảng bài học";
-          const rating =
-            item?.rating || item?.courseId?.rating || (isLive ? 4.8 : 4.5);
+            item?.nextLesson?.title ||
+            (completedCount >= totalLessonsCount && totalLessonsCount > 0
+              ? "Đã hoàn thành tất cả bài học 🎉"
+              : "Bắt đầu bài học đầu tiên");
+          const rating = item?.rating ? Number(item.rating).toFixed(1) : "5.0";
 
           return (
             <div
@@ -123,7 +131,7 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
                     {isLive ? "Lớp trực tuyến" : "Khóa học video"}
                   </span>
                   <div className="inline-flex items-center gap-1 text-xs font-black text-slate-800">
-                    <span>{Number(rating).toFixed(1)}</span>
+                    <span>{rating}</span>
                     <Star size={13} className="text-amber-500 fill-amber-500" />
                   </div>
                 </div>
@@ -137,13 +145,13 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
                     <Clock size={13} />
                     <span>
                       {item?.courseId?.category ||
-                        (isLive ? "UI/UX & Lập trình" : "Công nghệ")}
+                        (isLive ? "Lớp học trực tuyến" : "Khóa học video")}
                     </span>
                   </div>
                   {isLive && (
                     <div className="flex items-center gap-1">
                       <Users size={13} />
-                      <span>{item?.studentsCount || 3} học viên</span>
+                      <span>{item?.classId?.currentStudents ?? 0} học viên</span>
                     </div>
                   )}
                 </div>
@@ -174,8 +182,7 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
                       </div>
                       <div className="absolute bottom-3 left-3 right-3 z-10">
                         <span className="text-xs font-bold text-white/95 line-clamp-1 drop-shadow-sm">
-                          Đang phát:{" "}
-                          {item?.classId?.title || "Buổi học tương tác"}
+                          {item?.classId?.className || "Buổi học tương tác"}
                         </span>
                       </div>
                     </>
@@ -198,9 +205,9 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
                 {isLive ? (
                   <div className="space-y-1.5 mb-6">
                     <div className="text-xs font-semibold text-slate-600">
-                      Chủ đề hiện tại:{" "}
+                      Mô tả lớp học:{" "}
                       <strong className="text-slate-800 font-bold">
-                        {item?.classId?.topic || "Kiến trúc & Thực hành"}
+                        {item?.classId?.description || "Học trực tuyến tương tác cùng giảng viên"}
                       </strong>
                     </div>
                   </div>
@@ -219,7 +226,7 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
                         <div
                           className="h-full rounded-full transition-all duration-700 ease-out"
                           style={{
-                            width: `${progress || 20}%`,
+                            width: `${progress}%`,
                             background:
                               "linear-gradient(90deg, #f97316, #fb923c)",
                           }}

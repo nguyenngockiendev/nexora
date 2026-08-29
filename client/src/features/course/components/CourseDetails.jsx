@@ -1,11 +1,9 @@
-import { useState } from "react";
 import {
   Calendar,
   Clock,
   Video,
   Radio,
   ArrowRight,
-  AlertCircle,
   Loader2,
   CalendarDays,
   Hourglass,
@@ -13,22 +11,8 @@ import {
 } from "lucide-react";
 import { Link, useOutletContext } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import { useCart } from "../../cart/hooks/useCart";
-import PaymentQRModal from "../../payment/components/PaymentQRModal";
 
-const DetailsCourse = ({
-  detalscourse = [],
-  error,
-  loading,
-  payment,
-  errorPayment,
-  paymentloading,
-  qrUrl,
-  setQrpayment,
-}) => {
-  const [loadingClassId, setLoadingClassId] = useState(null);
-  const [selectedTitle, setSelectedTitle] = useState("");
-  const { addToCart } = useCart();
+const DetailsCourse = ({ detalscourse = [], error, loading, handAddcart }) => {
   const courseInfo = detalscourse?.[0]?.courseId || {};
   const instructor =
     (courseInfo?.instructor &&
@@ -232,13 +216,6 @@ const DetailsCourse = ({
           </div>
         </div>
 
-        {errorPayment && (
-          <div className="p-4 rounded-2xl bg-red-50/80 border border-red-200 text-red-600 font-bold text-xs flex items-center gap-2 shadow-xs backdrop-blur-md">
-            <AlertCircle size={18} />
-            <span>{errorPayment}</span>
-          </div>
-        )}
-
         {loading && (
           <div className="flex items-center justify-center p-12 text-orange-600 font-bold text-sm gap-2">
             <Loader2 className="animate-spin" size={26} /> Đang tải danh sách
@@ -389,8 +366,8 @@ const DetailsCourse = ({
                           <button
                             disabled={isClosed}
                             onClick={() =>
-                              addToCart &&
-                              addToCart({
+                              handAddcart &&
+                              handAddcart({
                                 _id: item._id,
                                 courseId: item.courseId?._id || item.courseId,
                                 classId: item._id,
@@ -408,24 +385,14 @@ const DetailsCourse = ({
                             <ShoppingCart size={15} /> Thêm vào giỏ
                           </button>
                           <button
-                            disabled={loadingClassId === item._id || isClosed}
-                            onClick={async () => {
-                              setLoadingClassId(item._id);
-                              setSelectedTitle(
-                                item?.className
-                                  ? `${courseInfo?.title || "Khóa Học Live"} - ${item.className}`
-                                  : courseInfo?.title || "Lớp học",
-                              );
-                              try {
-                                await payment({
-                                  ...item,
-                                  courseId: item.courseId?._id || item.courseId,
-                                  classId: item._id,
-                                  type: "live",
-                                });
-                              } finally {
-                                setLoadingClassId(null);
-                              }
+                            onClick={() => {
+                              handAddcart({
+                                ...item,
+                                title: `${courseInfo?.title || "Khóa Học Live"} - ${item.className || "Lớp học"}`,
+                                courseId: item.courseId?._id || item.courseId,
+                                classId: item._id,
+                                type: "live",
+                              });
                             }}
                             className="flex-1 py-2.5 px-3.5 rounded-full text-xs font-black text-white shadow-md shadow-orange-500/25 hover:shadow-orange-500/40 hover:scale-[1.02] active:scale-95 transition-all text-center flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                             style={{
@@ -435,16 +402,7 @@ const DetailsCourse = ({
                               borderRadius: "9999px",
                             }}
                           >
-                            {loadingClassId === item._id ? (
-                              <>
-                                <Loader2 size={15} className="animate-spin" />
-                                <span>Đang xử lý...</span>
-                              </>
-                            ) : isClosed ? (
-                              "Đã đóng lớp"
-                            ) : (
-                              "Đăng ký ngay"
-                            )}
+                            {isClosed ? "Đã đóng lớp" : "Đăng ký ngay"}
                           </button>{" "}
                         </>
                       ) : (
@@ -470,15 +428,6 @@ const DetailsCourse = ({
               );
             })}
           </div>
-        )}
-
-        {/* Modal Popup VietQR */}
-        {qrUrl && (
-          <PaymentQRModal
-            qrUrl={qrUrl}
-            courseTitle={selectedTitle}
-            onClose={() => setQrpayment(null)}
-          />
         )}
 
         {!loading && availableClasses.length === 0 && (

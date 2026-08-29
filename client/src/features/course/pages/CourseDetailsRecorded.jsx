@@ -1,42 +1,29 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Detailscourse from "../components/DetailsCourse";
 import { useDetails } from "../hooks/useDetailsCourse";
-import usePayment from "../../payment/hooks/usePayment";
+
 import useRating from "../hooks/useRating";
-import PaymentQRModal from "../../payment/components/PaymentQRModal";
-import useShareSocket from "../../../shared/hooks/useSocket";
-import { toast } from "react-toastify";
+
+import { useCart } from "../../cart/hooks/useCart";
 
 const CourseDetailsRecorded = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
-  const socket = useShareSocket();
+
   const { detalscourse, error, loading } = useDetails(courseId);
-  const {
-    payment,
-    qrpayment,
-    setQrpayment,
-    loading: paymentLoading,
-  } = usePayment();
+
+  const { addToCart } = useCart();
   const { ratings, CreateAndUpdate } = useRating(courseId);
   const [activeLessonId, setActiveLessonId] = useState(null);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [previewVideoUrl, setPreviewVideoUrl] = useState("");
   const [expandedSyllabus, setExpandedSyllabus] = useState(true);
   const [instructorRating, setUserRating] = useState(5);
-
-  const qrUrl =
-    qrpayment?.url || (typeof qrpayment === "string" ? qrpayment : null);
-
-  useEffect(() => {
-    if (!socket) return;
-    socket.on("payment_success", (data) => {
-      toast.success(data?.message || "Thanh toán thành công!");
-      navigate("/student");
-    });
-    return () => socket.off("payment_success");
-  }, [socket, navigate]);
+  const handAddcart = (item) => {
+    addToCart(item);
+    navigate("/cart");
+  };
 
   const totalDuration = (detalscourse?.lessons || []).reduce(
     (acc, curr) => acc + curr.duration,
@@ -60,8 +47,6 @@ const CourseDetailsRecorded = () => {
         instructorRating={instructorRating}
         setUserRating={setUserRating}
         ratings={ratings}
-        payment={payment}
-        paymentLoading={paymentLoading}
         navigate={navigate}
         detalscourse={detalscourse}
         error={error}
@@ -75,15 +60,8 @@ const CourseDetailsRecorded = () => {
         expandedSyllabus={expandedSyllabus}
         setExpandedSyllabus={setExpandedSyllabus}
         totalDuration={totalDuration}
+        handAddcart={handAddcart}
       />
-
-      {qrUrl && (
-        <PaymentQRModal
-          qrUrl={qrUrl}
-          courseTitle={detalscourse?.title}
-          onClose={() => setQrpayment(null)}
-        />
-      )}
     </div>
   );
 };

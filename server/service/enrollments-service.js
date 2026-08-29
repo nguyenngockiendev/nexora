@@ -6,6 +6,7 @@ const user = require("../model/Users");
 const ProcessLession = require("../model/ProcessLessons");
 const Message = require("../model/ClassMessages");
 const Orders = require("../model/Orders");
+const Rating = require("../model/Ratings");
 
 const GetorderByUserId = async (data) => {
   try {
@@ -42,9 +43,9 @@ const GetorderByUserId = async (data) => {
           completed: true,
         }).populate("lessonId");
 
-        const process = Math.round(
-          (completeds.length / numberStudy.length) * 100,
-        );
+        const process = numberStudy.length > 0
+          ? Math.round((completeds.length / numberStudy.length) * 100)
+          : 0;
 
         const validCompleteds = completeds.filter((c) => c.lessonId);
 
@@ -60,12 +61,20 @@ const GetorderByUserId = async (data) => {
           (lesson) => !completedLessonIds.has(lesson._id.toString()),
         );
 
+        const courseRatings = await Rating.find({ courseId: item.courseId }).lean();
+        const avgRating = courseRatings.length > 0
+          ? (courseRatings.reduce((sum, r) => sum + (r.rating || r.instructorRating || 5), 0) / courseRatings.length).toFixed(1)
+          : 5.0;
+
         return {
           ...item,
           instructor: intructorName,
           numberStudy: numberStudy,
           completed: completeds,
           process: process,
+          nextLesson: nextLesson || null,
+          rating: Number(avgRating),
+          ratingCount: courseRatings.length,
         };
       }),
     );

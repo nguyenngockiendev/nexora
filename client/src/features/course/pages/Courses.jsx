@@ -3,8 +3,7 @@ import { useEffect, useState } from "react";
 
 import CoursesForm from "../components/CourseForm";
 import useGetCourses from "../hooks/useCourse";
-import usePayment from "../../payment/hooks/usePayment";
-import PaymentQRModal from "../../payment/components/PaymentQRModal";
+
 import useShareSocket from "../../../shared/hooks/useSocket";
 import { toast } from "react-toastify";
 
@@ -24,20 +23,11 @@ const Courses = ({ mode }) => {
     getcourses();
     getcoursesAll();
   }, []);
-  const {
-    payment,
-    qrpayment,
-    setQrpayment,
-    error: errorPayment,
-    loading: paymentloading,
-  } = usePayment();
+
   const messagepayment = statusmessage.get("payment");
   const role = localStorage.getItem("role");
   const navigate = useNavigate();
   const socket = useShareSocket();
-
-  const qrUrl =
-    qrpayment?.url || (typeof qrpayment === "string" ? qrpayment : null);
 
   useEffect(() => {
     if (!socket) return;
@@ -101,13 +91,9 @@ const Courses = ({ mode }) => {
     <div className="w-full min-h-screen py-6 md:py-8">
       {mode == "all" ? (
         <CoursesForm
-          qrpayment={qrpayment}
           setPrice={setPrice}
           setStar={setStar}
           messagepayment={messagepayment}
-          payment={payment}
-          errorPayment={errorPayment}
-          paymentloading={paymentloading}
           courses={filterdata}
           error={error}
           loading={loading}
@@ -121,9 +107,6 @@ const Courses = ({ mode }) => {
           setPrice={setPrice}
           setStar={setStar}
           messagepayment={messagepayment}
-          payment={payment}
-          errorPayment={errorPayment}
-          paymentloading={paymentloading}
           courses={filterdatall}
           error={error}
           loading={loading}
@@ -131,14 +114,6 @@ const Courses = ({ mode }) => {
           setSearch={setSearch}
           setFilter={setFilter}
           navigate={navigate}
-        />
-      )}
-
-      {/* Modal Popup VietQR */}
-      {qrUrl && (
-        <PaymentQRModal
-          qrUrl={qrUrl}
-          onClose={() => setQrpayment(null)}
         />
       )}
     </div>

@@ -17,7 +17,6 @@ import { jwtDecode } from "jwt-decode";
 import CourseRating from "./CourseRating";
 
 const Detailscourse = ({
-  payment,
   ratings,
   detalscourse,
   instructorRating,
@@ -30,6 +29,7 @@ const Detailscourse = ({
   expandedSyllabus,
   setExpandedSyllabus,
   totalDuration,
+  handAddcart,
 }) => {
   const token = localStorage.getItem("token");
   let currentUserId = null;
@@ -41,6 +41,7 @@ const Detailscourse = ({
       console.log(err);
     }
   }
+
   const navigate = useNavigate();
   const instructorId =
     detalscourse?.instructor?._id || detalscourse?.instructor;
@@ -300,7 +301,6 @@ const Detailscourse = ({
               boxShadow: "0 20px 48px rgba(194,110,30,0.08)",
             }}
           >
-            {/* Thumbnail Video Preview Area */}
             <div
               className="relative aspect-video overflow-hidden m-2 rounded-2xl group cursor-pointer"
               onClick={() =>
@@ -386,7 +386,7 @@ const Detailscourse = ({
                   </Link>
                 ) : !detalscourse.isRecode ? (
                   <button
-                    onClick={() => payment(detalscourse)}
+                    onClick={() => handAddcart(detalscourse)}
                     className="w-full py-3.5 rounded-2xl text-sm font-black text-white shadow-lg shadow-orange-500/25 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
                     style={{
                       background: "linear-gradient(135deg, #f97316, #ea580c)",
