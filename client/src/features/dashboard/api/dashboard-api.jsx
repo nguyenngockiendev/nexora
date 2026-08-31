@@ -21,10 +21,15 @@ const DashboartforAdmin = async (day) => {
   const res = await api.get("/admin_dashboart", { params: { day } });
   return res;
 };
+const Classion = async () => {
+  const res = await api.get("/Classion");
+  return res;
+};
 export {
   GetInstructorBusinessDashboard,
   GetUserInformation,
   Getrecentlesson,
   DashboartforStudent,
   DashboartforAdmin,
+  Classion,
 };

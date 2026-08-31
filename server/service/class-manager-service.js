@@ -256,6 +256,103 @@ const CourseDetailsClass = async (data) => {
   }
 };
 
+const SelectSessionClass = async (data) => {
+  try {
+    const dayMap = {
+      Monday: 1,
+      Tuesday: 2,
+      Wednesday: 3,
+      Thursday: 4,
+      Friday: 5,
+      Saturday: 6,
+      Sunday: 7,
+    };
+
+    const now = new Date();
+    const dayIndex = now.getDay();
+    const currentDay = dayIndex === 0 ? 7 : dayIndex;
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    const currentWeeklyMinutes = currentDay * 1440 + currentMinutes;
+
+    const myLiveEnrollments = await errollment
+      .find({
+        userId: data.userId,
+        type: "live",
+        status: "active",
+      })
+      .populate({
+        path: "classId",
+        match: { isLocked: false },
+        populate: {
+          path: "instructorId",
+          select: "name avatar email",
+        },
+      })
+      .populate("courseId", "title thumbnail category")
+      .lean();
+
+    const validClasses = myLiveEnrollments
+      .filter((item) => item.classId)
+      .map((item) => {
+        const cls = item.classId;
+        const course = item.courseId || {};
+        return {
+          ...cls,
+          courseTitle: course.title,
+          courseThumbnail: course.thumbnail,
+          courseCategory: course.category,
+        };
+      });
+
+    if (validClasses.length === 0) {
+      return {
+        message: "Bạn chưa đăng ký lớp học trực tuyến nào!",
+        nextSessionClass: null,
+        totalLiveClasses: 0,
+      };
+    }
+
+    const formatTime = (time) => {
+      const hour = Math.floor(time / 60);
+      const minute = time % 60;
+      return `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
+    };
+
+    const classesWithTime = validClasses.map((cls) => {
+      const classDay = dayMap[cls.schedule?.day] || 1;
+      const startTime = Number(cls.schedule?.startTime || 0);
+      const weeklyMinutes = classDay * 1440 + startTime;
+
+      return {
+        ...cls,
+        weeklyMinutes: weeklyMinutes,
+        schedule: {
+          day: cls.schedule?.day,
+          startTime: formatTime(cls.schedule?.startTime),
+          endTime: formatTime(cls.schedule?.endTime),
+        },
+      };
+    });
+
+    const upcomingThisWeek = classesWithTime
+      .filter((cls) => cls.weeklyMinutes >= currentWeeklyMinutes)
+      .sort((a, b) => a.weeklyMinutes - b.weeklyMinutes);
+
+    const nextSessionClass =
+      upcomingThisWeek.length > 0
+        ? upcomingThisWeek[0]
+        : classesWithTime.sort((a, b) => a.weeklyMinutes - b.weeklyMinutes)[0];
+
+    return {
+      nextSessionClass: nextSessionClass || null,
+      totalLiveClasses: validClasses.length,
+    };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 module.exports = {
   CreateClassbyIntructor,
   GetClassbyInstructor,
@@ -263,4 +360,5 @@ module.exports = {
   ChangeStatusClass,
   GetClassByStudent,
   CourseDetailsClass,
+  SelectSessionClass,
 };

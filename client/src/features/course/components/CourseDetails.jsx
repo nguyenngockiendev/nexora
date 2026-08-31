@@ -377,6 +377,9 @@ const DetailsCourse = ({ detalscourse = [], error, loading, handAddcart }) => {
                                 price: Number(item.price || 0),
                                 thumbnail: courseInfo?.thumbnail,
                                 schedule: item.schedule,
+                                rating: Number(courseInfo?.rattingforcoure || courseInfo?.rating || 5.0),
+                                reviewsCount: Number(courseInfo?.Rattingleng || courseInfo?.reviewsCount || 0),
+                                instructor: instructor?.name || courseInfo?.instructor?.name || "Giảng viên",
                               })
                             }
                             className="flex-1 py-2.5 px-3.5 rounded-full text-xs font-black text-slate-700 bg-white/90 border border-slate-300 hover:bg-white hover:border-slate-400 hover:text-slate-900 shadow-2xs hover:scale-[1.02] active:scale-95 transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
@@ -385,14 +388,23 @@ const DetailsCourse = ({ detalscourse = [], error, loading, handAddcart }) => {
                             <ShoppingCart size={15} /> Thêm vào giỏ
                           </button>
                           <button
+                            disabled={isClosed}
                             onClick={() => {
                               handAddcart({
-                                ...item,
-                                title: `${courseInfo?.title || "Khóa Học Live"} - ${item.className || "Lớp học"}`,
+                                _id: item._id,
                                 courseId: item.courseId?._id || item.courseId,
                                 classId: item._id,
+                                title: `${courseInfo?.title || "Khóa Học Live"} - ${item.className || "Lớp học"}`,
+                                className: item.className,
                                 type: "live",
+                                price: Number(item.price || 0),
+                                thumbnail: courseInfo?.thumbnail,
+                                schedule: item.schedule,
+                                rating: Number(courseInfo?.rattingforcoure || courseInfo?.rating || 5.0),
+                                reviewsCount: Number(courseInfo?.Rattingleng || courseInfo?.reviewsCount || 0),
+                                instructor: instructor?.name || courseInfo?.instructor?.name || "Giảng viên",
                               });
+                              navigate("/cart");
                             }}
                             className="flex-1 py-2.5 px-3.5 rounded-full text-xs font-black text-white shadow-md shadow-orange-500/25 hover:shadow-orange-500/40 hover:scale-[1.02] active:scale-95 transition-all text-center flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                             style={{

@@ -22,17 +22,16 @@ const GetAllCourses = async (data) => {
       course?.map(async (co) => {
         const numbserclass = await classs.find({ courseId: co?._id });
         const rattingforcoure = await Rating.find({ courseId: co?._id });
-        const avgRting = rattingforcoure.reduce((sum, number) => {
-          const toatal = Math.round((sum += Number(number.rating)));
-          return toatal;
+        const totalRating = rattingforcoure.reduce((sum, number) => {
+          return sum + Number(number.rating || number.instructorRating || 5);
         }, 0);
-        const avg = avgRting / rattingforcoure.length;
+        const avg = rattingforcoure.length > 0 ? totalRating / rattingforcoure.length : 5.0;
         return {
           ...co,
           instructor: co?.instructor?.name,
           numberClass: numbserclass.length,
           Rattingleng: rattingforcoure.length,
-          rattingforcoure: avg,
+          rattingforcoure: Number(avg.toFixed(1)),
         };
       }),
     );
@@ -60,11 +59,10 @@ const GetCourses = async (data) => {
       course?.map(async (co) => {
         const numbserclass = await classs.find({ courseId: co?._id });
         const rattingforcoure = await Rating.find({ courseId: co?._id });
-        const avgRting = rattingforcoure.reduce((sum, number) => {
-          const toatal = Math.round((sum += Number(number.rating)));
-          return toatal;
+        const totalRating = rattingforcoure.reduce((sum, number) => {
+          return sum + Number(number.rating || number.instructorRating || 5);
         }, 0);
-        const avg = avgRting / rattingforcoure.length;
+        const avg = rattingforcoure.length > 0 ? totalRating / rattingforcoure.length : 5.0;
         const isEnroiment = await Enrollments.find({
           userId: data.userId,
           courseId: co?._id,
@@ -79,7 +77,7 @@ const GetCourses = async (data) => {
           instructor: co?.instructor?.name,
           numberClass: numbserclass.length,
           Rattingleng: rattingforcoure.length,
-          rattingforcoure: avg,
+          rattingforcoure: Number(avg.toFixed(1)),
           isClass: isClass,
           isRecode: isRecode,
         };
@@ -165,10 +163,18 @@ const GetDetailsCourse = async (data) => {
       status: "active",
     });
     const isRecode = isEnroillment.some((item) => item.type === "recorded");
+    const rattingforcoure = await Rating.find({ courseId: list._id }).lean();
+    const totalRating = rattingforcoure.reduce((sum, number) => {
+      return sum + Number(number.rating || number.instructorRating || 5);
+    }, 0);
+    const avg = rattingforcoure.length > 0 ? totalRating / rattingforcoure.length : 5.0;
+
     const result = {
       ...list,
       isRecode: isRecode,
       lessons: lessionbycou,
+      Rattingleng: rattingforcoure.length,
+      rattingforcoure: Number(avg.toFixed(1)),
     };
     return result;
   } catch (error) {

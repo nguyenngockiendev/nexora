@@ -2,7 +2,8 @@ import StudentDashboardView from "../components/StudentDashboardView";
 import useStudentDashboard from "../hooks/useStudentDashboard";
 
 const StudentDashboard = () => {
-  const { recentlesson, error, loading, dashboart } = useStudentDashboard();
+  const { recentlesson, error, loading, dashboart, classRecent } =
+    useStudentDashboard();
 
   return (
     <StudentDashboardView
@@ -10,6 +11,7 @@ const StudentDashboard = () => {
       recentlesson={recentlesson}
       error={error}
       loading={loading}
+      classRecent={classRecent}
     />
   );
 };

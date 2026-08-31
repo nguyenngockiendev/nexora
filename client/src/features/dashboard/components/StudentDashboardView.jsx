@@ -83,7 +83,12 @@ const StatCard = ({ icon: Icon, label, value, tone, helper }) => {
   );
 };
 
-const StudentDashboardView = ({ dashboart, loading, recentlesson }) => {
+const StudentDashboardView = ({
+  dashboart,
+  loading,
+  recentlesson,
+  classRecent,
+}) => {
   const { dashboard } = useOutletContext();
   const navigate = useNavigate();
 
@@ -343,53 +348,69 @@ const StudentDashboardView = ({ dashboart, loading, recentlesson }) => {
           </div>
 
           <div className="space-y-4">
-            {liveClassesList.length > 0 ? (
-              liveClassesList.map((cls) => (
-                <div
-                  key={cls._id || cls.id}
-                  onClick={() =>
-                    navigate(cls._id ? `/class/${cls._id}` : "/student/classes")
-                  }
-                  className="group flex items-center justify-between p-4 rounded-2xl border border-slate-100 bg-white/70 hover:bg-white hover:shadow-md transition-all cursor-pointer"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-orange-50 text-orange-500 flex flex-col items-center justify-center font-bold">
-                      <span className="text-xs uppercase font-black">LIVE</span>
+            {(() => {
+              const liveClasses = Array.isArray(classRecent)
+                ? classRecent
+                : classRecent?.nextSessionClass
+                  ? [classRecent.nextSessionClass]
+                  : [];
+
+              if (liveClasses.length === 0) {
+                return (
+                  <div className="flex flex-col items-center justify-center h-48 rounded-2xl border border-dashed border-slate-200 bg-slate-50/50">
+                    <div className="w-14 h-14 rounded-full bg-orange-50 flex items-center justify-center mb-3 text-orange-500">
+                      <Video size={24} />
                     </div>
-                    <div>
-                      <h4 className="font-bold text-slate-800 text-base">
-                        {cls.title || cls.name || "Lớp học trực tuyến"}
-                      </h4>
-                      <div className="flex items-center gap-3 mt-1 text-xs font-medium text-slate-500">
-                        {cls.time && (
+                    <p className="font-bold text-slate-700">
+                      Chưa có lịch học trực tuyến
+                    </p>
+                    <p className="text-sm text-slate-500 mt-1 max-w-xs text-center">
+                      Các buổi học trực tuyến mới sẽ được cập nhật tại đây.
+                    </p>
+                  </div>
+                );
+              }
+
+              return liveClasses.map((cls) => {
+                const classTitle = cls.className || cls.courseTitle || cls.title || "Lớp học trực tuyến";
+                const scheduleTime = cls.schedule
+                  ? `${cls.schedule.day || ""} (${cls.schedule.startTime || ""} - ${cls.schedule.endTime || ""})`
+                  : cls.time || "Sắp diễn ra";
+                const instructorName = cls.instructorId?.name || "Giảng viên";
+
+                return (
+                  <div
+                    key={cls._id || cls.id}
+                    onClick={() =>
+                      navigate(cls._id ? `/live/class/${cls._id}/item` : "/student/classes")
+                    }
+                    className="group flex items-center justify-between p-4 rounded-2xl border border-slate-100 bg-white/70 hover:bg-white hover:shadow-md transition-all cursor-pointer"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-orange-50 text-orange-500 flex flex-col items-center justify-center font-bold">
+                        <span className="text-xs uppercase font-black">LIVE</span>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-slate-800 text-base">
+                          {classTitle}
+                        </h4>
+                        <div className="flex items-center gap-3 mt-1 text-xs font-medium text-slate-500 flex-wrap">
                           <span className="flex items-center gap-1">
-                            <Clock3 size={12} /> {cls.time}
+                            <Clock3 size={12} /> {scheduleTime}
                           </span>
-                        )}
-                        <span className="flex items-center gap-1 bg-slate-100 px-2 py-0.5 rounded-full">
-                          {cls.instructorId?.name || "Giảng viên"}
-                        </span>
+                          <span className="flex items-center gap-1 bg-slate-100 px-2 py-0.5 rounded-full">
+                            {instructorName}
+                          </span>
+                        </div>
                       </div>
                     </div>
+                    <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-orange-500 group-hover:text-white transition-colors shrink-0">
+                      <ChevronRight size={16} />
+                    </div>
                   </div>
-                  <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-orange-500 group-hover:text-white transition-colors">
-                    <ChevronRight size={16} />
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="flex flex-col items-center justify-center h-48 rounded-2xl border border-dashed border-slate-200 bg-slate-50/50">
-                <div className="w-14 h-14 rounded-full bg-orange-50 flex items-center justify-center mb-3 text-orange-500">
-                  <Video size={24} />
-                </div>
-                <p className="font-bold text-slate-700">
-                  Chưa có lịch học trực tuyến
-                </p>
-                <p className="text-sm text-slate-500 mt-1 max-w-xs text-center">
-                  Các buổi học trực tuyến mới sẽ được cập nhật tại đây.
-                </p>
-              </div>
-            )}
+                );
+              });
+            })()}
           </div>
         </div>
 
