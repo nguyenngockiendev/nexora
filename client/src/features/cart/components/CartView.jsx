@@ -10,6 +10,7 @@ import {
   QrCode,
   Loader2,
   Clock,
+  ShoppingBag,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -49,7 +50,7 @@ const CartView = ({
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-8 pb-16">
+    <div className="w-full space-y-8 pb-16">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
@@ -67,9 +68,9 @@ const CartView = ({
       </div>
 
       {cartItems.length > 0 ? (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-7 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start w-full">
           <div
-            className="lg:col-span-2 rounded-[2.2rem] p-6 sm:p-7 shadow-[0_10px_35px_rgba(194,110,30,0.05)] relative overflow-hidden"
+            className="lg:col-span-7 xl:col-span-8 rounded-[2.2rem] p-6 sm:p-7 shadow-[0_10px_35px_rgba(194,110,30,0.05)] relative overflow-hidden"
             style={{
               background: "rgba(255, 255, 255, 0.78)",
               border: "1px solid rgba(255, 255, 255, 0.95)",
@@ -149,20 +150,29 @@ const CartView = ({
                       </div>
 
                       <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700">
-                        <div className="flex text-amber-400">
-                          {Array.from({ length: 5 }).map((_, i) => (
-                            <Star
-                              key={i}
-                              size={13}
-                              className="fill-amber-400 text-amber-400"
-                            />
-                          ))}
-                        </div>
-                        <span>{Number(item?.rating || 4.8).toFixed(1)}</span>
-                        <span className="text-slate-300 font-normal">
-                          ({item?.reviewsCount || item?.totalReviews || 5} đánh
-                          giá)
-                        </span>
+                        {(() => {
+                          const rawRating = item?.rating ?? item?.rattingforcoure ?? item?.avgRatingcou ?? item?.averageRating;
+                          const ratingVal = (!isNaN(Number(rawRating)) && Number(rawRating) > 0) ? Number(rawRating) : 5.0;
+                          const reviewsCount = Number(item?.reviewsCount ?? item?.Rattingleng ?? item?.totalReviews ?? 0);
+
+                          return (
+                            <>
+                              <div className="flex text-amber-400">
+                                {Array.from({ length: 5 }).map((_, i) => (
+                                  <Star
+                                    key={i}
+                                    size={13}
+                                    className={i < Math.round(ratingVal) ? "fill-amber-400 text-amber-400" : "text-slate-300"}
+                                  />
+                                ))}
+                              </div>
+                              <span className="font-extrabold">{ratingVal.toFixed(1)}</span>
+                              <span className="text-slate-400 font-semibold">
+                                ({reviewsCount} đánh giá)
+                              </span>
+                            </>
+                          );
+                        })()}
                       </div>
                     </div>
 
@@ -204,7 +214,7 @@ const CartView = ({
           </div>
 
           <div
-            className="rounded-[2.2rem] p-6 sm:p-7 shadow-[0_10px_35px_rgba(194,110,30,0.06)] space-y-6 sticky top-6"
+            className="lg:col-span-5 xl:col-span-4 rounded-[2.2rem] p-6 sm:p-7 shadow-[0_10px_35px_rgba(194,110,30,0.06)] space-y-6 sticky top-6"
             style={{
               background: "rgba(255, 255, 255, 0.85)",
               border: "1px solid rgba(255, 255, 255, 0.98)",
@@ -315,34 +325,34 @@ const CartView = ({
               )}
             </button>
             {qrUrl && (
-              <div className="mt-5 space-y-2.5">
+              <div className="mt-5 space-y-2.5 w-[90%] mx-auto">
                 {time > 0 ? (
-                  <div className="flex items-center justify-between px-4 py-2 rounded-xl bg-orange-50/80 border border-orange-100 text-xs font-semibold">
+                  <div className="flex items-center justify-between px-3.5 py-1.5 rounded-xl bg-orange-50/80 border border-orange-100 text-xs font-semibold">
                     <span className="flex items-center gap-1.5 text-slate-500 text-[11px]">
                       <Clock size={13} className="text-orange-500" /> Thời gian quét mã:
                     </span>
-                    <span className="font-mono font-black text-orange-600 tracking-wider">
+                    <span className="font-mono font-black text-orange-600 tracking-wider text-xs">
                       {formatTime(time)}
                     </span>
                   </div>
                 ) : (
-                  <div className="flex items-center justify-between px-4 py-2 rounded-xl bg-rose-50 border border-rose-200 text-xs font-bold text-rose-600">
-                    <span>Mã thanh toán đã hết hạn!</span>
+                  <div className="flex items-center justify-between px-3.5 py-1.5 rounded-xl bg-rose-50 border border-rose-200 text-xs font-bold text-rose-600">
+                    <span className="text-[11px]">Mã đã hết hạn!</span>
                     <button
                       type="button"
                       onClick={handlePayment}
-                      className="px-2.5 py-1 rounded-lg bg-rose-600 text-white text-[11px] hover:bg-rose-700 transition-colors cursor-pointer"
+                      className="px-2.5 py-0.5 rounded-lg bg-rose-600 text-white text-[11px] hover:bg-rose-700 transition-colors cursor-pointer"
                     >
-                      Tạo mã mới
+                      Tạo lại
                     </button>
                   </div>
                 )}
 
-                <div className={`p-1.5 rounded-[26px] bg-white border-2 border-orange-200 shadow-lg text-center overflow-hidden transition-all ${time === 0 ? "opacity-30 grayscale pointer-events-none" : ""}`}>
+                <div className={`p-1 rounded-[22px] bg-white border border-orange-200 shadow-md text-center overflow-hidden transition-all ${time === 0 ? "opacity-30 grayscale pointer-events-none" : ""}`}>
                   <img
                     src={qrUrl}
                     alt="Mã VietQR Thanh Toán"
-                    className="w-full h-auto object-contain rounded-[20px] scale-[1.02]"
+                    className="w-full h-auto object-contain rounded-[18px]"
                   />
                 </div>
               </div>
@@ -355,32 +365,33 @@ const CartView = ({
         </div>
       ) : (
         <div
-          className="flex flex-col items-center justify-center text-center p-16 rounded-[2.5rem] shadow-sm space-y-4"
+          className="w-full flex flex-col items-center justify-center text-center py-20 px-8 rounded-[2.5rem] shadow-[0_10px_35px_rgba(194,110,30,0.05)] space-y-5"
           style={{
-            background: "rgba(255, 255, 255, 0.7)",
-            border: "1px dashed rgba(249, 115, 22, 0.3)",
-            backdropFilter: "blur(20px)",
+            background: "rgba(255, 255, 255, 0.82)",
+            border: "1px solid rgba(255, 255, 255, 0.95)",
+            backdropFilter: "blur(28px)",
           }}
         >
-          <div className="w-16 h-16 rounded-full bg-orange-100 text-orange-500 flex items-center justify-center mb-1">
-            <BookOpen size={30} />
+          <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-orange-100 to-amber-100 text-orange-600 flex items-center justify-center mb-2 shadow-inner">
+            <ShoppingBag size={36} />
           </div>
-          <h2 className="text-xl font-black text-slate-900">
-            Giỏ Hàng Đang Trống
-          </h2>
-          <p className="text-xs sm:text-sm font-semibold text-slate-500 max-w-sm">
-            Khám phá các khóa học hấp dẫn và bắt đầu nâng cao kỹ năng ngay hôm
-            nay!
-          </p>
+          <div className="space-y-1.5 max-w-md">
+            <h2 className="text-2xl font-black text-slate-900 tracking-tight">
+              Giỏ Hàng Của Bạn Đang Trống
+            </h2>
+            <p className="text-xs sm:text-sm font-semibold text-slate-500 leading-relaxed">
+              Bạn chưa thêm khóa học nào vào giỏ hàng. Hãy khám phá hàng trăm khóa học lập trình chất lượng cao để nâng cao kỹ năng của bạn!
+            </p>
+          </div>
           <button
-            onClick={() => navigate("/courses")}
-            className="px-6 py-3 rounded-full text-xs font-black text-white shadow-md shadow-orange-500/20 hover:scale-105 transition-all cursor-pointer"
+            onClick={() => navigate("/courses-all")}
+            className="px-8 py-3.5 rounded-full text-xs sm:text-sm font-black text-white shadow-lg shadow-orange-500/25 hover:scale-105 active:scale-95 transition-all cursor-pointer"
             style={{
               background: "linear-gradient(135deg, #f97316, #ea580c)",
               borderRadius: "9999px",
             }}
           >
-            Khám Phá Khóa Học
+            Khám Phá Khóa Học Ngay
           </button>
         </div>
       )}

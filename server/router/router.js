@@ -70,6 +70,7 @@ const {
 const {
   GetInstructorBusinessDashboard,
   DashboartforAdmin,
+  GetClassSesion,
 } = require("../controller/dashboard-controller");
 
 const { authMiddleware } = require("../Middleware/Middleware");
@@ -260,4 +261,5 @@ Router.put(
   UpdateCourse,
 );
 Router.get("/admin_dashboart", DashboartforAdmin);
+Router.get("/Classion", authMiddleware,GetClassSesion);
 module.exports = Router;

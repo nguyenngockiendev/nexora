@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
   CreditCard,
-  Play,
   Trash2,
   Video,
   BookOpen,
@@ -9,6 +8,7 @@ import {
   ChevronDown,
   ChevronUp,
   Layers,
+  QrCode,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -163,6 +163,11 @@ const HistoryTable = ({
                   firstItem.type === "live" ||
                   course.type === "live" ||
                   !!classItem.className;
+                const displayTitle = isLive
+                  ? course.title && classItem.className
+                    ? `${course.title} - ${classItem.className}`
+                    : classItem.className || course.title || "Lớp học trực tuyến"
+                  : course.title || "Khóa học";
                 const isExpanded = expandedOrderId === order._id;
                 const totalPrice =
                   order.Totalprice || order.totalPrice || firstItem.price || 0;
@@ -190,7 +195,7 @@ const HistoryTable = ({
                             <span
                               className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                                 isLive
-                                   ? "bg-rose-50 text-rose-700 border border-rose-200"
+                                  ? "bg-rose-50 text-rose-700 border border-rose-200"
                                   : "bg-orange-50 text-orange-700 border border-orange-200"
                               }`}
                             >
@@ -211,14 +216,12 @@ const HistoryTable = ({
                           </div>
 
                           <h3 className="font-extrabold text-sm sm:text-base text-slate-900 truncate mt-1">
-                            {course.title ||
-                              classItem.className ||
-                              "Khóa học Nexora"}
+                            {displayTitle}
                           </h3>
 
                           <div className="flex items-center gap-3 text-xs text-slate-500 mt-0.5">
                             <span className="font-mono text-[11px] text-slate-400">
-                              Mã: #{order._id.slice(-8).toUpperCase()}
+                              Mã: {order.paymentCode}
                             </span>
                             <span>•</span>
                             <span>
@@ -232,7 +235,22 @@ const HistoryTable = ({
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between md:justify-end gap-6 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100">
+                      <div className="flex items-center justify-between md:justify-end gap-5 sm:gap-6 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100 flex-wrap sm:flex-nowrap">
+                        {/* Cột Phương thức thanh toán */}
+                        <div className="text-left md:text-center">
+                          <p className="text-[11px] font-semibold text-slate-400 uppercase">
+                            Phương thức
+                          </p>
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 mt-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200 shadow-2xs">
+                            <QrCode size={11} className="text-blue-500" />
+                            <span>
+                              {order.paymentMethod === "QR" || order.paymentMethod === "sepay"
+                                ? "VietQR"
+                                : (order.paymentMethod || "VietQR").toUpperCase()}
+                            </span>
+                          </span>
+                        </div>
+
                         <div className="text-left md:text-right">
                           <p className="text-[11px] font-semibold text-slate-400 uppercase">
                             Tổng tiền
@@ -256,23 +274,6 @@ const HistoryTable = ({
                       </div>
 
                       <div className="flex items-center justify-end gap-2 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100 flex-shrink-0">
-                        {order.status === "completed" && (
-                          <button
-                            type="button"
-                            onClick={() =>
-                              navigate(
-                                isLive
-                                  ? `/class/details/${classItem._id || firstItem.classId}`
-                                  : `/courses/details/recorded/${course._id || firstItem.courseId}`,
-                              )
-                            }
-                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 transition-all cursor-pointer shadow-2xs"
-                          >
-                            <Play size={12} className="fill-emerald-600" />
-                            <span>Vào học</span>
-                          </button>
-                        )}
-
                         {order.status === "pending" && (
                           <div className="flex items-center gap-2">
                             <button
@@ -359,9 +360,11 @@ const HistoryTable = ({
                                     />
                                   </div>
                                   <span className="font-bold text-slate-800 truncate max-w-sm">
-                                    {subCourse.title ||
-                                      subClass.className ||
-                                      "Khóa học"}
+                                    {subIsLive
+                                      ? subCourse.title && subClass.className
+                                        ? `${subCourse.title} - ${subClass.className}`
+                                        : subClass.className || subCourse.title || "Khóa học"
+                                      : subCourse.title || "Khóa học"}
                                   </span>
                                 </div>
 
