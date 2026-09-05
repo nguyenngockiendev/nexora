@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import {
   Badge,
   Button,
@@ -17,7 +17,6 @@ import {
   CheckCircle2,
   AlertCircle,
   Clock,
-  Sparkles,
   X,
 } from "lucide-react";
 
@@ -47,12 +46,10 @@ const QuizCreaatForm = ({
 }) => {
   const optionLabels = ["A", "B", "C", "D"];
 
-  // ── COMBOBOX SEARCH & GROUP STATE ──
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const dropdownRef = useRef(null);
 
-  // Đóng dropdown khi click ra ngoài
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -105,15 +102,6 @@ const QuizCreaatForm = ({
           <div className="align-items-center">
             <h1 className="quiz-page-title mb-0">Tạo đề kiểm tra</h1>
           </div>
-        </div>
-        <div className="d-none d-sm-flex gap-2">
-          <Button
-            variant="primary"
-            className="rounded-pill px-4 fw-semibold"
-            type="button"
-          >
-            Publish
-          </Button>
         </div>
       </div>
 
@@ -214,7 +202,6 @@ const QuizCreaatForm = ({
                     <span className="text-danger">*</span>
                   </Form.Label>
 
-                  {/* ── TRIGGER BOX (Ô HIỂN THỊ BÀI ĐANG CHỌN) ── */}
                   <div
                     className="quiz-input d-flex align-items-center justify-content-between px-3 py-2 bg-white rounded-3 border"
                     style={{
@@ -666,90 +653,111 @@ const QuizCreaatForm = ({
         </div>
       </Form>
       {showModal && header && (
-        <Modal
-          show={showModal}
-          onHide={() => setShowModal(false)}
-          centered
-          className="quiz-ai-modal"
-          backdrop="static"
+        <div
+          className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[9999] p-3 animate-in fade-in duration-200"
+          onClick={() => !loadingAI && setShowModal(false)}
         >
-          <Modal.Header closeButton className="border-bottom-0 pb-0">
-            <Modal.Title className="fw-bold fs-5 d-flex align-items-center gap-2">
-              <span className="quiz-icon-badge">✨</span>
-              Tạo Đề Thi Tự Động Bằng AI
-            </Modal.Title>
-          </Modal.Header>
-          <Form onSubmit={handleSubmit}>
-            <Modal.Body className="py-4">
-              {errorAI && (
-                <div className="alert alert-danger py-2 px-3 mb-3 small font-weight-bold d-flex align-items-center gap-2">
-                  <span>⚠️ {errorAI}</span>
-                </div>
-              )}
-              <p className="text-muted small mb-4">
-                Hệ thống AI sẽ tự động phân tích video bài học đã chọn và sinh
-                ra các câu hỏi trắc nghiệm kèm đáp án và lời giải thích tương
-                ứng.
-              </p>
-              <Form.Group className="mb-3">
-                <Form.Label className="fw-bold small text-slate-700 mb-2">
-                  Số lượng câu hỏi cần sinh:
-                </Form.Label>
-                <InputGroup className="quiz-input-group mb-3">
-                  <Form.Control
-                    type="number"
-                    min={1}
-                    max={25}
-                    value={numQuestions}
-                    onChange={(e) => setNumQuestions(Number(e.target.value))}
-                    className="quiz-input fw-bold fs-5 text-center"
-                    required
-                  />
-                  <InputGroup.Text className="fw-bold">Câu hỏi</InputGroup.Text>
-                </InputGroup>
+          <div
+            className="modal-dialog modal-dialog-centered w-100 my-0"
+            style={{ maxWidth: "500px" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-content quiz-ai-modal rounded-4 border-0 shadow-lg p-2 bg-white">
+              <div className="modal-header border-bottom-0 pb-0 d-flex align-items-center justify-content-between">
+                <h5 className="modal-title fw-bold fs-5 d-flex align-items-center gap-2 mb-0">
+                  <span className="quiz-icon-badge">✨</span>
+                  Tạo Đề Thi Tự Động Bằng AI
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  aria-label="Close"
+                  onClick={() => setShowModal(false)}
+                  disabled={loadingAI}
+                />
+              </div>
 
-                <div className="d-flex align-items-center gap-2">
-                  <span className="small text-muted me-1">Gợi ý nhanh:</span>
-                  {[5, 10, 15, 25].map((count) => (
-                    <Button
-                      key={count}
-                      type="button"
-                      variant={
-                        numQuestions === count ? "primary" : "outline-secondary"
-                      }
-                      size="sm"
-                      className="rounded-pill px-3 py-1 small fw-semibold"
-                      onClick={() => handleQuickSelect(count)}
-                    >
-                      {count} câu
-                    </Button>
-                  ))}
+              <Form onSubmit={handleSubmit}>
+                <div className="modal-body py-4">
+                  {errorAI && (
+                    <div className="alert alert-danger py-2 px-3 mb-3 small font-weight-bold d-flex align-items-center gap-2">
+                      <span>⚠️ {errorAI}</span>
+                    </div>
+                  )}
+                  <p className="text-muted small mb-4">
+                    Hệ thống AI sẽ tự động phân tích video bài học đã chọn và
+                    sinh ra các câu hỏi trắc nghiệm kèm đáp án và lời giải thích
+                    tương ứng.
+                  </p>
+                  <Form.Group className="mb-3">
+                    <Form.Label className="fw-bold small text-slate-700 mb-2">
+                      Số lượng câu hỏi cần sinh:
+                    </Form.Label>
+                    <InputGroup className="quiz-input-group mb-3">
+                      <Form.Control
+                        type="number"
+                        min={1}
+                        max={25}
+                        value={numQuestions}
+                        onChange={(e) =>
+                          setNumQuestions(Number(e.target.value))
+                        }
+                        className="quiz-input fw-bold fs-5 text-center"
+                        required
+                      />
+                      <InputGroup.Text className="fw-bold">
+                        Câu hỏi
+                      </InputGroup.Text>
+                    </InputGroup>
+
+                    <div className="d-flex align-items-center gap-2">
+                      <span className="small text-muted me-1">
+                        Gợi ý nhanh:
+                      </span>
+                      {[5, 10, 15, 25].map((count) => (
+                        <Button
+                          key={count}
+                          type="button"
+                          variant={
+                            numQuestions === count
+                              ? "primary"
+                              : "outline-secondary"
+                          }
+                          size="sm"
+                          className="rounded-pill px-3 py-1 small fw-semibold"
+                          onClick={() => handleQuickSelect(count)}
+                        >
+                          {count} câu
+                        </Button>
+                      ))}
+                    </div>
+                  </Form.Group>
                 </div>
-              </Form.Group>
-            </Modal.Body>
-            <Modal.Footer className="border-top-0 pt-0">
-              <Button
-                variant="light"
-                className="quiz-btn-soft rounded-pill px-4"
-                onClick={() => setShowModal(false)}
-                type="button"
-                disabled={loadingAI}
-              >
-                Hủy bỏ
-              </Button>
-              <Button
-                variant="primary"
-                className="rounded-pill px-4 fw-semibold"
-                type="submit"
-                disabled={loadingAI}
-              >
-                {loadingAI
-                  ? "⌛ Đang sinh bài thi..."
-                  : "✨ Bắt Đầu Sinh Quiz AI"}
-              </Button>
-            </Modal.Footer>
-          </Form>
-        </Modal>
+                <div className="modal-footer border-top-0 pt-0">
+                  <Button
+                    variant="light"
+                    className="quiz-btn-soft rounded-pill px-4"
+                    onClick={() => setShowModal(false)}
+                    type="button"
+                    disabled={loadingAI}
+                  >
+                    Hủy bỏ
+                  </Button>
+                  <Button
+                    variant="primary"
+                    className="rounded-pill px-4 fw-semibold"
+                    type="submit"
+                    disabled={loadingAI}
+                  >
+                    {loadingAI
+                      ? "⌛ Đang sinh bài thi..."
+                      : "✨ Bắt Đầu Sinh Quiz AI"}
+                  </Button>
+                </div>
+              </Form>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

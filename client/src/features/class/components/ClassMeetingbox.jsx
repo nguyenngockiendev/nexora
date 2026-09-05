@@ -11,6 +11,8 @@ import {
   PlayCircle,
   MessageSquare,
   Send,
+  Upload,
+  Plus,
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "react-bootstrap";
@@ -136,13 +138,15 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
                   className="px-3 py-1 bg-white/90 text-orange-600 rounded-full text-xs font-semibold border border-orange-200/80 shadow-sm flex items-center gap-1.5"
                   style={{ borderRadius: "9999px" }}
                 >
-                  <span className="text-orange-500 text-[11px]">⚛️</span> Chuyên gia đào tạo
+                  <span className="text-orange-500 text-[11px]">⚛️</span> Chuyên
+                  gia đào tạo
                 </span>
                 <span
                   className="px-3 py-1 bg-white/90 text-amber-700 rounded-full text-xs font-semibold border border-amber-200/80 shadow-sm flex items-center gap-1.5"
                   style={{ borderRadius: "9999px" }}
                 >
-                  <span className="text-amber-500 text-[11px]">🏆</span> Giảng viên xuất sắc
+                  <span className="text-amber-500 text-[11px]">🏆</span> Giảng
+                  viên xuất sắc
                 </span>
               </div>
             </div>
@@ -162,7 +166,11 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
                 Trạng thái
               </p>
               <div className="inline-flex items-center justify-center px-2 py-1 rounded bg-emerald-100 text-emerald-600 text-xs font-bold border border-emerald-200 uppercase">
-                {classs?.status === "open" ? "Đang mở" : classs?.status === "closed" ? "Đã đóng" : "Đang mở"}
+                {classs?.status === "open"
+                  ? "Đang mở"
+                  : classs?.status === "closed"
+                    ? "Đã đóng"
+                    : "Đang mở"}
               </div>
             </div>
             <Link
@@ -217,7 +225,6 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
             </div>
           </div>
 
-          {/* Materials List */}
           <div
             className="p-8 rounded-[2rem]"
             style={{
@@ -225,13 +232,36 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
               border: "1px solid rgba(255,255,255,0.8)",
             }}
           >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-orange-100 text-orange-600 rounded-xl">
-                <FileText size={20} />
+            <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-orange-100 text-orange-600 rounded-xl">
+                  <FileText size={20} />
+                </div>
+                <h3 className="text-xl font-black text-slate-800">
+                  Tài Liệu Học Tập
+                </h3>
               </div>
-              <h3 className="text-xl font-black text-slate-800">
-                Tài Liệu Học Tập
-              </h3>
+
+              <label className="cursor-pointer">
+                <input
+                  type="file"
+                  accept=".pdf,.doc,.docx,.zip,.rar,.png,.jpg"
+                  className="hidden"
+                  onChange={(e) => {
+                    console.log(e.target.files[0]);
+                  }}
+                />
+                <div
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white transition-all hover:scale-105 active:scale-95 shadow-md shadow-orange-500/25 cursor-pointer"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #f0a671 0%, #c45419 100%)",
+                  }}
+                >
+                  <Upload size={14} />
+                  <span>Tải lên tài liệu</span>
+                </div>
+              </label>
             </div>
 
             <div className="space-y-3">
@@ -252,7 +282,7 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
                   </p>
                 </div>
               </div>
-              {/* Material Item */}
+
               <div
                 className="group flex items-center gap-4 p-4 rounded-2xl transition-all hover:bg-white cursor-pointer"
                 style={{ border: "1px solid rgba(0,0,0,0.05)" }}
@@ -269,7 +299,7 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
                   </p>
                 </div>
               </div>
-              {/* Video Item */}
+
               <div
                 className="group flex items-center gap-4 p-4 rounded-2xl transition-all hover:bg-white cursor-pointer"
                 style={{ border: "1px solid rgba(0,0,0,0.05)" }}
@@ -290,9 +320,7 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
           </div>
         </div>
 
-        {/* RIGHT COLUMN (4 cols) */}
         <div className="lg:col-span-4 space-y-6">
-          {/* ── Live Class Chat Card ── */}
           <div
             className="p-6 rounded-[2rem] flex flex-col h-[480px] relative overflow-hidden"
             style={{
@@ -310,8 +338,6 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
               />{" "}
               Phòng Chat Lớp Học
             </h4>
-
-            {/* Scrollable Message List */}
             <div
               className="flex-1 overflow-y-auto pr-1 space-y-4 mb-4 custom-scrollbar relative z-10"
               style={{ maxHeight: "320px" }}
@@ -390,7 +416,8 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
             }}
           >
             <h4 className="text-lg font-black text-slate-800 mb-4 flex items-center gap-2 shrink-0">
-              <Calendar className="text-orange-500" size={20} /> Lịch Học Trong Tuần
+              <Calendar className="text-orange-500" size={20} /> Lịch Học Trong
+              Tuần
             </h4>
 
             {/* Scrollable Schedule List */}

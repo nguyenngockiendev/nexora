@@ -372,7 +372,11 @@ const StudentDashboardView = ({
               }
 
               return liveClasses.map((cls) => {
-                const classTitle = cls.className || cls.courseTitle || cls.title || "Lớp học trực tuyến";
+                const classTitle =
+                  cls.className ||
+                  cls.courseTitle ||
+                  cls.title ||
+                  "Lớp học trực tuyến";
                 const scheduleTime = cls.schedule
                   ? `${cls.schedule.day || ""} (${cls.schedule.startTime || ""} - ${cls.schedule.endTime || ""})`
                   : cls.time || "Sắp diễn ra";
@@ -382,13 +386,15 @@ const StudentDashboardView = ({
                   <div
                     key={cls._id || cls.id}
                     onClick={() =>
-                      navigate(cls._id ? `/live/class/${cls._id}/item` : "/student/classes")
+                      navigate(`/student/live/class/${cls._id}/item`)
                     }
                     className="group flex items-center justify-between p-4 rounded-2xl border border-slate-100 bg-white/70 hover:bg-white hover:shadow-md transition-all cursor-pointer"
                   >
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 rounded-xl bg-orange-50 text-orange-500 flex flex-col items-center justify-center font-bold">
-                        <span className="text-xs uppercase font-black">LIVE</span>
+                        <span className="text-xs uppercase font-black">
+                          LIVE
+                        </span>
                       </div>
                       <div>
                         <h4 className="font-bold text-slate-800 text-base">

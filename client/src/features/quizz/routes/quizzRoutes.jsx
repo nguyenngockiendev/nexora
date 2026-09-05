@@ -1,6 +1,7 @@
 import CreateExamPage from "../pages/CreateExamPage";
 import TakeQuizPage from "../pages/TakeQuizPage";
 import StudentQuizListPage from "../pages/StudentQuizListPage";
+import AssessmentHubPage from "../pages/AssessmentHubPage";
 
 const quizzRoutes = [
   {
@@ -14,6 +15,10 @@ const quizzRoutes = [
   {
     path: "student/quizzes",
     element: <StudentQuizListPage />,
+  },
+  {
+    path: "instructor/assessments",
+    element: <AssessmentHubPage />,
   },
 ];
 

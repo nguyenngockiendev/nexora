@@ -91,6 +91,7 @@ const Courses = ({ mode }) => {
     <div className="w-full min-h-screen py-6 md:py-8">
       {mode == "all" ? (
         <CoursesForm
+          mode={mode}
           setPrice={setPrice}
           setStar={setStar}
           messagepayment={messagepayment}
@@ -104,6 +105,7 @@ const Courses = ({ mode }) => {
         />
       ) : (
         <CoursesForm
+          mode={mode}
           setPrice={setPrice}
           setStar={setStar}
           messagepayment={messagepayment}

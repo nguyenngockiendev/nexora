@@ -38,7 +38,6 @@ const classSchema = new mongoose.Schema(
       startTime: { type: Number, required: true },
       endTime: { type: Number, required: true },
     },
-
     status: {
       type: String,
       enum: ["open", "ongoing", "closes"],

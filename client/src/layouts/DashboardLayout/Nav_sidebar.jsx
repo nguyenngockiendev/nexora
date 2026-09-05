@@ -9,6 +9,7 @@ import {
   FileQuestion,
   BrainCircuit,
   ShoppingBag,
+  ClipboardCheck,
 } from "lucide-react";
 
 const Nav_Sidebar = [
@@ -48,6 +49,12 @@ const Nav_Sidebar = [
   {
     title: "Quản lý",
     items: [
+      {
+        name: "Quản lý kiểm tra",
+        path: "instructor/assessments",
+        icon: ClipboardCheck,
+        roles: ["instructor", "admin"],
+      },
       {
         name: "Tạo khóa học",
         path: "course/create",

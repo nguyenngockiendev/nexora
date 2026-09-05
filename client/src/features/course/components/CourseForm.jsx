@@ -22,6 +22,7 @@ const CoursesForm = ({
   messagepayment,
   setStar,
   setPrice,
+  mode,
 }) => {
   const { addToCart } = useCart();
 
@@ -290,7 +291,7 @@ const CoursesForm = ({
                 </div>
 
                 <div className="flex items-center gap-2 w-full pt-1">
-                  {cou.type !== "live" && !cou.isRecode && (
+                  {mode !== "mine" && cou.type !== "live" && !cou.isRecode && (
                     <button
                       onClick={() => addToCart(cou)}
                       className="flex-1 py-2 px-3 rounded-full text-xs font-extrabold text-slate-700 bg-white/90 border border-slate-300 hover:bg-white hover:border-slate-400 hover:text-slate-900 hover:scale-[1.02] active:scale-95 transition-all shadow-2xs text-center"

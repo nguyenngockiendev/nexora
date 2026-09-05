@@ -141,20 +141,21 @@ const LessionTableLession = ({
                     )}
                   </div>
                 </div>
-                {item.status === "PENDING" && dashboard.role === "instructor" && (
-                  <div>
-                    <Button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handupdatetracrip(item._id);
-                      }}
-                      variant="light"
-                      disabled={process}
-                    >
-                      ⚡ Tự động phân tích video
-                    </Button>
-                  </div>
-                )}
+                {item.status === "PENDING" &&
+                  dashboard.role === "instructor" && (
+                    <div>
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handupdatetracrip(item._id);
+                        }}
+                        variant="light"
+                        disabled={process}
+                      >
+                        ⚡ Tự động phân tích video
+                      </Button>
+                    </div>
+                  )}
 
                 <div className="d-flex align-items-center gap-3">
                   <Badge
@@ -175,7 +176,10 @@ const LessionTableLession = ({
                         ⋯
                       </Dropdown.Toggle>
 
-                      <Dropdown.Menu className="shadow-sm border-0 rounded-3">
+                      <Dropdown.Menu
+                        className="shadow-sm border-0 rounded-3"
+                        style={{ backgroundColor: "#edcb88", zIndex: 1050 }}
+                      >
                         <Dropdown.Item
                           onClick={() =>
                             navigate(`/update_lession/${item._id}`)
@@ -219,7 +223,9 @@ const LessionTableLession = ({
                 </span>
                 <h3 className="text-base font-bold text-slate-800 m-0">
                   Xem trước bài học:{" "}
-                  <span className="text-orange-600 font-bold">{selectedLesson.title}</span>
+                  <span className="text-orange-600 font-bold">
+                    {selectedLesson.title}
+                  </span>
                 </h3>
               </div>
               <button
@@ -263,15 +269,15 @@ const LessionTableLession = ({
                         selectedLesson.status === "TRANSCRIPT_READY"
                           ? "bg-emerald-100 text-emerald-700"
                           : selectedLesson.status === "PROCESSING"
-                          ? "bg-amber-100 text-amber-700"
-                          : "bg-slate-100 text-slate-600"
+                            ? "bg-amber-100 text-amber-700"
+                            : "bg-slate-100 text-slate-600"
                       }`}
                     >
                       {selectedLesson.status === "TRANSCRIPT_READY"
                         ? "✓ Đã tạo phụ đề"
                         : selectedLesson.status === "PROCESSING"
-                        ? "⌛ Đang bóc tách ngầm..."
-                        : "● Chờ xử lý"}
+                          ? "⌛ Đang bóc tách ngầm..."
+                          : "● Chờ xử lý"}
                     </span>
                   </div>
 
