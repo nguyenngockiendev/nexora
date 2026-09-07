@@ -10,6 +10,9 @@ const {
   ChangeStatus,
   GetClass,
   DetaiCourseClass,
+  SumbitAssignment,
+  GetAssesmentClass,
+  GradeAssignments,
 } = require("../controller/class-manager-controller");
 const {
   GetAllCourese,
@@ -51,6 +54,7 @@ const {
   GetAttemsp,
   GetCourseForQuizz,
   GetQuizBystuden,
+  GetAssessmentHubData,
 } = require("../controller/quiz-controller");
 const {
   GetAlluser,
@@ -198,7 +202,7 @@ Router.get("/process/course/:courseId", authMiddleware, GetAllProcess);
 
 Router.put("/resume-payment/:orderId", ResumePay);
 Router.delete("/delete-order/:orderId", DeleteOrderbyUser);
-Router.get("/details-course/:courseId",authMiddleware, DetailsCourse);
+Router.get("/details-course/:courseId", authMiddleware, DetailsCourse);
 Router.post(
   "/become-instructor",
   authMiddleware,
@@ -261,5 +265,19 @@ Router.put(
   UpdateCourse,
 );
 Router.get("/admin_dashboart", DashboartforAdmin);
-Router.get("/Classion", authMiddleware,GetClassSesion);
+Router.get("/Classion", authMiddleware, GetClassSesion);
+Router.put(
+  "/create_Ass/:classId",
+  authMiddleware,
+  upload.single("fileAss"),
+  SumbitAssignment,
+);
+Router.get("/Assesment_Class/:classId", authMiddleware, GetAssesmentClass);
+Router.put(
+  "/Assesment_sumbit/:classId",
+  authMiddleware,
+  upload.single("fileAss"),
+  GradeAssignments,
+);
+Router.get("/Assessment", authMiddleware, GetAssessmentHubData);
 module.exports = Router;

@@ -6,6 +6,7 @@ const {
   GetAttempsQuiz,
   GetCourse,
   GetQuizzbyStudent,
+  GetAssessments,
 } = require("../service/quiz-service");
 
 const CreateQuiz = async (req, res) => {
@@ -100,7 +101,22 @@ const GetQuizBystuden = async (req, res) => {
   }
 };
 
+const GetAssessmentHubData = async (req, res) => {
+  try {
+    const data = {
+      userId: req.user.userId,
+      role: req.user.role,
+    };
+    const result = await GetAssessments(data);
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
+
 module.exports = {
+  GetAssessmentHubData,
   CreateQuiz,
   GetQuizzByLession,
   UpdateQuizz,

@@ -10,7 +10,6 @@ const GetClassbyInstructor = async (courseId) => {
 };
 const UpdatClassById = async (data, classId) => {
   const request = await api.put(`/classes/${classId}`, data);
-
   return request;
 };
 const ChangeStatus = async (data) => {
@@ -55,7 +54,20 @@ const MessageList = async (classId) => {
   const request = await api.get(`/sendMessage/${classId}`);
   return request;
 };
+const SumbitAssments = async (classId, data) => {
+  const request = await api.put(`/create_Ass/${classId}`, data);
+  return request;
+};
+const AssesmentClass = async (classId) => {
+  const request = await api.get(`/Assesment_Class/${classId}`);
+  return request;
+};
+const GradeAssignments = async (classId, data) => {
+  const request = await api.put(`/Assesment_sumbit/${classId}`, data);
+  return request;
+};
 export {
+  SumbitAssments,
   CreateClass,
   GetClassbyInstructor,
   UpdatClassById,
@@ -65,5 +77,7 @@ export {
   GetStudentsByIntructor,
   RemoveStudentinClass,
   RefectStudent,
-  MessageList
+  MessageList,
+  AssesmentClass,
+  GradeAssignments,
 };

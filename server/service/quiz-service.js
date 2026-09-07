@@ -6,6 +6,10 @@ const user = require("../model/Users");
 const classs = require("../model/Class");
 const quizz = require("../model/Quizz");
 const attempQuizz = require("../model/QuizAttempts");
+const Quizz = require("../model/Quizz");
+const QuizAttempts = require("../model/QuizAttempts");
+const AssignmentSubmissions = require("../model/AssignmentSubmissions");
+const Assignments = require("../model/Assignments");
 
 const CreateQuizByIntructor = async (data) => {
   try {
@@ -293,7 +297,63 @@ const GetQuizzbyStudent = async (data) => {
   }
 };
 
+const GetAssessments = async (data) => {
+  try {
+    if (data.role === "student") {
+      throw { status: 404, message: "Không đủ quyền!" };
+    }
+    const Courseid = await Courses.find({ instructor: data.userId }).distinct(
+      "_id",
+    );
+    const myAssignmentIds = await Assignments.find({
+      instructorId: data.userId,
+    }).distinct("_id");
+    const totalQuizz = await Quizz.countDocuments({
+      courseId: { $in: Courseid },
+    });
+
+    const completeQuiz = await QuizAttempts.countDocuments({
+      courseId: { $in: Courseid },
+      status: "submitted",
+    });
+
+    const pendingAssignments = await AssignmentSubmissions.countDocuments({
+      assignmentId: { $in: myAssignmentIds },
+      status: "pending",
+    });
+
+    const gradedAssignments = await AssignmentSubmissions.countDocuments({
+      assignmentId: { $in: myAssignmentIds },
+      status: "graded",
+    });
+
+    const totalAssignments = myAssignmentIds.length;
+    const totalTests = totalQuizz + totalAssignments;
+    const completedGraded = completeQuiz + gradedAssignments;
+
+    const totalSubmissions = completedGraded + pendingAssignments;
+    const percen =
+      totalSubmissions > 0
+        ? Math.round((completedGraded / totalSubmissions) * 100)
+        : 100;
+
+    const finalResult = {
+      totalTests: totalTests,
+      completedGraded: completedGraded,
+      gradedPercent: percen,
+      pendingManual: pendingAssignments,
+      totalQuizzes: totalQuizz,
+      totalAssignments: totalAssignments,
+    };
+    return finalResult;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 module.exports = {
+  GetAssessments,
   CreateQuizByIntructor,
   GetQuizzById,
   UpdateQuizzbyIntructor,

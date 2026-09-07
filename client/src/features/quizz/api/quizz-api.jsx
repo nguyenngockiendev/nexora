@@ -35,7 +35,12 @@ const GenAIForQuizz = async (lessionId, questionCount) => {
   );
   return res;
 };
+const Assessment = async () => {
+  const res = await api.get(`/Assessment`);
+  return res;
+};
 export {
+  Assessment,
   CreateQuiz,
   GetQuizzByid,
   UpdateQuizzByid,
