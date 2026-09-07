@@ -12,22 +12,23 @@ import {
 import { useNavigate } from "react-router-dom";
 
 const AssessmentHubView = ({
-  stats = {
-    totalTests: 24,
-    completedGraded: 153,
-    gradedPercent: "96.8%",
-    pendingManual: 5,
-  },
-  quizInfo = {
-    totalQuizzes: 18,
-  },
-  assignmentInfo = {
-    totalAssignments: 6,
-    pendingGrading: 5,
-  },
+  assessmetshub = {},
+  assignmentInfo,
+  loading,
   onRefresh,
 }) => {
   const navigate = useNavigate();
+  const data = assessmetshub || assignmentInfo || {};
+
+  const totalTests = data.totalTests ?? 0;
+  const completedGraded = data.completedGraded ?? 0;
+  const gradedPercent =
+    data.gradedPercent !== undefined && data.gradedPercent !== null
+      ? `${data.gradedPercent}%`
+      : "100%";
+  const pendingManual = data.pendingManual ?? data.pendingGrading ?? 0;
+  const totalQuizzes = data.totalQuizzes ?? 0;
+  const totalAssignments = data.totalAssignments ?? 0;
 
   return (
     <div className="w-full space-y-8 pb-16 animate-in fade-in duration-300">
@@ -63,10 +64,14 @@ const AssessmentHubView = ({
           <div className="flex items-center gap-3 shrink-0">
             <button
               onClick={onRefresh}
-              className="px-4 py-2.5 rounded-2xl bg-white/90 border border-slate-200 hover:border-orange-300 hover:text-orange-600 text-slate-700 text-xs font-bold transition-all flex items-center gap-2 shadow-xs cursor-pointer active:scale-95"
+              disabled={loading}
+              className="px-4 py-2.5 rounded-2xl bg-white/90 border border-slate-200 hover:border-orange-300 hover:text-orange-600 text-slate-700 text-xs font-bold transition-all flex items-center gap-2 shadow-xs cursor-pointer active:scale-95 disabled:opacity-50"
             >
-              <RefreshCw size={14} className="text-slate-400" />
-              Làm mới
+              <RefreshCw
+                size={14}
+                className={`text-slate-400 ${loading ? "animate-spin text-orange-500" : ""}`}
+              />
+              {loading ? "Đang tải..." : "Làm mới"}
             </button>
           </div>
         </div>
@@ -94,7 +99,7 @@ const AssessmentHubView = ({
           </div>
           <div>
             <div className="text-3xl font-black text-slate-800">
-              {stats.totalTests}
+              {totalTests}
             </div>
             <div className="text-xs text-slate-400 font-medium mt-1">
               Đang hoạt động trên các khóa học
@@ -122,9 +127,9 @@ const AssessmentHubView = ({
           </div>
           <div>
             <div className="text-3xl font-black text-slate-800 flex items-baseline gap-2">
-              <span>{stats.completedGraded}</span>
+              <span>{completedGraded}</span>
               <span className="text-xs font-black uppercase text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-full">
-                {stats.gradedPercent}
+                {gradedPercent}
               </span>
             </div>
             <div className="text-xs text-slate-400 font-medium mt-1">
@@ -154,7 +159,7 @@ const AssessmentHubView = ({
           </div>
           <div>
             <div className="text-3xl font-black text-orange-600 flex items-baseline gap-2">
-              <span>{stats.pendingManual}</span>
+              <span>{pendingManual}</span>
               <span className="text-xs font-bold uppercase text-orange-600/80">
                 Bài mới nộp
               </span>
@@ -224,7 +229,7 @@ const AssessmentHubView = ({
                   Tổng đề Quiz hiện có:
                 </span>
                 <span className="text-lg font-black text-slate-800">
-                  {quizInfo.totalQuizzes} Đề thi
+                  {totalQuizzes} Đề thi
                 </span>
               </div>
             </div>
@@ -266,7 +271,7 @@ const AssessmentHubView = ({
                 </div>
                 <span className="px-3 py-1 rounded-full bg-orange-100 text-orange-700 border border-orange-200/80 text-xs font-extrabold flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-orange-500 animate-ping" />
-                  {assignmentInfo.pendingGrading} Bài chờ chấm
+                  {pendingManual} Bài chờ chấm
                 </span>
               </div>
 
@@ -286,7 +291,7 @@ const AssessmentHubView = ({
                   Tổng bài tập đang giao:
                 </span>
                 <span className="text-lg font-black text-slate-800">
-                  {assignmentInfo.totalAssignments} Bài tập
+                  {totalAssignments} Bài tập
                 </span>
               </div>
             </div>
