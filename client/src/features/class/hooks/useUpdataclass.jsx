@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { UpdatClassById } from "../api/class-api";
 
-
-
 const useUpdateClass = () => {
   const [notification, setNotification] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const Update = async (data,classId) => {
+  const Update = async (data, classId) => {
     try {
       const finalData = {
         className: data.Classname,
@@ -24,9 +22,9 @@ const useUpdateClass = () => {
         endDate: data.Enddate,
         price: data.Price,
       };
-     
+
       setLoading(true);
-      const res = await UpdatClassById(finalData,classId);
+      const res = await UpdatClassById(finalData, classId);
       setLoading(false);
       setNotification(res?.data?.message);
       return res;

@@ -6,20 +6,56 @@ import {
   Activity,
   FileText,
   CheckCircle,
-  Info,
   Clock,
   PlayCircle,
   MessageSquare,
   Send,
   Upload,
   Plus,
+  X,
+  Download,
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
+const ClassRoom = ({
+  classs,
+  navigate,
+  message = [],
+  loadings,
+  sendMess,
+  handleInputChange,
+  input,
+  setAssfile,
+  Assfile,
+  setShowUploadModal,
+  showUploadModal,
+  handsumbit,
+  assesment,
+  showStudentModal,
+  setShowStudentModal,
+  studentFile,
+  selectedAssId,
+  setSelectedAssId,
+  handSubmitStudent,
+  user,
+}) => {
   const [contenChat, setContentChat] = useState("");
+
+  const localUser = JSON.parse(localStorage.getItem("userInfor") || "{}");
+  const currentUser = user || localUser;
+
+  const isInstructor =
+    currentUser?.role === "instructor" ||
+    currentUser?.role === "admin" ||
+    (classs?.instructorId?._id &&
+      (currentUser?._id || currentUser?.userId) &&
+      String(classs?.instructorId?._id) ===
+        String(currentUser?._id || currentUser?.userId));
+
+  const isStudent = !isInstructor;
+
   const handing = () => {
     if (contenChat.trim()) {
       sendMess(contenChat);
@@ -242,80 +278,137 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
                 </h3>
               </div>
 
-              <label className="cursor-pointer">
-                <input
-                  type="file"
-                  accept=".pdf,.doc,.docx,.zip,.rar,.png,.jpg"
-                  className="hidden"
-                  onChange={(e) => {
-                    console.log(e.target.files[0]);
+              {isStudent ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (assesment && assesment.length > 0 && !selectedAssId) {
+                      setSelectedAssId(assesment[0]._id);
+                    }
+                    setShowStudentModal(true);
                   }}
-                />
-                <div
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white transition-all hover:scale-105 active:scale-95 shadow-md shadow-orange-500/25 cursor-pointer"
+                  className="flex items-center gap-1.5 px-5 py-2.5 rounded-full text-xs font-bold text-white transition-all hover:scale-105 active:scale-95 shadow-md shadow-emerald-500/25 cursor-pointer"
                   style={{
                     background:
-                      "linear-gradient(135deg, #f0a671 0%, #c45419 100%)",
+                      "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                    borderRadius: "9999px",
                   }}
                 >
-                  <Upload size={14} />
-                  <span>Tải lên tài liệu</span>
-                </div>
-              </label>
+                  <Upload size={15} />
+                  <span>Nộp bài tập</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setShowUploadModal(true)}
+                  className="flex items-center gap-1.5 px-5 py-2.5 rounded-full text-xs font-bold text-white transition-all hover:scale-105 active:scale-95 shadow-md shadow-orange-500/25 cursor-pointer"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+                    borderRadius: "9999px",
+                  }}
+                >
+                  <Plus size={15} />
+                  <span>Giao bài / Tải lên</span>
+                </button>
+              )}
             </div>
 
-            <div className="space-y-3">
-              {/* Material Item */}
-              <div
-                className="group flex items-center gap-4 p-4 rounded-2xl transition-all hover:bg-white cursor-pointer"
-                style={{ border: "1px solid rgba(0,0,0,0.05)" }}
-              >
-                <div className="w-10 h-10 rounded-xl bg-red-50 text-red-500 flex items-center justify-center group-hover:bg-red-500 group-hover:text-white transition-colors">
-                  <FileText size={20} />
-                </div>
-                <div className="flex-1">
-                  <h5 className="font-bold text-slate-800 mb-0.5">
-                    Tài liệu tổng hợp kiến thức buổi học.pdf
-                  </h5>
-                  <p className="text-xs font-medium text-slate-500">
-                    2.4 MB • Tài liệu PDF
-                  </p>
-                </div>
-              </div>
+            <div className="space-y-3 max-h-[380px] overflow-y-auto pr-1 custom-scrollbar">
+              {assesment && Array.isArray(assesment) && assesment.length > 0 ? (
+                assesment.map((item, index) => {
+                  const deadlineFormatted = item.deadline
+                    ? new Date(item.deadline).toLocaleString("vi-VN", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                      })
+                    : null;
 
-              <div
-                className="group flex items-center gap-4 p-4 rounded-2xl transition-all hover:bg-white cursor-pointer"
-                style={{ border: "1px solid rgba(0,0,0,0.05)" }}
-              >
-                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center group-hover:bg-blue-500 group-hover:text-white transition-colors">
-                  <FileText size={20} />
-                </div>
-                <div className="flex-1">
-                  <h5 className="font-bold text-slate-800 mb-0.5">
-                    Bài tập thực hành dự án #1
-                  </h5>
-                  <p className="text-xs font-medium text-slate-500">
-                    Tài liệu Word
-                  </p>
-                </div>
-              </div>
+                  return (
+                    <div
+                      key={item._id || index}
+                      className="group flex items-center justify-between gap-4 p-4 rounded-2xl transition-all hover:bg-white bg-white/50 cursor-pointer shadow-sm"
+                      style={{ border: "1px solid rgba(0,0,0,0.05)" }}
+                    >
+                      <div className="flex items-center gap-3.5 flex-1 min-w-0">
+                        <div className="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center shrink-0 group-hover:bg-orange-500 group-hover:text-white transition-colors">
+                          <FileText size={20} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h5 className="font-bold text-slate-800 text-sm mb-0.5 truncate">
+                            {item.title}
+                          </h5>
+                          {item.description && (
+                            <p className="text-xs text-slate-500 line-clamp-1 mb-1 font-medium">
+                              {item.description}
+                            </p>
+                          )}
+                          <div className="flex items-center gap-3 text-[11px] font-semibold text-slate-400">
+                            {deadlineFormatted && (
+                              <span className="flex items-center gap-1 text-orange-600 font-bold bg-orange-50 px-2 py-0.5 rounded-md">
+                                <Clock size={11} /> Hạn nộp: {deadlineFormatted}
+                              </span>
+                            )}
+                            {item.createdAt && (
+                              <span>
+                                Đăng ngày:{" "}
+                                {new Date(item.createdAt).toLocaleDateString("vi-VN")}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
 
-              <div
-                className="group flex items-center gap-4 p-4 rounded-2xl transition-all hover:bg-white cursor-pointer"
-                style={{ border: "1px solid rgba(0,0,0,0.05)" }}
-              >
-                <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-500 flex items-center justify-center group-hover:bg-purple-500 group-hover:text-white transition-colors">
-                  <PlayCircle size={20} />
-                </div>
-                <div className="flex-1">
-                  <h5 className="font-bold text-slate-800 mb-0.5">
-                    Video ghi lại buổi học số 1
-                  </h5>
-                  <p className="text-xs font-medium text-slate-500 text-purple-500">
-                    Đang xử lý...
+                      <div className="flex items-center gap-2 shrink-0">
+                        {item.fileUrl && (
+                          <a
+                            href={item.fileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold text-orange-600 bg-orange-50 hover:bg-orange-500 hover:text-white transition-all shadow-sm shrink-0 active:scale-95"
+                            style={{ borderRadius: "9999px" }}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Download size={14} />
+                            <span>{isStudent ? "Tải đề" : "Tải về"}</span>
+                          </a>
+                        )}
+
+                        {isStudent && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedAssId(item._id);
+                              setShowStudentModal(true);
+                            }}
+                            className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-600 hover:text-white transition-all shadow-sm shrink-0 active:scale-95 border border-emerald-200 cursor-pointer"
+                            style={{ borderRadius: "9999px" }}
+                          >
+                            <Upload size={14} />
+                            <span>Nộp bài</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="flex flex-col items-center justify-center py-12 text-center gap-2 text-slate-400">
+                  <div className="w-12 h-12 rounded-full bg-orange-50 text-orange-400 flex items-center justify-center mb-1">
+                    <FileText size={24} />
+                  </div>
+                  <p className="text-xs font-bold text-slate-600">
+                    Chưa có tài liệu hoặc bài tập nào
+                  </p>
+                  <p className="text-[11px] text-slate-400">
+                    Giảng viên sẽ tải lên tài liệu và bài tập cho lớp học tại đây.
                   </p>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -443,6 +536,277 @@ const ClassRoom = ({ classs, navigate, message = [], loadings, sendMess }) => {
           </div>
         </div>
       </div>
+
+      {showUploadModal && (
+        <div
+          className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-in fade-in duration-200"
+          onClick={() => setShowUploadModal(false)}
+        >
+          <div
+            className="w-full max-w-lg rounded-3xl bg-white shadow-2xl border border-slate-100 overflow-hidden relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-6 pb-4 border-b border-slate-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center font-bold">
+                  <FileText size={20} />
+                </div>
+                <div>
+                  <h3 className="font-black text-slate-800 text-lg">
+                    Giao Bài Tập / Tài Liệu
+                  </h3>
+                  <p className="text-xs text-slate-500 font-medium">
+                    Tải lên tài liệu hoặc giao bài tập cho lớp học
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowUploadModal(false)}
+                className="w-8 h-8 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handsumbit(e);
+              }}
+            >
+              <div className="p-6 space-y-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 block">
+                    Tiêu đề bài tập / tài liệu{" "}
+                    <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={input.title}
+                    onChange={handleInputChange}
+                    placeholder="Ví dụ: Bài tập thực hành dự án số 1"
+                    className="w-full py-2.5 px-4 rounded-2xl text-xs font-semibold bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-slate-800"
+                  />
+                </div>
+
+                {/* Field 2: Description */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 block">
+                    Hướng dẫn / Mô tả chi tiết
+                  </label>
+                  <textarea
+                    name="description"
+                    value={input.description}
+                    onChange={handleInputChange}
+                    rows={3}
+                    placeholder="Nhập yêu cầu làm bài hoặc lưu ý cho học viên..."
+                    className="w-full py-2.5 px-4 rounded-2xl text-xs font-semibold bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-slate-800 resize-none"
+                  />
+                </div>
+
+                {/* Field 3: File Upload */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 block">
+                    File đề bài mẫu / Tài liệu đính kèm{" "}
+                    <span className="text-rose-500">*</span>
+                  </label>
+                  <div className="relative border-2 border-dashed border-slate-200 hover:border-orange-400 rounded-2xl p-4 text-center bg-slate-50/50 hover:bg-orange-50/20 transition-all cursor-pointer">
+                    <input
+                      type="file"
+                      onChange={(e) => setAssfile(e.target.files[0])}
+                      accept=".pdf,.doc,.docx,.zip,.rar,.png,.jpg"
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    />
+                    <div className="flex flex-col items-center justify-center gap-1.5 pointer-events-none">
+                      <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center">
+                        <Upload size={16} />
+                      </div>
+                      {Assfile ? (
+                        <span className="text-xs font-bold text-orange-600 truncate max-w-full px-2">
+                          📄 {Assfile.name}
+                        </span>
+                      ) : (
+                        <>
+                          <span className="text-xs font-bold text-slate-700">
+                            Chọn file từ máy tính
+                          </span>
+                          <span className="text-[11px] text-slate-400 font-medium">
+                            PDF, Word, Zip, Rar (Tối đa 50MB)
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 block">
+                    Hạn chót nộp bài (Deadline){" "}
+                    <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="datetime-local"
+                    name="deadline"
+                    value={input.deadline}
+                    onChange={handleInputChange}
+                    className="w-full py-2.5 px-4 rounded-2xl text-xs font-semibold bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-slate-800"
+                  />
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => setShowUploadModal(false)}
+                    className="px-5 py-2.5 rounded-full text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-all cursor-pointer"
+                    style={{ borderRadius: "9999px" }}
+                  >
+                    Hủy bỏ
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-6 py-2.5 rounded-full text-xs font-bold text-white shadow-md shadow-orange-500/25 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+                      borderRadius: "9999px",
+                    }}
+                  >
+                    Tải lên & Giao bài
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Modal Nộp Bài Tập Dành Cho Học Viên ── */}
+      {showStudentModal && (
+        <div
+          className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-in fade-in duration-200"
+          onClick={() => setShowStudentModal(false)}
+        >
+          <div
+            className="w-full max-w-lg rounded-3xl bg-white shadow-2xl border border-slate-100 overflow-hidden relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-6 pb-4 border-b border-slate-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                  <Upload size={20} />
+                </div>
+                <div>
+                  <h3 className="font-black text-slate-800 text-lg">
+                    Nộp Bài Tập Lớp Học
+                  </h3>
+                  <p className="text-xs text-slate-500 font-medium">
+                    Tải lên file bài làm của bạn để nộp cho giảng viên
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowStudentModal(false)}
+                className="w-8 h-8 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handSubmitStudent(e);
+              }}
+            >
+              <div className="p-6 space-y-4">
+                {/* Field 1: Chọn bài tập cần nộp */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 block">
+                    Chọn bài tập cần nộp <span className="text-rose-500">*</span>
+                  </label>
+                  <select
+                    value={selectedAssId}
+                    onChange={(e) => setSelectedAssId(e.target.value)}
+                    className="w-full py-2.5 px-4 rounded-2xl text-xs font-semibold bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 text-slate-800 cursor-pointer"
+                  >
+                    <option value="">-- Chọn bài tập cần nộp --</option>
+                    {assesment &&
+                      Array.isArray(assesment) &&
+                      assesment.map((ass) => (
+                        <option key={ass._id} value={ass._id}>
+                          {ass.title}{" "}
+                          {ass.deadline
+                            ? `(Hạn: ${new Date(ass.deadline).toLocaleDateString("vi-VN")})`
+                            : ""}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+
+                {/* Field 2: File bài làm */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 block">
+                    File bài làm của bạn <span className="text-rose-500">*</span>
+                  </label>
+                  <div className="relative border-2 border-dashed border-slate-200 hover:border-emerald-400 rounded-2xl p-4 text-center bg-slate-50/50 hover:bg-emerald-50/20 transition-all cursor-pointer">
+                    <input
+                      type="file"
+                      onChange={(e) => setStudentFile(e.target.files[0])}
+                      accept=".pdf,.doc,.docx,.zip,.rar,.png,.jpg,.txt"
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    />
+                    <div className="flex flex-col items-center justify-center gap-1.5 pointer-events-none">
+                      <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                        <Upload size={16} />
+                      </div>
+                      {studentFile ? (
+                        <span className="text-xs font-bold text-emerald-600 truncate max-w-full px-2">
+                          📄 {studentFile.name}
+                        </span>
+                      ) : (
+                        <>
+                          <span className="text-xs font-bold text-slate-700">
+                            Chọn file bài làm từ máy tính
+                          </span>
+                          <span className="text-[11px] text-slate-400 font-medium">
+                            PDF, Word, Zip, Rar (Tối đa 50MB)
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => setShowStudentModal(false)}
+                    className="px-5 py-2.5 rounded-full text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-all cursor-pointer"
+                    style={{ borderRadius: "9999px" }}
+                  >
+                    Hủy bỏ
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-6 py-2.5 rounded-full text-xs font-bold text-white shadow-md shadow-emerald-500/25 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                      borderRadius: "9999px",
+                    }}
+                  >
+                    Nộp bài ngay
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

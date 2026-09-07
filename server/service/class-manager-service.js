@@ -4,6 +4,8 @@ const order = require("../model/Orders");
 const errollment = require("../model/Enrollments");
 const user = require("../model/Users");
 const classs = require("../model/Class");
+const Assignments = require("../model/Assignments");
+const AssignmentSubmissions = require("../model/AssignmentSubmissions");
 
 const CreateClassbyIntructor = async (data) => {
   try {
@@ -353,7 +355,105 @@ const SelectSessionClass = async (data) => {
   }
 };
 
+const AssesmentClass = async (data) => {
+  try {
+    if (!data.fileUrl) {
+      throw { status: 403, message: "File không tồn tại!" };
+    }
+    let isAssignmentId = null;
+    if (data.assignmentId) {
+      isAssignmentId = await Assignments.findById(data.assignmentId);
+    }
+
+    if (!isAssignmentId) {
+      const result = await Assignments.create({
+        classId: data.classId,
+        instructorId: data.userId,
+        title: data.title,
+        description: data.description,
+        fileUrl: data.fileUrl,
+        deadline: data.deadline,
+      });
+      return result;
+    }
+
+    const saveAss = await Assignments.findByIdAndUpdate(
+      isAssignmentId._id,
+      {
+        title: data.title,
+        description: data.description,
+        fileUrl: data.fileUrl,
+        deadline: data.deadline,
+      },
+      { new: true },
+    );
+    return saveAss;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+const GetAssesment = async (data) => {
+  try {
+    const result = await Assignments.find({
+      classId: data.classId,
+    })
+      .populate("instructorId", "name avatar")
+      .sort({ createdAt: -1 })
+      .lean();
+    return result || [];
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const SumbitAssments = async (data) => {
+  try {
+    if (!data.fileUrl) {
+      throw { status: 403, message: "File không tồn tại!" };
+    }
+    let isAssignmentId = null;
+    if (data.assignmentSubmissionsid) {
+      isAssignmentId = await AssignmentSubmissions.findById(
+        data.assignmentSubmissionsid,
+      );
+    }
+
+    if (!isAssignmentId) {
+      const result = await AssignmentSubmissions.create({
+      classId: data.classId,
+      assignmentId: data.assignmentId,
+      studentId: data.userId,
+      fileUrl: data.fileUrl,
+        score: data.score || null,
+        feedback: data.feedback || null,
+        status: data.status || "pending",
+    });
+      return result;
+    }
+
+    const saveAss = await AssignmentSubmissions.findByIdAndUpdate(
+      isAssignmentId._id,
+      {
+        fileUrl: data.fileUrl,
+        score: data.score || null,
+        feedback: data.feedback || null,
+        status: data.status || "pending",
+      },
+      { new: true },
+    );
+    return saveAss;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 module.exports = {
+  SumbitAssments,
+  GetAssesment,
+  AssesmentClass,
   CreateClassbyIntructor,
   GetClassbyInstructor,
   UpdateclassByrole,
