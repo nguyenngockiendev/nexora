@@ -39,8 +39,28 @@ const Assessment = async () => {
   const res = await api.get(`/Assessment`);
   return res;
 };
+
+const GetRecordedCourses = async () => {
+  const res = await api.get(`/instructor/recorded-courses`);
+  return res;
+};
+
+const ManagerResultQuizz = async (courseId) => {
+  const res = await api.get(`/result_quizz/${courseId}`);
+  return res;
+};
+const UpdateRetakebyIns = async (quizattempsId, courseId) => {
+  const res = await api.patch(`/update_status_Quizz/${quizattempsId}`, {
+    courseId: courseId,
+  });
+  return res;
+};
+
 export {
+  UpdateRetakebyIns,
+  ManagerResultQuizz,
   Assessment,
+  GetRecordedCourses,
   CreateQuiz,
   GetQuizzByid,
   UpdateQuizzByid,

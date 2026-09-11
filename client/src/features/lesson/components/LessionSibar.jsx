@@ -7,9 +7,7 @@ const SidebarLesson = ({
   title = [],
   currentLesson,
   setCurrentLesson,
-  id,
-  role,
-  exits,
+
   allProcess = [],
 }) => {
   const navigate = useNavigate();

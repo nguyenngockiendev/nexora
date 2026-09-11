@@ -23,7 +23,6 @@ const QuizAttemptSchema = new mongoose.Schema(
     classId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Class",
-     
     },
 
     studentId: {
@@ -88,7 +87,7 @@ const QuizAttemptSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["submitted"],
+      enum: ["submitted", "retake"],
       default: "submitted",
     },
   },

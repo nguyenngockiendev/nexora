@@ -1,27 +1,27 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect,  useState } from "react";
 import TakeQuizForm from "../components/TakeQuizForm";
 import useUpdateQuizz from "../hooks/useUpdateQuizz";
-import { useNavigate, useParams } from "react-router-dom";
+
 import useCreateAttempQuiz from "../hooks/useAttempQuiz";
 import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
 
 function TakeQuizPage() {
   const { lessionId } = useParams();
-  const { CreateAttempquiz, loading, notification, error, attemps } =
+  const { CreateAttempquiz,  attemps } =
     useCreateAttempQuiz(lessionId);
 
-  const { quizz ,Quizz} = useUpdateQuizz(lessionId);
+  const { quizz, Quizz } = useUpdateQuizz(lessionId);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
 
-
-  useEffect(()=>{
-    if(lessionId){
-      Quizz(lessionId)
+  useEffect(() => {
+    if (lessionId) {
+      Quizz(lessionId);
     }
-  },[lessionId])
+  }, [lessionId]);
   useEffect(() => {
     if (quizz) {
       setTimeLeft(quizz?.duration * 60);
@@ -45,7 +45,9 @@ function TakeQuizPage() {
       const payload = {
         answers,
         timeTaken: quizz.duration * 60 - timeLeft,
+        attempsId: quizz.IdsAttemps,
       };
+
       const res = await CreateAttempquiz(payload);
 
       if (res) {
@@ -56,13 +58,6 @@ function TakeQuizPage() {
       console.log(err);
     }
   };
-
-  const handleRetry = useCallback(() => {
-    setCurrentIndex(0);
-    setAnswers({});
-    setSubmitted(false);
-    setTimeLeft(quizz?.duration ? quizz.duration * 60 : 0);
-  }, [quizz]);
 
   useEffect(() => {
     if (submitted || timeLeft <= 0) return;
@@ -89,7 +84,6 @@ function TakeQuizPage() {
       answers={answers}
       onSelectAnswer={handleSelectAnswer}
       onSubmit={handleSubmit}
-      onRetry={handleRetry}
       submitted={submitted}
       result={result}
       timeLeft={timeLeft}

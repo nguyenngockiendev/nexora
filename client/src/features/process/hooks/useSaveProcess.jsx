@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { GetProcessbyLession, SaveProcess, GetAllProcess } from "../api/auth-api";
+import {
+  GetProcessbyLession,
+  SaveProcess,
+  GetAllProcess,
+} from "../api/auth-api";
 
 const useSaveProcess = () => {
   const [loading, setLoading] = useState(false);
@@ -39,10 +43,9 @@ const useSaveProcess = () => {
         lastPosition,
       });
       setProcess(res);
-      
-      // Cập nhật lại mảng allProcess để UI Sidebar render lại ngay lập tức
+
       setAllProcess((prev) => {
-        const index = prev.findIndex(p => p.lessonId === lessonId);
+        const index = prev.findIndex((p) => p.lessonId === lessonId);
         if (index !== -1) {
           const newArray = [...prev];
           newArray[index] = res;
@@ -50,7 +53,7 @@ const useSaveProcess = () => {
         }
         return [...prev, res];
       });
-      
+
       return res;
     } catch (error) {
       console.log(error);
@@ -60,6 +63,15 @@ const useSaveProcess = () => {
     }
   };
 
-  return { loading, error, SaveUpdate, exits, GetProcess, process, FetchAllProcess, allProcess };
+  return {
+    loading,
+    error,
+    SaveUpdate,
+    exits,
+    GetProcess,
+    process,
+    FetchAllProcess,
+    allProcess,
+  };
 };
 export default useSaveProcess;

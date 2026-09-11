@@ -55,6 +55,8 @@ const {
   GetCourseForQuizz,
   GetQuizBystuden,
   GetAssessmentHubData,
+  GetResultQuizz,
+  RetakeQuizz,
 } = require("../controller/quiz-controller");
 const {
   GetAlluser,
@@ -280,4 +282,6 @@ Router.put(
   GradeAssignments,
 );
 Router.get("/Assessment", authMiddleware, GetAssessmentHubData);
+Router.get("/result_quizz/:courseId", authMiddleware, GetResultQuizz);
+Router.patch("/update_status_Quizz/:quizattempsId", authMiddleware, RetakeQuizz);
 module.exports = Router;

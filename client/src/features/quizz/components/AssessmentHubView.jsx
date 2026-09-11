@@ -192,7 +192,7 @@ const AssessmentHubView = ({
         <div className="grid md:grid-cols-2 gap-6">
           {/* HUB 1: QUIZZ MANAGEMENT */}
           <div
-            onClick={() => navigate("/instructor/quizzes")}
+            onClick={() => navigate("/instructor/quizzes/courses")}
             className="group rounded-[28px] p-6 md:p-8 flex flex-col justify-between relative overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1.5"
             style={{
               background: "rgba(255, 255, 255, 0.8)",

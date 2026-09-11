@@ -65,6 +65,7 @@ const StudentQuizzCart = ({
             const isPassed = quiz.status === "PASSED";
             const isFailed = quiz.status === "FAILED";
             const isNotStarted = quiz.status === "NOT_STARTED";
+            const reteke = quiz.lastAttempt?.status === "retake";
 
             return (
               <div
@@ -137,7 +138,7 @@ const StudentQuizzCart = ({
                     </button>
                   )}
 
-                  {isFailed && (
+                  {isFailed  && reteke && (
                     <button
                       type="button"
                       onClick={() =>

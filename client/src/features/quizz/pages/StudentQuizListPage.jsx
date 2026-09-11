@@ -8,7 +8,7 @@ function StudentQuizListPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("ALL");
 
-  const { error, loading, quizList } = useExamQuizz();
+  const {  quizList } = useExamQuizz();
 
   const filteredQuizzes = quizList.filter((quiz) => {
     const matchesSearch =

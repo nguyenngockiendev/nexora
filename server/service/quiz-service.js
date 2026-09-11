@@ -1,9 +1,8 @@
 const Courses = require("../model/Courses");
 const Lessons = require("../model/Lessons");
-const order = require("../model/Orders");
+
 const errollment = require("../model/Enrollments");
-const user = require("../model/Users");
-const classs = require("../model/Class");
+
 const quizz = require("../model/Quizz");
 const attempQuizz = require("../model/QuizAttempts");
 const Quizz = require("../model/Quizz");
@@ -52,16 +51,26 @@ const CreateQuizByIntructor = async (data) => {
 
 const GetQuizzById = async (data) => {
   try {
+    console.log("data", data);
     const res = await quizz
       .findOne({ lessonId: data.lessonId })
-      .select("-__v")
       .populate("courseId", "title")
       .lean();
     if (!res) {
       throw { status: 404, message: "Bài học này chưa có bài kiểm tra!" };
     }
+
+    const IdsAttemps = await attempQuizz
+      .findOne({ quizId: res._id, studentId: data.userId })
+      .select("_id")
+      .lean();
+    console.log("IdsAttemps", IdsAttemps);
+    if (!IdsAttemps) {
+      throw { status: 404, message: "Bạn chưa làm bài kiểm tra này!" };
+    }
     const result = {
       ...res,
+      IdsAttemps: IdsAttemps ? IdsAttemps._id : null,
     };
     return result;
   } catch (error) {
@@ -139,20 +148,37 @@ const CreateAttempQuiz = async (data) => {
         isCorrect,
       };
     });
-
+    const IsExitAttemps = await QuizAttempts.findOne({ _id: data.attempsId });
+    if (IsExitAttemps) {
+      const result = {
+        answers,
+        score: correctCount,
+        totalQuestions: quiz.questions.length,
+        correctAnswers: corecanwser,
+        timeTaken: data.timeTaken,
+        status: "submitted",
+      };
+      const update = await QuizAttempts.findByIdAndUpdate(
+        data.attempsId,
+        result,
+        {
+          new: true,
+        }
+      );
+      return update;
+    }
     const result = {
       lessonId: data.lessonId,
       studentId: data.id,
       quizId: quiz._id,
       courseId: quiz.courseId,
       classId: null,
-
       answers,
-
       score: correctCount,
       totalQuestions: quiz.questions.length,
       correctAnswers: corecanwser,
       timeTaken: data.timeTaken,
+      status: "submitted",
     };
 
     const attempsId = await new attempQuizz(result).save();
@@ -351,8 +377,102 @@ const GetAssessments = async (data) => {
     throw error;
   }
 };
+const TrackingQuizz = async (data) => {
+  try {
+    if (data.role === "student") {
+      throw { status: 404, message: "Không đủ quyền!" };
+    }
+    const IsexitCour = await Courses.findOne({
+      _id: data.courseId,
+      instructor: data.userId,
+    });
+    if (!IsexitCour) {
+      throw { status: 404, message: "Bạn không có quyền vào nguồn này!" };
+    }
+    const result = await QuizAttempts.find({
+      courseId: data.courseId,
+    })
+      .select("score timeTaken createdAt answers")
+      .populate("lessonId")
+      .populate("quizId", "title duration questions passScore")
+      .populate("studentId", "name email avatar")
+      .populate("courseId", "_id");
+
+    if (result.length == 0) {
+      throw { status: 404, message: "Không tồn tại khóa học!" };
+    }
+
+    const finalResult = result.map((item) => {
+      const quiz = item.quizId || {};
+      const lesson = item.lessonId || {};
+
+      return {
+        _id: item._id,
+        lessonId: lesson._id,
+        courseId: item.courseId?._id,
+        lessonTitle: lesson.title,
+        title: quiz.title || lesson.title || "Bài Kiểm Tra",
+        duration: quiz.duration || 15,
+        passScore: quiz.passScore ?? 7.0,
+        questions: (quiz.questions || []).map((question) => ({
+          _id: question._id,
+          questionText: question.question,
+          options: question.options,
+          correctAnswer: question.correctAnswer,
+        })),
+
+        attempts: [
+          {
+            _id: item._id,
+
+            student: {
+              _id: item.studentId._id,
+              name: item.studentId.name,
+              email: item.studentId.email,
+              avatar: item.studentId.avatar,
+            },
+
+            score: item.score,
+            timeTaken: item.timeTaken,
+            createdAt: item.createdAt,
+
+            answers: item.answers.map((answer) => ({
+              questionId: answer.questionId,
+              selectedAnswer: answer.selectedAnswer,
+              isCorrect: answer.isCorrect,
+            })),
+          },
+        ],
+      };
+    });
+    return finalResult;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+const UpdateAttempQuizz = async (data) => {
+  try {
+    const IsexitCour = await Courses.findOne({
+      _id: data.courseId,
+      instructor: data.userId,
+    });
+    if (!IsexitCour) {
+      throw { status: 404, message: "Bạn không có quyền vào nguồn này!" };
+    }
+    const update = await QuizAttempts.findByIdAndUpdate(data.quizattempsId, {
+      status: "retake",
+    });
+    return update;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 
 module.exports = {
+  UpdateAttempQuizz,
+  TrackingQuizz,
   GetAssessments,
   CreateQuizByIntructor,
   GetQuizzById,

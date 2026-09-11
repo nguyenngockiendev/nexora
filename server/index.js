@@ -30,5 +30,5 @@ io.on("connection", (socket) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Inventory server is running on port ${PORT}`);
+  console.log(`LMS server is running on port ${PORT}`);
 });

@@ -7,6 +7,8 @@ const {
   GetCourse,
   GetQuizzbyStudent,
   GetAssessments,
+  TrackingQuizz,
+  UpdateAttempQuizz,
 } = require("../service/quiz-service");
 
 const CreateQuiz = async (req, res) => {
@@ -28,6 +30,7 @@ const GetQuizzByLession = async (req, res) => {
   try {
     const data = {
       lessonId: req.params.lessonId,
+      userId: req.user.userId,
       role: req.user.role,
     };
     const result = await GetQuizzById(data);
@@ -114,8 +117,37 @@ const GetAssessmentHubData = async (req, res) => {
     res.status(error.status || 500).json({ message: error.message });
   }
 };
-
+const GetResultQuizz = async (req, res) => {
+  try {
+    const data = {
+      userId: req.user.userId,
+      role: req.user.role,
+      courseId: req.params.courseId,
+    };
+    const result = await TrackingQuizz(data);
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
+const RetakeQuizz = async (req, res) => {
+  try {
+    const data = {
+      userId: req.user.userId,
+      courseId: req.body.courseId,
+      quizattempsId: req.params.quizattempsId,
+    };
+    const result = await UpdateAttempQuizz(data);
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
 module.exports = {
+  RetakeQuizz,
+  GetResultQuizz,
   GetAssessmentHubData,
   CreateQuiz,
   GetQuizzByLession,

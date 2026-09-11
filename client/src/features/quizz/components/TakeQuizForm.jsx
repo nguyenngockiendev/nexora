@@ -26,7 +26,7 @@ const TakeQuizForm = ({
   answers,
   onSelectAnswer,
   onSubmit,
-  onRetry,
+
   submitted,
   result,
   timeLeft,
@@ -50,9 +50,6 @@ const TakeQuizForm = ({
     onSubmit();
   };
 
-  // ==========================================
-  // RESULT VIEW (Màn hình Xem lại kết quả)
-  // ==========================================
   if (submitted && result) {
     return (
       <div className="create-exam-page d-flex flex-column gap-3">
@@ -68,14 +65,6 @@ const TakeQuizForm = ({
             </Button>
             <h1 className="quiz-page-title mb-0">Kết quả bài kiểm tra</h1>
           </div>
-          <Button
-            variant="primary"
-            className="rounded-pill px-4 fw-semibold"
-            type="button"
-            onClick={onRetry}
-          >
-            🔄 Làm lại bài thi
-          </Button>
         </div>
 
         {/* Card tổng kết điểm */}
@@ -195,11 +184,6 @@ const TakeQuizForm = ({
       </div>
     );
   }
-
-  // ==========================================
-  // TAKE QUIZ VIEW (Màn hình Làm bài kiểm tra)
-  // Kế thừa 100% Cấu trúc Trang Create Quiz
-  // ==========================================
   return (
     <div className="create-exam-page d-flex flex-column">
       {/* Header Bar trên cùng */}
