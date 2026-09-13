@@ -1,4 +1,3 @@
-const { body } = require("express-validator");
 const {
   CreateClassbyIntructor,
   GetClassbyInstructor,
@@ -9,6 +8,9 @@ const {
   AssesmentClass,
   GetAssesment,
   SumbitAssments,
+  GetAllClassesForInstructor,
+  TrackingAssignments,
+  GradeStudentSubmission,
 } = require("../service/class-manager-service");
 const uploadFile = require("../service/uploadfile-service");
 
@@ -178,7 +180,56 @@ const GradeAssignments = async (req, res) => {
   }
 };
 
+const GetAllLiveClasses = async (req, res) => {
+  try {
+    const data = {
+      userId: req.user.userId,
+      role: req.user.role,
+    };
+    const result = await GetAllClassesForInstructor(data);
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
+
+const GetTrackingAssignments = async (req, res) => {
+  try {
+    const data = {
+      userId: req.user.userId,
+      role: req.user.role,
+      classId: req.params.classId,
+    };
+    const result = await TrackingAssignments(data);
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
+
+const GradeAssignmentSubmission = async (req, res) => {
+  try {
+    const data = {
+      userId: req.user.userId,
+      role: req.user.role,
+      submissionId: req.params.submissionId,
+      score: req.body.score,
+      feedback: req.body.feedback,
+    };
+    const result = await GradeStudentSubmission(data);
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
+
 module.exports = {
+  GradeAssignmentSubmission,
+  GetTrackingAssignments,
+  GetAllLiveClasses,
   GradeAssignments,
   GetAssesmentClass,
   SumbitAssignment,

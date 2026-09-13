@@ -76,6 +76,7 @@ const GetStudentOnClasss = async (req, res) => {
     const data = {
       role: req.user.role,
       classId: req.params.classId,
+      user: req.user.userId,
     };
     const result = await GetAllStudentByIdClass(data);
     res.status(200).json(result);
@@ -88,6 +89,7 @@ const RemoveStudent = async (req, res) => {
   try {
     const data = {
       role: req.user.role,
+      user: req.user.userId,
       classId: req.params.classId,
       studentId: req.params.studentId,
       status: req.body.status,
@@ -103,6 +105,7 @@ const RefectStudent = async (req, res) => {
   try {
     const data = {
       role: req.user.role,
+      user: req.user.userId,
       classId: req.params.classId,
       studentId: req.params.studentId,
       status: req.body.status,
@@ -201,7 +204,6 @@ const ChangePassWord = async (req, res) => {
       userId: req.user.userId,
       newpassword: req.body.newPassword,
       currentPassword: req.body.currentPassword,
-
     };
     const result = await UpdatePass(data);
     res.status(200).json(result);
@@ -222,5 +224,5 @@ module.exports = {
   GetPendingRequests,
   GetUserInfor,
   ChangeUserProfile,
-  ChangePassWord
+  ChangePassWord,
 };

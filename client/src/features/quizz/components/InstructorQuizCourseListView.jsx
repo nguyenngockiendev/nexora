@@ -1,5 +1,33 @@
 import { Badge, Card, Form, InputGroup } from "react-bootstrap";
 
+const CONFIG = {
+  recorded: {
+    breadcrumb: "Đánh giá › Chọn khóa học",
+    title: "Khóa Học Có Bài Kiểm Tra",
+    subtitle: "Chọn khóa học để vào quản lý các bài kiểm tra trắc nghiệm theo bài học",
+    badge: "Khóa học Video (Tự học)",
+    searchPlaceholder: "Tìm kiếm khóa học...",
+    emptyText: "Không tìm thấy khóa học nào phù hợp với từ khóa tìm kiếm.",
+    loadingText: "Đang tải danh sách khóa học...",
+    actionBtn: "Xem bài thi",
+    getInfo: (item) => `${item.lessonCount || 0} bài học • Khóa học Video`,
+  },
+  assessments: {
+    breadcrumb: "Đánh giá › Chọn Lớp Học Trực Tuyến",
+    title: "Lớp Học Trực Tuyến Có Bài Tập",
+    subtitle: "Chọn lớp học để vào xem danh sách bài tập đã giao và chấm điểm bài nộp của học viên",
+    badge: "Lớp Học Trực Tuyến (Live Class)",
+    searchPlaceholder: "Tìm kiếm lớp học trực tuyến...",
+    emptyText: "Không tìm thấy lớp học nào phù hợp với từ khóa tìm kiếm.",
+    loadingText: "Đang tải danh sách lớp học...",
+    actionBtn: "Vào chấm bài",
+    getInfo: (item) =>
+      `${item.assignmentCount || 0} bài tập • ${item.currentStudents || 0} học viên${
+        item.pendingCount ? ` • ⚠️ ${item.pendingCount} bài chờ chấm` : ""
+      }`,
+  },
+};
+
 const InstructorQuizCourseListView = ({
   courses = [],
   loading = false,
@@ -9,7 +37,10 @@ const InstructorQuizCourseListView = ({
   onSelectCourse,
   onBack,
   onRefresh,
+  mode = "recorded",
 }) => {
+  const currentConfig = CONFIG[mode] || CONFIG.recorded;
+
   return (
     <div className="p-3 p-md-4 w-100">
       {/* HEADER */}
@@ -27,11 +58,11 @@ const InstructorQuizCourseListView = ({
               className="text-muted small fw-semibold"
               style={{ fontSize: "0.75rem" }}
             >
-              Đánh giá › Chọn khóa học
+              {currentConfig.breadcrumb}
             </div>
-            <h1 className="quiz-page-title mb-0">Khóa Học Có Bài Kiểm Tra</h1>
+            <h1 className="quiz-page-title mb-0">{currentConfig.title}</h1>
             <p className="text-muted small mb-0" style={{ fontSize: "0.8rem" }}>
-              Chọn khóa học để vào quản lý các bài kiểm tra trắc nghiệm theo bài học
+              {currentConfig.subtitle}
             </p>
           </div>
         </div>
@@ -44,7 +75,7 @@ const InstructorQuizCourseListView = ({
             className="px-3 py-2 fw-bold"
             style={{ fontSize: "0.75rem" }}
           >
-            Khóa học Video (Tự học)
+            {currentConfig.badge}
           </Badge>
         </div>
       </div>
@@ -55,7 +86,7 @@ const InstructorQuizCourseListView = ({
           <InputGroup.Text>🔍</InputGroup.Text>
           <Form.Control
             type="text"
-            placeholder="Tìm kiếm khóa học..."
+            placeholder={currentConfig.searchPlaceholder}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="quiz-input"
@@ -83,17 +114,17 @@ const InstructorQuizCourseListView = ({
       {loading ? (
         <div className="text-center py-5 text-muted small bg-white rounded-3 border">
           <div className="spinner-border spinner-border-sm text-warning me-2" role="status" />
-          Đang tải danh sách khóa học...
+          {currentConfig.loadingText}
         </div>
       ) : (
-        /* COURSE LIST (MỖI COURSE LÀ 1 HÀNG) */
+        /* COURSE / CLASS LIST */
         <div className="d-flex flex-column gap-2">
-          {courses.map((course, index) => (
+          {courses.map((item, index) => (
             <Card
-              key={course._id || index}
+              key={item._id || index}
               className="quiz-card p-3 d-flex flex-row align-items-center justify-content-between cursor-pointer"
               style={{ cursor: "pointer" }}
-              onClick={() => onSelectCourse(course._id)}
+              onClick={() => onSelectCourse(item._id)}
             >
               <div className="d-flex align-items-center gap-3 min-w-0">
                 <div
@@ -114,10 +145,10 @@ const InstructorQuizCourseListView = ({
                     className="fw-bold text-dark fs-6 text-truncate"
                     style={{ color: "#1e293b" }}
                   >
-                    {course.title}
+                    {item.title || item.courseTitle || "Lớp học / Khóa học"}
                   </div>
                   <div className="text-muted small">
-                    {course.lessonCount || 0} bài học • Khóa học Video
+                    {currentConfig.getInfo(item)}
                   </div>
                 </div>
               </div>
@@ -127,7 +158,7 @@ const InstructorQuizCourseListView = ({
                 className="btn btn-outline-primary rounded-pill px-3 py-1 fw-bold text-xs d-flex align-items-center gap-1 shrink-0 ms-3"
                 style={{ fontSize: "0.8rem" }}
               >
-                <span>Xem bài thi</span>
+                <span>{currentConfig.actionBtn}</span>
                 <span>›</span>
               </button>
             </Card>
@@ -135,7 +166,7 @@ const InstructorQuizCourseListView = ({
 
           {courses.length === 0 && !loading && (
             <div className="text-center py-5 text-muted small bg-white rounded-3 border">
-              Không tìm thấy khóa học nào phù hợp với từ khóa tìm kiếm.
+              {currentConfig.emptyText}
             </div>
           )}
         </div>

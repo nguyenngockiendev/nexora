@@ -11,7 +11,11 @@ const AssignmentSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-
+    status: {
+      type: String,
+      enum: ["retake", "submitted"],
+      default: "submitted",
+    },
     title: { type: String, required: true },
     description: { type: String, default: "" },
     fileUrl: { type: String, required: true },

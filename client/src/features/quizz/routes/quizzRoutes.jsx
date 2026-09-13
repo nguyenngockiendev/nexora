@@ -24,15 +24,23 @@ const quizzRoutes = [
   },
   {
     path: "instructor/quizzes",
-    element: <InstructorQuizCourseListPage />,
+    element: <InstructorQuizCourseListPage mode="recorded" />,
   },
   {
     path: "instructor/quizzes/courses",
-    element: <InstructorQuizCourseListPage />,
+    element: <InstructorQuizCourseListPage mode="recorded" />,
+  },
+  {
+    path: "instructor/assessments/courses",
+    element: <InstructorQuizCourseListPage mode="assessments" />,
   },
   {
     path: "instructor/quizzes/:courseId",
-    element: <InstructorQuizTrackingPage />,
+    element: <InstructorQuizTrackingPage mode="recorded" />,
+  },
+  {
+    path: "instructor/assessments/:classId",
+    element: <InstructorQuizTrackingPage mode="assessments" />,
   },
 ];
 

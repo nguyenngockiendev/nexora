@@ -12,6 +12,16 @@ const CreateClassbyIntructor = async (data) => {
     if (data.role !== "instructor") {
       throw { status: 403, message: "Chỉ giảng viên mới có quyền tạo lớp học" };
     }
+    const isCourse = await Courses.findOne({
+      _id: data.courseId,
+      instructor: data.instructorId,
+    });
+    if (!isCourse) {
+      throw {
+        status: 404,
+        message: "Bạn không phải giảng viên của khóa học này!",
+      };
+    }
 
     const resultclass = await classs.findOne({
       instructorId: data.instructorId,
@@ -360,6 +370,13 @@ const AssesmentClass = async (data) => {
     if (!data.fileUrl) {
       throw { status: 403, message: "File không tồn tại!" };
     }
+    const isClass = await classs.findOne({
+      _id: data.classId,
+      instructorId: data.userId,
+    });
+    if (!isClass) {
+      throw { status: 404, message: "Bạn không phải giáo viên trong lớp này!" };
+    }
     let isAssignmentId = null;
     if (data.assignmentId) {
       isAssignmentId = await Assignments.findById(data.assignmentId);
@@ -422,14 +439,14 @@ const SumbitAssments = async (data) => {
 
     if (!isAssignmentId) {
       const result = await AssignmentSubmissions.create({
-      classId: data.classId,
-      assignmentId: data.assignmentId,
-      studentId: data.userId,
-      fileUrl: data.fileUrl,
+        classId: data.classId,
+        assignmentId: data.assignmentId,
+        studentId: data.userId,
+        fileUrl: data.fileUrl,
         score: data.score || null,
         feedback: data.feedback || null,
-        status: data.status || "pending",
-    });
+        status: data.status || "pending", 
+      });
       return result;
     }
 
@@ -450,7 +467,172 @@ const SumbitAssments = async (data) => {
   }
 };
 
+const GetAllClassesForInstructor = async (data) => {
+  try {
+    if (data?.role !== "instructor" && data?.role !== "admin") {
+      throw {
+        status: 403,
+        message: "Chỉ giảng viên mới có thể xem danh sách lớp học của mình!",
+      };
+    }
+    const classes = await classs
+      .find({ instructorId: data.userId })
+      .populate("courseId", "title thumbnail category")
+      .populate("instructorId", "name email avatar")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const converTime = (time) => {
+      const hour = Math.floor(time / 60);
+      const minute = time % 60;
+      return `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
+    };
+
+    const finalResult = await Promise.all(
+      classes.map(async (cls) => {
+        const assignmentCount = await Assignments.countDocuments({
+          classId: cls._id,
+        });
+        const myAssignmentIds = await Assignments.find({
+          classId: cls._id,
+        }).distinct("_id");
+        const pendingCount = await AssignmentSubmissions.countDocuments({
+          assignmentId: { $in: myAssignmentIds },
+          status: "pending",
+        });
+
+        return {
+          ...cls,
+          title:
+            cls.name ||
+            cls.title ||
+            cls.courseId?.title ||
+            "Lớp Học Trực Tuyến",
+          courseTitle: cls.courseId?.title || "Khóa học",
+          assignmentCount,
+          pendingCount,
+          schedule: {
+            day: cls?.schedule?.day,
+            startTime: converTime(cls?.schedule?.startTime || 0),
+            endTime: converTime(cls?.schedule?.endTime || 0),
+          },
+        };
+      }),
+    );
+
+    return finalResult;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const TrackingAssignments = async (data) => {
+  try {
+    if (data?.role === "student") {
+      throw { status: 403, message: "Không đủ quyền!" };
+    }
+    const isClass = await classs.findOne({
+      _id: data.classId,
+      instructorId: data.userId,
+    });
+    if (!isClass) {
+      throw { status: 404, message: "Bạn không phải giáo viên trong lớp này!" };
+    }
+    const targetClass = await classs
+      .findById(data.classId)
+      .populate("courseId", "title")
+      .populate("instructorId", "name")
+      .lean();
+
+    if (!targetClass) {
+      throw { status: 404, message: "Lớp học không tồn tại!" };
+    }
+
+    const assignments = await Assignments.find({ classId: data.classId })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const finalResult = await Promise.all(
+      assignments.map(async (ass) => {
+        const submissions = await AssignmentSubmissions.find({
+          assignmentId: ass._id,
+        })
+          .populate("studentId", "name email avatar")
+          .sort({ createdAt: -1 })
+          .lean();
+
+        return {
+          _id: ass._id,
+          classId: ass.classId,
+          className:
+            targetClass.name ||
+            targetClass.title ||
+            targetClass.courseId?.title ||
+            "Lớp Học",
+          title: ass.title,
+          description: ass.description || "",
+          fileUrl: ass.fileUrl,
+          deadline: ass.deadline,
+          createdAt: ass.createdAt,
+          submissions: submissions.map((sub) => ({
+            _id: sub._id,
+            assignmentId: sub.assignmentId,
+            classId: sub.classId,
+            student: {
+              _id: sub.studentId?._id,
+              name: sub.studentId?.name || "Học viên",
+              email: sub.studentId?.email || "",
+              avatar: sub.studentId?.avatar || "",
+            },
+            fileUrl: sub.fileUrl,
+            submittedAt: sub.submittedAt || sub.createdAt,
+            score: sub.score,
+            feedback: sub.feedback || "",
+            status: sub.status || "pending",
+          })),
+        };
+      }),
+    );
+
+    return finalResult;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const GradeStudentSubmission = async (data) => {
+  try {
+    if (data?.role === "student") {
+      throw { status: 403, message: "Không đủ quyền chấm điểm!" };
+    }
+    const update = await AssignmentSubmissions.findByIdAndUpdate(
+      data.submissionId,
+      {
+        score: Number(data.score),
+        feedback: data.feedback || "",
+        status: "graded",
+      },
+      { new: true },
+    );
+    if (!update) {
+      throw { status: 404, message: "Không tìm thấy bài nộp!" };
+    }
+    return {
+      message: "Chấm điểm bài tập thành công!",
+      result: update,
+    };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 module.exports = {
+  GradeStudentSubmission,
+  TrackingAssignments,
+  GetAllClassesForInstructor,
   SumbitAssments,
   GetAssesment,
   AssesmentClass,

@@ -254,7 +254,7 @@ const AssessmentHubView = ({
 
           {/* HUB 2: MANUAL ASSIGNMENTS & LIVE CLASS */}
           <div
-            onClick={() => navigate("/instructor/assignments")}
+            onClick={() => navigate("/instructor/assessments/courses")}
             className="group rounded-[28px] p-6 md:p-8 flex flex-col justify-between relative overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1.5"
             style={{
               background: "rgba(255, 255, 255, 0.8)",

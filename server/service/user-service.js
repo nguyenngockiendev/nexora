@@ -7,6 +7,7 @@ const classs = require("../model/Class");
 const TeacherRequests = require("../model/TeacherRequests");
 const Users = require("../model/Users");
 const bcrypt = require("bcrypt");
+const Class = require("../model/Class");
 
 const GetAllUserByrole = async (data) => {
   try {
@@ -145,6 +146,14 @@ const GetAllStudentByIdClass = async (data) => {
     if (data?.role !== "instructor") {
       throw { status: 404, message: "You don't have enough authority." };
     }
+    const isClassIns = await Class.findOne({
+      _id: data?.classId,
+      instructorId: data?.user,
+    });
+    if (!isClassIns) {
+      throw { status: 404, message: "Bạn không phải giáo viên trong lớp này." };
+    }
+
     const student = await errollment
       .find({ classId: data?.classId, type: "live" })
       .populate("userId", "name email avatar status phone")
@@ -177,6 +186,15 @@ const RemoveStudentinClass = async (data) => {
     if (data?.role === "student") {
       throw { status: 404, message: "You don't have enough authority." };
     }
+
+    const isClassIns = await Class.findOne({
+      _id: data?.classId,
+      instructorId: data?.user,
+    });
+    if (!isClassIns) {
+      throw { status: 404, message: "Bạn không phải giáo viên trong lớp này." };
+    }
+
     const enrollmentforstudent = await errollment.findOneAndUpdate(
       {
         classId: data?.classId,
@@ -211,6 +229,13 @@ const RefectStudentoutclass = async (data) => {
   try {
     if (data?.role === "student") {
       throw { status: 404, message: "You don't have enough authority." };
+    }
+     const isClassIns = await Class.findOne({
+      _id: data?.classId,
+      instructorId: data?.user,
+    });
+    if (!isClassIns) {
+      throw { status: 404, message: "Bạn không phải giáo viên trong lớp này." };
     }
     const enrollmentforstudent = await errollment.findOneAndUpdate(
       {

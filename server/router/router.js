@@ -13,6 +13,9 @@ const {
   SumbitAssignment,
   GetAssesmentClass,
   GradeAssignments,
+  GetAllLiveClasses,
+  GetTrackingAssignments,
+  GradeAssignmentSubmission,
 } = require("../controller/class-manager-controller");
 const {
   GetAllCourese,
@@ -284,4 +287,7 @@ Router.put(
 Router.get("/Assessment", authMiddleware, GetAssessmentHubData);
 Router.get("/result_quizz/:courseId", authMiddleware, GetResultQuizz);
 Router.patch("/update_status_Quizz/:quizattempsId", authMiddleware, RetakeQuizz);
+Router.get("/instructor/live-classes", authMiddleware, GetAllLiveClasses);
+Router.get("/instructor/assignments-tracking/:classId", authMiddleware, GetTrackingAssignments);
+Router.patch("/instructor/grade-submission/:submissionId", authMiddleware, GradeAssignmentSubmission);
 module.exports = Router;

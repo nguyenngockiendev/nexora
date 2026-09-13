@@ -56,7 +56,25 @@ const UpdateRetakebyIns = async (quizattempsId, courseId) => {
   return res;
 };
 
+const GetInstructorLiveClasses = async () => {
+  const res = await api.get(`/instructor/live-classes`);
+  return res;
+};
+
+const GetTrackingAssignments = async (classId) => {
+  const res = await api.get(`/instructor/assignments-tracking/${classId}`);
+  return res;
+};
+
+const GradeAssignmentSubmission = async (submissionId, data) => {
+  const res = await api.patch(`/instructor/grade-submission/${submissionId}`, data);
+  return res;
+};
+
 export {
+  GetInstructorLiveClasses,
+  GetTrackingAssignments,
+  GradeAssignmentSubmission,
   UpdateRetakebyIns,
   ManagerResultQuizz,
   Assessment,

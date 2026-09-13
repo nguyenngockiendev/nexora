@@ -122,13 +122,20 @@ const UpdateQuizzbyIntructor = async (data) => {
 const CreateAttempQuiz = async (data) => {
   try {
     const quiz = await quizz.findOne({ lessonId: data.lessonId });
-
     const ids = Object.keys(data.answers);
 
     const questions = quiz.questions.filter((question) =>
       ids.includes(question._id.toString()),
     );
 
+    const isErronment = await errollment.findOne({
+      userId: data.id,
+      courseId: quiz.courseId,
+      status: "active",
+    });
+    if (!isErronment) {
+      throw { status: 404, message: "Bạn chưa đăng ký khóa học này!" };
+    }
     let correctCount = 0;
     let corecanwser = 0;
     const poin = 10 / quiz.questions.length;
@@ -148,7 +155,10 @@ const CreateAttempQuiz = async (data) => {
         isCorrect,
       };
     });
-    const IsExitAttemps = await QuizAttempts.findOne({ _id: data.attempsId });
+    const IsExitAttemps = await QuizAttempts.findOne({
+      _id: data.attempsId,
+      studentId: data.id,
+    });
     if (IsExitAttemps) {
       const result = {
         answers,
@@ -163,7 +173,7 @@ const CreateAttempQuiz = async (data) => {
         result,
         {
           new: true,
-        }
+        },
       );
       return update;
     }

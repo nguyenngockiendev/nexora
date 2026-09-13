@@ -4,17 +4,21 @@ import "../style/CreateExamPage.css";
 import InstructorQuizCourseListView from "../components/InstructorQuizCourseListView";
 import useInstructorQuizCourses from "../hooks/useInstructorQuizCourses";
 
-const InstructorQuizCourseListPage = () => {
+const InstructorQuizCourseListPage = ({ mode = "recorded" }) => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  const { courses, loading, error, refetch } = useInstructorQuizCourses();
+  const { courses, loading, error, refetch } = useInstructorQuizCourses(mode);
 
   const filteredCourses = (courses || []).filter((c) =>
-    (c.title || "").toLowerCase().includes(searchTerm.toLowerCase()),
+    (c.title || c.courseTitle || "").toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const handleSelectCourse = (courseId) => {
-    navigate(`/instructor/quizzes/${courseId}`);
+  const handleSelectCourse = (id) => {
+    if (mode === "assessments") {
+      navigate(`/instructor/assessments/${id}`);
+    } else {
+      navigate(`/instructor/quizzes/${id}`);
+    }
   };
 
   const handleBack = () => {
@@ -32,6 +36,7 @@ const InstructorQuizCourseListPage = () => {
         onSelectCourse={handleSelectCourse}
         onBack={handleBack}
         onRefresh={refetch}
+        mode={mode}
       />
     </div>
   );
