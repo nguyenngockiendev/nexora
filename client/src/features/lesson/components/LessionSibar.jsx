@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Check, Play, Lock, ArrowLeft, Loader2 } from "lucide-react";
+import { Check, Play, Lock, ArrowLeft, Loader2, Clock } from "lucide-react";
 
 const SidebarLesson = ({
   loading,
@@ -7,7 +7,6 @@ const SidebarLesson = ({
   title = [],
   currentLesson,
   setCurrentLesson,
-
   allProcess = [],
 }) => {
   const navigate = useNavigate();
@@ -25,35 +24,63 @@ const SidebarLesson = ({
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")} min`;
   };
 
+  const completedCount =
+    title?.filter((t) =>
+      allProcess?.some((p) => p.lessonId === t._id && p.completed),
+    ).length || 0;
+  const percent = title?.length
+    ? Math.round((completedCount / title.length) * 100)
+    : 0;
+
   return (
     <div className="flex flex-col h-full w-full p-4 relative overflow-hidden">
+      {/* ── 1. Back button ── */}
       <div className="shrink-0 mb-3">
         <button
           onClick={() => navigate("/student")}
-          className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold text-white shadow-sm hover:scale-105 active:scale-95 transition-all"
+          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold text-white shadow-sm hover:scale-105 active:scale-95 transition-all cursor-pointer"
           style={{
             background: "linear-gradient(135deg, #f97316, #fb923c)",
             borderRadius: "9999px",
           }}
         >
-          <ArrowLeft size={14} /> Back to Courses
+          <ArrowLeft size={14} /> Khóa học của tôi
         </button>
       </div>
 
-      {/* ── 2. Course Title & Syllabus Header (Thu nhỏ phông chữ) ── */}
-      <div className="shrink-0 mb-3 space-y-0.5">
-        <h2 className="text-base md:text-lg font-black text-slate-900 leading-tight tracking-tight">
-          Course Lessons
-        </h2>
-        <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
-          SYLLABUS • {title?.length || 0} LESSONS
-        </p>
+      {/* ── 2. Course Title & Syllabus Header with Progress Bar ── */}
+      <div className="shrink-0 mb-3 space-y-1">
+        <div className="flex items-center justify-between">
+          <h2 className="text-base font-black text-slate-900 leading-tight tracking-tight">
+            Nội dung khóa học
+          </h2>
+          <span className="text-[10px] font-extrabold uppercase tracking-wider text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full">
+            {title?.length || 0} BÀI HỌC
+          </span>
+        </div>
+
+        {title && title.length > 0 && (
+          <div className="pt-1">
+            <div className="flex items-center justify-between text-[10px] font-semibold text-slate-500 mb-1">
+              <span>Tiến độ học tập</span>
+              <span className="text-orange-600 font-extrabold">
+                {completedCount}/{title.length} bài ({percent}%)
+              </span>
+            </div>
+            <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+              <div
+                className="bg-gradient-to-r from-orange-500 to-amber-400 h-full rounded-full transition-all duration-500"
+                style={{ width: `${percent}%` }}
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ── Loading State ── */}
       {loading && (
         <div className="flex items-center justify-center gap-2 py-6 text-orange-500 font-bold text-xs">
-          <Loader2 className="animate-spin" size={18} /> Loading...
+          <Loader2 className="animate-spin" size={18} /> Đang tải bài học...
         </div>
       )}
 
@@ -64,28 +91,24 @@ const SidebarLesson = ({
         </div>
       )}
 
-      <div
-        className="flex-1 overflow-y-auto pr-1 pb-2 space-y-1.5 custom-scrollbar"
-        style={{ maxHeight: "calc(100vh - 220px)", overflowY: "auto" }}
-      >
+      {/* ── Scrollable list with custom sleek scrollbar ── */}
+      <div className="flex-1 overflow-y-auto pr-1 pb-2 space-y-2 custom-scrollbar">
         {title?.map((titl, index) => {
           const isActive = currentLesson?._id === titl?._id;
-
           const lessonProcess = allProcess?.find(
             (p) => p.lessonId === titl?._id,
           );
           const isCompleted = lessonProcess?.completed === true;
-
           const durationStr = formatDuration(titl?.duration);
 
           return (
             <div
               key={titl._id || index}
               onClick={() => setCurrentLesson(titl)}
-              className={`group flex items-center justify-between px-3 py-2 rounded-xl transition-all duration-200 cursor-pointer ${
+              className={`group relative flex items-start gap-2.5 p-2.5 rounded-xl transition-all duration-200 cursor-pointer ${
                 isActive
-                  ? "text-white shadow-md shadow-orange-500/20 scale-[1.01]"
-                  : "bg-white/80 border border-white/90 hover:bg-white hover:shadow-xs"
+                  ? "text-white shadow-md shadow-orange-500/25 scale-[1.01]"
+                  : "bg-white/80 border border-white/90 hover:bg-white hover:border-orange-200/80 hover:shadow-xs"
               }`}
               style={{
                 borderRadius: "0.85rem",
@@ -94,73 +117,69 @@ const SidebarLesson = ({
                   : undefined,
               }}
             >
-              {/* Left Side: Status Icon + Title */}
-              <div className="flex items-center gap-2.5 min-w-0 pr-1.5">
-                {/* Status Indicator Icon (Thu nhỏ h-6 w-6) */}
-                <div className="shrink-0">
-                  {isActive ? (
-                    <div className="w-5 h-5 rounded-full bg-white text-orange-600 flex items-center justify-center shadow-xs">
-                      <Play size={10} className="fill-orange-600 ml-0.5" />
-                    </div>
-                  ) : isCompleted ? (
-                    <div className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-xs">
-                      <Check size={12} strokeWidth={3} />
-                    </div>
-                  ) : (
-                    <div className="w-5 h-5 rounded-full border-2 border-slate-300 text-slate-300 flex items-center justify-center group-hover:border-orange-400 group-hover:text-orange-400 transition-colors">
-                      <Check size={10} strokeWidth={2.5} />
-                    </div>
-                  )}
-                </div>
-
-                {/* Lesson Title & Subtitle */}
-                <div className="min-w-0">
-                  <h4
-                    className={`text-xs font-extrabold truncate leading-tight ${
-                      isActive
-                        ? "text-white"
-                        : "text-slate-800 group-hover:text-orange-600 transition-colors"
-                    }`}
-                  >
-                    {index + 1}. {titl?.title}
-                  </h4>
-                  <p
-                    className={`text-[10px] font-semibold mt-0.5 ${
-                      isActive
-                        ? "text-white/85"
-                        : isCompleted
-                          ? "text-emerald-600"
-                          : "text-slate-400"
-                    }`}
-                  >
-                    {isCompleted
-                      ? "Completed"
-                      : isActive
-                        ? "In Progress"
-                        : titl?.isPreview
-                          ? "Free Preview"
-                          : "Upcoming"}
-                  </p>
-                </div>
+              {/* Left Indicator */}
+              <div className="shrink-0 mt-0.5">
+                {isActive ? (
+                  <div className="w-5 h-5 rounded-full bg-white text-orange-600 flex items-center justify-center shadow-xs">
+                    <Play size={10} className="fill-orange-600 ml-0.5" />
+                  </div>
+                ) : isCompleted ? (
+                  <div className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-xs">
+                    <Check size={12} strokeWidth={3} />
+                  </div>
+                ) : (
+                  <div className="w-5 h-5 rounded-full bg-slate-100 border border-slate-200 text-slate-400 font-bold text-[10px] flex items-center justify-center group-hover:border-orange-300 group-hover:text-orange-500 transition-colors">
+                    {index + 1}
+                  </div>
+                )}
               </div>
 
-              {/* Right Side: Duration + Lock Icon */}
-              <div
-                className={`flex items-center gap-1.5 text-[10px] font-bold shrink-0 ${
-                  isActive ? "text-white/90" : "text-slate-400"
-                }`}
-              >
-                <span>{durationStr}</span>
-                <Lock
-                  size={12}
-                  className={
+              {/* Title & Info: NO MORE TRUNCATE CUTTING OFF AFTER 2 WORDS */}
+              <div className="flex-1 min-w-0">
+                <h4
+                  className={`text-xs font-bold leading-snug line-clamp-2 ${
                     isActive
-                      ? "text-white/80"
-                      : titl?.isPreview || isCompleted
-                        ? "text-emerald-500 opacity-0 group-hover:opacity-100"
-                        : "text-slate-300"
-                  }
-                />
+                      ? "text-white font-extrabold"
+                      : "text-slate-800 group-hover:text-orange-600 transition-colors"
+                  }`}
+                >
+                  {index + 1}. {titl?.title}
+                </h4>
+
+                <div className="flex items-center gap-2 mt-1 text-[10px] font-semibold">
+                  <span
+                    className={
+                      isActive
+                        ? "text-white/90"
+                        : isCompleted
+                          ? "text-emerald-600 font-bold"
+                          : "text-slate-400"
+                    }
+                  >
+                    {isCompleted
+                      ? "Đã học"
+                      : isActive
+                        ? "Đang học"
+                        : titl?.isPreview
+                          ? "Học thử"
+                          : "Tiếp theo"}
+                  </span>
+
+                  <span className={isActive ? "text-white/60" : "text-slate-300"}>•</span>
+
+                  <span
+                    className={`flex items-center gap-1 ${
+                      isActive ? "text-white/85" : "text-slate-400"
+                    }`}
+                  >
+                    <Clock size={10} />
+                    {durationStr}
+                  </span>
+
+                  {titl?.isLocked && !isActive && !isCompleted && (
+                    <Lock size={11} className="text-slate-400 ml-auto" />
+                  )}
+                </div>
               </div>
             </div>
           );

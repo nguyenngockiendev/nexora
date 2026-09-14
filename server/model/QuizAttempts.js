@@ -30,6 +30,7 @@ const QuizAttemptSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    retakeCount: { type: Number, default: 0 },
 
     answers: [
       {

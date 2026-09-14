@@ -12,17 +12,17 @@ const useStudentDashboard = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const [loadingRecent, setLoadingRecent] = useState(false);
+
   const getrecentlesson = async () => {
     try {
-      setLoading(true);
-      setError(null);
+      setLoadingRecent(true);
       const result = await Getrecentlesson();
       setRecentlesson(result);
     } catch (err) {
-      const message = err.response?.data?.message || "lỗi";
-      setError(message);
+      setRecentlesson(null);
     } finally {
-      setLoading(false);
+      setLoadingRecent(false);
     }
   };
   const getDashboart = async () => {

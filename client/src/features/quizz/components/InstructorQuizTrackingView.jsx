@@ -1,4 +1,4 @@
-import { Badge, Button, Card, Form, InputGroup, Table } from "react-bootstrap";
+import { Badge, Button, Card, Form, Table } from "react-bootstrap";
 
 const CONFIG = {
   recorded: {
@@ -90,23 +90,23 @@ const InstructorQuizTrackingView = ({
 
   const totalSubmissions = submissionsList.length;
 
-  // Stats calculation
   const pendingCount =
     mode === "assessments"
-      ? submissionsList.filter(
-          (att) => !att.status || att.status === "pending"
-        ).length
+      ? submissionsList.filter((att) => !att.status || att.status === "pending")
+          .length
       : 0;
 
   const passedCount =
     mode === "recorded"
       ? submissionsList.filter(
-          (att) => att.score >= (activeQuiz?.passScore ?? 5)
+          (att) => att.score >= (activeQuiz?.passScore ?? 5),
         ).length
       : 0;
 
   const validScores = submissionsList
-    .map((a) => (a.score !== null && a.score !== undefined ? Number(a.score) : null))
+    .map((a) =>
+      a.score !== null && a.score !== undefined ? Number(a.score) : null,
+    )
     .filter((s) => s !== null);
 
   const averageScore =
@@ -157,7 +157,6 @@ const InstructorQuizTrackingView = ({
         </div>
       </div>
 
-      {/* 2-COLUMN MASTER DETAIL */}
       <div
         className="d-flex flex-column flex-lg-row gap-3 align-items-stretch"
         style={{
@@ -166,7 +165,6 @@ const InstructorQuizTrackingView = ({
           minHeight: "750px",
         }}
       >
-        {/* ================= CỘT 1 (BÊN TRÁI): DANH SÁCH BÀI ================= */}
         <div
           className="quiz-sidebar"
           style={{ width: "100%", maxWidth: "340px", flexShrink: 0 }}
@@ -200,7 +198,7 @@ const InstructorQuizTrackingView = ({
                     : item.attempts || [];
                 const submissionCount = subs.length;
                 const itemPending = subs.filter(
-                  (s) => !s.status || s.status === "pending"
+                  (s) => !s.status || s.status === "pending",
                 ).length;
 
                 return (
@@ -212,7 +210,9 @@ const InstructorQuizTrackingView = ({
                         : "bg-white hover:border-warning-subtle"
                     }`}
                     style={{
-                      background: isActive ? "var(--quiz-purple-soft)" : "#ffffff",
+                      background: isActive
+                        ? "var(--quiz-purple-soft)"
+                        : "#ffffff",
                       borderColor: isActive ? "var(--quiz-purple)" : "#e2e8f0",
                       cursor: "pointer",
                       flexShrink: 0,
@@ -240,21 +240,23 @@ const InstructorQuizTrackingView = ({
                           }
                           style={{ fontSize: "0.65rem" }}
                         >
-                          {itemPending > 0 ? `${itemPending} chờ chấm` : "✓ Đã chấm"}
+                          {itemPending > 0
+                            ? `${itemPending} chờ chấm`
+                            : "✓ Đã chấm"}
                         </Badge>
                       ) : (
-                      <Badge
-                        pill
-                        bg={submissionCount > 0 ? "success" : "secondary"}
-                        className={
-                          submissionCount > 0
-                            ? "bg-success-subtle text-success border border-success-subtle"
-                            : "bg-secondary-subtle text-secondary border"
-                        }
-                        style={{ fontSize: "0.65rem" }}
-                      >
-                        {submissionCount} lượt nộp
-                      </Badge>
+                        <Badge
+                          pill
+                          bg={submissionCount > 0 ? "success" : "secondary"}
+                          className={
+                            submissionCount > 0
+                              ? "bg-success-subtle text-success border border-success-subtle"
+                              : "bg-secondary-subtle text-secondary border"
+                          }
+                          style={{ fontSize: "0.65rem" }}
+                        >
+                          {submissionCount} lượt nộp
+                        </Badge>
                       )}
                     </div>
 
@@ -273,14 +275,16 @@ const InstructorQuizTrackingView = ({
                         <span>
                           📅 Hạn:{" "}
                           {item.deadline
-                            ? new Date(item.deadline).toLocaleDateString("vi-VN")
+                            ? new Date(item.deadline).toLocaleDateString(
+                                "vi-VN",
+                              )
                             : "Không giới hạn"}{" "}
                           • {submissionCount} đã nộp
                         </span>
                       ) : (
                         <span>
-                          ⏱️ {item.duration}p • {(item.questions || []).length} câu •
-                          Đạt: {item.passScore}/10
+                          ⏱️ {item.duration}p • {(item.questions || []).length}{" "}
+                          câu • Đạt: {item.passScore}/10
                         </span>
                       )}
                     </div>
@@ -334,7 +338,7 @@ const InstructorQuizTrackingView = ({
                           <strong className="text-dark">
                             {activeQuiz.deadline
                               ? new Date(activeQuiz.deadline).toLocaleString(
-                                  "vi-VN"
+                                  "vi-VN",
                                 )
                               : "Không giới hạn"}
                           </strong>
@@ -358,14 +362,16 @@ const InstructorQuizTrackingView = ({
                       </>
                     ) : (
                       <>
-                    <span>⏱️ {activeQuiz.duration} phút</span>
-                    <span>•</span>
-                    <span>📝 {(activeQuiz.questions || []).length} câu hỏi</span>
-                    <span>•</span>
-                    <span>
+                        <span>⏱️ {activeQuiz.duration} phút</span>
+                        <span>•</span>
+                        <span>
+                          📝 {(activeQuiz.questions || []).length} câu hỏi
+                        </span>
+                        <span>•</span>
+                        <span>
                           🎯 Điểm đạt:{" "}
                           <strong>{activeQuiz.passScore} / 10</strong>
-                    </span>
+                        </span>
                       </>
                     )}
                   </div>
@@ -392,7 +398,9 @@ const InstructorQuizTrackingView = ({
                     >
                       {currentConfig.stat1Label}
                     </div>
-                    <div className="fw-black text-dark fs-5">{totalSubmissions}</div>
+                    <div className="fw-black text-dark fs-5">
+                      {totalSubmissions}
+                    </div>
                   </div>
                 </div>
 
@@ -432,9 +440,7 @@ const InstructorQuizTrackingView = ({
                     </div>
                     <div
                       className={`fw-black fs-5 ${
-                        mode === "assessments"
-                          ? "text-dark"
-                          : "text-success"
+                        mode === "assessments" ? "text-dark" : "text-success"
                       }`}
                     >
                       {mode === "assessments"
@@ -481,7 +487,12 @@ const InstructorQuizTrackingView = ({
                 className="table-responsive flex-grow-1"
                 style={{ overflowY: "auto" }}
               >
-                <Table hover align="middle" className="mb-0" style={{ fontSize: "0.85rem" }}>
+                <Table
+                  hover
+                  align="middle"
+                  className="mb-0"
+                  style={{ fontSize: "0.85rem" }}
+                >
                   <thead className="table-light">
                     <tr className="text-muted small">
                       <th style={{ borderTopLeftRadius: "8px" }}>Học Viên</th>
@@ -489,7 +500,11 @@ const InstructorQuizTrackingView = ({
                       {mode === "assessments" && <th>File Bài Làm</th>}
                       <th>Điểm Số</th>
                       <th>Trạng Thái</th>
-                      <th className="text-end" style={{ borderTopRightRadius: "8px" }}>
+                      <th>Số lần thi lại</th>
+                      <th
+                        className="text-end"
+                        style={{ borderTopRightRadius: "8px" }}
+                      >
                         Thao Tác
                       </th>
                     </tr>
@@ -498,10 +513,8 @@ const InstructorQuizTrackingView = ({
                     {filteredAttempts.map((att, index) => {
                       const student = att.student || {};
 
-                      // For recorded
                       const isPassed = att.score >= (activeQuiz.passScore ?? 5);
 
-                      // For assessments
                       const isGraded = att.status === "graded";
                       const isLate =
                         activeQuiz?.deadline && att.submittedAt
@@ -538,7 +551,9 @@ const InstructorQuizTrackingView = ({
                                 )}
                               </div>
                               <div>
-                                <div className="fw-bold text-dark">{student.name}</div>
+                                <div className="fw-bold text-dark">
+                                  {student.name}
+                                </div>
                                 <div
                                   className="text-muted"
                                   style={{ fontSize: "0.7rem" }}
@@ -554,11 +569,13 @@ const InstructorQuizTrackingView = ({
                             <div className="fw-semibold">
                               {mode === "assessments"
                                 ? att.submittedAt
-                                  ? new Date(att.submittedAt).toLocaleDateString("vi-VN")
+                                  ? new Date(
+                                      att.submittedAt,
+                                    ).toLocaleDateString("vi-VN")
                                   : "Chưa rõ"
                                 : att.timeTaken
-                                ? `${Math.floor(att.timeTaken / 60)}p ${att.timeTaken % 60}s`
-                                : "12p 30s"}
+                                  ? `${Math.floor(att.timeTaken / 60)}p ${att.timeTaken % 60}s`
+                                  : "12p 30s"}
                             </div>
                             <div
                               className="text-muted"
@@ -576,7 +593,9 @@ const InstructorQuizTrackingView = ({
                                   {isLate ? "⚠️ Nộp trễ" : "✓ Đúng hạn"}
                                 </span>
                               ) : att.createdAt ? (
-                                new Date(att.createdAt).toLocaleDateString("vi-VN")
+                                new Date(att.createdAt).toLocaleDateString(
+                                  "vi-VN",
+                                )
                               ) : (
                                 "06/09/2026"
                               )}
@@ -592,7 +611,10 @@ const InstructorQuizTrackingView = ({
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="btn btn-sm btn-light border rounded-pill px-2.5 py-1 text-xs fw-semibold text-truncate d-inline-flex align-items-center gap-1"
-                                  style={{ maxWidth: "160px", fontSize: "0.75rem" }}
+                                  style={{
+                                    maxWidth: "160px",
+                                    fontSize: "0.75rem",
+                                  }}
                                   title={att.fileUrl.split("/").pop()}
                                 >
                                   <span>📦</span>
@@ -601,7 +623,9 @@ const InstructorQuizTrackingView = ({
                                   </span>
                                 </a>
                               ) : (
-                                <span className="text-muted small">Không có file</span>
+                                <span className="text-muted small">
+                                  Không có file
+                                </span>
                               )}
                             </td>
                           )}
@@ -617,18 +641,20 @@ const InstructorQuizTrackingView = ({
                                   <span className="text-muted small">/10</span>
                                 </>
                               ) : (
-                                <span className="text-muted fst-italic">--</span>
+                                <span className="text-muted fst-italic">
+                                  --
+                                </span>
                               )
                             ) : (
                               <>
-                            <span
-                              className={`fw-black fs-6 ${
-                                isPassed ? "text-dark" : "text-danger"
-                              }`}
-                            >
-                              {att.score}
-                            </span>
-                            <span className="text-muted small">/10</span>
+                                <span
+                                  className={`fw-black fs-6 ${
+                                    isPassed ? "text-dark" : "text-danger"
+                                  }`}
+                                >
+                                  {att.score}
+                                </span>
+                                <span className="text-muted small">/10</span>
                               </>
                             )}
                           </td>
@@ -648,21 +674,21 @@ const InstructorQuizTrackingView = ({
                                 {isGraded ? "✓ Đã chấm" : "⏳ Chờ chấm"}
                               </Badge>
                             ) : (
-                            <Badge
-                              pill
-                              bg={isPassed ? "success" : "danger"}
-                              className={
-                                isPassed
-                                  ? "bg-success-subtle text-success border border-success-subtle px-2 py-1"
-                                  : "bg-danger-subtle text-danger border border-danger-subtle px-2 py-1"
-                              }
-                            >
-                              {isPassed ? "✓ Đạt" : "✗ Chưa đạt"}
-                            </Badge>
+                              <Badge
+                                pill
+                                bg={isPassed ? "success" : "danger"}
+                                className={
+                                  isPassed
+                                    ? "bg-success-subtle text-success border border-success-subtle px-2 py-1"
+                                    : "bg-danger-subtle text-danger border border-danger-subtle px-2 py-1"
+                                }
+                              >
+                                {isPassed ? "✓ Đạt" : "✗ Chưa đạt"}
+                              </Badge>
                             )}
                           </td>
+                          <td>{att.retakeCount || 0}</td>
 
-                          {/* 6. ACTIONS */}
                           <td className="text-end">
                             {mode === "assessments" ? (
                               <Button
@@ -680,28 +706,34 @@ const InstructorQuizTrackingView = ({
                             ) : (
                               <div className="d-inline-flex gap-1.5">
                                 <Button
-                                variant="light"
-                                size="sm"
-                                className="border rounded-pill px-2.5 py-1 text-xs fw-bold"
-                                title="Xem bài làm chi tiết"
-                                onClick={() =>
-                                  onOpenSubmissionModal(att, activeQuiz)
-                                }
-                              >
-                                👁️ Xem bài
-                              </Button>
-                              <Button
-                                variant={isPassed ? "outline-warning" : "warning"}
-                                size="sm"
-                                className={`rounded-pill px-2 py-1 text-xs ${
-                                  !isPassed ? "text-dark fw-bold" : ""
-                                }`}
-                                title="Cho phép thi lại"
-                                onClick={() => onAllowRetake(att, activeQuiz)}
-                              >
-                                🔄 Thi lại
-                              </Button>
-                            </div>
+                                  variant="light"
+                                  size="sm"
+                                  className="border rounded-pill px-2.5 py-1 text-xs fw-bold"
+                                  title="Xem bài làm chi tiết"
+                                  onClick={() =>
+                                    onOpenSubmissionModal(att, activeQuiz)
+                                  }
+                                >
+                                  👁️ Xem bài
+                                </Button>
+
+                                <Button
+                                  variant={
+                                    isPassed ? "outline-warning" : "warning"
+                                  }
+                                  size="sm"
+                                  className={`rounded-pill px-2 py-1 text-xs ${
+                                    !isPassed ? "text-dark fw-bold" : ""
+                                  }`}
+                                  title="Cho phép thi lại"
+                                  onClick={() => onAllowRetake(att, activeQuiz)}
+                                  disabled={att.status === "retake"}
+                                >
+                                  {att.status === "retake"
+                                    ? "Đang thi lại"
+                                    : "🔄 Thi lại"}
+                                </Button>
+                              </div>
                             )}
                           </td>
                         </tr>
@@ -734,4 +766,3 @@ const InstructorQuizTrackingView = ({
 };
 
 export default InstructorQuizTrackingView;
-

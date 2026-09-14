@@ -62,11 +62,56 @@ const CourseEnrollments = () => {
     intervalRef.current = null;
   };
 
+  // Auto-select first lesson when enrollment loads if not already selected
+  useEffect(() => {
+    if (enrollment && enrollment.length > 0 && !currentLesson) {
+      setCurrentLesson(enrollment[0]);
+    }
+  }, [enrollment, currentLesson]);
+
+  const lessonList = enrollment || [];
+  const currentIndex = lessonList.findIndex(
+    (l) => (l._id || l.id) === (currentLesson?._id || currentLesson?.id),
+  );
+  const hasPrev = currentIndex > 0;
+  const hasNext = currentIndex >= 0 && currentIndex < lessonList.length - 1;
+
+  const handleNextLesson = () => {
+    if (hasNext) {
+      setCurrentLesson(lessonList[currentIndex + 1]);
+    }
+  };
+
+  const handlePrevLesson = () => {
+    if (hasPrev) {
+      setCurrentLesson(lessonList[currentIndex - 1]);
+    }
+  };
+
   return (
-    /* ── Compact 2-Card Layout (Vừa Vặn, Nhẹ Nhàng & Không Bị Phồng To) ── */
+    /* ── Cinema 2-Column Layout (Video 70% Left, Syllabus 30% Right) ── */
     <div className="flex flex-col lg:flex-row h-auto lg:h-[88vh] w-full bg-transparent rounded-[2rem] overflow-hidden gap-6">
-      {/* ── Left Sidebar Glass Card (Ultra-Compact Sizing) ── */}
-      <div className="w-full lg:w-[310px] xl:w-[340px] flex-shrink-0 h-[560px] lg:h-full bg-white/60 backdrop-blur-3xl border border-white/90 rounded-[2rem] shadow-sm z-20 overflow-hidden flex flex-col">
+      {/* ── Left Content (70%): Video + Navigation Action Bar + Tabs ── */}
+      <div className="flex-1 h-full overflow-y-auto custom-scrollbar z-10 relative bg-white/70 backdrop-blur-3xl border border-white/90 rounded-[2rem] p-5 lg:p-7 shadow-sm">
+        <LessionForm
+          videoRef={videoRef}
+          currentLesson={currentLesson}
+          role={role}
+          handduration={handduration}
+          onplay={handlePlay}
+          onpause={handlePause}
+          process={process}
+          onNextLesson={handleNextLesson}
+          onPrevLesson={handlePrevLesson}
+          hasNext={hasNext}
+          hasPrev={hasPrev}
+          totalLessons={lessonList.length}
+          currentIndex={currentIndex}
+        />
+      </div>
+
+      {/* ── Right Sidebar (30%): Syllabus Playlist ── */}
+      <div className="w-full lg:w-[360px] xl:w-[390px] flex-shrink-0 h-[560px] lg:h-full bg-white/70 backdrop-blur-3xl border border-white/90 rounded-[2rem] shadow-sm z-20 overflow-hidden flex flex-col">
         <SidebarLesson
           loading={loading}
           error={error}
@@ -77,19 +122,6 @@ const CourseEnrollments = () => {
           role={role}
           exits={exits}
           allProcess={allProcess}
-        />
-      </div>
-
-      {/* ── Right Content Glass Card (Compact Sizing) ── */}
-      <div className="flex-1 h-full overflow-y-auto custom-scrollbar z-10 relative bg-white/60 backdrop-blur-3xl border border-white/90 rounded-[2rem] p-6 lg:p-8 shadow-sm">
-        <LessionForm
-          videoRef={videoRef}
-          currentLesson={currentLesson}
-          role={role}
-          handduration={handduration}
-          onplay={handlePlay}
-          onpause={handlePause}
-          process={process}
         />
       </div>
     </div>

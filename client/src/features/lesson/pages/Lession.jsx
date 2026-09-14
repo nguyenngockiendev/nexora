@@ -94,21 +94,36 @@ const Lession = () => {
     }
   };
 
+  // Auto-select first lesson when title loads if not already selected
+  useEffect(() => {
+    if (title && title.length > 0 && !currentLesson) {
+      setCurrentLesson(title[0]);
+    }
+  }, [title, currentLesson]);
+
+  const lessonList = title || [];
+  const currentIndex = lessonList.findIndex(
+    (l) => (l._id || l.id) === (currentLesson?._id || currentLesson?.id),
+  );
+  const hasPrev = currentIndex > 0;
+  const hasNext = currentIndex >= 0 && currentIndex < lessonList.length - 1;
+
+  const handleNextLesson = () => {
+    if (hasNext) {
+      setCurrentLesson(lessonList[currentIndex + 1]);
+    }
+  };
+
+  const handlePrevLesson = () => {
+    if (hasPrev) {
+      setCurrentLesson(lessonList[currentIndex - 1]);
+    }
+  };
+
   return (
-    <div className="flex h-screen w-full overflow-hidden">
-      <aside className="w-[320px] shrink-0 overflow-hidden">
-        <SidebarLesson
-          loading={loading}
-          error={error}
-          title={title}
-          currentLesson={currentLesson}
-          setCurrentLesson={setCurrentLesson}
-          id={id}
-          role={role}
-          allProcess={allProcess}
-        />
-      </aside>
-      <main className="flex-1 overflow-y-auto">
+    <div className="flex flex-col lg:flex-row h-auto lg:h-[88vh] w-full bg-transparent rounded-[2rem] overflow-hidden gap-6 p-2">
+      {/* ── Left Content (70%): Video + Actions + Tabs ── */}
+      <main className="flex-1 h-full overflow-y-auto custom-scrollbar z-10 relative bg-white/70 backdrop-blur-3xl border border-white/90 rounded-[2rem] p-5 lg:p-7 shadow-sm">
         <LessionForm
           videoRef={videoRef}
           currentLesson={currentLesson}
@@ -122,8 +137,28 @@ const Lession = () => {
           onplay={handlePlay}
           onpause={handlePause}
           process={process}
+          onNextLesson={handleNextLesson}
+          onPrevLesson={handlePrevLesson}
+          hasNext={hasNext}
+          hasPrev={hasPrev}
+          totalLessons={lessonList.length}
+          currentIndex={currentIndex}
         />
       </main>
+
+      {/* ── Right Sidebar (30%): Syllabus Playlist ── */}
+      <aside className="w-full lg:w-[360px] xl:w-[390px] flex-shrink-0 h-[560px] lg:h-full bg-white/70 backdrop-blur-3xl border border-white/90 rounded-[2rem] shadow-sm z-20 overflow-hidden flex flex-col">
+        <SidebarLesson
+          loading={loading}
+          error={error}
+          title={title}
+          currentLesson={currentLesson}
+          setCurrentLesson={setCurrentLesson}
+          id={id}
+          role={role}
+          allProcess={allProcess}
+        />
+      </aside>
     </div>
   );
 };
