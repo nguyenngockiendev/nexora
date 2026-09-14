@@ -164,6 +164,13 @@ const ResumePayment = async (data) => {
 
 const DeleteOrder = async (data) => {
   try {
+    const isExitOrder = await Orders.findOne({
+      _id:data.orderId,
+      userId:data.userId
+    })
+    if(!isExitOrder){
+      throw { status: 404, message: "Không phải đơn hàng của bạn!" };
+    }
     const result = await order.findByIdAndDelete(data.orderId);
     return result;
   } catch (error) {

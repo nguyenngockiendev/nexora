@@ -607,6 +607,19 @@ const GradeStudentSubmission = async (data) => {
     if (data?.role === "student") {
       throw { status: 403, message: "Không đủ quyền chấm điểm!" };
     }
+    const submission = await AssignmentSubmissions.findById(data.submissionId);
+    if (!submission) {
+      throw { status: 404, message: "Không tìm thấy bài nộp!" };
+    }
+    if (data?.role !== "admin") {
+      const isClass = await classs.findOne({
+        _id: submission.classId,
+        instructorId: data.userId,
+      });
+      if (!isClass) {
+        throw { status: 403, message: "Bạn không phải giáo viên của lớp học này!" };
+      }
+    }
     const update = await AssignmentSubmissions.findByIdAndUpdate(
       data.submissionId,
       {
@@ -616,9 +629,6 @@ const GradeStudentSubmission = async (data) => {
       },
       { new: true },
     );
-    if (!update) {
-      throw { status: 404, message: "Không tìm thấy bài nộp!" };
-    }
     return {
       message: "Chấm điểm bài tập thành công!",
       result: update,

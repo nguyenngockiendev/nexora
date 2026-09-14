@@ -206,7 +206,7 @@ Router.get("/process/course/:courseId", authMiddleware, GetAllProcess);
   Router.get("/order_history", authMiddleware, GetOrderHistory));
 
 Router.put("/resume-payment/:orderId", ResumePay);
-Router.delete("/delete-order/:orderId", DeleteOrderbyUser);
+Router.delete("/delete-order/:orderId", authMiddleware,DeleteOrderbyUser);
 Router.get("/details-course/:courseId", authMiddleware, DetailsCourse);
 Router.post(
   "/become-instructor",
@@ -269,7 +269,7 @@ Router.put(
   upload.single("thumbnail"),
   UpdateCourse,
 );
-Router.get("/admin_dashboart", DashboartforAdmin);
+Router.get("/admin_dashboart", authMiddleware,DashboartforAdmin);
 Router.get("/Classion", authMiddleware, GetClassSesion);
 Router.put(
   "/create_Ass/:classId",

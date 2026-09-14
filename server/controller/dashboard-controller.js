@@ -21,6 +21,7 @@ const GetInstructorBusinessDashboard = async (req, res) => {
 const DashboartforAdmin = async (req, res) => {
   try {
     const data = {
+      role: req.user.role,
       day: req.query.day,
     };
     const result = await DashboartAdmin(data);

@@ -1,10 +1,5 @@
 const Lessons = require("../model/Lessons");
-const Courses = require("../model/Courses");
-const order = require("../model/Orders");
-const errollment = require("../model/Enrollments");
-const user = require("../model/Users");
-const classs = require("../model/Class");
-const quizz = require("../model/Quizz");
+
 const ProcessLesson = require("../model/ProcessLessons");
 const Enrollments = require("../model/Enrollments");
 const ProcessLessons = require("../model/ProcessLessons");
@@ -120,7 +115,7 @@ const GetrecentLession = async (data) => {
       })
       .lean();
     if (!item) {
-      throw { message: "không có bài học gần đây!" };
+      return null;
     }
     if (item.completed == true) {
       const lessionOrder = await Lessons.findById(item.lessonId._id);

@@ -402,7 +402,7 @@ const TrackingQuizz = async (data) => {
     const result = await QuizAttempts.find({
       courseId: data.courseId,
     })
-      .select("score timeTaken createdAt answers")
+
       .populate("lessonId")
       .populate("quizId", "title duration questions passScore")
       .populate("studentId", "name email avatar")
@@ -445,6 +445,8 @@ const TrackingQuizz = async (data) => {
             score: item.score,
             timeTaken: item.timeTaken,
             createdAt: item.createdAt,
+            status: item.status,
+            retakeCount: item.retakeCount,
 
             answers: item.answers.map((answer) => ({
               questionId: answer.questionId,
@@ -470,9 +472,21 @@ const UpdateAttempQuizz = async (data) => {
     if (!IsexitCour) {
       throw { status: 404, message: "Bạn không có quyền vào nguồn này!" };
     }
-    const update = await QuizAttempts.findByIdAndUpdate(data.quizattempsId, {
+    const isRetake = await QuizAttempts.findOne({
+      _id: data.quizattempsId,
       status: "retake",
     });
+    if (isRetake) {
+      throw { status: 400, message: "Bài kiểm tra này đang cho làm lại!" };
+    }
+    const update = await QuizAttempts.findByIdAndUpdate(
+      data.quizattempsId,
+      {
+        status: "retake",
+        $inc: { retakeCount: 1 },
+      },
+      { new: true },
+    );
     return update;
   } catch (error) {
     console.log(error);

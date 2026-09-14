@@ -143,15 +143,17 @@ const UpdateroleByAdmin = async (data) => {
 
 const GetAllStudentByIdClass = async (data) => {
   try {
-    if (data?.role !== "instructor") {
+    if (data?.role !== "instructor" && data?.role !== "admin") {
       throw { status: 404, message: "You don't have enough authority." };
     }
-    const isClassIns = await Class.findOne({
-      _id: data?.classId,
-      instructorId: data?.user,
-    });
-    if (!isClassIns) {
-      throw { status: 404, message: "Bạn không phải giáo viên trong lớp này." };
+    if (data?.role !== "admin") {
+      const isClassIns = await Class.findOne({
+        _id: data?.classId,
+        instructorId: data?.user,
+      });
+      if (!isClassIns) {
+        throw { status: 404, message: "Bạn không phải giáo viên trong lớp này." };
+      }
     }
 
     const student = await errollment
@@ -187,12 +189,14 @@ const RemoveStudentinClass = async (data) => {
       throw { status: 404, message: "You don't have enough authority." };
     }
 
-    const isClassIns = await Class.findOne({
-      _id: data?.classId,
-      instructorId: data?.user,
-    });
-    if (!isClassIns) {
-      throw { status: 404, message: "Bạn không phải giáo viên trong lớp này." };
+    if (data?.role !== "admin") {
+      const isClassIns = await Class.findOne({
+        _id: data?.classId,
+        instructorId: data?.user,
+      });
+      if (!isClassIns) {
+        throw { status: 404, message: "Bạn không phải giáo viên trong lớp này." };
+      }
     }
 
     const enrollmentforstudent = await errollment.findOneAndUpdate(
@@ -230,12 +234,14 @@ const RefectStudentoutclass = async (data) => {
     if (data?.role === "student") {
       throw { status: 404, message: "You don't have enough authority." };
     }
-     const isClassIns = await Class.findOne({
-      _id: data?.classId,
-      instructorId: data?.user,
-    });
-    if (!isClassIns) {
-      throw { status: 404, message: "Bạn không phải giáo viên trong lớp này." };
+    if (data?.role !== "admin") {
+      const isClassIns = await Class.findOne({
+        _id: data?.classId,
+        instructorId: data?.user,
+      });
+      if (!isClassIns) {
+        throw { status: 404, message: "Bạn không phải giáo viên trong lớp này." };
+      }
     }
     const enrollmentforstudent = await errollment.findOneAndUpdate(
       {

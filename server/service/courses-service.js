@@ -93,8 +93,8 @@ const GetCourses = async (data) => {
 
 const CreatenewCourses = async (data) => {
   try {
-    if (data?.role !== "student") {
-      throw { message: "Bạn không có quyền tạo khóa học!" };
+    if (data?.role !== "instructor" && data?.role !== "admin") {
+      throw { status: 403, message: "Bạn không có quyền tạo khóa học!" };
     }
 
     const newCourses = new Courses(data);

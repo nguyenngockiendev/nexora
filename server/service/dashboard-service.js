@@ -217,6 +217,12 @@ const getInstructorBusinessDashboard = async (data) => {
 
 const DashboartAdmin = async (data) => {
   try {
+    if(data?.role !== "admin") {
+      throw {
+        status: 403,
+        message: "Chỉ admin mới có quyền xem bảng điều khiển này!",
+      };
+    }
     const now = new Date();
     let filterDate = new Date(0);
     if (data.day === "week") {

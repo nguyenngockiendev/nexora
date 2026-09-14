@@ -61,6 +61,7 @@ const ResumePay = async (req, res) => {
 const DeleteOrderbyUser = async (req, res) => {
   try {
     const data = {
+      userId: req.user.userId,
       orderId: req.params.orderId,
     };
     const result = await DeleteOrder(data);
