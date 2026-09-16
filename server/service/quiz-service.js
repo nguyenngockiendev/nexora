@@ -51,7 +51,6 @@ const CreateQuizByIntructor = async (data) => {
 
 const GetQuizzById = async (data) => {
   try {
-    console.log("data", data);
     const res = await quizz
       .findOne({ lessonId: data.lessonId })
       .populate("courseId", "title")
@@ -60,17 +59,8 @@ const GetQuizzById = async (data) => {
       throw { status: 404, message: "Bài học này chưa có bài kiểm tra!" };
     }
 
-    const IdsAttemps = await attempQuizz
-      .findOne({ quizId: res._id, studentId: data.userId })
-      .select("_id")
-      .lean();
-    console.log("IdsAttemps", IdsAttemps);
-    if (!IdsAttemps) {
-      throw { status: 404, message: "Bạn chưa làm bài kiểm tra này!" };
-    }
     const result = {
       ...res,
-      IdsAttemps: IdsAttemps ? IdsAttemps._id : null,
     };
     return result;
   } catch (error) {

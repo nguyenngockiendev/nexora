@@ -15,14 +15,19 @@ const payment = async (req, res) => {
     const data = {
       userId: req.user.userId,
       items: req.body.items,
+      codevoucher: req.body.codevoucher,
     };
 
     const result = await paymemtCourese(data);
     if (!result) {
       throw { message: "không có khóa học!" };
     }
+    if (result.isFree) {
+      res.status(200).json(result);
+      return;
+    }
     const paymentcourse = await createSepayPaymentUrl(result);
-    console.log(paymentcourse)
+    console.log(paymentcourse);
     res.status(200).json({ url: paymentcourse });
   } catch (error) {
     console.log(error);
@@ -33,7 +38,7 @@ const payment = async (req, res) => {
 const sepayCallback = async (req, res) => {
   try {
     const sepay = req.body;
-    console.log(sepay)
+    console.log(sepay);
     const createerollment = await updateorder(sepay);
     const io = req.app.get("io");
     if (io) {

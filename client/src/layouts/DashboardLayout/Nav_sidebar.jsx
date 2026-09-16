@@ -10,6 +10,7 @@ import {
   BrainCircuit,
   ShoppingBag,
   ClipboardCheck,
+  Tag,
 } from "lucide-react";
 
 const Nav_Sidebar = [
@@ -110,6 +111,12 @@ const Nav_Sidebar = [
         path: "admin/courses/quality-control",
         icon: PlusCircle,
         roles: ["admin"],
+      },
+      {
+        name: "Quản lý Voucher",
+        path: "admin/vouchers",
+        icon: Tag,
+        roles: ["admin", "instructor"],
       },
     ],
   },

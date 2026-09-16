@@ -6,6 +6,7 @@ const classs = require("../model/Class");
 const crypto = require("crypto");
 const Orders = require("../model/Orders");
 const Class = require("../model/Class");
+const Vouchers = require("../model/Vouchers");
 
 const paymemtCourese = async (data) => {
   try {
@@ -35,12 +36,37 @@ const paymemtCourese = async (data) => {
         };
       }
     }
+
     let newItems = [];
     let finalTotal = 0;
+    let voucherDiscount = 0;
+
+    const voucher = data.codevoucher
+      ? await Vouchers.findOne({ code: data.codevoucher, isActive: true })
+      : null;
+
     for (const item of data.items) {
       const course = await Courses.findById(item.courseId);
       const PriceClas = await Class.findById(item.classId);
       const finalPrice = Number(PriceClas?.price || course?.price || 0);
+
+      if (voucher) {
+        const isDiscount =
+          voucher.applicableCourses.length === 0 ||
+          voucher.applicableCourses.some(
+            (id) => id.toString() === item.courseId.toString(),
+          );
+        if (isDiscount) {
+          if (voucher.discountType === "percentage") {
+            voucherDiscount += Math.round(
+              (finalPrice * voucher.discountValue) / 100,
+            );
+          } else {
+            voucherDiscount += voucher.discountValue;
+          }
+        }
+      }
+
       finalTotal += finalPrice;
 
       newItems.push({
@@ -50,18 +76,47 @@ const paymemtCourese = async (data) => {
         price: finalPrice,
       });
     }
+
     const paymentCode = crypto.randomBytes(6).toString("hex").toUpperCase();
-    const neworder = new order({
+    const originalPrice = Math.max(0, finalTotal - voucherDiscount);
+    const newOrder = await order.create({
       userId: data.userId,
-      Totalprice: finalTotal,
+      Totalprice: originalPrice,
       items: newItems,
-      status: "pending",
-      paymentMethod: "QR",
+      status: originalPrice > 0 ? "pending" : "completed",
+      paymentMethod: originalPrice > 0 ? "QR" : "VOUCHER",
       paymentCode: paymentCode,
+      discountAmount: voucherDiscount,
+      originalPrice: finalTotal,
+      voucherCode: voucher ? voucher.code : null,
     });
 
-    await neworder.save();
-    return neworder;
+    if (originalPrice === 0) {
+      for (const item of newOrder.items) {
+        await errollment.create({
+          userId: data.userId,
+          courseId: item.courseId,
+          classId: item?.classId || null,
+          type: item?.type,
+          status: "active",
+        });
+
+        if (item?.type === "live") {
+          await classs.updateOne(
+            {
+              _id: item?.classId,
+              courseId: item?.courseId,
+            },
+            { $inc: { currentStudents: 1 } },
+          );
+        }
+      }
+
+      return { isFree: true, message: "Kích hoạt khóa học thành công!" };
+    }
+    if (originalPrice > 0) {
+      return newOrder;
+    }
   } catch (error) {
     console.log(error);
     throw error;
@@ -107,6 +162,7 @@ const updateorder = async (data) => {
         message: "Đơn hàng đã hết hạn thanh toán (quá 15 phút)!",
       };
     }
+
     if (data.transferType === "in") {
       if (Number(data?.transferAmount) === Number(orderpayment?.Totalprice)) {
         orderpayment.status = "completed";
@@ -165,10 +221,10 @@ const ResumePayment = async (data) => {
 const DeleteOrder = async (data) => {
   try {
     const isExitOrder = await Orders.findOne({
-      _id:data.orderId,
-      userId:data.userId
-    })
-    if(!isExitOrder){
+      _id: data.orderId,
+      userId: data.userId,
+    });
+    if (!isExitOrder) {
       throw { status: 404, message: "Không phải đơn hàng của bạn!" };
     }
     const result = await order.findByIdAndDelete(data.orderId);

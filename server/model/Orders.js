@@ -57,7 +57,11 @@ const orderSchema = new mongoose.Schema(
       },
       { _id: true },
     ],
+    originalPrice: { type: Number },
+    discountAmount: { type: Number, default: 0 },
+    voucherCode: { type: String, default: null },
   },
+
   {
     timestamps: true,
   },
