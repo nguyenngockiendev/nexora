@@ -13,6 +13,7 @@ import dashboardRoutes from "../../features/dashboard/routes/dashboardRoutes";
 import paymentRoute from "../../features/payment/routes/paymentRoute";
 import cartRoute from "../../features/cart/routes/cartRoute";
 import helpRoutes from "../../features/help/routes/helpRoutes";
+import voucherRoutes from "../../features/voucher/routes/voucherRoutes";
 import HomePage from "../../demo/HomePage/HomePage";
 
 function AppRoutes() {
@@ -27,6 +28,7 @@ function AppRoutes() {
     ...paymentRoute,
     ...cartRoute,
     ...helpRoutes,
+    ...voucherRoutes,
   ];
 
   return (
