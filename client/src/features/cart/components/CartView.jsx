@@ -22,6 +22,8 @@ const CartView = ({
   paymentLoading = false,
   qrUrl = null,
   handlePayment = () => {},
+  voucherPreview,
+  handReviewCart
 }) => {
   const navigate = useNavigate();
 
@@ -238,24 +240,27 @@ const CartView = ({
                   type="text"
                   placeholder="Nhập mã giảm giá"
                   value={couponCode}
-                  onChange={(e) => setCouponCode(e.target.value)}
-                  className="w-full pl-4 pr-20 py-2.5 rounded-full text-xs font-semibold bg-white border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-slate-800 placeholder-slate-400 shadow-2xs"
+                  onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                  className="w-full pl-4 pr-24 py-2.5 rounded-full text-xs font-semibold bg-white border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-slate-800 placeholder-slate-400 shadow-2xs uppercase tracking-wider"
                   style={{ borderRadius: "9999px" }}
                 />
                 <button
                   type="button"
-                  className="absolute right-1 px-4 py-1.5 rounded-full text-xs font-black text-slate-700 bg-slate-100 hover:bg-slate-200 transition-all cursor-pointer"
+                  onClick={() => handReviewCart && handReviewCart(couponCode)}
+                  className="absolute right-1 px-4 py-1.5 rounded-full text-xs font-black text-slate-700 bg-slate-100 hover:bg-slate-200 hover:text-orange-600 transition-all cursor-pointer"
                   style={{ borderRadius: "9999px" }}
                 >
                   Áp dụng
                 </button>
               </div>
 
-              {discount > 0 && (
-                <div className="flex items-center justify-between text-xs font-bold text-emerald-600">
-                  <span>Giảm giá:</span>
+              {Number(voucherPreview?.discountAmount || 0) > 0 && (
+                <div className="flex items-center justify-between text-xs font-bold text-emerald-600 px-1 py-1 rounded-lg bg-emerald-50/80 border border-emerald-100">
+                  <span className="flex items-center gap-1">
+                    ✓ Đã áp mã {voucherPreview?.code}:
+                  </span>
                   <span>
-                    -{Number(discount || 0).toLocaleString("vi-VN")} đ
+                    -{Number(voucherPreview.discountAmount).toLocaleString("vi-VN")} đ
                   </span>
                 </div>
               )}
@@ -267,7 +272,9 @@ const CartView = ({
               </span>
               <span className="text-2xl font-black text-orange-600">
                 {Number(
-                  Math.max(0, (totalPrice || 0) - discount),
+                  voucherPreview?.finalPrice !== undefined
+                    ? voucherPreview.finalPrice
+                    : Math.max(0, (totalPrice || 0) - Number(voucherPreview?.discountAmount || 0))
                 ).toLocaleString("vi-VN")}{" "}
                 đ
               </span>
@@ -305,7 +312,7 @@ const CartView = ({
 
             <button
               disabled={paymentLoading || cartItems?.length === 0}
-              onClick={handlePayment}
+              onClick={() => handlePayment(couponCode)}
               className="w-full py-4 px-6 rounded-full text-sm font-black text-white shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:scale-[1.02] active:scale-95 transition-all text-center flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 background: "linear-gradient(135deg, #f97316, #ea580c)",

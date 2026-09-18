@@ -11,7 +11,9 @@ const VoucherTable = ({ vouchers, onEdit, onDelete, onToggleStatus }) => {
   if (!vouchers || vouchers.length === 0) {
     return (
       <div className="text-center py-12 bg-white/40 rounded-2xl border border-dashed border-slate-200">
-        <p className="text-sm text-slate-500">Chưa có mã giảm giá nào phù hợp với bộ lọc.</p>
+        <p className="text-sm text-slate-500">
+          Chưa có mã giảm giá nào phù hợp với bộ lọc.
+        </p>
       </div>
     );
   }
@@ -32,8 +34,11 @@ const VoucherTable = ({ vouchers, onEdit, onDelete, onToggleStatus }) => {
         </thead>
         <tbody className="divide-y divide-slate-100">
           {vouchers.map((v) => {
-            const isExpired = v.expiryDate && new Date(v.expiryDate) < new Date();
-            const percentUsed = v.usageLimit ? Math.min(100, Math.round((v.usedCount / v.usageLimit) * 100)) : 0;
+            const isExpired =
+              v.expiryDate && new Date(v.expiryDate) < new Date();
+            const percentUsed = v.usageLimit
+              ? Math.min(100, Math.round((v.usedCount / v.usageLimit) * 100))
+              : 0;
 
             return (
               <tr
@@ -57,7 +62,9 @@ const VoucherTable = ({ vouchers, onEdit, onDelete, onToggleStatus }) => {
                     </button>
                   </div>
                   {v.description && (
-                    <div className="text-[11px] text-slate-400 mt-1 max-w-xs truncate">{v.description}</div>
+                    <div className="text-[11px] text-slate-400 mt-1 max-w-xs truncate">
+                      {v.description}
+                    </div>
                   )}
                 </td>
 
@@ -70,7 +77,9 @@ const VoucherTable = ({ vouchers, onEdit, onDelete, onToggleStatus }) => {
                           : "bg-amber-100 text-amber-700 border border-amber-200"
                       }`}
                     >
-                      {v.discountValue === 100 ? "Giảm 100% (0đ)" : `Giảm ${v.discountValue}%`}
+                      {v.discountValue === 100
+                        ? "Giảm 100% (0đ)"
+                        : `Giảm ${v.discountValue}%`}
                     </span>
                   ) : (
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-100 text-orange-700 border border-orange-200">
@@ -95,12 +104,15 @@ const VoucherTable = ({ vouchers, onEdit, onDelete, onToggleStatus }) => {
                   <div className="w-32">
                     <div className="flex justify-between text-xs text-slate-500 mb-1">
                       <span>
-                        {v.usedCount || 0} / {v.usageLimit ? `${v.usageLimit} lượt` : "∞"}
+                        {v.usedCount || 0} /{" "}
+                        {v.usageLimit ? `${v.usageLimit} lượt` : "∞"}
                       </span>
                       {v.usageLimit && (
                         <span
                           className={`font-semibold ${
-                            percentUsed >= 80 ? "text-rose-500" : "text-slate-600"
+                            percentUsed >= 80
+                              ? "text-rose-500"
+                              : "text-slate-600"
                           }`}
                         >
                           {percentUsed}%
@@ -117,19 +129,27 @@ const VoucherTable = ({ vouchers, onEdit, onDelete, onToggleStatus }) => {
                         />
                       </div>
                     ) : (
-                      <span className="text-[11px] text-slate-400">Không giới hạn</span>
+                      <span className="text-[11px] text-slate-400">
+                        Không giới hạn
+                      </span>
                     )}
                   </div>
                 </td>
 
                 <td className="p-4">
                   <div className="text-xs font-medium text-slate-700">
-                    {v.expiryDate ? new Date(v.expiryDate).toLocaleDateString("vi-VN") : "Vĩnh viễn"}
+                    {v.expiryDate
+                      ? new Date(v.expiryDate).toLocaleDateString("vi-VN")
+                      : "Vĩnh viễn"}
                   </div>
                   {isExpired ? (
-                    <div className="text-[10px] text-rose-600 font-semibold">Đã hết hạn</div>
+                    <div className="text-[10px] text-rose-600 font-semibold">
+                      Đã hết hạn
+                    </div>
                   ) : (
-                    <div className="text-[10px] text-emerald-600 font-medium">Còn hạn dùng</div>
+                    <div className="text-[10px] text-emerald-600 font-medium">
+                      Còn hạn dùng
+                    </div>
                   )}
                 </td>
 
@@ -138,7 +158,12 @@ const VoucherTable = ({ vouchers, onEdit, onDelete, onToggleStatus }) => {
                     <input
                       type="checkbox"
                       checked={Boolean(v.isActive)}
-                      onChange={() => onToggleStatus(v._id || v.code)}
+                      onChange={() =>
+                        onToggleStatus(
+                          v._id,
+                          v.isActive === true ? false : true,
+                        )
+                      }
                       disabled={isExpired}
                       className="sr-only peer"
                     />

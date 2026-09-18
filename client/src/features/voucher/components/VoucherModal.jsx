@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { X, Sparkles } from "lucide-react";
+import { useOutletContext } from "react-router-dom";
 
-const VoucherModal = ({ isOpen, onClose, onSave, editingVoucher, coursesList = [] }) => {
+const VoucherModal = ({
+  isOpen,
+  onClose,
+  onSave,
+  editingVoucher,
+  coursesList = [],
+  loadingVou,
+  coursesall,
+}) => {
+  const { dashboard } = useOutletContext();
+  const role = dashboard?.role;
   const [formData, setFormData] = useState({
     code: "",
     discountType: "percentage",
@@ -19,13 +30,20 @@ const VoucherModal = ({ isOpen, onClose, onSave, editingVoucher, coursesList = [
         code: editingVoucher.code || "",
         discountType: editingVoucher.discountType || "percentage",
         discountValue: editingVoucher.discountValue || "",
-        scope: editingVoucher.applicableCourses && editingVoucher.applicableCourses.length > 0 ? "specific" : "all",
+        scope:
+          editingVoucher.applicableCourses &&
+          editingVoucher.applicableCourses.length > 0
+            ? "specific"
+            : "all",
         applicableCourses: editingVoucher.applicableCourses || [],
         usageLimit: editingVoucher.usageLimit || "",
         expiryDate: editingVoucher.expiryDate
           ? new Date(editingVoucher.expiryDate).toISOString().split("T")[0]
           : "",
-        isActive: editingVoucher.isActive !== undefined ? editingVoucher.isActive : true,
+        isActive:
+          editingVoucher.isActive !== undefined
+            ? editingVoucher.isActive
+            : true,
       });
     } else {
       setFormData({
@@ -70,7 +88,12 @@ const VoucherModal = ({ isOpen, onClose, onSave, editingVoucher, coursesList = [
       ...formData,
       discountValue: Number(formData.discountValue),
       usageLimit: formData.usageLimit ? Number(formData.usageLimit) : null,
-      applicableCourses: formData.scope === "all" ? [] : formData.applicableCourses,
+      applicableCourses:
+        formData.scope === "all"
+          ? role === "instructor"
+            ? coursesall.map((c) => c._id)
+            : []
+          : formData.applicableCourses,
     };
     onSave(payload);
   };
@@ -83,7 +106,9 @@ const VoucherModal = ({ isOpen, onClose, onSave, editingVoucher, coursesList = [
             <h3 className="text-lg font-bold text-slate-800">
               {editingVoucher ? "Chỉnh Sửa Voucher" : "Tạo Mã Voucher Mới"}
             </h3>
-            <p className="text-xs text-slate-500">Cấu hình điều kiện ưu đãi và giới hạn cho học viên.</p>
+            <p className="text-xs text-slate-500">
+              Cấu hình điều kiện ưu đãi và giới hạn cho học viên.
+            </p>
           </div>
           <button
             type="button"
@@ -105,7 +130,10 @@ const VoucherModal = ({ isOpen, onClose, onSave, editingVoucher, coursesList = [
                 placeholder="VD: CHAOMUNG2026"
                 value={formData.code}
                 onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, code: e.target.value.toUpperCase().replace(/\s/g, "") }))
+                  setFormData((prev) => ({
+                    ...prev,
+                    code: e.target.value.toUpperCase().replace(/\s/g, ""),
+                  }))
                 }
                 className="w-full uppercase font-mono font-bold tracking-wider px-3.5 py-2.5 rounded-xl text-sm bg-white/80 border border-slate-200 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-orange-600"
                 required
@@ -123,10 +151,17 @@ const VoucherModal = ({ isOpen, onClose, onSave, editingVoucher, coursesList = [
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Loại Giảm Giá</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                Loại Giảm Giá
+              </label>
               <select
                 value={formData.discountType}
-                onChange={(e) => setFormData((prev) => ({ ...prev, discountType: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    discountType: e.target.value,
+                  }))
+                }
                 className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-white/80 border border-slate-200 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-slate-700"
               >
                 <option value="percentage">Phần trăm (%)</option>
@@ -140,11 +175,20 @@ const VoucherModal = ({ isOpen, onClose, onSave, editingVoucher, coursesList = [
               <div className="relative">
                 <input
                   type="number"
-                  placeholder={formData.discountType === "percentage" ? "20" : "50000"}
+                  placeholder={
+                    formData.discountType === "percentage" ? "20" : "50000"
+                  }
                   value={formData.discountValue}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, discountValue: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      discountValue: e.target.value,
+                    }))
+                  }
                   min="1"
-                  max={formData.discountType === "percentage" ? "100" : undefined}
+                  max={
+                    formData.discountType === "percentage" ? "100" : undefined
+                  }
                   className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-white/80 border border-slate-200 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-slate-800"
                   required
                 />
@@ -156,7 +200,9 @@ const VoucherModal = ({ isOpen, onClose, onSave, editingVoucher, coursesList = [
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-2">Phạm Vi Áp Dụng</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-2">
+              Phạm Vi Áp Dụng
+            </label>
             <div className="grid grid-cols-2 gap-2 text-xs">
               <label
                 className={`flex items-center gap-2 p-3 rounded-xl border cursor-pointer transition-all ${
@@ -169,7 +215,9 @@ const VoucherModal = ({ isOpen, onClose, onSave, editingVoucher, coursesList = [
                   type="radio"
                   name="scope"
                   checked={formData.scope === "all"}
-                  onChange={() => setFormData((prev) => ({ ...prev, scope: "all" }))}
+                  onChange={() =>
+                    setFormData((prev) => ({ ...prev, scope: "all" }))
+                  }
                   className="text-orange-500 focus:ring-orange-400"
                 />
                 <span>Toàn bộ khóa học</span>
@@ -186,7 +234,9 @@ const VoucherModal = ({ isOpen, onClose, onSave, editingVoucher, coursesList = [
                   type="radio"
                   name="scope"
                   checked={formData.scope === "specific"}
-                  onChange={() => setFormData((prev) => ({ ...prev, scope: "specific" }))}
+                  onChange={() =>
+                    setFormData((prev) => ({ ...prev, scope: "specific" }))
+                  }
                   className="text-orange-500 focus:ring-orange-400"
                 />
                 <span>Chọn khóa cụ thể</span>
@@ -198,24 +248,30 @@ const VoucherModal = ({ isOpen, onClose, onSave, editingVoucher, coursesList = [
                 <label className="block text-[11px] text-slate-500 mb-1">
                   Chọn các khóa học được hưởng ưu đãi:
                 </label>
-                <div className="max-h-36 overflow-y-auto p-2 rounded-xl border border-slate-200 bg-white/70 space-y-1 text-xs">
+                <div className="max-h-44 overflow-y-auto pr-1 p-2 rounded-xl border border-slate-200 bg-white/80 flex flex-col gap-1 text-xs">
                   {coursesList.length > 0 ? (
                     coursesList.map((course) => (
                       <label
                         key={course._id}
-                        className="flex items-center gap-2.5 hover:bg-orange-50/40 p-2 rounded-lg cursor-pointer transition-colors"
+                        className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-orange-50/70 border border-transparent hover:border-orange-100 cursor-pointer transition-all select-none"
                       >
                         <input
                           type="checkbox"
-                          checked={formData.applicableCourses.includes(course._id)}
+                          checked={formData.applicableCourses.includes(
+                            course._id,
+                          )}
                           onChange={() => handleCourseToggle(course._id)}
-                          className="rounded text-orange-500 focus:ring-orange-400"
+                          className="w-4 h-4 rounded text-orange-500 focus:ring-orange-400 border-slate-300 accent-orange-500 shrink-0"
                         />
-                        <span className="text-slate-700 truncate">{course.title}</span>
+                        <span className="text-slate-700 font-medium leading-snug line-clamp-2">
+                          {course.title}
+                        </span>
                       </label>
                     ))
                   ) : (
-                    <div className="text-slate-400 text-center py-2">Không có khóa học nào để chọn</div>
+                    <div className="text-slate-400 text-center py-4">
+                      Không có khóa học nào để chọn
+                    </div>
                   )}
                 </div>
               </div>
@@ -224,12 +280,19 @@ const VoucherModal = ({ isOpen, onClose, onSave, editingVoucher, coursesList = [
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Số Lượng Lượt Dùng</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                Số Lượng Lượt Dùng
+              </label>
               <input
                 type="number"
                 placeholder="Để trống nếu không giới hạn"
                 value={formData.usageLimit}
-                onChange={(e) => setFormData((prev) => ({ ...prev, usageLimit: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    usageLimit: e.target.value,
+                  }))
+                }
                 min="1"
                 className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-white/80 border border-slate-200 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-slate-800"
               />
@@ -241,7 +304,12 @@ const VoucherModal = ({ isOpen, onClose, onSave, editingVoucher, coursesList = [
               <input
                 type="date"
                 value={formData.expiryDate}
-                onChange={(e) => setFormData((prev) => ({ ...prev, expiryDate: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    expiryDate: e.target.value,
+                  }))
+                }
                 className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-white/80 border border-slate-200 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-slate-700"
                 required
               />
@@ -249,12 +317,19 @@ const VoucherModal = ({ isOpen, onClose, onSave, editingVoucher, coursesList = [
           </div>
 
           <div className="flex items-center justify-between pt-2">
-            <span className="text-xs font-semibold text-slate-700">Kích hoạt voucher ngay bây giờ</span>
+            <span className="text-xs font-semibold text-slate-700">
+              Kích hoạt voucher ngay bây giờ
+            </span>
             <label className="relative inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
                 checked={formData.isActive}
-                onChange={(e) => setFormData((prev) => ({ ...prev, isActive: e.target.checked }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    isActive: e.target.checked,
+                  }))
+                }
                 className="sr-only peer"
               />
               <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-orange-500"></div>
@@ -270,6 +345,7 @@ const VoucherModal = ({ isOpen, onClose, onSave, editingVoucher, coursesList = [
               Hủy Bỏ
             </button>
             <button
+              disabled={loadingVou}
               type="submit"
               className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-xs font-semibold px-5 py-2.5 rounded-xl shadow-sm shadow-orange-500/20 active:scale-95 transition-all cursor-pointer"
             >

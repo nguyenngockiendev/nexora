@@ -6,10 +6,13 @@ import { useEffect } from "react";
 import useShareSocket from "../../../shared/hooks/useSocket";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import useCartPreview from "../hooks/useCartPreview";
 
 const CartPage = () => {
   const { cartItems, removeFromCart, clearCart, totalPrice } = useCart();
   const { qrpayment, payment, loading: paymentLoading } = usePayment();
+  const { voucherPreview, loading, error, GetVoucherPreview } =
+    useCartPreview();
   const socket = useShareSocket();
   const navigate = useNavigate();
 
@@ -29,16 +32,30 @@ const CartPage = () => {
     };
   }, [socket, navigate, clearCart]);
 
-  const handlePayment = async () => {
-    const result = await payment(cartItems);
+  const handReviewCart = async (codevoucher) => {
+    const payloat = {
+      items: cartItems || [],
+      codevoucher: codevoucher,
+    };
+    await GetVoucherPreview(payloat);
+  };
+  const handlePayment = async (couponCode) => {
+    const voucherToApply = couponCode || voucherPreview?.code || null;
+    const result = await payment(cartItems, voucherToApply);
     if (result) {
-      clearCart();
+      if (result.isFree) {
+        toast.success(result.message || "Kích hoạt khóa học thành công!");
+        clearCart();
+        navigate("/student");
+      }
     }
   };
 
   return (
     <div className="w-full min-h-screen py-6 md:py-8 px-4 sm:px-6">
       <CartView
+        voucherPreview={voucherPreview}
+        handReviewCart={handReviewCart}
         cartItems={cartItems}
         totalPrice={totalPrice}
         removeFromCart={removeFromCart}

@@ -23,7 +23,7 @@ const usePayment = () => {
     }
   };
 
-  const payment = async (data) => {
+  const payment = async (data, codevoucher = null) => {
     try {
       const isArr = Array.isArray(data) ? data : [data];
       const newdata = {
@@ -33,11 +33,13 @@ const usePayment = () => {
           type: item.type,
           price: item.price,
         })),
+        codevoucher: codevoucher || null,
       };
       setLoading(true);
       setError(null);
       const res = await paymentCourse(newdata);
       setQrpayment(res);
+      return res;
     } catch (error) {
       const message = error.response?.data?.message || "payment failed!";
       setError(message);
