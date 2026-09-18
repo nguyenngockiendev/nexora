@@ -25,7 +25,10 @@ const GetAllCourses = async (data) => {
         const totalRating = rattingforcoure.reduce((sum, number) => {
           return sum + Number(number.rating || number.instructorRating || 5);
         }, 0);
-        const avg = rattingforcoure.length > 0 ? totalRating / rattingforcoure.length : 5.0;
+        const avg =
+          rattingforcoure.length > 0
+            ? totalRating / rattingforcoure.length
+            : 5.0;
         return {
           ...co,
           instructor: co?.instructor?.name,
@@ -55,6 +58,9 @@ const GetCourses = async (data) => {
     if (data?.role === "student") {
       course = await Courses.find().populate("instructor", "name type").lean();
     }
+    course = course.filter(
+      (e) => e.instructor?._id?.toString() !== data.userId?.toString(),
+    );
     const resultFinal = await Promise.all(
       course?.map(async (co) => {
         const numbserclass = await classs.find({ courseId: co?._id });
@@ -62,7 +68,10 @@ const GetCourses = async (data) => {
         const totalRating = rattingforcoure.reduce((sum, number) => {
           return sum + Number(number.rating || number.instructorRating || 5);
         }, 0);
-        const avg = rattingforcoure.length > 0 ? totalRating / rattingforcoure.length : 5.0;
+        const avg =
+          rattingforcoure.length > 0
+            ? totalRating / rattingforcoure.length
+            : 5.0;
         const isEnroiment = await Enrollments.find({
           userId: data.userId,
           courseId: co?._id,
@@ -167,7 +176,8 @@ const GetDetailsCourse = async (data) => {
     const totalRating = rattingforcoure.reduce((sum, number) => {
       return sum + Number(number.rating || number.instructorRating || 5);
     }, 0);
-    const avg = rattingforcoure.length > 0 ? totalRating / rattingforcoure.length : 5.0;
+    const avg =
+      rattingforcoure.length > 0 ? totalRating / rattingforcoure.length : 5.0;
 
     const result = {
       ...list,

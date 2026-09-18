@@ -55,6 +55,9 @@ const voucherSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    description: {
+      type: String,
+    },
 
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,

@@ -34,6 +34,7 @@ const {
   DeleteOrderbyUser,
   GetHistoryByadmin,
   sepayCallback,
+  VoucherPreview,
 } = require("../controller/payment-controller");
 const {
   Getorderbyuser,
@@ -107,6 +108,7 @@ const {
   GetNotifiByUser,
   UsertSendNotifi,
 } = require("../controller/Notification-controller");
+const { CreatenewVoucher, getVoucger, updateVoucher, updatesStatusVou, deleteVou } = require("../controller/voucher-controller");
 
 const Router = require("express").Router();
 
@@ -290,4 +292,12 @@ Router.patch("/update_status_Quizz/:quizattempsId", authMiddleware, RetakeQuizz)
 Router.get("/instructor/live-classes", authMiddleware, GetAllLiveClasses);
 Router.get("/instructor/assignments-tracking/:classId", authMiddleware, GetTrackingAssignments);
 Router.patch("/instructor/grade-submission/:submissionId", authMiddleware, GradeAssignmentSubmission);
+////
+Router.post("/vouchers", authMiddleware, CreatenewVoucher);
+Router.get("/vouchers", authMiddleware, getVoucger);
+Router.put("/vouchers/:vouchersid", authMiddleware, updateVoucher);
+Router.patch("/vouchers/:vouchersid/status", authMiddleware, updatesStatusVou);
+Router.delete("/vouchers/:vouchersid", authMiddleware, deleteVou);
+Router.post("/vouchers_preview", authMiddleware, VoucherPreview);
+
 module.exports = Router;

@@ -8,6 +8,93 @@ const Orders = require("../model/Orders");
 const Class = require("../model/Class");
 const Vouchers = require("../model/Vouchers");
 
+const checkVoucherPreview = async (data) => {
+  try {
+    if (!data.items || data.items.length === 0) {
+      throw { status: 404, message: "Giỏ hàng của bạn đang trống!" };
+    }
+    const isVoucher = await Vouchers.findOne({
+      code: data.codevoucher?.trim().toUpperCase(),
+      isActive: true,
+    });
+    if (!isVoucher) {
+      throw {
+        status: 404,
+        message: "Mã giảm giá không tồn tại hoặc đã bị vô hiệu hóa!",
+      };
+    }
+    if (!isVoucher.expiryDate || new Date(isVoucher.expiryDate) <= new Date()) {
+      throw {
+        status: 400,
+        message: "Mã đã hết hạn sử dụng!",
+      };
+    }
+    if (
+      isVoucher.usedCount > 0 &&
+      isVoucher.usedCount >= isVoucher.usageLimit
+    ) {
+      throw {
+        status: 400,
+        message: "Mã đã hết lượt sử dụng hãy chọn mã khác!",
+      };
+    }
+    if (
+      isVoucher.usedBy &&
+      isVoucher.usedBy.some((id) => id.toString() === data.userId.toString())
+    ) {
+      throw {
+        status: 400,
+        message: "Bạn đã từng sử dụng mã giảm giá này rồi!",
+      };
+    }
+    let finalTotal = 0;
+    let voucherDiscount = 0;
+    for (const item of data.items) {
+      const currentCourseId = item?.courseId?._id || item?.courseId || item?._id;
+      const course = await Courses.findById(currentCourseId);
+      const PriceClas = item?.classId ? await Class.findById(item.classId) : null;
+      const finalPrice = Number(PriceClas?.price || course?.price || item?.price || 0);
+
+      const isDiscount =
+        isVoucher.applicableCourses.length === 0 ||
+        isVoucher.applicableCourses.some(
+          (id) => id.toString() === currentCourseId?.toString(),
+        );
+
+      if (isDiscount) {
+        if (isVoucher.discountType === "percentage") {
+          voucherDiscount += Math.round(
+            (finalPrice * isVoucher.discountValue) / 100,
+          );
+        } else {
+          voucherDiscount += isVoucher.discountValue;
+        }
+      }
+
+      finalTotal += finalPrice;
+    }
+
+    if (voucherDiscount === 0) {
+      throw {
+        status: 400,
+        message:
+          "Mã giảm giá này không áp dụng cho các khóa học trong giỏ hàng!",
+      };
+    }
+
+    const finalPrice = Math.max(0, finalTotal - voucherDiscount);
+
+    return {
+      code: isVoucher.code,
+      originalPrice: finalTotal,
+      discountAmount: voucherDiscount,
+      finalPrice: finalPrice,
+    };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 const paymemtCourese = async (data) => {
   try {
     for (const item of data.items) {
@@ -45,6 +132,25 @@ const paymemtCourese = async (data) => {
       ? await Vouchers.findOne({ code: data.codevoucher, isActive: true })
       : null;
 
+    if (voucher) {
+      if (voucher.expiryDate && new Date(voucher.expiryDate) <= new Date()) {
+        throw { status: 400, message: "Mã giảm giá đã hết hạn sử dụng!" };
+      }
+
+      if (voucher.usageLimit > 0 && voucher.usedCount >= voucher.usageLimit) {
+        throw { status: 400, message: "Mã giảm giá đã hết lượt sử dụng!" };
+      }
+
+      if (
+        voucher.usedBy &&
+        voucher.usedBy.some((id) => id.toString() === data.userId.toString())
+      ) {
+        throw {
+          status: 400,
+          message: "Bạn đã từng sử dụng mã giảm giá này rồi!",
+        };
+      }
+    }
     for (const item of data.items) {
       const course = await Courses.findById(item.courseId);
       const PriceClas = await Class.findById(item.classId);
@@ -110,6 +216,12 @@ const paymemtCourese = async (data) => {
             { $inc: { currentStudents: 1 } },
           );
         }
+      }
+      if (voucher) {
+        await Vouchers.findByIdAndUpdate(voucher._id, {
+          $inc: { usedCount: 1 },
+          $push: { usedBy: data.userId },
+        });
       }
 
       return { isFree: true, message: "Kích hoạt khóa học thành công!" };
@@ -187,7 +299,14 @@ const updateorder = async (data) => {
             );
           }
         }
-
+        if (orderpayment.voucherCode) {
+          await Vouchers.findOneAndUpdate(
+            {
+              code: orderpayment.voucherCode,
+            },
+            { $inc: { usedCount: 1 }, $push: { usedBy: orderpayment.userId } },
+          );
+        }
         return {
           message: "Thanh toán thành công!",
         };
@@ -325,7 +444,7 @@ const GethhistorysForAdmin = async (data) => {
 
 module.exports = {
   paymemtCourese,
-  // createVNPayPaymentUrl,
+  checkVoucherPreview,
   updateorder,
   ResumePayment,
   DeleteOrder,

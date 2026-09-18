@@ -18,7 +18,7 @@ const orderSchema = new mongoose.Schema(
 
     paymentMethod: {
       type: String,
-      enum: ["stripe", "paypal", "vnpay", "QR", "sepay"],
+      enum: ["paypal", "vnpay", "QR", "sepay" ,"VOUCHER"],
       required: true,
       default: "QR",
     },

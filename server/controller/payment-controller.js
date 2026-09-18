@@ -7,9 +7,31 @@ const {
   DeleteOrder,
   GethhistorysForAdmin,
   createSepayPaymentUrl,
+  checkVoucherPreview,
 } = require("../service/payment-service");
 require("dotenv").config();
 
+const VoucherPreview = async (req, res) => {
+  try {
+    const data = {
+      items: req.body.items || [],
+      codevoucher: req.body.codevoucher || "",
+      userId: req.user.userId,
+    };
+
+    const result = await checkVoucherPreview(data);
+    res.status(201).json({
+      success: true,
+      message: "Xem trước thành công!",
+      data: result,
+    });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(error.status || 500)
+      .json({ success: false, message: error.message });
+  }
+};
 const payment = async (req, res) => {
   try {
     const data = {
@@ -90,6 +112,7 @@ const GetHistoryByadmin = async (req, res) => {
   }
 };
 module.exports = {
+  VoucherPreview,
   payment,
   sepayCallback,
   ResumePay,
