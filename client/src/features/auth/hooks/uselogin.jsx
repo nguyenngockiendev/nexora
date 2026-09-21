@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { loginUser } from "../api/auth-api";
+import { loginByGooleAPI, loginUser } from "../api/auth-api";
+import { toast } from "react-toastify";
 
 const useLogin = () => {
   const [error, setError] = useState(null);
@@ -21,7 +22,23 @@ const useLogin = () => {
       return null;
     }
   };
-  return { login, error, loading };
+  const loginByGoole = async (googleToken) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await loginByGooleAPI(googleToken);
+      return res;
+    } catch (error) {
+      const msg =
+        error.response?.data?.message || error?.message || "Lỗi server";
+      setError(msg);
+      toast.error(msg);
+      return { success: false, message: msg };
+    } finally {
+      setLoading(false);
+    }
+  };
+  return { login, error, loading, loginByGoole };
 };
 
 export default useLogin;

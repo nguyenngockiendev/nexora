@@ -10,12 +10,17 @@ const registerUser = async (data) => {
   return request;
 };
 
-const forgotpasswordUser = async (data) => {
-  const request = api.post("/fogot-password", {
-    email: data.email,
-    newPassword: data.newpassword,
-  });
+const senOtpAPI = async (data) => {
+  const request = api.post("/send_otp", data);
+  return request;
+};
+const forgotPassAPI = async (data) => {
+  const request = api.post("/forgot-password", data);
+  return request;
+};
+const loginByGooleAPI = async (googleToken) => {
+  const request = await api.post("/login_google", { googleToken });
   return request;
 };
 
-export { loginUser, registerUser, forgotpasswordUser };
+export { loginUser, registerUser, senOtpAPI, loginByGooleAPI, forgotPassAPI };

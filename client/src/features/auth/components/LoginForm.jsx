@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { GoogleLogin } from "@react-oauth/google";
 import { Link } from "react-router-dom";
 import {
   Lock,
@@ -22,6 +23,7 @@ const LoginForm = ({
   error,
   onSubmit,
   errors,
+  onsumbmitByGG,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -200,7 +202,32 @@ const LoginForm = ({
                   </>
                 )}
               </button>
+           
+              <div className="relative flex items-center justify-center my-3">
+                <div className="border-t border-slate-200 w-full"></div>
+                <span className="bg-white/80 px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider absolute">
+                  Hoặc
+                </span>
+              </div>
 
+              
+              <div className="flex justify-center w-full">
+                <GoogleLogin
+                  onSuccess={(credentialResponse) => {
+                    if (onsumbmitByGG) {
+                      onsumbmitByGG(credentialResponse.credential);
+                    }
+                  }}
+                  onError={() => {
+                    console.log("Đăng nhập Google thất bại");
+                  }}
+                  theme="outline"
+                  size="large"
+                  shape="rectangular"
+                  text="signin_with"
+                  locale="vi"
+                />
+              </div>
               <p className="text-center text-xs font-semibold text-slate-500 pt-2">
                 Bạn chưa có tài khoản?{" "}
                 <Link

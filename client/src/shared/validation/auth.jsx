@@ -23,8 +23,15 @@ const loginShecma = z.object({
   password: z.string().min(1, "Không được để trống"),
 });
 
-const fogotShecma = z.object({
-  email: z.string().email("Email không đúng định dạng"),
-  newpassword: z.string().min(1, "Không được để trống"),
-});
+const fogotShecma = z
+  .object({
+    email: z.string().email("Email không đúng định dạng"),
+    otp: z.string().length(6, "Mã OTP phải đủ 6 chữ số"),
+    newPassword: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
+    repeatpassword: z.string().min(1, "Vui lòng xác nhận lại mật khẩu"),
+  })
+  .refine((data) => data.newPassword === data.repeatpassword, {
+    message: "Mật khẩu xác nhận không trùng khớp!",
+    path: ["repeatpassword"],
+  });
 export { registerShecma, loginShecma,fogotShecma };
