@@ -57,7 +57,7 @@ const quizSchema = new Schema(
 
     passScore: {
       type: Number,
-      default: 70,
+      default: 1,
     },
 
     status: {

@@ -1,7 +1,9 @@
 const {
   AuthController,
   RegisterController,
-  ResetPasswordController,
+  SenOtpController,
+  LoginByGoogleController,
+  forgotPasswordController,
 } = require("../controller/auth-controller");
 const {
   CreateClass,
@@ -29,7 +31,6 @@ const {
 } = require("../controller/course-controller");
 const {
   payment,
-  vnpayCallback,
   ResumePay,
   DeleteOrderbyUser,
   GetHistoryByadmin,
@@ -55,7 +56,6 @@ const {
   GetQuizzByLession,
   UpdateQuizz,
   CreateAttemp,
-  GetAttemsp,
   GetCourseForQuizz,
   GetQuizBystuden,
   GetAssessmentHubData,
@@ -108,13 +108,19 @@ const {
   GetNotifiByUser,
   UsertSendNotifi,
 } = require("../controller/Notification-controller");
-const { CreatenewVoucher, getVoucger, updateVoucher, updatesStatusVou, deleteVou } = require("../controller/voucher-controller");
+const {
+  CreatenewVoucher,
+  getVoucger,
+  updateVoucher,
+  updatesStatusVou,
+  deleteVou,
+} = require("../controller/voucher-controller");
 
 const Router = require("express").Router();
 
 Router.post("/login", AuthController);
 Router.post("/register", upload.single("avatar"), RegisterController);
-Router.post("/fogot-password", ResetPasswordController);
+Router.post("/send_otp", SenOtpController);
 Router.get("/courses", authMiddleware, GetAllCourese);
 Router.get("/courses_all", authMiddleware, GetCoursesforevery);
 Router.post(
@@ -208,7 +214,7 @@ Router.get("/process/course/:courseId", authMiddleware, GetAllProcess);
   Router.get("/order_history", authMiddleware, GetOrderHistory));
 
 Router.put("/resume-payment/:orderId", ResumePay);
-Router.delete("/delete-order/:orderId", authMiddleware,DeleteOrderbyUser);
+Router.delete("/delete-order/:orderId", authMiddleware, DeleteOrderbyUser);
 Router.get("/details-course/:courseId", authMiddleware, DetailsCourse);
 Router.post(
   "/become-instructor",
@@ -271,7 +277,7 @@ Router.put(
   upload.single("thumbnail"),
   UpdateCourse,
 );
-Router.get("/admin_dashboart", authMiddleware,DashboartforAdmin);
+Router.get("/admin_dashboart", authMiddleware, DashboartforAdmin);
 Router.get("/Classion", authMiddleware, GetClassSesion);
 Router.put(
   "/create_Ass/:classId",
@@ -288,10 +294,22 @@ Router.put(
 );
 Router.get("/Assessment", authMiddleware, GetAssessmentHubData);
 Router.get("/result_quizz/:courseId", authMiddleware, GetResultQuizz);
-Router.patch("/update_status_Quizz/:quizattempsId", authMiddleware, RetakeQuizz);
+Router.patch(
+  "/update_status_Quizz/:quizattempsId",
+  authMiddleware,
+  RetakeQuizz,
+);
 Router.get("/instructor/live-classes", authMiddleware, GetAllLiveClasses);
-Router.get("/instructor/assignments-tracking/:classId", authMiddleware, GetTrackingAssignments);
-Router.patch("/instructor/grade-submission/:submissionId", authMiddleware, GradeAssignmentSubmission);
+Router.get(
+  "/instructor/assignments-tracking/:classId",
+  authMiddleware,
+  GetTrackingAssignments,
+);
+Router.patch(
+  "/instructor/grade-submission/:submissionId",
+  authMiddleware,
+  GradeAssignmentSubmission,
+);
 ////
 Router.post("/vouchers", authMiddleware, CreatenewVoucher);
 Router.get("/vouchers", authMiddleware, getVoucger);
@@ -299,5 +317,6 @@ Router.put("/vouchers/:vouchersid", authMiddleware, updateVoucher);
 Router.patch("/vouchers/:vouchersid/status", authMiddleware, updatesStatusVou);
 Router.delete("/vouchers/:vouchersid", authMiddleware, deleteVou);
 Router.post("/vouchers_preview", authMiddleware, VoucherPreview);
-
+Router.post("/login_google", LoginByGoogleController);
+Router.post("/forgot-password", forgotPasswordController);
 module.exports = Router;

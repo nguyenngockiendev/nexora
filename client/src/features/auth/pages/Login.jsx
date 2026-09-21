@@ -7,11 +7,15 @@ import LoginForm from "../components/LoginForm";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginShecma } from "../../../shared/validation/auth";
 const Login = () => {
-  const { register, handleSubmit,formState: { errors } } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     resolver: zodResolver(loginShecma),
     mode: "onBlur",
   });
-  const { login, loading, error } = useLogin();
+  const { login, loading, error, loginByGoole } = useLogin();
 
   const navigate = useNavigate();
 
@@ -28,6 +32,18 @@ const Login = () => {
       console.error(err);
     }
   };
+  const onsumbmitByGG = async (googleToken) => {
+    try {
+      const result = await loginByGoole(googleToken);
+      if (result.success) {
+        localStorage.setItem("token", result.data);
+
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <LoginForm
       register={register}
@@ -38,6 +54,7 @@ const Login = () => {
       onSubmit={onSubmit}
       navigate={navigate}
       errors={errors}
+      onsumbmitByGG={onsumbmitByGG}
     />
   );
 };
