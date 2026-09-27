@@ -25,6 +25,20 @@ const io = new Server(server, {
 });
 app.set("io", io);
 
+const jwt = require("jsonwebtoken");
+io.use((socket, next) => {
+  const token = socket.handshake.auth?.token;
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      socket.user = decoded;
+    } catch {
+      console.log("Socket token invalid, connecting as guest");
+    }
+  }
+  next();
+});
+
 io.on("connection", (socket) => {
   registerSoket(io, socket);
 });

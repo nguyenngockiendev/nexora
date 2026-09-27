@@ -1,5 +1,6 @@
 const Users = require("../model/Users");
 const Vouchers = require("../model/Vouchers");
+const Courses = require("../model/Courses");
 
 const CreateVoucher = async (data) => {
   try {
@@ -38,6 +39,16 @@ const CreateVoucher = async (data) => {
         throw {
           status: 400,
           message: "Giảng viên bắt buộc phải chọn ít nhất một khóa học!",
+        };
+      }
+      const ownedCourses = await Courses.find({
+        _id: { $in: data.applicableCourses },
+        instructor: data.userId,
+      }).distinct("_id");
+      if (ownedCourses.length !== data.applicableCourses.length) {
+        throw {
+          status: 403,
+          message: "Bạn chỉ có thể tạo voucher cho khóa học của chính mình!",
         };
       }
     }
