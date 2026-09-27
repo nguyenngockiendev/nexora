@@ -210,10 +210,10 @@ Router.patch(
 );
 Router.get("/process/:lessonId", authMiddleware, GetProcess);
 Router.get("/process/course/:courseId", authMiddleware, GetAllProcess);
-(Router.get("/sendMessage/:classId", SenMessLimit),
+(Router.get("/sendMessage/:classId", authMiddleware, SenMessLimit),
   Router.get("/order_history", authMiddleware, GetOrderHistory));
 
-Router.put("/resume-payment/:orderId", ResumePay);
+Router.put("/resume-payment/:orderId", authMiddleware, ResumePay);
 Router.delete("/delete-order/:orderId", authMiddleware, DeleteOrderbyUser);
 Router.get("/details-course/:courseId", authMiddleware, DetailsCourse);
 Router.post(

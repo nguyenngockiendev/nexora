@@ -152,7 +152,10 @@ const GetAllStudentByIdClass = async (data) => {
         instructorId: data?.user,
       });
       if (!isClassIns) {
-        throw { status: 404, message: "Bạn không phải giáo viên trong lớp này." };
+        throw {
+          status: 404,
+          message: "Bạn không phải giáo viên trong lớp này.",
+        };
       }
     }
 
@@ -195,7 +198,10 @@ const RemoveStudentinClass = async (data) => {
         instructorId: data?.user,
       });
       if (!isClassIns) {
-        throw { status: 404, message: "Bạn không phải giáo viên trong lớp này." };
+        throw {
+          status: 404,
+          message: "Bạn không phải giáo viên trong lớp này.",
+        };
       }
     }
 
@@ -240,7 +246,10 @@ const RefectStudentoutclass = async (data) => {
         instructorId: data?.user,
       });
       if (!isClassIns) {
-        throw { status: 404, message: "Bạn không phải giáo viên trong lớp này." };
+        throw {
+          status: 404,
+          message: "Bạn không phải giáo viên trong lớp này.",
+        };
       }
     }
     const enrollmentforstudent = await errollment.findOneAndUpdate(
@@ -363,19 +372,25 @@ const GetuserbyId = async (data) => {
 
 const UpdateProfile = async (data) => {
   try {
-    const filldata = ["name", "email", "avatar", "phone"];
+    const filldata = ["name", "avatar", "phone"];
     const inforuser = {};
+
     for (const item in data) {
       if (filldata.includes(item) && data[item] !== undefined)
         inforuser[item] = data[item];
     }
+    const isUser = await Users.findById(data.userId);
+    if (!data.avatar || data.avatar === undefined) {
+      inforuser.avatar = isUser.avatar;
+    }
+
     const userUpdate = await Users.findByIdAndUpdate(
       data.userId,
       {
         $set: inforuser,
       },
       { new: true },
-    );
+    ).select("-password -googleId");
     if (!userUpdate) {
       throw { status: 403, message: "cập nhật thất bại" };
     }

@@ -125,9 +125,26 @@ const registerUser = async (data) => {
         };
       }
     }
+    if (data.otp.length < 6) {
+      throw {
+        status: 400,
+        message: "OTP sai!",
+      };
+    }
+    const isOtp = await Otp.findOne({
+      email: data.email,
+      otp: data.otp,
+      type: data.type,
+    });
+    if (!isOtp) {
+      throw {
+        status: 400,
+        message: "Mã OTP không chính xác hoặc đã hết hạn!",
+      };
+    }
 
     const exitUser = await User.findOne({ email: data.email });
-    if (data.password < 6) {
+    if (data.password.length < 6) {
       throw {
         status: 400,
         message: "Mật khẩu phải >= 6 kí tự",
@@ -155,6 +172,7 @@ const registerUser = async (data) => {
       phone: "",
       isVerified: true,
     });
+    await Otp.deleteMany({ email: data.email, type: "register" });
 
     return result;
   } catch (error) {
@@ -170,19 +188,20 @@ const sendOtpEmailService = async (datas) => {
       if (!emailUser) {
         throw { status: 404, message: "Email không tồn tại hoặc không đúng!" };
       }
-      if (datas.type === "register") {
-        const exitUser = await User.findOne({ email: datas.email });
-        if (exitUser) {
-          throw {
-            status: 400,
-            message: "Email này đã được sử dụng, vui lòng đăng nhập!",
-          };
-        }
-      }
+
       if (emailUser.status === "inactive") {
         throw {
           status: 404,
           message: "Tài khoản bị khóa hãy liên hệ với Admin!",
+        };
+      }
+    }
+    if (datas.type === "register") {
+      const exitUser = await User.findOne({ email: datas.email });
+      if (exitUser) {
+        throw {
+          status: 400,
+          message: "Email này đã được sử dụng, vui lòng đăng nhập!",
         };
       }
     }
@@ -210,10 +229,11 @@ const sendOtpEmailService = async (datas) => {
       otp: otp,
       type: datas.type,
     });
-    const data = {
-      email: datas.email,
-      subject: "[Nexora LMS] Mã xác thực đặt lại mật khẩu của bạn",
-      html: `
+
+    const title = { subject: "", html: "" };
+    if (datas.type === "forgot_password") {
+      title.subject = "[Nexora LMS] Mã xác thực đặt lại mật khẩu của bạn";
+      title.html = `
        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; padding: 40px 20px; margin: 0;">
     <div style="max-width: 500px; margin: 0 auto; background: #ffffff; border-radius: 20px; padding: 36px; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
       
@@ -259,7 +279,17 @@ const sendOtpEmailService = async (datas) => {
       <p style="margin: 0;">© 2026 Nexora LMS. Nền tảng học tập trực tuyến thông minh.</p>
     </div>
   </div>
-`,
+`;
+    }
+    if (datas.type === "register") {
+      title.subject = "[Nexora LMS] Mã xác thực đăng ký tài khoản của bạn";
+      title.html = `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; padding: 40px 20px; margin: 0;"> <div style="max-width: 500px; margin: 0 auto; background: #ffffff; border-radius: 20px; padding: 36px; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px rgba(0,0,0,0.05);"> <!-- Header Logo --> <div style="text-align: center; margin-bottom: 24px;"> <div style="display: inline-block; background: linear-gradient(135deg, #ea580c 0%, #f59e0b 100%); width: 44px; height: 44px; border-radius: 12px; line-height: 44px; color: #ffffff; font-weight: 900; font-size: 20px;"> N </div> <h2 style="color: #0f172a; margin: 12px 0 0 0; font-size: 20px; font-weight: 800; letter-spacing: -0.5px;"> Nexora LMS </h2> </div> <!-- Tiêu đề chính --> <h3 style="color: #1e293b; font-size: 17px; font-weight: 700; margin: 0 0 12px 0; text-align: center;"> Xác thực tài khoản của bạn </h3> <p style="color: #475569; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0; text-align: center;"> Chào mừng bạn đến với Nexora LMS! 🎉 <br /> Vui lòng sử dụng mã xác thực bên dưới để hoàn tất quá trình đăng ký tài khoản. </p> <!-- Khung hiển thị mã OTP --> <div style="background: #fff7ed; border: 2px dashed #fdba74; border-radius: 14px; padding: 20px; text-align: center; margin: 24px 0;"> <div style="color: #9a3412; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;"> Mã xác thực </div> <span style="font-size: 32px; font-weight: 800; letter-spacing: 8px; color: #ea580c; font-family: monospace;"> ${otp} </span> </div> <!-- Cảnh báo thời gian --> <p style="color: #64748b; font-size: 13px; text-align: center; margin: 0 0 24px 0;"> ⏱️ Mã xác thực có hiệu lực trong vòng <strong>5 phút</strong>. </p> <!-- Ghi chú --> <div style="border-top: 1px solid #f1f5f9; padding-top: 20px; color: #94a3b8; font-size: 12px; line-height: 1.5;"> <p style="margin: 0 0 6px 0;"> • Không chia sẻ mã xác thực này cho bất kỳ ai. </p> <p style="margin: 0;"> • Nếu bạn không thực hiện đăng ký tài khoản Nexora LMS, vui lòng bỏ qua email này. </p> </div> </div> <!-- Footer --> <div style="text-align: center; margin-top: 20px; color: #94a3b8; font-size: 12px;"> <p style="margin: 0;"> © 2026 Nexora LMS. Nền tảng học tập trực tuyến thông minh. </p> </div> </div>`;
+    }
+
+    const data = {
+      email: datas.email,
+      subject: title.subject,
+      html: title.html,
     };
     const result = await ServiceEmail(data);
     return result;

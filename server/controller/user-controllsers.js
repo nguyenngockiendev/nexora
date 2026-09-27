@@ -188,8 +188,7 @@ const ChangeUserProfile = async (req, res) => {
     const data = {
       userId: req.user.userId,
       name: req.body.name,
-      email: req.body.email,
-      avatar: avatar.secure_url,
+      avatar: avatar?.secure_url || null,
       phone: req.body.phone,
     };
     const result = await UpdateProfile(data);
