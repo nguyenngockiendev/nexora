@@ -19,7 +19,7 @@ const CourseShecma = z
   })
   .refine(
     (data) => {
-      if (data.type === "live" || data.type === "recorded") {
+      if (data.type === "recorded") {
         return data.price > 0;
       }
       return true;
