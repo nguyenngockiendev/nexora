@@ -62,14 +62,38 @@ const getInstructorBusinessDashboard = async (data) => {
         },
       ]),
       Order.aggregate([
-        { $match: { courseId: { $in: courseIds } } },
+        { $match: { "items.courseId": { $in: courseIds } } },
+        {
+          $project: {
+            status: 1,
+            instructorRevenue: {
+              $sum: {
+                $map: {
+                  input: {
+                    $filter: {
+                      input: "$items",
+                      as: "item",
+                      cond: { $in: ["$$item.courseId", courseIds] },
+                    },
+                  },
+                  as: "matchItem",
+                  in: "$$matchItem.price",
+                },
+              },
+            },
+          },
+        },
         {
           $group: {
             _id: "$status",
             count: { $sum: 1 },
             revenue: {
               $sum: {
-                $cond: [{ $eq: ["$status", "completed"] }, "$price", 0],
+                $cond: [
+                  { $eq: ["$status", "completed"] },
+                  "$instructorRevenue",
+                  0,
+                ],
               },
             },
           },
@@ -89,7 +113,7 @@ const getInstructorBusinessDashboard = async (data) => {
           $lookup: {
             from: "orders",
             localField: "_id",
-            foreignField: "courseId",
+            foreignField: "items.courseId",
             as: "orders",
           },
         },
@@ -149,7 +173,21 @@ const getInstructorBusinessDashboard = async (data) => {
                     },
                   },
                   as: "completedOrder",
-                  in: "$$completedOrder.price",
+                  in: {
+                    $sum: {
+                      $map: {
+                        input: {
+                          $filter: {
+                            input: "$$completedOrder.items",
+                            as: "item",
+                            cond: { $eq: ["$$item.courseId", "$_id"] },
+                          },
+                        },
+                        as: "it",
+                        in: "$$it.price",
+                      },
+                    },
+                  },
                 },
               },
             },
@@ -157,12 +195,12 @@ const getInstructorBusinessDashboard = async (data) => {
         },
         { $sort: { revenue: -1, totalEnrollments: -1 } },
       ]),
-      Order.find({ courseId: { $in: courseIds } })
+      Order.find({ "items.courseId": { $in: courseIds } })
         .sort({ createdAt: -1 })
         .limit(5)
         .populate("userId", "name email avatar")
-        .populate("courseId", "title type")
-        .populate("classId", "className")
+        .populate("items.courseId", "title type")
+        .populate("items.classId", "className")
         .lean(),
     ]);
 
@@ -183,7 +221,7 @@ const getInstructorBusinessDashboard = async (data) => {
     const orderSummary = orderStats.reduce(
       (summary, item) => {
         summary.totalOrders += item.count;
-        summary.totalRevenue += item.revenue;
+        summary.totalRevenue += item.revenue * 0.7;
         if (item._id === "completed") summary.completedOrders = item.count;
         if (item._id === "pending") summary.pendingOrders = item.count;
         if (item._id === "failed") summary.failedOrders = item.count;
@@ -198,6 +236,20 @@ const getInstructorBusinessDashboard = async (data) => {
       },
     );
 
+    const formattedRecentOrders = recentOrders.map((order) => {
+      const item = order.items?.find((it) =>
+        courseIds.some(
+          (cId) => cId.toString() === it.courseId?._id?.toString(),
+        ),
+      );
+      return {
+        ...order,
+        courseId: item?.courseId || order.items?.[0]?.courseId,
+        classId: item?.classId || order.items?.[0]?.classId,
+        price: item?.price ?? order.Totalprice ?? 0,
+      };
+    });
+
     return {
       overview: {
         totalCourses: courses.length,
@@ -207,7 +259,7 @@ const getInstructorBusinessDashboard = async (data) => {
         ...orderSummary,
       },
       coursePerformance,
-      recentOrders,
+      recentOrders: formattedRecentOrders,
     };
   } catch (error) {
     console.log(error);
@@ -217,7 +269,7 @@ const getInstructorBusinessDashboard = async (data) => {
 
 const DashboartAdmin = async (data) => {
   try {
-    if(data?.role !== "admin") {
+    if (data?.role !== "admin") {
       throw {
         status: 403,
         message: "Chỉ admin mới có quyền xem bảng điều khiển này!",

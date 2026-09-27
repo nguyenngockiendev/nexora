@@ -443,9 +443,9 @@ const SumbitAssments = async (data) => {
         assignmentId: data.assignmentId,
         studentId: data.userId,
         fileUrl: data.fileUrl,
-        score: data.score || null,
-        feedback: data.feedback || null,
-        status: data.status || "pending", 
+        score: null,
+        feedback: null,
+        status: "pending",
       });
       return result;
     }
@@ -454,9 +454,9 @@ const SumbitAssments = async (data) => {
       isAssignmentId._id,
       {
         fileUrl: data.fileUrl,
-        score: data.score || null,
-        feedback: data.feedback || null,
-        status: data.status || "pending",
+        score: null,
+        feedback: null,
+        status: "pending",
       },
       { new: true },
     );
