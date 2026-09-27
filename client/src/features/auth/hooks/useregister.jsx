@@ -24,12 +24,12 @@ const useUserRegister = () => {
       setError(null);
       setLoading(true);
       const res = await registerUser(data);
-
-      setLoading(false);
       return res;
     } catch (error) {
-      const message = error.response?.data?.message || "Registers failed";
-      setError(message);
+      const msg =
+        error.response?.data?.message || error?.message || "Lỗi server";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }

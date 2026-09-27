@@ -48,7 +48,7 @@ const Register = () => {
       formData.append("type", "register");
       const result = await registers(formData);
 
-      if (result) {
+      if (result.success) {
         toast.success(result.message || "Đăng ký tài khoản thành công! ✨");
         navigate("/login");
       }
