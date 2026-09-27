@@ -61,11 +61,10 @@ const ProfilePage = () => {
     e.preventDefault();
     const newdata = new FormData();
     if (formData.fullName) newdata.append("name", formData.fullName);
-    if (formData.email) newdata.append("email", formData.email);
     if (formData.phone) newdata.append("phone", formData.phone);
     if (formData.bio) newdata.append("bio", formData.bio);
     if (avatarFile) {
-      newdata.append("avatar", avatarFile);
+      newdata.append("avatar", avatarFile || null);
     }
 
     const result = await updateProfile(newdata);

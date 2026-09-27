@@ -289,10 +289,9 @@ const UserProfileView = ({
                       type="email"
                       name="email"
                       value={formData.email}
-                      onChange={handleInputChange}
-                      className="w-full h-12 pl-10 pr-4 rounded-2xl text-sm font-semibold text-slate-800 bg-white/70 border border-slate-200/80 focus:bg-white focus:border-orange-500/50 focus:ring-4 focus:ring-orange-500/10 transition-all outline-none"
+                      disabled
+                      className="w-full h-12 pl-10 pr-4 rounded-2xl text-sm font-semibold text-slate-500 bg-slate-100/60 border border-slate-200/80 cursor-not-allowed caret-transparent select-none transition-all outline-none"
                       placeholder="email@example.com"
-                      required
                     />
                   </div>
                 </div>
