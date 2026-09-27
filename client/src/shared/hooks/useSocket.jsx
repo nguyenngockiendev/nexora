@@ -6,7 +6,10 @@ const useShareSocket = () => {
   useEffect(() => {
     const socketUrl =
       import.meta.env.VITE_SOCKET_URL;
-      const newsocket = io(socketUrl);
+      const token = localStorage.getItem("token");
+      const newsocket = io(socketUrl, {
+        auth: { token: token || null },
+      });
 
     newsocket.on("system_message", (data) => {
       toast.info(data);
