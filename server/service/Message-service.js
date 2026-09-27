@@ -4,7 +4,7 @@ const Enrollment = require("../model/Enrollments");
 
 const InserMessage = async (data) => {
   try {
-    if (!data.userId || !data.classId || !data.message?.trim()) {
+    if (!data.userId || !data.classId || !data.content?.trim()) {
       throw { status: 400, message: "Thiếu thông tin người gửi hoặc nội dung tin nhắn!" };
     }
 

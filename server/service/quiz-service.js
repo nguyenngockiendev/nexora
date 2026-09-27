@@ -59,10 +59,14 @@ const GetQuizzById = async (data) => {
       throw { status: 404, message: "Bài học này chưa có bài kiểm tra!" };
     }
 
-    const result = {
+    if (data.role === "instructor" || data.role === "admin") {
+      return res;
+    }
+
+    return {
       ...res,
+      questions: res.questions.map(({ correctAnswer, explanation, ...rest }) => rest),
     };
-    return result;
   } catch (error) {
     console.log(error);
     throw error;

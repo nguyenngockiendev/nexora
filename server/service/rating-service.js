@@ -1,9 +1,18 @@
 const Ratings = require("../model/Ratings");
+const Enrollment = require("../model/Enrollments");
 
 const postAndUpateRating = async (data) => {
   try {
     if (data.role !== "student") {
       throw { status: 401, message: "bạn không thể bình luận!" };
+    }
+    const isEnrolled = await Enrollment.findOne({
+      userId: data.userId,
+      courseId: data.courseId,
+      status: "active",
+    });
+    if (!isEnrolled) {
+      throw { status: 403, message: "Bạn phải mua khóa học mới có thể đánh giá!" };
     }
     const ExitsRating = await Ratings.findOne({
       userId: data.userId,

@@ -40,7 +40,9 @@ const GetLession = async (data) => {
 };
 const CreateLession = async (data) => {
   try {
-    const numberOrder = await Lessons.findOne().sort({ order: -1 });
+    const numberOrder = await Lessons.findOne({ courseId: data.courseId }).sort(
+      { order: -1 },
+    );
     let order = numberOrder?.order || 0;
     if (data?.role !== "instructor") {
       throw { status: 403, message: "forbidden" };

@@ -50,10 +50,15 @@ const checkVoucherPreview = async (data) => {
     let finalTotal = 0;
     let voucherDiscount = 0;
     for (const item of data.items) {
-      const currentCourseId = item?.courseId?._id || item?.courseId || item?._id;
+      const currentCourseId =
+        item?.courseId?._id || item?.courseId || item?._id;
       const course = await Courses.findById(currentCourseId);
-      const PriceClas = item?.classId ? await Class.findById(item.classId) : null;
-      const finalPrice = Number(PriceClas?.price || course?.price || item?.price || 0);
+      const PriceClas = item?.classId
+        ? await Class.findById(item.classId)
+        : null;
+      const finalPrice = Number(
+        PriceClas?.price || course?.price || item?.price || 0,
+      );
 
       const isDiscount =
         isVoucher.applicableCourses.length === 0 ||
@@ -100,11 +105,20 @@ const paymemtCourese = async (data) => {
     for (const item of data.items) {
       const exitorder = await order.findOne({
         userId: data.userId,
-        courseId: item.courseId,
+        "items.courseId": item.courseId,
         status: "pending",
       });
       if (exitorder) {
-        throw { message: "Đơn hàng này chưa thanh toán!" };
+        const isExpired =
+          Date.now() - new Date(exitorder.createdAt).getTime() > 15 * 60 * 1000;
+        if (isExpired) {
+          ((exitorder.status = "failed"), await exitorder.save());
+        } else {
+          throw {
+            message:
+              "Khóa học này đang có đơn hàng chờ thanh toán, vui lòng thanh toán hoặc hủy đơn cũ!",
+          };
+        }
       }
     }
 
@@ -329,6 +343,10 @@ const ResumePayment = async (data) => {
     if (!ExitsOrder) {
       throw { status: 404, message: "không tìm thấy đơn hàng này!" };
     }
+    ExitsOrder.createdAt = new Date();
+    ExitsOrder.status = "pending";
+    await ExitsOrder.save();
+
     const Resumepayment = await createSepayPaymentUrl(ExitsOrder);
     return Resumepayment;
   } catch (error) {
