@@ -95,7 +95,7 @@ const loginUser = async (email, password) => {
     if (user.status === "inactive") {
       throw {
         status: 403,
-        message: "Tài khoản của bạn đã bị khóa hoặc chưa được kích hoạt!",
+        message: "Tài khoản của bạn đã bị khóa!",
       };
     }
     const passwordMatch = await bcrypt.compare(password, user.password);

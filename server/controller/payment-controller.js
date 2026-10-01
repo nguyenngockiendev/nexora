@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { json } = require("express");
+
 const {
   paymemtCourese,
 
@@ -61,7 +61,7 @@ const payment = async (req, res) => {
 const sepayCallback = async (req, res) => {
   try {
     const key = req.headers.authorization;
-    if (!key || !key.includes(process.env.SEPAY_API_KEY)){
+    if (!key || !key.includes(process.env.SEPAY_API_KEY)) {
       res.status(401).json({
         success: false,
         message: "Authorization. Sai mã bảo mật Webhook!",
