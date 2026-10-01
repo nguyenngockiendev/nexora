@@ -61,43 +61,75 @@ const LessionForm = ({
         ];
 
   return (
-    <div className="flex flex-col gap-4 w-full h-full justify-start">
-      {/* ── 1. Top Header: Title & Info ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0 pb-3 border-b border-slate-200/60">
-        <div className="min-w-0 pr-2">
+    <div className="flex flex-col gap-3 w-full h-full justify-start overflow-hidden">
+      {/* ── 1. Top Header: Title, Breadcrumb & Navigation Buttons ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0 pb-3 border-b border-slate-200/70">
+        <div className="min-w-0 pr-2 flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-black uppercase tracking-wider text-orange-600 bg-orange-100 px-2.5 py-0.5 rounded-md">
-              Bài {Number(currentIndex ?? 0) + 1} / {totalLessons || 1}
+            <span className="text-[10px] font-black uppercase tracking-wider text-orange-600 bg-orange-100/90 px-2.5 py-0.5 rounded-full">
+              BÀI {Number(currentIndex ?? 0) + 1} / {totalLessons || 1}
             </span>
-            <span className="text-[10px] font-semibold text-slate-400 flex items-center gap-1">
-              <Clock size={11} />
+            <span className="text-[11px] font-semibold text-slate-400 flex items-center gap-1">
+              <Clock size={12} />
               {currentLesson?.duration ? `${Math.floor(currentLesson.duration / 60)} phút` : "15 phút"}
             </span>
           </div>
-          <h1 className="text-base md:text-xl font-black text-slate-900 tracking-tight leading-snug">
+          <h1 className="text-base sm:text-xl font-black text-slate-900 tracking-tight leading-snug truncate">
             {currentLesson?.title || currentLesson?.content || "Bài học"}
           </h1>
         </div>
 
-        {/* Action Button: Làm Quiz nếu có bài kiểm tra */}
-        {currentLesson?.QuizExits && (
-          <button
-            onClick={() => navigate(`/quizz/lession/${currentLesson._id}`)}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-orange-600 bg-orange-50 hover:bg-orange-100 border border-orange-200/80 shadow-xs transition-all hover:scale-105 active:scale-95 cursor-pointer shrink-0"
-          >
-            <PenTool size={13} />
-            Làm bài Quiz
-          </button>
-        )}
+        {/* Top Right Action Controls: Quiz + Prev/Next Buttons */}
+        <div className="flex items-center gap-2 shrink-0">
+          {currentLesson?.QuizExits && (
+            <button
+              onClick={() => navigate(`/quizz/lession/${currentLesson._id}`)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-orange-600 bg-orange-50 hover:bg-orange-100 border border-orange-200/80 shadow-2xs transition-all hover:scale-105 active:scale-95 cursor-pointer"
+            >
+              <PenTool size={12} />
+              Làm Quiz
+            </button>
+          )}
+
+          <div className="flex items-center gap-1 bg-slate-100/80 p-1 rounded-xl border border-slate-200/70">
+            <button
+              onClick={onPrevLesson}
+              disabled={!hasPrev}
+              title="Bài trước"
+              className={`p-1.5 rounded-lg text-xs font-bold transition-all ${
+                hasPrev
+                  ? "hover:bg-white text-slate-700 hover:text-orange-600 shadow-2xs cursor-pointer"
+                  : "text-slate-300 cursor-not-allowed opacity-40"
+              }`}
+            >
+              <ChevronLeft size={16} />
+            </button>
+            <span className="text-[11px] font-bold text-slate-500 px-1 select-none">
+              {Number(currentIndex ?? 0) + 1}/{totalLessons || 1}
+            </span>
+            <button
+              onClick={onNextLesson}
+              disabled={!hasNext}
+              title="Bài tiếp theo"
+              className={`p-1.5 rounded-lg text-xs font-bold transition-all ${
+                hasNext
+                  ? "hover:bg-white text-slate-700 hover:text-orange-600 shadow-2xs cursor-pointer"
+                  : "text-slate-300 cursor-not-allowed opacity-40"
+              }`}
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* ── 2. Cinematic Video Player (16:9 Rạp Chiếu Phim) ── */}
-      <div className="relative rounded-[1.6rem] overflow-hidden bg-slate-950 shadow-xl border border-slate-800/80 aspect-video w-full flex items-center justify-center group shrink-0">
+      {/* ── 2. Cinematic Video Player (Full-Width, Tỉ lệ 16:9 lấp đầy cột giữa) ── */}
+      <div className="relative rounded-2xl overflow-hidden bg-slate-950 shadow-lg border border-slate-800/80 aspect-video w-full flex items-center justify-center group shrink-0">
         <video
           ref={videoRef}
           key={currentLesson?._id}
           controls
-          className="w-full h-full object-contain"
+          className="w-full h-full object-contain bg-black"
           onLoadedMetadata={() => {
             if (process && videoRef?.current) {
               videoRef.current.currentTime = process.lastPosition || 0;
@@ -111,72 +143,26 @@ const LessionForm = ({
         </video>
       </div>
 
-      {/* ── 3. Navigation Action Bar (Dưới Video: Next/Prev) ── */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-2xl bg-white/80 border border-white/90 shadow-xs shrink-0">
-        {/* Next / Prev Navigation */}
-        <div className="flex items-center gap-2">
-          <button
-            onClick={onPrevLesson}
-            disabled={!hasPrev}
-            className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
-              hasPrev
-                ? "bg-slate-100 hover:bg-orange-50 text-slate-700 hover:text-orange-600 cursor-pointer shadow-xs"
-                : "bg-slate-100/60 text-slate-300 cursor-not-allowed"
-            }`}
-          >
-            <ChevronLeft size={14} /> Bài trước
-          </button>
-
-          <button
-            onClick={onNextLesson}
-            disabled={!hasNext}
-            className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-extrabold transition-all ${
-              hasNext
-                ? "text-white shadow-md shadow-orange-500/25 hover:scale-105 active:scale-95 cursor-pointer"
-                : "bg-slate-200 text-slate-400 cursor-not-allowed"
-            }`}
-            style={
-              hasNext
-                ? { background: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)" }
-                : undefined
-            }
-          >
-            Bài tiếp theo <ChevronRight size={14} />
-          </button>
-        </div>
-
-        {/* Status / Quiz on the right */}
-        {currentLesson?.QuizExits && (
-          <button
-            onClick={() => navigate(`/quizz/lession/${currentLesson._id}`)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-extrabold text-orange-600 bg-orange-100/70 hover:bg-orange-200/70 border border-orange-300/40 shadow-xs transition-all cursor-pointer"
-          >
-            <PenTool size={13} />
-            Làm bài Quiz
-          </button>
-        )}
-      </div>
-
-      {/* ── 4. Interactive Tabs Section (Tổng quan & Tài liệu) ── */}
-      <div className="flex-1 flex flex-col space-y-3 pt-1">
+      {/* ── 3. Interactive Tabs Section (Thiết kế phẳng, không lồng hộp thừa) ── */}
+      <div className="flex-1 flex flex-col min-h-0 space-y-2.5 pt-1 overflow-hidden">
         {/* Tab Headers */}
-        <div className="flex items-center gap-6 border-b border-slate-200/70 text-xs font-bold pb-2">
+        <div className="flex items-center gap-6 border-b border-slate-200/80 text-xs font-bold pb-2 shrink-0">
           <button
             onClick={() => setActiveTab("overview")}
-            className={`flex items-center gap-1.5 pb-2 transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 pb-2 transition-all cursor-pointer relative ${
               activeTab === "overview"
-                ? "text-orange-600 border-b-2 border-orange-500 font-extrabold"
-                : "text-slate-400 hover:text-slate-700 border-b-2 border-transparent"
+                ? "text-orange-600 font-black after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2.5px] after:bg-orange-500 after:rounded-full"
+                : "text-slate-400 hover:text-slate-700"
             }`}
           >
             <BookOpen size={14} /> Tổng quan bài học
           </button>
           <button
             onClick={() => setActiveTab("resources")}
-            className={`flex items-center gap-1.5 pb-2 transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 pb-2 transition-all cursor-pointer relative ${
               activeTab === "resources"
-                ? "text-orange-600 border-b-2 border-orange-500 font-extrabold"
-                : "text-slate-400 hover:text-slate-700 border-b-2 border-transparent"
+                ? "text-orange-600 font-black after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2.5px] after:bg-orange-500 after:rounded-full"
+                : "text-slate-400 hover:text-slate-700"
             }`}
           >
             <FileText size={14} /> Tài liệu đính kèm
@@ -186,81 +172,80 @@ const LessionForm = ({
           </button>
         </div>
 
-        {/* Tab Content 1: Overview */}
-        {activeTab === "overview" && (
-          <div className="p-4 rounded-2xl bg-white/75 backdrop-blur-xl border border-white shadow-xs space-y-2.5">
-            <h4 className="text-xs font-extrabold uppercase tracking-wider text-slate-800">
-              Mục tiêu & Hướng dẫn bài giảng
-            </h4>
-            {currentLesson?.content ? (
-              <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-line">
-                {currentLesson.content}
-              </p>
-            ) : (
-              <p className="text-xs text-slate-500 italic leading-relaxed">
-                Bài giảng này tập trung vào kiến thức thực hành trên video. Đừng quên ghi chú lại các ý chính và tải tài liệu ở tab bên cạnh để ôn luyện nhé!
-              </p>
-            )}
-          </div>
-        )}
+        {/* Tab Content: Typography thanh lịch, không đóng khung viền lủng củng */}
+        <div className="flex-1 overflow-y-auto pr-1 pb-1 custom-scrollbar">
+          {activeTab === "overview" && (
+            <div className="space-y-1.5 py-1">
+              <h4 className="text-xs font-black uppercase tracking-wider text-slate-800">
+                Mục tiêu & Hướng dẫn bài giảng
+              </h4>
+              {currentLesson?.content ? (
+                <p className="text-xs sm:text-[13px] text-slate-600 leading-relaxed whitespace-pre-line font-medium">
+                  {currentLesson.content}
+                </p>
+              ) : (
+                <p className="text-xs sm:text-[13px] text-slate-400 italic leading-relaxed">
+                  Bài giảng này tập trung vào kiến thức thực hành trên video. Đừng quên ghi chú lại các ý chính và tải tài liệu ở tab bên cạnh để ôn luyện nhé!
+                </p>
+              )}
+            </div>
+          )}
 
-        {/* Tab Content 2: Resources Grid */}
-        {activeTab === "resources" && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {resourceList.map((src, index) => {
-              const isZip =
-                src?.type?.toUpperCase() === "ZIP" ||
-                src?.title?.toLowerCase().includes("code") ||
-                index === 1;
+          {activeTab === "resources" && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 py-1">
+              {resourceList.map((src, index) => {
+                const isZip =
+                  src?.type?.toUpperCase() === "ZIP" ||
+                  src?.title?.toLowerCase().includes("code") ||
+                  index === 1;
 
-              return (
-                <div
-                  key={src.id || index}
-                  className="flex items-center justify-between p-3.5 rounded-2xl bg-white/85 backdrop-blur-xl border border-white shadow-xs hover:border-orange-200/80 hover:shadow-sm transition-all group"
-                  style={{ borderRadius: "1rem" }}
-                >
-                  <div className="flex items-center gap-3 min-w-0 pr-2">
-                    <div
-                      className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-xs shrink-0 ${
-                        isZip
-                          ? "bg-amber-100 text-amber-600"
-                          : "bg-rose-100 text-rose-600"
-                      }`}
-                    >
-                      {isZip ? <FileArchive size={18} /> : <FileText size={18} />}
-                    </div>
-
-                    <div className="min-w-0">
-                      <h5 className="font-bold text-xs text-slate-900 truncate leading-snug group-hover:text-orange-600 transition-colors">
-                        {src?.title || "Tài liệu học tập"}
-                      </h5>
-                      <p className="text-[10px] font-semibold text-slate-400 mt-0.5">
-                        {isZip ? "Mã nguồn bài tập & Thực hành" : "Tài liệu ôn tập (PDF)"}
-                      </p>
-                    </div>
-                  </div>
-
-                  <a
-                    href={src?.url || "#"}
-                    download
-                    className="shrink-0"
-                    title="Tải tệp"
+                return (
+                  <div
+                    key={src.id || index}
+                    className="flex items-center justify-between p-3 rounded-2xl bg-white/80 border border-slate-200/60 shadow-2xs hover:border-orange-300 hover:shadow-xs transition-all group"
                   >
-                    <button
-                      className="w-8 h-8 rounded-xl flex items-center justify-center text-white shadow-xs hover:scale-105 active:scale-95 transition-all cursor-pointer"
-                      style={{
-                        background: "linear-gradient(135deg, #f97316, #fb923c)",
-                        borderRadius: "0.65rem",
-                      }}
+                    <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                      <div
+                        className={`w-9 h-9 rounded-xl flex items-center justify-center shadow-2xs shrink-0 ${
+                          isZip
+                            ? "bg-amber-100/80 text-amber-600"
+                            : "bg-rose-100/80 text-rose-600"
+                        }`}
+                      >
+                        {isZip ? <FileArchive size={16} /> : <FileText size={16} />}
+                      </div>
+
+                      <div className="min-w-0">
+                        <h5 className="font-bold text-xs text-slate-900 truncate leading-snug group-hover:text-orange-600 transition-colors">
+                          {src?.title || "Tài liệu học tập"}
+                        </h5>
+                        <p className="text-[10px] font-semibold text-slate-400 mt-0.5">
+                          {isZip ? "Mã nguồn bài tập & Thực hành" : "Tài liệu ôn tập (PDF)"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <a
+                      href={src?.url || "#"}
+                      download
+                      className="shrink-0"
+                      title="Tải tệp"
                     >
-                      <Download size={14} strokeWidth={2.5} />
-                    </button>
-                  </a>
-                </div>
-              );
-            })}
-          </div>
-        )}
+                      <button
+                        className="w-8 h-8 rounded-xl flex items-center justify-center text-white shadow-xs hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                        style={{
+                          background: "linear-gradient(135deg, #f97316, #fb923c)",
+                        }}
+                      >
+                        <Download size={14} strokeWidth={2.5} />
+                      </button>
+                    </a>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* ── Error Display ── */}

@@ -38,32 +38,32 @@ const SidebarLesson = ({
       <div className="shrink-0 mb-3">
         <button
           onClick={() => navigate("/student")}
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold text-white shadow-sm hover:scale-105 active:scale-95 transition-all cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold text-white shadow-2xs hover:scale-105 active:scale-95 transition-all cursor-pointer"
           style={{
             background: "linear-gradient(135deg, #f97316, #fb923c)",
             borderRadius: "9999px",
           }}
         >
-          <ArrowLeft size={14} /> Khóa học của tôi
+          <ArrowLeft size={13} /> Khóa học của tôi
         </button>
       </div>
 
       {/* ── 2. Course Title & Syllabus Header with Progress Bar ── */}
-      <div className="shrink-0 mb-3 space-y-1">
+      <div className="shrink-0 mb-3 space-y-1.5 pb-3 border-b border-slate-200/70">
         <div className="flex items-center justify-between">
-          <h2 className="text-base font-black text-slate-900 leading-tight tracking-tight">
+          <h2 className="text-sm font-black text-slate-900 leading-tight tracking-tight">
             Nội dung khóa học
           </h2>
-          <span className="text-[10px] font-extrabold uppercase tracking-wider text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full">
+          <span className="text-[10px] font-black uppercase tracking-wider text-orange-600 bg-orange-100/80 px-2.5 py-0.5 rounded-full">
             {title?.length || 0} BÀI HỌC
           </span>
         </div>
 
         {title && title.length > 0 && (
-          <div className="pt-1">
-            <div className="flex items-center justify-between text-[10px] font-semibold text-slate-500 mb-1">
-              <span>Tiến độ học tập</span>
-              <span className="text-orange-600 font-extrabold">
+          <div className="space-y-1 pt-0.5">
+            <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500">
+              <span>Tiến độ hoàn thành</span>
+              <span className="text-orange-600 font-extrabold text-[11px]">
                 {completedCount}/{title.length} bài ({percent}%)
               </span>
             </div>
@@ -80,19 +80,19 @@ const SidebarLesson = ({
       {/* ── Loading State ── */}
       {loading && (
         <div className="flex items-center justify-center gap-2 py-6 text-orange-500 font-bold text-xs">
-          <Loader2 className="animate-spin" size={18} /> Đang tải bài học...
+          <Loader2 className="animate-spin" size={16} /> Đang tải bài học...
         </div>
       )}
 
       {/* ── Error State ── */}
       {error && (
-        <div className="p-3 rounded-xl bg-red-50 text-red-600 font-bold text-[11px] mb-3">
+        <div className="p-2.5 rounded-xl bg-red-50 text-red-600 font-bold text-[11px] mb-2">
           {error}
         </div>
       )}
 
-      {/* ── Scrollable list with custom sleek scrollbar ── */}
-      <div className="flex-1 overflow-y-auto pr-1 pb-2 space-y-2 custom-scrollbar">
+      {/* ── Unified Modern Playlist (Sleek List View — Liền mạch, tự cuộn riêng) ── */}
+      <div className="flex-1 overflow-y-auto pr-1 pb-2 space-y-1 custom-scrollbar">
         {title?.map((titl, index) => {
           const isActive = currentLesson?._id === titl?._id;
           const lessonProcess = allProcess?.find(
@@ -105,82 +105,54 @@ const SidebarLesson = ({
             <div
               key={titl._id || index}
               onClick={() => setCurrentLesson(titl)}
-              className={`group relative flex items-start gap-2.5 p-2.5 rounded-xl transition-all duration-200 cursor-pointer ${
+              className={`group relative flex items-center justify-between gap-2.5 px-3 py-2.5 rounded-xl transition-all duration-150 cursor-pointer ${
                 isActive
-                  ? "text-white shadow-md shadow-orange-500/25 scale-[1.01]"
-                  : "bg-white/80 border border-white/90 hover:bg-white hover:border-orange-200/80 hover:shadow-xs"
+                  ? "bg-orange-500/10 text-orange-950 font-bold border-l-4 border-orange-500 shadow-2xs"
+                  : "hover:bg-slate-100/80 text-slate-700 border-l-4 border-transparent"
               }`}
-              style={{
-                borderRadius: "0.85rem",
-                background: isActive
-                  ? "linear-gradient(135deg, #f97316 0%, #ea580c 100%)"
-                  : undefined,
-              }}
             >
-              {/* Left Indicator */}
-              <div className="shrink-0 mt-0.5">
-                {isActive ? (
-                  <div className="w-5 h-5 rounded-full bg-white text-orange-600 flex items-center justify-center shadow-xs">
-                    <Play size={10} className="fill-orange-600 ml-0.5" />
-                  </div>
-                ) : isCompleted ? (
-                  <div className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-xs">
-                    <Check size={12} strokeWidth={3} />
-                  </div>
-                ) : (
-                  <div className="w-5 h-5 rounded-full bg-slate-100 border border-slate-200 text-slate-400 font-bold text-[10px] flex items-center justify-center group-hover:border-orange-300 group-hover:text-orange-500 transition-colors">
-                    {index + 1}
-                  </div>
-                )}
-              </div>
-
-              {/* Title & Info: NO MORE TRUNCATE CUTTING OFF AFTER 2 WORDS */}
-              <div className="flex-1 min-w-0">
-                <h4
-                  className={`text-xs font-bold leading-snug line-clamp-2 ${
-                    isActive
-                      ? "text-white font-extrabold"
-                      : "text-slate-800 group-hover:text-orange-600 transition-colors"
-                  }`}
-                >
-                  {index + 1}. {titl?.title}
-                </h4>
-
-                <div className="flex items-center gap-2 mt-1 text-[10px] font-semibold">
-                  <span
-                    className={
-                      isActive
-                        ? "text-white/90"
-                        : isCompleted
-                          ? "text-emerald-600 font-bold"
-                          : "text-slate-400"
-                    }
-                  >
-                    {isCompleted
-                      ? "Đã học"
-                      : isActive
-                        ? "Đang học"
-                        : titl?.isPreview
-                          ? "Học thử"
-                          : "Tiếp theo"}
-                  </span>
-
-                  <span className={isActive ? "text-white/60" : "text-slate-300"}>•</span>
-
-                  <span
-                    className={`flex items-center gap-1 ${
-                      isActive ? "text-white/85" : "text-slate-400"
-                    }`}
-                  >
-                    <Clock size={10} />
-                    {durationStr}
-                  </span>
-
-                  {titl?.isLocked && !isActive && !isCompleted && (
-                    <Lock size={11} className="text-slate-400 ml-auto" />
+              {/* Left Indicator + Title */}
+              <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                <div className="shrink-0">
+                  {isActive ? (
+                    <div className="w-5 h-5 rounded-full bg-orange-500 text-white flex items-center justify-center shadow-xs">
+                      <Play size={10} className="fill-white ml-0.5" />
+                    </div>
+                  ) : isCompleted ? (
+                    <div className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-xs">
+                      <Check size={11} strokeWidth={3} />
+                    </div>
+                  ) : (
+                    <div className="w-5 h-5 rounded-full bg-slate-100 text-slate-400 font-bold text-[10px] flex items-center justify-center group-hover:bg-orange-100 group-hover:text-orange-600 transition-colors">
+                      {index + 1}
+                    </div>
                   )}
                 </div>
+
+                {/* Title & Info */}
+                <div className="min-w-0 flex-1">
+                  <h4
+                    className={`text-xs leading-snug line-clamp-2 ${
+                      isActive
+                        ? "text-orange-950 font-black"
+                        : "text-slate-800 font-semibold group-hover:text-orange-600 transition-colors"
+                    }`}
+                  >
+                    {titl?.title}
+                  </h4>
+                  <div className="flex items-center gap-1.5 mt-1 text-[10px] text-slate-400 font-medium">
+                    <span>{durationStr}</span>
+                    {titl?.isPreview && !isCompleted && (
+                      <span className="text-orange-600 font-bold">• Xem thử</span>
+                    )}
+                  </div>
+                </div>
               </div>
+
+              {/* Right Lock Icon */}
+              {titl?.isLocked && !isActive && !isCompleted && (
+                <Lock size={12} className="text-slate-400 shrink-0 ml-1" />
+              )}
             </div>
           );
         })}

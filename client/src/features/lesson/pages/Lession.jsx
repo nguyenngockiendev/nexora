@@ -121,9 +121,9 @@ const Lession = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row h-auto lg:h-[88vh] w-full bg-transparent rounded-[2rem] overflow-hidden gap-6 p-2">
-      {/* ── Left Content (70%): Video + Actions + Tabs ── */}
-      <main className="flex-1 h-full overflow-y-auto custom-scrollbar z-10 relative bg-white/70 backdrop-blur-3xl border border-white/90 rounded-[2rem] p-5 lg:p-7 shadow-sm">
+    <div className="flex flex-col lg:flex-row h-auto lg:h-[calc(100vh-2.5rem)] w-full bg-transparent rounded-[2rem] gap-4 p-1">
+      {/* ── Left Content (Video Full-Width + Tabs nội dung) ── */}
+      <main className="flex-1 h-full overflow-y-auto custom-scrollbar z-10 relative bg-white/75 backdrop-blur-3xl border border-white/90 rounded-[2rem] p-5 lg:p-7 shadow-sm flex flex-col min-w-0">
         <LessionForm
           videoRef={videoRef}
           currentLesson={currentLesson}
@@ -146,8 +146,8 @@ const Lession = () => {
         />
       </main>
 
-      {/* ── Right Sidebar (30%): Syllabus Playlist ── */}
-      <aside className="w-full lg:w-[360px] xl:w-[390px] flex-shrink-0 h-[560px] lg:h-full bg-white/70 backdrop-blur-3xl border border-white/90 rounded-[2rem] shadow-sm z-20 overflow-hidden flex flex-col">
+      {/* ── Right Sidebar: Syllabus Playlist rộng rãi, tự cuộn riêng ── */}
+      <aside className="w-full lg:w-[340px] xl:w-[360px] flex-shrink-0 h-[560px] lg:h-full bg-white/75 backdrop-blur-3xl border border-white/90 rounded-[2rem] shadow-sm z-20 overflow-hidden flex flex-col">
         <SidebarLesson
           loading={loading}
           error={error}
