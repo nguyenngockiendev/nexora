@@ -31,4 +31,18 @@ const createLimiter = (countlimit, time) => {
   });
   return limit;
 };
-module.exports = { authMiddleware, createLimiter };
+
+const checkRole = (...role) => {
+  return (req, res, next) => {
+    if (!role.includes(req.user?.role)) {
+      return res.status(403).json({
+        success: false,
+        message: "Bạn không có quyền truy cập!",
+      });
+    }
+    next();
+  };
+};
+
+module.exports = { authMiddleware, createLimiter, checkRole };
+
