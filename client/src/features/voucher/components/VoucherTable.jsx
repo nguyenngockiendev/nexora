@@ -56,7 +56,8 @@ const VoucherTable = ({ vouchers, onEdit, onDelete, onToggleStatus }) => {
                       type="button"
                       onClick={() => handleCopyCode(v.code)}
                       title="Sao chép mã"
-                      className="text-slate-400 hover:text-orange-600 transition-colors cursor-pointer"
+                      style={{ borderRadius: "9999px" }}
+                      className="p-1 hover:bg-orange-100 text-slate-400 hover:text-orange-600 rounded-full transition-colors cursor-pointer"
                     >
                       <Copy size={14} />
                     </button>
@@ -175,7 +176,8 @@ const VoucherTable = ({ vouchers, onEdit, onDelete, onToggleStatus }) => {
                   <button
                     type="button"
                     onClick={() => onEdit(v)}
-                    className="p-1.5 hover:bg-orange-100 text-slate-500 hover:text-orange-600 rounded-lg transition-colors cursor-pointer"
+                    style={{ borderRadius: "9999px" }}
+                    className="p-2 hover:bg-orange-100 text-slate-500 hover:text-orange-600 rounded-full transition-colors cursor-pointer"
                     title="Chỉnh sửa"
                   >
                     <Edit2 size={15} />
@@ -183,7 +185,8 @@ const VoucherTable = ({ vouchers, onEdit, onDelete, onToggleStatus }) => {
                   <button
                     type="button"
                     onClick={() => onDelete(v._id || v.code)}
-                    className="p-1.5 hover:bg-rose-100 text-slate-500 hover:text-rose-600 rounded-lg transition-colors cursor-pointer"
+                    style={{ borderRadius: "9999px" }}
+                    className="p-2 hover:bg-rose-100 text-slate-500 hover:text-rose-600 rounded-full transition-colors cursor-pointer"
                     title="Xóa"
                   >
                     <Trash2 size={15} />

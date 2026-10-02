@@ -6,11 +6,14 @@ import useGetCourses from "../hooks/useCourse";
 
 import useShareSocket from "../../../shared/hooks/useSocket";
 import { toast } from "react-toastify";
+import PaginationForm from "../../../shared/components/PaginationForm";
+import usePagination from "../../../shared/hooks/usePagination";
 
 const Courses = ({ mode }) => {
   const [statusmessage] = useSearchParams();
   const { courses, coursesall, error, loading, getcourses, getcoursesAll } =
     useGetCourses();
+
   const [filterdata, setFilterdata] = useState([]);
   const [filterdatall, setFilterdatall] = useState([]);
 
@@ -18,6 +21,7 @@ const Courses = ({ mode }) => {
   const [filter, setFilter] = useState("All Courses");
   const [price, setPrice] = useState("");
   const [star, setStar] = useState("all");
+  const [courseType, setCourseType] = useState("all");
 
   useEffect(() => {
     getcourses();
@@ -50,6 +54,16 @@ const Courses = ({ mode }) => {
         result = result.filter((item) => item.level === filter);
       }
 
+      if (courseType === "live") {
+        result = result.filter((item) => item.type === "live");
+      } else if (courseType === "recorded") {
+        result = result.filter((item) => item.type === "recorded");
+      } else if (courseType === "free") {
+        result = result.filter((item) => Number(item.price || 0) === 0);
+      } else if (courseType === "top_rated") {
+        result = result.filter((item) => Number(item.rattingforcoure || 0) >= 4.5);
+      }
+
       if (price !== "all" && price == "price-desc") {
         result = result.sort((a, b) => b.price - a.price);
       }
@@ -67,7 +81,7 @@ const Courses = ({ mode }) => {
     };
 
     handfilter();
-  }, [search, filter, courses, price, star]);
+  }, [search, filter, courses, price, star, courseType]);
 
   useEffect(() => {
     const handfilter = () => {
@@ -81,21 +95,36 @@ const Courses = ({ mode }) => {
         result = result.filter((item) => item.level === filter);
       }
 
+      if (courseType === "live") {
+        result = result.filter((item) => item.type === "live");
+      } else if (courseType === "recorded") {
+        result = result.filter((item) => item.type === "recorded");
+      } else if (courseType === "free") {
+        result = result.filter((item) => Number(item.price || 0) === 0);
+      } else if (courseType === "top_rated") {
+        result = result.filter((item) => Number(item.rattingforcoure || 0) >= 4.5);
+      }
+
       setFilterdatall(result);
     };
 
     handfilter();
-  }, [search, filter, coursesall]);
+  }, [search, filter, coursesall, courseType]);
+  const currentList = mode === "all" ? filterdata : filterdatall;
 
+  const pagination = usePagination(currentList, 9);
   return (
-    <div className="w-full min-h-screen py-6 md:py-8">
+    <div className="w-full min-h-screen py-2 md:py-3">
       {mode == "all" ? (
         <CoursesForm
           mode={mode}
           setPrice={setPrice}
           setStar={setStar}
+          courseType={courseType}
+          setCourseType={setCourseType}
+          rawCourses={courses}
           messagepayment={messagepayment}
-          courses={filterdata}
+          courses={pagination.currentData}
           error={error}
           loading={loading}
           role={role}
@@ -108,8 +137,11 @@ const Courses = ({ mode }) => {
           mode={mode}
           setPrice={setPrice}
           setStar={setStar}
+          courseType={courseType}
+          setCourseType={setCourseType}
+          rawCourses={coursesall}
           messagepayment={messagepayment}
-          courses={filterdatall}
+          courses={pagination.currentData}
           error={error}
           loading={loading}
           role={role}
@@ -117,6 +149,11 @@ const Courses = ({ mode }) => {
           setFilter={setFilter}
           navigate={navigate}
         />
+      )}
+      {!loading && currentList?.length > 0 && (
+        <div className="w-full px-2 sm:px-4 md:px-6 mt-6">
+          <PaginationForm pagination={pagination} itemName="khóa học" />
+        </div>
       )}
     </div>
   );

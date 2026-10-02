@@ -8,6 +8,8 @@ import { toast } from "react-toastify";
 import { useEffect } from "react";
 import useShareSocket from "../../../shared/hooks/useSocket";
 import useUpdatelession from "../hooks/useUpdatelession";
+import usePagination from "../../../shared/hooks/usePagination";
+import PaginationForm from "../../../shared/components/PaginationForm";
 
 const InstructorCurriculumPage = () => {
   const navigate = useNavigate();
@@ -72,6 +74,7 @@ const InstructorCurriculumPage = () => {
     setSelectedLesson(selectedLesson);
   };
   const onClose = () => setSelectedLesson(null);
+  const pagination = usePagination(filterLession, 7);
   return (
     <div>
       <LessionTableLession
@@ -80,7 +83,7 @@ const InstructorCurriculumPage = () => {
         handselectedLesson={handselectedLesson}
         handDelete={handDelete}
         navigate={navigate}
-        curriculum={filterLession}
+        curriculum={pagination.currentData}
         courseId={courseId}
         loading={loading}
         error={error}
@@ -89,6 +92,11 @@ const InstructorCurriculumPage = () => {
         process={process}
         handupdatetracrip={handupdatetracrip}
       />
+      {!loading && filterLession?.length > 0 && (
+              <div className="max-w-7xl mx-auto px-4 mt-6">
+                <PaginationForm pagination={pagination} itemName="khóa học" />
+              </div>
+            )}
     </div>
   );
 };

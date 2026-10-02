@@ -48,33 +48,31 @@ const StatCard = ({ icon: Icon, label, value, tone, helper }) => {
 
   return (
     <div
-      className="group rounded-3xl p-5 transition-all duration-300 hover:-translate-y-1 cursor-default"
+      className="group rounded-2xl p-3.5 transition-all duration-300 hover:-translate-y-0.5 cursor-default"
       style={{
         background: `rgba(255,255,255,0.65)`,
         border: `1px solid ${t.border}`,
         backdropFilter: "blur(20px)",
-        boxShadow: `0 8px 32px ${t.glow}, inset 0 1px 0 rgba(255,255,255,0.8)`,
+        boxShadow: `0 4px 16px ${t.glow}, inset 0 1px 0 rgba(255,255,255,0.8)`,
       }}
     >
       <div
-        className="mb-4 grid h-11 w-11 place-items-center rounded-2xl transition-transform group-hover:scale-110"
-        style={{ background: t.iconBg, boxShadow: `0 0 16px ${t.glow}` }}
+        className="mb-2.5 grid h-8 w-8 place-items-center rounded-xl transition-transform group-hover:scale-105"
+        style={{ background: t.iconBg, boxShadow: `0 0 10px ${t.glow}` }}
       >
-        <Icon size={20} style={{ color: t.iconColor }} />
+        <Icon size={16} style={{ color: t.iconColor }} />
       </div>
-      <p className="mb-1 text-sm font-semibold" style={{ color: "#64748b" }}>
+      <p className="mb-0.5 text-xs font-semibold text-slate-500">
         {label}
       </p>
       <strong
-        className="block text-3xl font-black leading-none"
-        style={{ color: "#1e293b" }}
+        className="block text-xl font-black leading-tight text-slate-800"
       >
         {value}
       </strong>
       {helper && (
         <span
-          className="mt-2 block text-xs font-medium"
-          style={{ color: "#94a3b8" }}
+          className="mt-1 block text-[10px] font-medium text-slate-400"
         >
           {helper}
         </span>
@@ -126,42 +124,45 @@ const StudentDashboardView = ({
   }
 
   return (
-    <div className="p-4 md:p-6 space-y-6">
+    <div className="space-y-4">
       <section
-        className="relative overflow-hidden rounded-3xl p-6 lg:p-8"
+        className="relative overflow-hidden rounded-3xl p-5 lg:p-6 transition-all shadow-sm"
         style={{
-          background: "rgba(255,255,255,0.65)",
-          border: "1px solid rgba(255,255,255,0.85)",
+          background:
+            "linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 41, 59, 0.90) 60%, rgba(15, 23, 42, 0.96) 100%)",
           backdropFilter: "blur(32px)",
+          WebkitBackdropFilter: "blur(32px)",
+          border: "1px solid rgba(255, 255, 255, 0.16)",
           boxShadow:
-            "inset 0 1px 0 rgba(255,255,255,0.9), 0 16px 48px rgba(249,115,22,0.08)",
+            "0 18px 48px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.2)",
         }}
       >
         <div className="absolute top-0 left-16 right-16 h-[1px] bg-gradient-to-r from-transparent via-orange-400/40 to-transparent" />
+        {/* Ambient Glow */}
         <div
-          className="absolute -bottom-20 -right-20 w-64 h-64 rounded-full opacity-20 pointer-events-none"
+          className="absolute -top-20 -right-20 w-80 h-80 rounded-full pointer-events-none opacity-40 blur-3xl"
           style={{
-            background: "radial-gradient(circle, #f97316 0%, transparent 70%)",
-            filter: "blur(40px)",
+            background:
+              "radial-gradient(circle, rgba(249, 115, 22, 0.35) 0%, rgba(245, 158, 11, 0.15) 50%, transparent 70%)",
           }}
         />
 
-        <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1fr)_380px]">
+        <div className="relative grid gap-4 lg:grid-cols-[minmax(0,1fr)_280px] items-center">
           <div>
             <div
-              className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-widest"
+              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider"
               style={{
-                background: "rgba(249,115,22,0.12)",
-                border: "1px solid rgba(249,115,22,0.25)",
-                color: "#ea580c",
+                background: "rgba(255, 255, 255, 0.1)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                color: "#fb923c",
+                borderRadius: "9999px",
               }}
             >
-              <GraduationCap size={14} />
+              <GraduationCap size={13} className="text-orange-400" />
               Tổng quan học viên
             </div>
             <h1
-              className="mt-5 max-w-2xl text-4xl font-black leading-tight md:text-5xl"
-              style={{ color: "#1e293b" }}
+              className="mt-2 text-2xl font-black leading-snug md:text-3xl text-white"
             >
               Chào mừng trở lại,{" "}
               <span
@@ -177,8 +178,7 @@ const StudentDashboardView = ({
               👋
             </h1>
             <p
-              className="mt-4 max-w-xl text-base leading-7"
-              style={{ color: "#64748b" }}
+              className="mt-1.5 max-w-xl text-xs leading-relaxed text-slate-300 font-medium"
             >
               Hôm nay là một ngày tuyệt vời để học những điều mới. Hãy tiếp tục
               hành trình tri thức của bạn nhé!
@@ -186,46 +186,47 @@ const StudentDashboardView = ({
           </div>
 
           <div
-            className="rounded-3xl p-1 relative overflow-hidden"
+            className="rounded-2xl p-3.5 relative overflow-hidden flex flex-col justify-between shadow-sm"
             style={{
               background:
-                "linear-gradient(135deg, rgba(249,115,22,0.2) 0%, rgba(245,158,11,0.12) 100%)",
-              border: "1px solid rgba(249,115,22,0.25)",
+                "linear-gradient(145deg, rgba(30, 41, 59, 0.70) 0%, rgba(15, 23, 42, 0.75) 100%)",
+              border: "1px solid rgba(255, 255, 255, 0.14)",
+              backdropFilter: "blur(16px)",
               boxShadow:
-                "inset 0 1px 0 rgba(255,255,255,0.6), 0 8px 32px rgba(249,115,22,0.12)",
+                "0 8px 24px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.12)",
             }}
           >
-            <div className="bg-white/80 backdrop-blur-xl rounded-[1.3rem] p-5 h-full flex flex-col justify-between">
+            <div className="h-full flex flex-col justify-between">
               {recentlesson ? (
                 <>
                   <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-xs font-black uppercase tracking-wider text-orange-600">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-orange-400">
                         Đang học
                       </span>
-                      <div className="w-8 h-8 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center">
-                        <BookOpen size={14} />
+                      <div className="w-7 h-7 rounded-full bg-white/10 text-orange-400 border border-white/10 flex items-center justify-center">
+                        <BookOpen size={13} />
                       </div>
                     </div>
-                    <h3 className="font-bold text-slate-800 line-clamp-1">
+                    <h3 className="font-bold text-white text-xs line-clamp-1">
                       {recentlesson?.titleCourse || "Khóa học hiện tại"}
                     </h3>
-                    <p className="text-sm text-slate-500 mt-1 line-clamp-1">
+                    <p className="text-[11px] text-slate-300 mt-0.5 line-clamp-1">
                       {recentlesson?.titleLession || "Bài học gần đây"}
                     </p>
                   </div>
 
-                  <div className="mt-5">
-                    <div className="flex justify-between text-xs font-bold mb-2">
-                      <span className="text-slate-500">Tiến độ</span>
-                      <span className="text-orange-600">
+                  <div className="mt-3">
+                    <div className="flex justify-between text-[11px] font-bold mb-1.5">
+                      <span className="text-slate-400">Tiến độ</span>
+                      <span className="text-orange-400">
                         {recentlesson?.percent || 0}%
                       </span>
                     </div>
-                    <div className="w-full bg-slate-100 rounded-full h-2 mb-4 overflow-hidden">
+                    <div className="w-full bg-white/10 rounded-full h-1.5 mb-3 overflow-hidden">
                       <div
-                        className="bg-gradient-to-r from-orange-500 to-amber-400 h-2 rounded-full transition-all duration-1000"
-                        style={{ width: `${recentlesson?.percent || 0}%` }}
+                        className="bg-gradient-to-r from-orange-500 to-amber-400 h-1.5 rounded-full transition-all duration-1000"
+                        style={{ width: `${recentlesson?.percent || 0}%`, borderRadius: "9999px" }}
                       ></div>
                     </div>
 
@@ -237,34 +238,36 @@ const StudentDashboardView = ({
                             : "/courses",
                         )
                       }
-                      className="w-full py-2.5 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-orange-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
                       style={{
                         background:
                           "linear-gradient(to right, #f97316, #ea580c)",
+                        borderRadius: "9999px",
                       }}
+                      className="w-full py-2 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-orange-500/25 hover:brightness-105 active:scale-95 transition-all cursor-pointer"
                     >
-                      <PlayCircle size={18} />
+                      <PlayCircle size={15} />
                       Học tiếp ngay
                     </button>
                   </div>
                 </>
               ) : (
-                <div className="flex flex-col items-center justify-center py-6 text-center">
-                  <div className="w-12 h-12 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center mb-3">
-                    <Compass size={22} />
+                <div className="flex flex-col items-center justify-center py-2.5 text-center">
+                  <div className="w-9 h-9 rounded-full bg-white/10 border border-white/10 text-orange-400 flex items-center justify-center mb-2 shadow-2xs">
+                    <Compass size={18} />
                   </div>
-                  <h4 className="font-bold text-slate-800 text-sm">
+                  <h4 className="font-bold text-white text-xs">
                     Chưa có bài học gần đây
                   </h4>
-                  <p className="text-xs text-slate-500 mt-1 max-w-[200px]">
+                  <p className="text-[11px] text-slate-300 mt-0.5 max-w-[190px] leading-snug">
                     Hãy bắt đầu khóa học đầu tiên của bạn ngay hôm nay!
                   </p>
                   <button
                     onClick={() => navigate("/courses")}
-                    className="mt-4 px-4 py-2 rounded-xl text-white font-bold text-xs shadow-md shadow-orange-500/25 hover:scale-105 transition-all cursor-pointer"
                     style={{
                       background: "linear-gradient(to right, #f97316, #ea580c)",
+                      borderRadius: "9999px",
                     }}
+                    className="mt-3 px-4 py-1.5 text-white font-bold text-xs shadow-md shadow-orange-500/25 hover:brightness-105 active:scale-95 transition-all cursor-pointer select-none"
                   >
                     Khám phá khóa học
                   </button>
@@ -275,7 +278,7 @@ const StudentDashboardView = ({
         </div>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <section className="grid gap-3 grid-cols-2 lg:grid-cols-4">
         <StatCard
           icon={BookOpen}
           label="Khóa đã tham gia"
@@ -306,9 +309,9 @@ const StudentDashboardView = ({
         />
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-2">
+      <section className="grid gap-4 xl:grid-cols-2">
         <div
-          className="rounded-3xl p-6"
+          className="rounded-2xl p-4 lg:p-5"
           style={{
             background: "rgba(255,255,255,0.65)",
             border: "1px solid rgba(255,255,255,0.85)",
@@ -317,7 +320,7 @@ const StudentDashboardView = ({
               "inset 0 1px 0 rgba(255,255,255,0.9), 0 16px 48px rgba(180,100,20,0.04)",
           }}
         >
-          <div className="mb-6 flex items-start justify-between gap-4">
+          <div className="mb-4 flex items-start justify-between gap-3">
             <div>
               <span
                 className="inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest"
@@ -421,7 +424,7 @@ const StudentDashboardView = ({
         </div>
 
         <div
-          className="rounded-3xl p-6"
+          className="rounded-2xl p-4 lg:p-5"
           style={{
             background: "rgba(255,255,255,0.65)",
             border: "1px solid rgba(255,255,255,0.85)",
@@ -430,27 +433,28 @@ const StudentDashboardView = ({
               "inset 0 1px 0 rgba(255,255,255,0.9), 0 16px 48px rgba(180,100,20,0.04)",
           }}
         >
-          <div className="mb-6 flex items-start justify-between gap-4">
+          <div className="mb-4 flex items-start justify-between gap-3">
             <div>
               <span
-                className="inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest"
+                className="inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider"
                 style={{
                   background: "rgba(16,185,129,0.12)",
                   color: "#059669",
                   border: "1px solid rgba(16,185,129,0.25)",
+                  borderRadius: "9999px",
                 }}
               >
                 Hoạt động
               </span>
               <h2
-                className="mt-3 text-2xl font-black"
+                className="mt-1.5 text-lg font-black"
                 style={{ color: "#1e293b" }}
               >
                 Thành tích &amp; Chứng chỉ
               </h2>
             </div>
             <div
-              className="grid h-10 w-10 place-items-center rounded-2xl"
+              className="grid h-8 w-8 place-items-center rounded-xl"
               style={{
                 background: "rgba(16,185,129,0.12)",
                 boxShadow: "0 0 12px rgba(16,185,129,0.15)",

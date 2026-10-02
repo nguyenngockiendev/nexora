@@ -340,14 +340,16 @@ const VoucherModal = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+              style={{ borderRadius: "9999px" }}
+              className="px-5 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-full transition-colors cursor-pointer"
             >
               Hủy Bỏ
             </button>
             <button
               disabled={loadingVou}
               type="submit"
-              className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-xs font-semibold px-5 py-2.5 rounded-xl shadow-sm shadow-orange-500/20 active:scale-95 transition-all cursor-pointer"
+              style={{ borderRadius: "9999px" }}
+              className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-xs font-semibold px-6 py-2.5 rounded-full shadow-sm shadow-orange-500/20 active:scale-95 transition-all cursor-pointer"
             >
               {editingVoucher ? "Lưu Thay Đổi" : "Tạo Voucher"}
             </button>

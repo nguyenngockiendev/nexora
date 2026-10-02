@@ -4,6 +4,8 @@ import FogotPassWordForm from "../components/ForgotPasswordForm";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { fogotShecma } from "../../../shared/validation/auth";
 import { toast } from "react-toastify";
+import { useState } from "react";
+import { useEffect } from "react";
 const FogotPassword = () => {
   const {
     register,
@@ -15,7 +17,8 @@ const FogotPassword = () => {
     mode: "onBlur",
   });
   const { senOtp, error, forgotPass } = useForgotPassword();
-
+  const [countdown, setCountdown] = useState(60);
+  const [trig, setTrig] = useState(false);
   const onsubmit = async (data) => {
     try {
       const datas = {
@@ -31,6 +34,20 @@ const FogotPassword = () => {
     }
   };
 
+  useEffect(() => {
+    if (!trig) {
+      return;
+    }
+    if (countdown <= 0) {
+      setTrig(false);
+      return;
+    }
+    const time = setInterval(() => {
+      setCountdown((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(time);
+  }, [countdown, trig]);
+
   const onSendOtp = async () => {
     try {
       const email = getValues("email");
@@ -39,7 +56,10 @@ const FogotPassword = () => {
         type: "forgot_password",
       };
       const result = await senOtp(data);
+
       if (result.success) {
+        setTrig(true);
+        setCountdown(60);
         toast.success(result.message);
       }
     } catch (error) {
@@ -61,6 +81,8 @@ const FogotPassword = () => {
           error={error}
           errors={errors}
           onSendOtp={onSendOtp}
+          countdown={countdown}
+          trig={trig}
         />
       </div>
     </div>

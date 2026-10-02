@@ -24,8 +24,8 @@ const Sidebar = ({
       />
 
       <aside
-        className={`fixed top-3 left-3 bottom-3 z-50 flex flex-col transition-all duration-300 ease-in-out rounded-[28px]
-          ${collapsed ? "w-[72px]" : "w-[250px]"}
+        className={`fixed top-3 left-3 bottom-3 z-50 flex flex-col transition-all duration-300 ease-in-out rounded-2xl
+          ${collapsed ? "w-[64px]" : "w-[210px]"}
           ${mobileOpen ? "translate-x-0" : "-translate-x-[calc(100%+12px)] md:translate-x-0"}
         `}
         style={{
@@ -34,12 +34,12 @@ const Sidebar = ({
           WebkitBackdropFilter: "blur(40px) saturate(200%)",
           border: "1px solid rgba(255, 255, 255, 0.9)",
           boxShadow:
-            "0 0 40px rgba(249,115,22,0.08), 0 20px 48px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9)",
+            "0 0 32px rgba(249,115,22,0.06), 0 16px 36px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.9)",
         }}
       >
         <div
-          className={`flex items-center h-16 shrink-0 transition-all ${
-            collapsed ? "justify-center px-2" : "justify-between px-4"
+          className={`flex items-center h-14 shrink-0 transition-all ${
+            collapsed ? "justify-center px-2" : "justify-between px-3.5"
           }`}
         >
           <div
@@ -97,8 +97,8 @@ const Sidebar = ({
                       `flex items-center rounded-2xl transition-all duration-200 ease-out cursor-pointer no-underline outline-none focus:outline-none select-none
                       ${
                         collapsed
-                          ? "w-11 h-11 mx-auto justify-center"
-                          : "gap-3 px-3.5 py-2.5 w-full"
+                          ? "w-10 h-10 mx-auto justify-center"
+                          : "gap-2.5 px-3 py-2 w-full"
                       }
                       ${
                         isActive
@@ -126,7 +126,7 @@ const Sidebar = ({
                           className="relative shrink-0 transition-colors flex items-center justify-center"
                           style={{ color: isActive ? "#ea580c" : "#64748b" }}
                         >
-                          {item.icon && <item.icon size={19} />}
+                          {item.icon && <item.icon size={17} />}
                           {collapsed && item.path === "cart" && cartItems?.length > 0 && (
                             <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-orange-500 text-white text-[9px] font-black flex items-center justify-center shadow-xs">
                               {cartItems.length > 9 ? "9+" : cartItems.length}
@@ -136,7 +136,7 @@ const Sidebar = ({
                         {!collapsed && (
                           <div className="flex items-center justify-between flex-1 min-w-0">
                             <span
-                              className="text-sm font-semibold whitespace-nowrap truncate no-underline"
+                              className="text-xs font-semibold whitespace-nowrap truncate no-underline"
                               style={{ color: isActive ? "#ea580c" : "#334155" }}
                             >
                               {item.name}

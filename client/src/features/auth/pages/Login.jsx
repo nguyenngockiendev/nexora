@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { useNavigate } from "react-router-dom";
@@ -6,7 +7,16 @@ import useLogin from "../hooks/uselogin";
 import LoginForm from "../components/LoginForm";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginShecma } from "../../../shared/validation/auth";
+
 const Login = () => {
+  useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, []);
+
   const {
     register,
     handleSubmit,
@@ -26,7 +36,7 @@ const Login = () => {
       if (result) {
         localStorage.setItem("token", result);
 
-        navigate("/dashboard");
+        navigate("/courses-all");
       }
     } catch (err) {
       console.error(err);
@@ -38,7 +48,7 @@ const Login = () => {
       if (result.success) {
         localStorage.setItem("token", result.data);
 
-        navigate("/dashboard");
+        navigate("/courses-all");
       }
     } catch (error) {
       console.log(error);

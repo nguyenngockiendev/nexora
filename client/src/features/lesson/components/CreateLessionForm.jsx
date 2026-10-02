@@ -99,6 +99,7 @@ const CreateLession = ({
           <button
             type="button"
             onClick={() => navigate(-1)}
+            style={{ borderRadius: "9999px" }}
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold text-slate-700 bg-white/90 border border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition-all cursor-pointer shadow-2xs self-start sm:self-auto"
           >
             <ArrowLeft size={15} />
@@ -234,6 +235,7 @@ const CreateLession = ({
                       <button
                         type="button"
                         onClick={removeVideo}
+                        style={{ borderRadius: "9999px" }}
                         className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold text-rose-600 bg-rose-50 border border-rose-200 hover:bg-rose-100 transition-all cursor-pointer"
                       >
                         <X size={13} />
@@ -371,7 +373,8 @@ const CreateLession = ({
                 <button
                   type="button"
                   onClick={removeResource}
-                  className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all cursor-pointer"
+                  style={{ borderRadius: "9999px" }}
+                  className="p-2 rounded-full text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all cursor-pointer"
                 >
                   <X size={16} />
                 </button>
@@ -394,6 +397,7 @@ const CreateLession = ({
               type="button"
               disabled={loading || isuploading}
               onClick={() => navigate(-1)}
+              style={{ borderRadius: "9999px" }}
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs sm:text-sm font-bold text-slate-700 bg-white/90 border border-slate-200/80 hover:bg-slate-100 hover:text-slate-900 transition-all cursor-pointer shadow-xs"
             >
               <ArrowLeft size={15} />

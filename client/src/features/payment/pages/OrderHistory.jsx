@@ -2,12 +2,13 @@ import { CheckCircle2, AlertCircle, XCircle } from "lucide-react";
 import HistoryTable from "../components/OrderHistoryTable";
 import usePayment from "../hooks/usePayment";
 import { useEffect, useState } from "react";
+import usePagination from "../../../shared/hooks/usePagination";
+import PaginationForm from "../../../shared/components/PaginationForm";
 
 const OrderHistory = () => {
   const { order, Resumepayment, deleteOrder, orderhistory } = usePayment();
 
   const [actionLoadingId, setActionLoadingId] = useState(null);
-  console.log("order", order);
   useEffect(() => {
     orderhistory();
   }, []);
@@ -111,11 +112,11 @@ const OrderHistory = () => {
       setActionLoadingId(null);
     }
   };
-
+const pagination = usePagination(order, 5);
   return (
     <div>
       <HistoryTable
-        orders={order}
+        orders={pagination.currentData}
         formatPrice={formatPrice}
         formatDate={formatDate}
         getStatusBadge={getStatusBadge}
@@ -123,6 +124,11 @@ const OrderHistory = () => {
         handleCancelOrder={handleCancelOrder}
         actionLoadingId={actionLoadingId}
       />
+      {order?.length > 0 && (
+        <div className="max-w-7xl mx-auto px-4 mt-6">
+          <PaginationForm pagination={pagination} itemName="đơn hàng" />
+        </div>
+      )}
     </div>
   );
 };

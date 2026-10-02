@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import UserTable from "../components/UsersTable";
 import useUsers from "../hooks/useUsers";
 import useEditUsers from "../hooks/useEditUser";
 import { GetDatelsuserByAdmin } from "../api/user-api";
 import { toast } from "react-toastify";
+import PaginationForm from "../../../shared/components/PaginationForm";
+import usePagination from "../../../shared/hooks/usePagination";
 
 const AdminUserPage = () => {
   const { loading, error, userlist = [], getAll } = useUsers();
@@ -93,7 +95,6 @@ const AdminUserPage = () => {
     setRoleModalUser(null);
   };
 
-  // ── Xử Lý Xác Nhận Đổi Vai Trò ──
   const handleConfirmChangeRole = async () => {
     if (!roleModalUser) return;
     if (selectedRole === roleModalUser.role) {
@@ -117,35 +118,42 @@ const AdminUserPage = () => {
       setRoleLoading(false);
     }
   };
-
+  const pagination = usePagination(filteredUsers, 5);
   return (
-    <UserTable
-      loading={loading}
-      error={error}
-      searchTerm={searchTerm}
-      setSearchTerm={setSearchTerm}
-      activeTab={activeTab}
-      setActiveTab={setActiveTab}
-      totalCount={totalCount}
-      studentCount={studentCount}
-      instructorCount={instructorCount}
-      adminCount={adminCount}
-      blockedCount={blockedCount}
-      filteredUsers={filteredUsers}
-      viewingUser={viewingUser}
-      userDetailsData={userDetailsData}
-      loadingDetails={loadingDetails}
-      handleOpenDetailModal={handleOpenDetailModal}
-      handleCloseDetailModal={handleCloseDetailModal}
-      roleModalUser={roleModalUser}
-      selectedRole={selectedRole}
-      setSelectedRole={setSelectedRole}
-      roleLoading={roleLoading}
-      handleOpenRoleModal={handleOpenRoleModal}
-      handleCloseRoleModal={handleCloseRoleModal}
-      handleConfirmChangeRole={handleConfirmChangeRole}
-      handleChangeStatus={handleChangeStatus}
-    />
+    <div>
+      <UserTable
+        loading={loading}
+        error={error}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        totalCount={totalCount}
+        studentCount={studentCount}
+        instructorCount={instructorCount}
+        adminCount={adminCount}
+        blockedCount={blockedCount}
+        filteredUsers={pagination.currentData}
+        viewingUser={viewingUser}
+        userDetailsData={userDetailsData}
+        loadingDetails={loadingDetails}
+        handleOpenDetailModal={handleOpenDetailModal}
+        handleCloseDetailModal={handleCloseDetailModal}
+        roleModalUser={roleModalUser}
+        selectedRole={selectedRole}
+        setSelectedRole={setSelectedRole}
+        roleLoading={roleLoading}
+        handleOpenRoleModal={handleOpenRoleModal}
+        handleCloseRoleModal={handleCloseRoleModal}
+        handleConfirmChangeRole={handleConfirmChangeRole}
+        handleChangeStatus={handleChangeStatus}
+      />{" "}
+      {!loading && filteredUsers?.length > 0 && (
+        <div className="max-w-7xl mx-auto px-4 mt-6">
+          <PaginationForm pagination={pagination} itemName="Người dùng" />
+        </div>
+      )}
+    </div>
   );
 };
 

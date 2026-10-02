@@ -9,6 +9,9 @@ import {
   ChevronUp,
   Layers,
   QrCode,
+  CheckCircle2,
+  Clock,
+  Wallet,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -42,26 +45,45 @@ const HistoryTable = ({
   const totalPending = orderList.filter((o) => o.status === "pending").length;
 
   return (
-    <div className="w-full space-y-6 pb-16">
+    <div className="w-full space-y-5 pb-12">
       <div
-        className="w-full rounded-[2.5rem] p-6 sm:p-8 md:p-10 relative overflow-hidden transition-all"
+        className="w-full rounded-3xl p-5 sm:p-6 md:py-5 md:px-7 relative overflow-hidden transition-all"
         style={{
-          background: "rgba(255, 255, 255, 0.82)",
-          border: "1px solid rgba(255, 255, 255, 0.95)",
+          background:
+            "linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 41, 59, 0.90) 60%, rgba(15, 23, 42, 0.96) 100%)",
           backdropFilter: "blur(32px)",
-          boxShadow: "0 20px 50px rgba(194, 110, 30, 0.08)",
+          WebkitBackdropFilter: "blur(32px)",
+          border: "1px solid rgba(255, 255, 255, 0.16)",
+          boxShadow:
+            "0 18px 48px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.2)",
         }}
       >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {/* Ambient Glow */}
+        <div
+          className="absolute -top-24 -right-24 w-80 h-80 rounded-full pointer-events-none opacity-40 blur-3xl"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(249, 115, 22, 0.35) 0%, rgba(245, 158, 11, 0.15) 50%, transparent 70%)",
+          }}
+        />
+
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-50 border border-orange-200 text-orange-700 text-xs font-bold mb-2 shadow-2xs">
-              <CreditCard size={13} className="text-orange-500" />
+            <div
+              className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold mb-1 shadow-2xs"
+              style={{
+                background: "rgba(255, 255, 255, 0.1)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                color: "#fb923c",
+              }}
+            >
+              <CreditCard size={12} className="text-orange-400" />
               <span>Lịch sử hóa đơn &amp; Giao dịch</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
               Lịch sử đơn hàng
             </h1>
-            <p className="text-xs sm:text-sm font-semibold text-slate-500 mt-1">
+            <p className="text-xs font-medium text-slate-300 mt-0.5">
               Theo dõi các khóa học đã mua, hóa đơn thanh toán và tiếp tục thanh
               toán đơn hàng chờ
             </p>
@@ -70,52 +92,108 @@ const HistoryTable = ({
           <button
             type="button"
             onClick={() => navigate("/courses-all")}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold text-slate-700 bg-white/90 border border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition-all cursor-pointer shadow-2xs self-start sm:self-auto"
+            style={{
+              borderRadius: "9999px",
+              background: "rgba(255, 255, 255, 0.1)",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+            }}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold text-white hover:bg-white/20 transition-all cursor-pointer shadow-2xs self-start sm:self-auto"
           >
-            <ShoppingBag size={14} />
+            <ShoppingBag size={13} className="text-slate-300" />
             <span>Khám phá thêm khóa học</span>
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8 pt-6 border-t border-amber-200/60">
-          <div className="p-4 rounded-2xl bg-white/90 border border-slate-200/80 shadow-2xs">
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-              Tổng chi tiêu
-            </p>
-            <p className="text-xl sm:text-2xl font-black text-slate-900 mt-1">
-              {formatPrice
-                ? formatPrice(totalSpent)
-                : `${totalSpent.toLocaleString()} đ`}
-            </p>
-            <span className="text-[11px] font-semibold text-emerald-600">
-              Đã thanh toán thành công
-            </span>
+        <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-3.5 mt-4 pt-4 border-t border-white/10">
+          <div
+            className="p-3.5 sm:p-4 rounded-xl shadow-sm flex items-center justify-between transition-all hover:border-white/25"
+            style={{
+              background:
+                "linear-gradient(145deg, rgba(30, 41, 59, 0.65) 0%, rgba(15, 23, 42, 0.70) 100%)",
+              border: "1px solid rgba(255, 255, 255, 0.12)",
+              backdropFilter: "blur(16px)",
+              boxShadow:
+                "0 8px 24px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.12)",
+            }}
+          >
+            <div>
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                Tổng chi tiêu
+              </p>
+              <p className="text-lg sm:text-xl font-black text-white mt-0.5">
+                {formatPrice
+                  ? formatPrice(totalSpent)
+                  : `${totalSpent.toLocaleString()} đ`}
+              </p>
+              <span className="inline-flex items-center gap-1 mt-1 text-[10px] font-semibold text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                <CheckCircle2 size={10} />
+                Đã thanh toán thành công
+              </span>
+            </div>
+            <div className="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center shrink-0 shadow-xs">
+              <Wallet size={17} />
+            </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white/90 border border-slate-200/80 shadow-2xs">
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-              Đơn hoàn thành
-            </p>
-            <p className="text-xl sm:text-2xl font-black text-slate-900 mt-1">
-              {totalCompleted}{" "}
-              <span className="text-sm font-semibold text-slate-400">đơn</span>
-            </p>
-            <span className="text-[11px] font-semibold text-slate-500">
-              Khóa học sẵn sàng học ngay
-            </span>
+          <div
+            className="p-3.5 sm:p-4 rounded-xl shadow-sm flex items-center justify-between transition-all hover:border-white/25"
+            style={{
+              background:
+                "linear-gradient(145deg, rgba(30, 41, 59, 0.65) 0%, rgba(15, 23, 42, 0.70) 100%)",
+              border: "1px solid rgba(255, 255, 255, 0.12)",
+              backdropFilter: "blur(16px)",
+              boxShadow:
+                "0 8px 24px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.12)",
+            }}
+          >
+            <div>
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                Đơn hoàn thành
+              </p>
+              <p className="text-lg sm:text-xl font-black text-white mt-0.5">
+                {totalCompleted}{" "}
+                <span className="text-xs font-semibold text-slate-400">
+                  đơn hàng
+                </span>
+              </p>
+              <span className="inline-block mt-1 text-[10px] font-semibold text-slate-300 bg-white/10 px-2 py-0.5 rounded-full border border-white/15">
+                Khóa học sẵn sàng học ngay
+              </span>
+            </div>
+            <div className="w-9 h-9 rounded-xl bg-white/10 border border-white/15 text-slate-300 flex items-center justify-center shrink-0 shadow-xs">
+              <CheckCircle2 size={17} />
+            </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white/90 border border-slate-200/80 shadow-2xs">
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-              Chờ thanh toán
-            </p>
-            <p className="text-xl sm:text-2xl font-black text-orange-600 mt-1">
-              {totalPending}{" "}
-              <span className="text-sm font-semibold text-slate-400">đơn</span>
-            </p>
-            <span className="text-[11px] font-semibold text-amber-600">
-              Cần thanh toán qua VNPay
-            </span>
+          <div
+            className="p-3.5 sm:p-4 rounded-xl shadow-sm flex items-center justify-between transition-all hover:border-white/25"
+            style={{
+              background:
+                "linear-gradient(145deg, rgba(30, 41, 59, 0.65) 0%, rgba(15, 23, 42, 0.70) 100%)",
+              border: "1px solid rgba(255, 255, 255, 0.12)",
+              backdropFilter: "blur(16px)",
+              boxShadow:
+                "0 8px 24px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.12)",
+            }}
+          >
+            <div>
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                Chờ thanh toán
+              </p>
+              <p className="text-lg sm:text-xl font-black text-orange-400 mt-0.5">
+                {totalPending}{" "}
+                <span className="text-xs font-semibold text-slate-400">
+                  đơn hàng
+                </span>
+              </p>
+              <span className="inline-flex items-center gap-1 mt-1 text-[10px] font-semibold text-amber-300 bg-amber-500/15 px-2 py-0.5 rounded-full border border-amber-500/30">
+                <Clock size={10} />
+                Cần thanh toán qua VNPay
+              </span>
+            </div>
+            <div className="w-9 h-9 rounded-xl bg-orange-500/15 border border-orange-500/30 text-orange-400 flex items-center justify-center shrink-0 shadow-xs">
+              <Clock size={17} />
+            </div>
           </div>
         </div>
       </div>
@@ -142,13 +220,16 @@ const HistoryTable = ({
               thị chi tiết tại đây.
             </p>
             <button
+              type="button"
               onClick={() => navigate("/courses-all")}
-              className="px-6 py-3 rounded-full text-xs sm:text-sm font-black text-white shadow-lg shadow-orange-500/25 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
               style={{
-                background: "linear-gradient(135deg, #f97316, #ea580c)",
+                borderRadius: "9999px",
+                background: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
               }}
+              className="px-8 py-3.5 rounded-full text-xs sm:text-sm font-black text-white shadow-lg shadow-orange-500/25 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer inline-flex items-center gap-2"
             >
-              Khám phá khóa học ngay
+              <ShoppingBag size={16} />
+              <span>Khám phá khóa học ngay</span>
             </button>
           </div>
         ) : (
@@ -285,8 +366,9 @@ const HistoryTable = ({
                               }
                               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-black text-white shadow-md shadow-orange-500/20 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50"
                               style={{
+                                borderRadius: "9999px",
                                 background:
-                                  "linear-gradient(135deg, #f3a36a, #ab4006)",
+                                  "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
                               }}
                             >
                               {actionLoadingId === order._id ? (
@@ -306,6 +388,7 @@ const HistoryTable = ({
                                 handleCancelOrder &&
                                 handleCancelOrder(order._id)
                               }
+                              style={{ borderRadius: "9999px" }}
                               className="p-2 rounded-full text-slate-400 hover:text-rose-600 hover:bg-rose-50 border border-slate-200 hover:border-rose-200 transition-all cursor-pointer disabled:opacity-50"
                               title="Hủy đơn hàng"
                             >
@@ -318,6 +401,7 @@ const HistoryTable = ({
                           <button
                             type="button"
                             onClick={() => toggleExpand(order._id)}
+                            style={{ borderRadius: "9999px" }}
                             className="p-2 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all cursor-pointer"
                             title="Xem chi tiết các khóa học"
                           >

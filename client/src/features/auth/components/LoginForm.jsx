@@ -29,7 +29,7 @@ const LoginForm = ({
 
   return (
     <div
-      className="min-h-[133.4vh] w-full flex items-center justify-center p-4 sm:p-6 md:p-10 relative overflow-hidden select-none"
+      className="h-screen w-screen max-h-screen overflow-hidden flex items-center justify-center p-3 sm:p-4 relative select-none"
       style={{
         background:
           "linear-gradient(135deg, #fdf8f3 0%, #f7eee2 35%, #fae8d4 70%, #fdf4eb 100%)",
@@ -69,28 +69,28 @@ const LoginForm = ({
 
       <Link
         to="/"
-        className="absolute top-5 left-5 sm:top-8 sm:left-8 z-30 inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold text-slate-700 bg-white/85 hover:bg-white border border-white/95 shadow-md shadow-amber-900/5 backdrop-blur-xl transition-all hover:scale-105 active:scale-95 group cursor-pointer"
+        className="absolute top-4 left-4 sm:top-6 sm:left-6 z-30 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold text-slate-700 bg-white/85 hover:bg-white border border-white/95 shadow-md shadow-amber-900/5 backdrop-blur-xl transition-all hover:scale-105 active:scale-95 group cursor-pointer"
       >
         <ArrowLeft
-          size={14}
+          size={13}
           className="text-slate-500 group-hover:-translate-x-0.5 group-hover:text-orange-600 transition-all"
         />
         <span>Quay lại Trang chủ</span>
       </Link>
 
-      <div className="relative z-10 w-full max-w-5xl">
+      <div className="relative z-10 w-full max-w-4xl">
         <div
-          className="rounded-[2.5rem] sm:rounded-[38px] p-6 sm:p-10 md:p-12 relative overflow-visible grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center"
+          className="rounded-3xl p-5 sm:p-7 md:p-8 relative overflow-visible grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-center"
           style={{
-            background: "rgba(255, 255, 255, 0.76)",
+            background: "rgba(255, 255, 255, 0.8)",
             backdropFilter: "blur(40px) saturate(190%)",
             WebkitBackdropFilter: "blur(40px) saturate(190%)",
             border: "1px solid rgba(255, 255, 255, 0.95)",
             boxShadow:
-              "0 30px 80px rgba(180, 100, 20, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9)",
+              "0 24px 60px rgba(180, 100, 20, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.9)",
           }}
         >
-          <div className="flex flex-col justify-center space-y-6">
+          <div className="flex flex-col justify-center space-y-4">
             <div className="flex items-center gap-2.5">
               <div
                 className="w-9 h-9 rounded-xl flex items-center justify-center text-white shadow-md shadow-orange-500/25 flex-shrink-0"
@@ -109,72 +109,72 @@ const LoginForm = ({
             </div>
 
             <div>
-              <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
                 Chào Mừng Trở Lại
               </h1>
-              <p className="text-xs sm:text-sm font-semibold text-slate-500 mt-1">
+              <p className="text-xs font-semibold text-slate-500 mt-0.5">
                 Đăng nhập vào bảng điều khiển học tập cá nhân của bạn.
               </p>
             </div>
 
             {error && (
-              <div className="p-3.5 px-4 rounded-2xl bg-rose-50 border border-rose-200/80 text-rose-700 text-xs font-bold flex items-center gap-2.5 shadow-2xs">
+              <div className="p-3 px-3.5 rounded-xl bg-rose-50 border border-rose-200/80 text-rose-700 text-xs font-bold flex items-center gap-2 shadow-2xs">
                 <AlertCircle
-                  size={16}
+                  size={15}
                   className="text-rose-500 flex-shrink-0"
                 />
                 <span>{error}</span>
               </div>
             )}
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div className="space-y-1.5">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+              <div className="space-y-1">
                 <label className="text-xs font-bold text-slate-700 tracking-wide">
                   Địa chỉ Email
                 </label>
-                <div className="relative rounded-2xl bg-white border border-slate-200 focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-100 transition-all shadow-2xs">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                    <Mail size={17} />
+                <div className="relative rounded-xl bg-white border border-slate-200 focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-100 transition-all shadow-2xs">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                    <Mail size={15} />
                   </div>
                   <input
                     type="email"
                     required
                     placeholder="vidu@email.com"
                     {...register("email")}
-                    className="w-full pl-10 pr-4 py-3.5 text-sm font-semibold text-slate-900 placeholder-slate-400 bg-transparent outline-none rounded-2xl"
+                    className="w-full pl-9 pr-4 py-2.5 text-xs font-semibold text-slate-900 placeholder-slate-400 bg-transparent outline-none rounded-xl"
                   />
                 </div>
               </div>
 
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 <label className="text-xs font-bold text-slate-700 tracking-wide">
                   Mật khẩu
                 </label>
-                <div className="relative rounded-2xl bg-white border border-slate-200 focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-100 transition-all shadow-2xs">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                    <Lock size={17} />
+                <div className="relative rounded-xl bg-white border border-slate-200 focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-100 transition-all shadow-2xs">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                    <Lock size={15} />
                   </div>
                   <input
                     type={showPassword ? "text" : "password"}
                     required
                     placeholder="••••••••"
                     {...register("password")}
-                    className="w-full pl-10 pr-11 py-3.5 text-sm font-semibold text-slate-900 placeholder-slate-400 bg-transparent outline-none rounded-2xl"
+                    className="w-full pl-9 pr-10 py-2.5 text-xs font-semibold text-slate-900 placeholder-slate-400 bg-transparent outline-none rounded-xl"
                   />
                   <button
                     type="button"
                     tabIndex={-1}
                     onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
                   >
-                    {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+                    {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                   </button>
                 </div>
 
-                <div className="flex justify-end pt-1">
+                <div className="flex justify-end pt-0.5">
                   <Link
                     to="/forgot-password"
-                    className="text-xs font-bold text-slate-500 hover:text-orange-600 transition-colors"
+                    className="text-[11px] font-bold text-slate-500 hover:text-orange-600 transition-colors"
                   >
                     Quên mật khẩu?
                   </Link>
@@ -184,21 +184,22 @@ const LoginForm = ({
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 px-6 rounded-full text-white text-xs sm:text-sm font-black shadow-lg shadow-orange-500/30 hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 mt-2"
+                className="w-full py-2.5 px-6 rounded-full text-white text-xs font-black shadow-md shadow-orange-500/25 hover:brightness-105 active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-60 mt-1"
                 style={{
                   background:
                     "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+                  borderRadius: "9999px",
                 }}
               >
                 {loading ? (
                   <>
-                    <Loader2 size={16} className="animate-spin" />
+                    <Loader2 size={15} className="animate-spin" />
                     <span>Đang đăng nhập...</span>
                   </>
                 ) : (
                   <>
                     <span>Đăng Nhập</span>
-                    <ArrowRight size={16} />
+                    <ArrowRight size={15} />
                   </>
                 )}
               </button>
@@ -222,13 +223,13 @@ const LoginForm = ({
                     console.log("Đăng nhập Google thất bại");
                   }}
                   theme="outline"
-                  size="large"
+                  size="medium"
                   shape="rectangular"
                   text="signin_with"
                   locale="vi"
                 />
               </div>
-              <p className="text-center text-xs font-semibold text-slate-500 pt-2">
+              <p className="text-center text-[11px] font-semibold text-slate-500 pt-1">
                 Bạn chưa có tài khoản?{" "}
                 <Link
                   to="/register"
@@ -238,25 +239,13 @@ const LoginForm = ({
                 </Link>
               </p>
 
-              <div className="mt-4 pt-3 border-t border-slate-200 text-xs text-slate-600 space-y-1">
-                <p className="font-bold text-slate-800 m-0">Tài khoản test:</p>
+              <div className="mt-2 pt-2 border-t border-slate-200/80 text-[10px] text-slate-500 space-y-0.5">
+                <p className="font-bold text-slate-700 m-0">Tài khoản test:</p>
                 <p className="m-0">
-                  {" "}
-                  Admin: <strong>admin@example.com - 1 </strong>
-                </p>
-                <p className="m-0">
-                  {" "}
-                  Giảng viên:<strong>instructor@example.com - 1</strong>{" "}
+                  Admin: <strong>admin@example.com - 1</strong> | Giảng viên: <strong>instructor@example.com - 1</strong>
                 </p>
                 <p className="m-0">
                   Học viên: <strong>student@example.com - 1</strong>
-                </p>
-                <p className="m-0">
-                  Note:{" "}
-                  <strong>
-                    Backend có thể mất khoảng 15 giây để khởi động ở lần truy
-                    cập đầu tiên.
-                  </strong>
                 </p>
               </div>
             </form>
@@ -368,34 +357,34 @@ const LoginForm = ({
         </div>
 
         <div
-          className="hidden md:flex absolute -top-5 -right-6 lg:-right-8 items-center gap-3 p-3.5 px-4 rounded-2xl z-20 shadow-xl"
+          className="hidden md:flex absolute -top-2 -right-4 lg:-right-6 items-center gap-2.5 p-3 px-3.5 rounded-xl z-20 shadow-lg"
           style={{
-            background: "rgba(255, 255, 255, 0.92)",
+            background: "rgba(255, 255, 255, 0.95)",
             border: "1px solid rgba(255, 255, 255, 0.98)",
             backdropFilter: "blur(25px)",
-            boxShadow: "0 15px 35px rgba(180, 100, 20, 0.12)",
+            boxShadow: "0 12px 30px rgba(180, 100, 20, 0.1)",
           }}
         >
-          <div className="w-9 h-9 rounded-xl bg-orange-100 flex items-center justify-center text-orange-600 shadow-2xs">
-            <TrendingUp size={18} />
+          <div className="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center text-orange-600 shadow-2xs">
+            <TrendingUp size={16} />
           </div>
           <div>
-            <p className="text-sm font-black text-slate-900 leading-tight">
+            <p className="text-xs font-black text-slate-900 leading-tight">
               +98%
             </p>
-            <p className="text-[10px] font-semibold text-slate-500">
+            <p className="text-[9px] font-semibold text-slate-500">
               Tỷ lệ hoàn thành
             </p>
           </div>
         </div>
 
         <div
-          className="hidden md:block absolute top-1/2 -right-8 lg:-right-12 -translate-y-1/2 p-3.5 px-5 rounded-2xl z-20 shadow-xl space-y-1"
+          className="hidden md:block absolute top-1/2 -right-4 lg:-right-8 -translate-y-1/2 p-3 px-4 rounded-xl z-20 shadow-lg space-y-0.5"
           style={{
-            background: "rgba(255, 255, 255, 0.92)",
+            background: "rgba(255, 255, 255, 0.95)",
             border: "1px solid rgba(255, 255, 255, 0.98)",
             backdropFilter: "blur(25px)",
-            boxShadow: "0 15px 35px rgba(180, 100, 20, 0.12)",
+            boxShadow: "0 12px 30px rgba(180, 100, 20, 0.1)",
           }}
         >
           <p className="text-[9px] uppercase font-bold tracking-wider text-slate-400">
@@ -408,12 +397,12 @@ const LoginForm = ({
         </div>
 
         <div
-          className="hidden md:flex absolute -bottom-5 -right-4 lg:-right-6 flex-col gap-1.5 p-3.5 px-4 rounded-2xl z-20 shadow-xl"
+          className="hidden md:flex absolute -bottom-2 -right-2 lg:-right-4 flex-col gap-1 p-3 px-3.5 rounded-xl z-20 shadow-lg"
           style={{
-            background: "rgba(255, 255, 255, 0.92)",
+            background: "rgba(255, 255, 255, 0.95)",
             border: "1px solid rgba(255, 255, 255, 0.98)",
             backdropFilter: "blur(25px)",
-            boxShadow: "0 15px 35px rgba(180, 100, 20, 0.12)",
+            boxShadow: "0 12px 30px rgba(180, 100, 20, 0.1)",
           }}
         >
           <p className="text-[9px] uppercase font-bold tracking-wider text-slate-400">
@@ -426,24 +415,24 @@ const LoginForm = ({
             <img
               src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80"
               alt="Avatar 1"
-              className="w-6 h-6 rounded-full border-2 border-white object-cover"
+              className="w-5 h-5 rounded-full border-2 border-white object-cover"
             />
             <img
               src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80"
               alt="Avatar 2"
-              className="w-6 h-6 rounded-full border-2 border-white object-cover"
+              className="w-5 h-5 rounded-full border-2 border-white object-cover"
             />
             <img
               src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&auto=format&fit=crop&q=80"
               alt="Avatar 3"
-              className="w-6 h-6 rounded-full border-2 border-white object-cover"
+              className="w-5 h-5 rounded-full border-2 border-white object-cover"
             />
             <img
               src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&auto=format&fit=crop&q=80"
               alt="Avatar 4"
-              className="w-6 h-6 rounded-full border-2 border-white object-cover"
+              className="w-5 h-5 rounded-full border-2 border-white object-cover"
             />
-            <div className="w-6 h-6 rounded-full bg-slate-900 text-white text-[9px] font-bold flex items-center justify-center border-2 border-white">
+            <div className="w-5 h-5 rounded-full bg-slate-900 text-white text-[8px] font-bold flex items-center justify-center border-2 border-white">
               +25K
             </div>
           </div>

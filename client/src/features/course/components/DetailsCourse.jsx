@@ -185,7 +185,8 @@ const Detailscourse = ({
                           <button
                             type="button"
                             onClick={() => handleOpenPreview(lesson.videoUrl)}
-                            className="px-2.5 py-1 text-xs font-bold rounded-lg text-emerald-600 bg-emerald-50 hover:bg-emerald-100 transition-colors flex items-center gap-1 border border-emerald-200 cursor-pointer shadow-2xs"
+                            style={{ borderRadius: "9999px" }}
+                            className="px-3 py-1 text-xs font-bold rounded-full text-emerald-600 bg-emerald-50 hover:bg-emerald-100 transition-colors flex items-center gap-1 border border-emerald-200 cursor-pointer shadow-2xs"
                           >
                             <Play size={10} className="fill-current" /> Học thử
                           </button>
@@ -275,12 +276,14 @@ const Detailscourse = ({
 
                   <button
                     type="submit"
-                    className="px-3 py-1.5 rounded-lg text-xs font-bold text-white flex items-center gap-1.5 border-0 cursor-pointer shadow-sm hover:scale-105 transition-transform"
                     style={{
-                      background: "linear-gradient(135deg, #f97316, #ea580c)",
+                      borderRadius: "9999px",
+                      background:
+                        "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
                     }}
+                    className="px-4 py-2 rounded-full text-xs font-bold text-white flex items-center gap-1.5 border-0 cursor-pointer shadow-md shadow-orange-500/20 hover:scale-105 active:scale-95 transition-all whitespace-nowrap"
                   >
-                    <Send size={12} /> Gửi đánh giá giảng viên
+                    <Send size={12} /> <span>Gửi đánh giá giảng viên</span>
                   </button>
                 </form>
                 <p className="text-sm font-medium text-slate-500 leading-relaxed pt-2 border-t border-slate-100">
@@ -317,7 +320,10 @@ const Detailscourse = ({
                   <Play size={20} className="fill-current ml-1" />
                 </div>
               </div>
-              <span className="absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-lg bg-slate-900/60 backdrop-blur text-white text-[10px] font-black uppercase tracking-wider">
+              <span
+                style={{ borderRadius: "9999px" }}
+                className="absolute bottom-3 left-1/2 -translate-x-1/2 px-3.5 py-1.5 rounded-full bg-slate-900/60 backdrop-blur text-white text-[10px] font-black uppercase tracking-wider shadow-sm"
+              >
                 Xem Trailer giới thiệu
               </span>
             </div>
@@ -377,32 +383,40 @@ const Detailscourse = ({
                 {isOwner ? (
                   <Link
                     to={`/course/update/${detalscourse?._id}`}
-                    className="w-full py-3.5 rounded-2xl text-sm font-black text-white shadow-lg shadow-orange-500/25 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 text-center"
                     style={{
-                      background: "linear-gradient(135deg, #f97316, #ea580c)",
+                      borderRadius: "9999px",
+                      background:
+                        "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
                     }}
+                    className="w-full py-3.5 rounded-full text-sm font-black text-white shadow-lg shadow-orange-500/25 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 text-center"
                   >
                     Cập nhật khóa học
                   </Link>
                 ) : !detalscourse.isRecode ? (
                   <button
+                    type="button"
                     onClick={() => handAddcart(detalscourse)}
-                    className="w-full py-3.5 rounded-2xl text-sm font-black text-white shadow-lg shadow-orange-500/25 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
                     style={{
-                      background: "linear-gradient(135deg, #f97316, #ea580c)",
+                      borderRadius: "9999px",
+                      background:
+                        "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
                     }}
+                    className="w-full py-3.5 rounded-full text-sm font-black text-white shadow-lg shadow-orange-500/25 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <ShoppingCart size={16} /> Đăng ký khóa học ngay
                   </button>
                 ) : (
                   <button
+                    type="button"
                     onClick={() =>
                       navigate(`/student/courses/${detalscourse._id}/item`)
                     }
-                    className="w-full py-3.5 rounded-2xl text-sm font-black text-white shadow-lg shadow-orange-500/25 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
                     style={{
-                      background: "linear-gradient(135deg, #f97316, #ea580c)",
+                      borderRadius: "9999px",
+                      background:
+                        "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
                     }}
+                    className="w-full py-3.5 rounded-full text-sm font-black text-white shadow-lg shadow-orange-500/25 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <ShoppingCart size={16} /> Vào học
                   </button>

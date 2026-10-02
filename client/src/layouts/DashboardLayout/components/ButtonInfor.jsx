@@ -9,18 +9,30 @@ import {
   GraduationCap,
   BookOpen,
   Shield,
+  Bell,
 } from "lucide-react";
+import useHelp from "../../../features/help/hooks/useHelp";
+import { NotificationModal } from "./Notification";
 
 export default function CornerOrangeButton({ dashboard, icon }) {
   const [open, setOpen] = useState(false);
+  const [showNotifModal, setShowNotifModal] = useState(false);
   const containerRef = useRef(null);
   const navigate = useNavigate();
+
+  const { notifications, teacherRequests } = useHelp();
+
+  const unreadCount = [
+    ...(teacherRequests || []).filter((t) => t.status === "pending"),
+    ...(notifications || []).filter((n) => !n.isRead),
+  ].length;
 
   const user = dashboard || {};
   const userName = user.name;
   const userEmail = user.email;
   const userRole = user.role;
   const userAvatar = user.avatar;
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -28,6 +40,7 @@ export default function CornerOrangeButton({ dashboard, icon }) {
         !containerRef.current.contains(event.target)
       ) {
         setOpen(false);
+        setShowNotifModal(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -69,7 +82,13 @@ export default function CornerOrangeButton({ dashboard, icon }) {
     <div className="absolute top-0 right-0 z-40" ref={containerRef}>
       <button
         type="button"
-        onClick={() => setOpen((prev) => !prev)}
+        onClick={() => {
+          if (showNotifModal) {
+            setShowNotifModal(false);
+          } else {
+            setOpen((prev) => !prev);
+          }
+        }}
         className="group relative w-24 h-24 sm:w-28 sm:h-28 p-0 border-0 bg-transparent cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 focus:outline-none select-none"
       >
         <svg
@@ -129,14 +148,23 @@ export default function CornerOrangeButton({ dashboard, icon }) {
         </svg>
 
         <div className="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 text-white pointer-events-none flex items-center justify-center">
-          {icon ? (
-            icon
-          ) : (
-            <UserCircle2 className="w-6 h-6 sm:w-7 sm:h-7 text-white stroke-[2.2] transition-transform duration-300 group-hover:scale-110 drop-shadow-sm" />
-          )}
+          <div className="relative">
+            {icon ? (
+              icon
+            ) : (
+              <UserCircle2 className="w-6 h-6 sm:w-7 sm:h-7 text-white stroke-[2.2] transition-transform duration-300 group-hover:scale-110 drop-shadow-sm" />
+            )}
+            {/* Chấm đỏ báo thông báo mới ở góc cam */}
+            {unreadCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-rose-500 border-2 border-white flex items-center justify-center shadow-md animate-pulse">
+                <span className="w-1.5 h-1.5 rounded-full bg-white" />
+              </span>
+            )}
+          </div>
         </div>
       </button>
 
+      {/* Menu người dùng */}
       {open && (
         <div
           className="absolute top-[70px] right-2 sm:top-[84px] sm:right-3 z-50 w-72 rounded-[28px] p-3.5 animate-in fade-in slide-in-from-top-2 duration-200 -translate-y-6"
@@ -195,6 +223,31 @@ export default function CornerOrangeButton({ dashboard, icon }) {
           </div>
 
           <div className="space-y-1 text-xs font-semibold text-slate-700">
+            {/* 1. Dòng Thông Báo */}
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                setShowNotifModal(true);
+              }}
+              className="w-full flex items-center justify-between px-3 py-2.5 rounded-2xl hover:bg-orange-500/10 hover:text-slate-900 transition-all cursor-pointer text-left group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-7 h-7 rounded-xl bg-orange-500/15 flex items-center justify-center text-orange-600 flex-shrink-0 group-hover:scale-110 transition-transform">
+                  <Bell size={15} />
+                </div>
+                <span className="font-semibold text-slate-800">
+                  Thông báo
+                </span>
+              </div>
+              {unreadCount > 0 && (
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs">
+                  {unreadCount > 9 ? "9+" : unreadCount} mới
+                </span>
+              )}
+            </button>
+
+            {/* 2. Thông tin cá nhân */}
             <button
               type="button"
               onClick={() => {
@@ -211,7 +264,7 @@ export default function CornerOrangeButton({ dashboard, icon }) {
               </span>
             </button>
 
-            {/* 2. Billing & Orders */}
+            {/* 3. Lịch sử đơn hàng */}
             <button
               type="button"
               onClick={() => {
@@ -228,7 +281,8 @@ export default function CornerOrangeButton({ dashboard, icon }) {
               </span>
             </button>
 
-            {userRole != "admin" && (
+            {/* 4. Trợ giúp & FAQ */}
+            {userRole !== "admin" && (
               <button
                 type="button"
                 onClick={() => {
@@ -248,6 +302,7 @@ export default function CornerOrangeButton({ dashboard, icon }) {
 
             <div className="my-1.5 border-t border-slate-200/50" />
 
+            {/* 5. Đăng xuất */}
             <button
               type="button"
               onClick={handleLogout}
@@ -260,6 +315,19 @@ export default function CornerOrangeButton({ dashboard, icon }) {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Modal Thông Báo bung ra khi người dùng ấn vào dòng Thông báo */}
+      {showNotifModal && (
+        <NotificationModal
+          open={showNotifModal}
+          onClose={() => setShowNotifModal(false)}
+          onBack={() => {
+            setShowNotifModal(false);
+            setOpen(true);
+          }}
+          user={user}
+        />
       )}
     </div>
   );

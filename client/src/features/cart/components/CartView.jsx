@@ -28,7 +28,6 @@ const CartView = ({
   const navigate = useNavigate();
 
   const [couponCode, setCouponCode] = useState("");
-  const [discount, setDiscount] = useState(0);
   const [selectedPayment, setSelectedPayment] = useState("qr");
   const [time, setTime] = useState(300);
 

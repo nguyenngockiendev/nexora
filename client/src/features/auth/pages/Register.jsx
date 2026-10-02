@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import useUserRegister from "../hooks/useregister";
 import RegisterForm from "../components/RegisterForm";
@@ -19,7 +19,21 @@ const Register = () => {
   });
   const { registers, error, loading, senOtp } = useUserRegister();
   const [avatar, Setavatar] = useState(null);
+  const [countdown, setCountdown] = useState(60);
+  const [trig, setTrig] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!trig) return;
+    if (countdown <= 0) {
+      setTrig(false);
+      return;
+    }
+    const timer = setInterval(() => {
+      setCountdown((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [trig, countdown]);
 
   const onSendOtp = async () => {
     try {
@@ -30,6 +44,8 @@ const Register = () => {
       };
       const result = await senOtp(data);
       if (result.success) {
+        setCountdown(60);
+        setTrig(true);
         toast.success(result.message);
       }
     } catch (error) {
@@ -74,6 +90,8 @@ const Register = () => {
           loading={loading}
           errors={errors}
           onSendOtp={onSendOtp}
+          countdown={countdown}
+          trig={trig}
         />
       </div>
     </div>

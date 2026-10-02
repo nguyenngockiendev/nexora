@@ -7,44 +7,44 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
 
     
       <div
-        className="relative overflow-hidden rounded-3xl p-6"
+        className="relative overflow-hidden rounded-2xl p-4 md:p-5"
         style={{
           background: 'rgba(255,255,255,0.6)',
           border: '1px solid rgba(255,255,255,0.8)',
           backdropFilter: 'blur(32px)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.9), 0 16px 48px rgba(194,110,30,0.08)',
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.9), 0 10px 30px rgba(194,110,30,0.06)',
         }}
       >
         <div className="absolute top-0 left-12 right-12 h-[1px] bg-gradient-to-r from-transparent via-orange-400/30 to-transparent" />
         
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <div
-              className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest mb-3"
+              className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider mb-2"
               style={{ background: 'rgba(249,115,22,0.12)', border: '1px solid rgba(249,115,22,0.25)', color: '#ea580c' }}
             >
-              <BookOpen size={12} />
+              <BookOpen size={11} />
               Learning
             </div>
-            <h1 className="text-3xl font-black" style={{ color: '#1e293b' }}>My Courses</h1>
-            <p className="mt-1 text-sm" style={{ color: '#64748b' }}>Continue your learning journey</p>
+            <h1 className="text-xl md:text-2xl font-black" style={{ color: '#1e293b' }}>My Courses</h1>
+            <p className="text-xs" style={{ color: '#64748b' }}>Continue your learning journey</p>
           </div>
 
           {/* Search + Filter */}
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row gap-2.5">
             <div className="relative">
-              <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
               <input
                 type="text"
                 placeholder="Search courses..."
-                className="glass-input h-10 pl-10 pr-4 text-sm w-full sm:w-56"
+                className="glass-input h-8.5 pl-9 pr-3.5 text-xs w-full sm:w-52"
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
             <div className="relative">
-              <Filter size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+              <Filter size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
               <select
-                className="glass-input h-10 pl-10 pr-4 text-sm w-full sm:w-44 appearance-none cursor-pointer"
+                className="glass-input h-8.5 pl-9 pr-3.5 text-xs w-full sm:w-40 appearance-none cursor-pointer"
                 onChange={(e) => setFilter(e.target.value)}
               >
                 <option value="All Courses">All Courses</option>
@@ -58,36 +58,36 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
 
       {/* Loading */}
       {loading && (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-72 rounded-3xl animate-pulse" style={{ background: 'rgba(255,255,255,0.55)', border: '1px solid rgba(255,255,255,0.75)', boxShadow: '0 4px 16px rgba(0,0,0,0.04)' }} />
+            <div key={i} className="h-60 rounded-2xl animate-pulse" style={{ background: 'rgba(255,255,255,0.55)', border: '1px solid rgba(255,255,255,0.75)', boxShadow: '0 4px 16px rgba(0,0,0,0.04)' }} />
           ))}
         </div>
       )}
 
       {/* Error */}
       {error && (
-        <div className="rounded-2xl p-4 text-sm" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#dc2626' }}>
+        <div className="rounded-xl p-3 text-xs" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#dc2626' }}>
           {error}
         </div>
       )}
 
       {/* ── Course Grid ── */}
       {!loading && (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {courses?.map((item) => (
             <div
               key={item._id}
-              className="group rounded-3xl overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1"
+              className="group rounded-2xl overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1"
               style={{
                 background: 'rgba(255,255,255,0.6)',
                 border: '1px solid rgba(255,255,255,0.8)',
                 backdropFilter: 'blur(20px)',
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.9), 0 8px 32px rgba(0,0,0,0.05)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.9), 0 6px 20px rgba(0,0,0,0.04)',
               }}
             >
               {/* Thumbnail */}
-              <div className="relative overflow-hidden h-44">
+              <div className="relative overflow-hidden h-36">
                 <img
                   src={item?.courseId?.thumbnail}
                   alt={item?.courseId?.title}
@@ -97,7 +97,7 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
 
                 {/* Type Badge */}
                 <span
-                  className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-bold"
+                  className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[10px] font-bold"
                   style={
                     item?.type === 'live'
                       ? { background: 'rgba(244,63,94,0.85)', color: '#fff', backdropFilter: 'blur(8px)', border: '1px solid rgba(244,63,94,0.5)' }
@@ -109,8 +109,8 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
               </div>
 
               {/* Body */}
-              <div className="flex flex-col flex-1 p-4 gap-3">
-                <h3 className="font-bold text-sm leading-snug line-clamp-2 min-h-[2.5rem]" style={{ color: '#1e293b' }}>
+              <div className="flex flex-col flex-1 p-3.5 gap-2.5">
+                <h3 className="font-bold text-xs md:text-sm leading-snug line-clamp-2 min-h-[2rem]" style={{ color: '#1e293b' }}>
                   {item?.courseId?.title}
                 </h3>
 

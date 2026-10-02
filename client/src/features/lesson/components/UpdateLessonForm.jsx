@@ -73,7 +73,8 @@ const UpdateLessonForm = ({
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-bold text-slate-700 bg-white/90 border border-slate-200 shadow-sm hover:bg-white hover:border-slate-300 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+          style={{ borderRadius: "9999px" }}
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold text-slate-700 bg-white/90 border border-slate-200 shadow-sm hover:bg-white hover:border-slate-300 hover:scale-105 active:scale-95 transition-all cursor-pointer"
         >
           <ArrowLeft size={16} />
           <span>Quay lại</span>
@@ -321,10 +322,11 @@ const UpdateLessonForm = ({
               <button
                 type="submit"
                 disabled={isuploading}
-                className="flex-1 py-4 px-6 rounded-2xl text-sm font-black text-white shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
+                  borderRadius: "9999px",
                   background: "linear-gradient(135deg, #f97316, #ea580c)",
                 }}
+                className="flex-1 py-3.5 px-6 rounded-full text-sm font-black text-white shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isuploading ? (
                   <>
@@ -342,7 +344,8 @@ const UpdateLessonForm = ({
               <button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="py-4 px-6 rounded-2xl text-sm font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all cursor-pointer shadow-2xs"
+                style={{ borderRadius: "9999px" }}
+                className="py-3.5 px-6 rounded-full text-sm font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all cursor-pointer shadow-2xs"
               >
                 Quay lại
               </button>

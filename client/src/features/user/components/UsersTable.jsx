@@ -155,61 +155,153 @@ const UsersTable = ({
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex items-center gap-1 bg-white/70 p-1 rounded-2xl border border-slate-200/70 overflow-x-auto shadow-2xs">
+        <div
+          className="flex items-center gap-1.5 bg-white/80 p-1.5 rounded-full border border-slate-200/80 overflow-x-auto shadow-sm"
+          style={{ borderRadius: "9999px" }}
+        >
           <button
             type="button"
             onClick={() => setActiveTab("all")}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+            style={{
+              borderRadius: "9999px",
+              background:
+                activeTab === "all"
+                  ? "linear-gradient(135deg, #f97316 0%, #ea580c 100%)"
+                  : "transparent",
+            }}
+            className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 select-none ${
               activeTab === "all"
-                ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-2xs"
-                : "text-slate-600 hover:text-slate-900"
+                ? "text-white shadow-md shadow-orange-500/30 scale-[1.02]"
+                : "text-slate-600 hover:text-slate-900 hover:bg-white/80"
             }`}
           >
-            Tất cả ({totalCount})
+            <span>Tất cả</span>
+            <span
+              className={`px-2 py-0.5 text-[10px] font-black transition-all ${
+                activeTab === "all"
+                  ? "bg-white/25 text-white"
+                  : "bg-slate-200/70 text-slate-700"
+              }`}
+              style={{ borderRadius: "9999px" }}
+            >
+              {totalCount}
+            </span>
           </button>
+
           <button
             type="button"
             onClick={() => setActiveTab("student")}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+            style={{
+              borderRadius: "9999px",
+              background:
+                activeTab === "student"
+                  ? "linear-gradient(135deg, #f97316 0%, #ea580c 100%)"
+                  : "transparent",
+            }}
+            className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 select-none ${
               activeTab === "student"
-                ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-2xs"
-                : "text-slate-600 hover:text-slate-900"
+                ? "text-white shadow-md shadow-orange-500/30 scale-[1.02]"
+                : "text-slate-600 hover:text-slate-900 hover:bg-white/80"
             }`}
           >
-            🎓 Học viên ({studentCount})
+            <span>🎓 Học viên</span>
+            <span
+              className={`px-2 py-0.5 text-[10px] font-black transition-all ${
+                activeTab === "student"
+                  ? "bg-white/25 text-white"
+                  : "bg-slate-200/70 text-slate-700"
+              }`}
+              style={{ borderRadius: "9999px" }}
+            >
+              {studentCount}
+            </span>
           </button>
+
           <button
             type="button"
             onClick={() => setActiveTab("instructor")}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+            style={{
+              borderRadius: "9999px",
+              background:
+                activeTab === "instructor"
+                  ? "linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)"
+                  : "transparent",
+            }}
+            className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 select-none ${
               activeTab === "instructor"
-                ? "bg-gradient-to-r from-purple-500 to-indigo-500 text-white shadow-2xs"
-                : "text-slate-600 hover:text-slate-900"
+                ? "text-white shadow-md shadow-purple-500/30 scale-[1.02]"
+                : "text-slate-600 hover:text-slate-900 hover:bg-white/80"
             }`}
           >
-            👨‍🏫 Giảng viên ({instructorCount})
+            <span>👨‍🏫 Giảng viên</span>
+            <span
+              className={`px-2 py-0.5 text-[10px] font-black transition-all ${
+                activeTab === "instructor"
+                  ? "bg-white/25 text-white"
+                  : "bg-slate-200/70 text-slate-700"
+              }`}
+              style={{ borderRadius: "9999px" }}
+            >
+              {instructorCount}
+            </span>
           </button>
+
           <button
             type="button"
             onClick={() => setActiveTab("admin")}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+            style={{
+              borderRadius: "9999px",
+              background:
+                activeTab === "admin"
+                  ? "linear-gradient(135deg, #10b981 0%, #059669 100%)"
+                  : "transparent",
+            }}
+            className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 select-none ${
               activeTab === "admin"
-                ? "bg-emerald-500 text-white shadow-2xs"
-                : "text-slate-600 hover:text-slate-900"
+                ? "text-white shadow-md shadow-emerald-500/30 scale-[1.02]"
+                : "text-slate-600 hover:text-slate-900 hover:bg-white/80"
             }`}
           >
-            🛡️ Quản trị ({adminCount})
+            <span>🛡️ Quản trị</span>
+            <span
+              className={`px-2 py-0.5 text-[10px] font-black transition-all ${
+                activeTab === "admin"
+                  ? "bg-white/25 text-white"
+                  : "bg-slate-200/70 text-slate-700"
+              }`}
+              style={{ borderRadius: "9999px" }}
+            >
+              {adminCount}
+            </span>
           </button>
+
           <button
             type="button"
             onClick={() => setActiveTab("blocked")}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+            style={{
+              borderRadius: "9999px",
+              background:
+                activeTab === "blocked"
+                  ? "linear-gradient(135deg, #f43f5e 0%, #e11d48 100%)"
+                  : "transparent",
+            }}
+            className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 select-none ${
               activeTab === "blocked"
-                ? "bg-rose-500 text-white shadow-2xs"
-                : "text-slate-600 hover:text-slate-900"
+                ? "text-white shadow-md shadow-rose-500/30 scale-[1.02]"
+                : "text-slate-600 hover:text-slate-900 hover:bg-white/80"
             }`}
           >
-            🔴 Bị khóa ({blockedCount})
+            <span>🔴 Bị khóa</span>
+            <span
+              className={`px-2 py-0.5 text-[10px] font-black transition-all ${
+                activeTab === "blocked"
+                  ? "bg-white/25 text-white"
+                  : "bg-slate-200/70 text-slate-700"
+              }`}
+              style={{ borderRadius: "9999px" }}
+            >
+              {blockedCount}
+            </span>
           </button>
         </div>
       </div>

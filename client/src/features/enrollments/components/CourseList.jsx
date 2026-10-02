@@ -11,8 +11,7 @@ import {
 } from "lucide-react";
 
 const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
-  
-  const {dashboard} = useOutletContext();
+  const { dashboard } = useOutletContext();
 
   const activeCoursesCount = courses?.length || 0;
 
@@ -118,7 +117,7 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
           return (
             <div
               key={item._id}
-              className="group flex flex-col justify-between rounded-[2.2rem] p-6 transition-all duration-300 hover:-translate-y-1.5 shadow-[0_10px_35px_rgba(194,110,30,0.06)] hover:shadow-[0_20px_45px_rgba(249,115,22,0.12)] relative overflow-hidden"
+              className="group flex flex-col justify-between rounded-2xl p-4 sm:p-5 transition-all duration-300 hover:-translate-y-1 shadow-[0_8px_25px_rgba(194,110,30,0.06)] hover:shadow-[0_16px_36px_rgba(249,115,22,0.1)] relative overflow-hidden"
               style={{
                 background: "rgba(255, 255, 255, 0.78)",
                 border: "1px solid rgba(255, 255, 255, 0.95)",
@@ -126,23 +125,23 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
               }}
             >
               <div>
-                <div className="flex items-center justify-between mb-2.5">
-                  <span className="text-xs font-bold text-slate-500 tracking-wide uppercase">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-[11px] font-bold text-slate-500 tracking-wide uppercase">
                     {isLive ? "Lớp trực tuyến" : "Khóa học video"}
                   </span>
                   <div className="inline-flex items-center gap-1 text-xs font-black text-slate-800">
                     <span>{rating}</span>
-                    <Star size={13} className="text-amber-500 fill-amber-500" />
+                    <Star size={12} className="text-amber-500 fill-amber-500" />
                   </div>
                 </div>
 
-                <h3 className="text-lg md:text-xl font-black text-slate-900 line-clamp-2 leading-snug group-hover:text-orange-600 transition-colors mb-2">
+                <h3 className="text-base font-extrabold text-slate-800 line-clamp-2 leading-snug group-hover:text-orange-600 transition-colors mb-1.5 min-h-[2.6rem]">
                   {title}
                 </h3>
 
-                <div className="flex items-center gap-3 text-xs font-semibold text-slate-400 mb-3.5">
+                <div className="flex items-center gap-3 text-[11px] font-medium text-slate-400 mb-2.5">
                   <div className="flex items-center gap-1">
-                    <Clock size={13} />
+                    <Clock size={12} />
                     <span>
                       {item?.courseId?.category ||
                         (isLive ? "Lớp học trực tuyến" : "Khóa học video")}
@@ -150,71 +149,60 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
                   </div>
                   {isLive && (
                     <div className="flex items-center gap-1">
-                      <Users size={13} />
-                      <span>{item?.classId?.currentStudents ?? 0} học viên</span>
+                      <Users size={12} />
+                      <span>
+                        {item?.classId?.currentStudents ?? 0} học viên
+                      </span>
                     </div>
                   )}
                 </div>
 
-                <div className="relative h-44 rounded-2xl overflow-hidden mb-4 shadow-sm group-hover:shadow-md transition-all">
+                <div className="relative h-32 sm:h-36 rounded-xl overflow-hidden mb-3 shadow-xs group-hover:shadow-md transition-all">
                   <img
                     src={thumbnail}
                     alt={title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-black/20" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
 
-                  {isLive ? (
-                    <>
-                      <div className="absolute top-3 left-3 z-10">
-                        <div
-                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-white text-[11px] font-black uppercase tracking-wider shadow-md"
-                          style={{
-                            background:
-                              "linear-gradient(135deg, #ef4444, #f97316)",
-                            borderRadius: "9999px",
-                          }}
-                        >
-                          <Radio size={12} className="animate-pulse" /> TRỰC
-                          TUYẾN
-                        </div>
+                  {isLive && (
+                    <div className="absolute top-2.5 left-2.5 z-10">
+                      <div
+                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-white text-[10px] font-black uppercase tracking-wider shadow-sm"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #ef4444, #f97316)",
+                          borderRadius: "9999px",
+                        }}
+                      >
+                        <Radio size={10} className="animate-pulse" /> TRỰC TUYẾN
                       </div>
-                      <div className="absolute bottom-3 left-3 right-3 z-10">
-                        <span className="text-xs font-bold text-white/95 line-clamp-1 drop-shadow-sm">
-                          {item?.classId?.className || "Buổi học tương tác"}
-                        </span>
-                      </div>
-                    </>
-                  ) : (
-                    <div className="absolute bottom-3 left-3 right-3 z-10">
-                      <span className="text-xs font-black text-white/95 uppercase tracking-wider drop-shadow-sm bg-black/30 backdrop-blur-md px-2.5 py-1 rounded-lg">
-                        {title}
-                      </span>
                     </div>
                   )}
                 </div>
 
-                <div className="text-xs font-semibold text-slate-500 mb-3">
+                <div className="text-xs font-semibold text-slate-500 mb-2.5">
                   Giảng viên:{" "}
-                  <strong className="text-slate-800 font-extrabold">
+                  <strong className="text-slate-800 font-bold">
                     {instructorName}
                   </strong>
                 </div>
 
                 {isLive ? (
-                  <div className="space-y-1.5 mb-6">
-                    <div className="text-xs font-semibold text-slate-600">
+                  <div className="space-y-1 mb-3.5">
+                    <div className="text-xs font-medium text-slate-600">
                       Mô tả lớp học:{" "}
                       <strong className="text-slate-800 font-bold">
-                        {item?.classId?.description || "Học trực tuyến tương tác cùng giảng viên"}
+                        {item?.classId?.description ||
+                          "Học trực tuyến tương tác cùng giảng viên"}
                       </strong>
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-3.5 mb-6">
+                  <div className="space-y-2 mb-3.5">
                     <div>
-                      <div className="flex justify-between items-center text-xs font-extrabold text-slate-800 mb-1.5">
+                      <div className="flex justify-between items-center text-[11px] font-bold text-slate-800 mb-1">
                         <span className="text-slate-700">
                           {progress}% hoàn thành
                         </span>
@@ -222,7 +210,7 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
                           {completedCount}/{totalLessonsCount} Bài học
                         </span>
                       </div>
-                      <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                      <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
                         <div
                           className="h-full rounded-full transition-all duration-700 ease-out"
                           style={{
@@ -234,9 +222,9 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
                       </div>
                     </div>
 
-                    <div className="text-xs font-medium text-slate-500 truncate">
+                    <div className="text-[11px] font-medium text-slate-500 truncate">
                       Bài học tiếp theo:{" "}
-                      <strong className="text-slate-800 font-bold">
+                      <strong className="text-slate-800 font-semibold">
                         {nextLessonTitle}
                       </strong>
                     </div>
@@ -244,14 +232,14 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
                 )}
               </div>
 
-              <div className="pt-2">
+              <div className="pt-1">
                 {isLive ? (
                   <Link
                     to={`live/class/${item?.classId?._id || item?.classId || ""}/item`}
                     className="block w-full"
                   >
                     <button
-                      className="w-full py-3.5 px-6 rounded-full text-sm font-black text-white shadow-md shadow-orange-500/25 hover:shadow-orange-500/40 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
+                      className="w-full py-2.5 px-4 rounded-full text-xs font-bold text-white shadow-md shadow-orange-500/20 hover:shadow-orange-500/35 hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                       style={{
                         background: "linear-gradient(135deg, #f97316, #ea580c)",
                         borderRadius: "9999px",
@@ -261,16 +249,16 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
                     </button>
                   </Link>
                 ) : (
-                  <div className="flex items-center gap-2.5 w-full">
+                  <div className="flex items-center gap-2 w-full">
                     <Link
                       to={`courses/${item?.courseId?._id}/item`}
                       className="flex-1"
                     >
                       <button
-                        className="w-full py-3 px-4 rounded-full text-xs md:text-sm font-black text-white shadow-md shadow-orange-500/25 hover:shadow-orange-500/40 hover:scale-[1.02] active:scale-95 transition-all text-center"
+                        className="w-full py-2 px-3 rounded-full text-xs font-bold text-white shadow-md shadow-orange-500/20 hover:shadow-orange-500/35 hover:scale-[1.01] active:scale-95 transition-all text-center cursor-pointer"
                         style={{
                           background:
-                            "linear-gradient(135deg, #f39a5a, #b35a12)",
+                            "linear-gradient(135deg, #f97316, #ea580c)",
                           borderRadius: "9999px",
                         }}
                       >
@@ -283,7 +271,7 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
                       className="flex-1"
                     >
                       <button
-                        className="w-full py-3 px-4 rounded-full text-xs md:text-sm font-extrabold text-slate-700 bg-white/80 border border-slate-300 hover:bg-white hover:border-slate-400 hover:text-slate-900 hover:scale-[1.02] active:scale-95 transition-all shadow-sm text-center"
+                        className="w-full py-2 px-3 rounded-full text-xs font-bold text-slate-700 bg-white/90 border border-slate-200/90 hover:bg-slate-50 hover:text-slate-900 active:scale-95 transition-all shadow-2xs text-center cursor-pointer"
                         style={{ borderRadius: "9999px" }}
                       >
                         Chi tiết
@@ -302,43 +290,6 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
           </div>
         )}
       </div>
-
-      {courses && courses.length > 0 && (
-        <div className="flex items-center justify-center gap-2 pt-6">
-          <button
-            className="px-3.5 py-1.5 rounded-full text-xs font-bold text-slate-400 hover:text-slate-700 transition-colors flex items-center gap-1"
-            style={{ borderRadius: "9999px" }}
-          >
-            <ChevronLeft size={14} /> Trước
-          </button>
-
-          <button
-            className="w-7 h-7 rounded-full text-xs font-black text-orange-600 bg-orange-100 flex items-center justify-center shadow-xs"
-            style={{ borderRadius: "9999px" }}
-          >
-            1
-          </button>
-          <button
-            className="w-7 h-7 rounded-full text-xs font-bold text-slate-500 hover:bg-white/80 flex items-center justify-center transition-colors"
-            style={{ borderRadius: "9999px" }}
-          >
-            2
-          </button>
-          <button
-            className="w-7 h-7 rounded-full text-xs font-bold text-slate-500 hover:bg-white/80 flex items-center justify-center transition-colors"
-            style={{ borderRadius: "9999px" }}
-          >
-            3
-          </button>
-
-          <button
-            className="px-3.5 py-1.5 rounded-full text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1"
-            style={{ borderRadius: "9999px" }}
-          >
-            Sau <ChevronRight size={14} />
-          </button>
-        </div>
-      )}
     </div>
   );
 };

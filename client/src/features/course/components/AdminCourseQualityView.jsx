@@ -56,16 +56,21 @@ const AdminCourseQualityView = ({
       <div
         className="p-8 md:p-10 rounded-[2.5rem] relative overflow-hidden shadow-sm transition-all flex flex-col lg:flex-row lg:items-center justify-between gap-6"
         style={{
-          background: "rgba(255,255,255,0.75)",
-          border: "1px solid rgba(255,255,255,0.9)",
-          backdropFilter: "blur(24px)",
-          boxShadow: "0 12px 36px rgba(194,110,30,0.06)",
+          background:
+            "linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 41, 59, 0.90) 60%, rgba(15, 23, 42, 0.96) 100%)",
+          backdropFilter: "blur(32px)",
+          WebkitBackdropFilter: "blur(32px)",
+          border: "1px solid rgba(255, 255, 255, 0.16)",
+          boxShadow:
+            "0 18px 48px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.2)",
         }}
       >
+        {/* Ambient Glow */}
         <div
-          className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full pointer-events-none opacity-30 blur-[90px]"
+          className="absolute -top-24 -right-24 w-80 h-80 rounded-full pointer-events-none opacity-40 blur-3xl"
           style={{
-            background: "radial-gradient(circle, #f97316 0%, transparent 70%)",
+            background:
+              "radial-gradient(circle, rgba(249, 115, 22, 0.35) 0%, rgba(245, 158, 11, 0.15) 50%, transparent 70%)",
           }}
         />
 
@@ -73,52 +78,66 @@ const AdminCourseQualityView = ({
           <div
             className="inline-flex items-center gap-2 rounded-full px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest mb-1 shadow-sm"
             style={{
-              background: "rgba(249,115,22,0.12)",
-              border: "1px solid rgba(249,115,22,0.25)",
-              color: "#ea580c",
+              background: "rgba(255, 255, 255, 0.1)",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+              color: "#fb923c",
             }}
           >
-            <ShieldAlert size={14} className="text-orange-500 animate-pulse" />
+            <ShieldAlert size={14} className="text-orange-400 animate-pulse" />
             Kiểm soát chất lượng nội dung sàn
           </div>
-          <h1 className="text-3xl md:text-4xl font-black text-slate-800 tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight">
             Kiểm Duyệt &amp; Chất Lượng Khóa Học
           </h1>
-          <p className="text-sm md:text-base font-semibold text-slate-500 max-w-xl">
+          <p className="text-sm md:text-base font-medium text-slate-300 max-w-xl">
             Giám sát chất lượng khóa học toàn sàn, kiểm tra các cảnh báo sao
             thấp và khóa các khóa học vi phạm.
           </p>
         </div>
 
         <div className="flex items-center gap-3 flex-wrap relative z-10">
-          <div className="px-4 py-2.5 rounded-2xl bg-white/80 border border-slate-200 shadow-sm flex items-center gap-2">
-            <BookOpen size={16} className="text-slate-400" />
-            <span className="text-xs font-bold text-slate-500">
+          <div
+            className="px-4 py-2.5 rounded-2xl shadow-sm flex items-center gap-2"
+            style={{
+              background: "rgba(255, 255, 255, 0.1)",
+              border: "1px solid rgba(255, 255, 255, 0.18)",
+              backdropFilter: "blur(12px)",
+            }}
+          >
+            <BookOpen size={16} className="text-slate-300" />
+            <span className="text-xs font-bold text-slate-300">
               Tổng khóa học:
             </span>
-            <span className="text-base font-black text-slate-800">
+            <span className="text-base font-black text-white">
               {totalCoursesCount || 0}
             </span>
           </div>
 
           <div
             onClick={() => setRatingFilter("low")}
-            className="px-4 py-2.5 rounded-2xl border shadow-sm flex items-center gap-2 cursor-pointer transition-all hover:scale-105"
+            className="px-4 py-2.5 rounded-2xl shadow-sm flex items-center gap-2 cursor-pointer transition-all hover:scale-105"
             style={{
-              background: "rgba(244,63,94,0.08)",
-              borderColor: "rgba(244,63,94,0.25)",
-              color: "#e11d48",
+              background: "rgba(244, 63, 94, 0.18)",
+              border: "1px solid rgba(244, 63, 94, 0.35)",
+              backdropFilter: "blur(12px)",
             }}
           >
-            <AlertTriangle size={16} className="animate-pulse" />
-            <span className="text-xs font-extrabold">Cảnh báo Sao thấp:</span>
-            <span className="text-base font-black">{lowRatingCount || 0}</span>
+            <AlertTriangle size={16} className="animate-pulse text-rose-400" />
+            <span className="text-xs font-extrabold text-rose-200">Cảnh báo Sao thấp:</span>
+            <span className="text-base font-black text-rose-300">{lowRatingCount || 0}</span>
           </div>
 
-          <div className="px-4 py-2.5 rounded-2xl bg-emerald-50 border border-emerald-200 shadow-sm flex items-center gap-2 text-emerald-700">
-            <CheckCircle size={16} />
-            <span className="text-xs font-extrabold">Đạt chuẩn:</span>
-            <span className="text-base font-black">{healthyCount || 0}</span>
+          <div
+            className="px-4 py-2.5 rounded-2xl shadow-sm flex items-center gap-2"
+            style={{
+              background: "rgba(16, 185, 129, 0.18)",
+              border: "1px solid rgba(16, 185, 129, 0.35)",
+              backdropFilter: "blur(12px)",
+            }}
+          >
+            <CheckCircle size={16} className="text-emerald-400" />
+            <span className="text-xs font-extrabold text-emerald-200">Đạt chuẩn:</span>
+            <span className="text-base font-black text-emerald-300">{healthyCount || 0}</span>
           </div>
         </div>
       </div>

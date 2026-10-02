@@ -36,26 +36,33 @@ const AssessmentHubView = ({
         className="rounded-[28px] p-6 md:p-8 relative overflow-hidden"
         style={{
           background:
-            "linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(255,247,237,0.7) 100%)",
-          backdropFilter: "blur(20px)",
-          WebkitBackdropFilter: "blur(20px)",
-          border: "1px solid rgba(255, 255, 255, 0.95)",
+            "linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 41, 59, 0.90) 60%, rgba(15, 23, 42, 0.96) 100%)",
+          backdropFilter: "blur(32px)",
+          WebkitBackdropFilter: "blur(32px)",
+          border: "1px solid rgba(255, 255, 255, 0.16)",
           boxShadow:
-            "0 10px 30px rgba(249, 115, 22, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.9)",
+            "0 18px 48px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.2)",
         }}
       >
-        <div className="absolute -right-12 -top-12 w-48 h-48 bg-orange-300/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -right-12 -top-12 w-56 h-56 bg-gradient-to-br from-orange-500/25 to-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
           <div className="space-y-1.5">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100/80 border border-orange-200/80 text-orange-700 text-xs font-bold uppercase tracking-wider">
-              <GraduationCap size={14} className="text-orange-600" />
+            <div
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider"
+              style={{
+                background: "rgba(255, 255, 255, 0.1)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                color: "#fb923c",
+              }}
+            >
+              <GraduationCap size={14} className="text-orange-400" />
               <span>Trung Tâm Đánh Giá</span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">
-              Tổng Quan Bài Kiểm Tra & Đánh Giá
+            <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight">
+              Tổng Quan Bài Kiểm Tra &amp; Đánh Giá
             </h1>
-            <p className="text-sm text-slate-500 font-medium max-w-xl">
+            <p className="text-sm text-slate-300 font-medium max-w-xl">
               Trung tâm điều phối toàn bộ hoạt động kiểm tra trắc nghiệm và chấm
               điểm bài tập của học viên.
             </p>
@@ -65,11 +72,16 @@ const AssessmentHubView = ({
             <button
               onClick={onRefresh}
               disabled={loading}
-              className="px-4 py-2.5 rounded-2xl bg-white/90 border border-slate-200 hover:border-orange-300 hover:text-orange-600 text-slate-700 text-xs font-bold transition-all flex items-center gap-2 shadow-xs cursor-pointer active:scale-95 disabled:opacity-50"
+              style={{
+                borderRadius: "9999px",
+                background: "rgba(255, 255, 255, 0.1)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+              }}
+              className="px-4 py-2 text-white hover:bg-white/20 hover:border-white/30 text-xs font-bold transition-all flex items-center gap-2 shadow-xs cursor-pointer active:scale-95 disabled:opacity-50"
             >
               <RefreshCw
                 size={14}
-                className={`text-slate-400 ${loading ? "animate-spin text-orange-500" : ""}`}
+                className={`text-slate-300 ${loading ? "animate-spin text-orange-400" : ""}`}
               />
               {loading ? "Đang tải..." : "Làm mới"}
             </button>
@@ -240,11 +252,12 @@ const AssessmentHubView = ({
               </span>
               <button
                 type="button"
-                className="px-5 py-2.5 rounded-2xl text-white text-xs font-black flex items-center gap-2 group-hover:scale-105 active:scale-95 transition-all shadow-md shadow-orange-500/25 cursor-pointer"
                 style={{
+                  borderRadius: "9999px",
                   background:
                     "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
                 }}
+                className="px-5 py-2.5 rounded-full text-white text-xs font-black flex items-center gap-2 group-hover:scale-105 active:scale-95 transition-all shadow-md shadow-orange-500/25 cursor-pointer whitespace-nowrap"
               >
                 <span>Vào Quản Lý Quizz</span>
                 <ArrowRight size={14} />
@@ -302,7 +315,12 @@ const AssessmentHubView = ({
               </span>
               <button
                 type="button"
-                className="px-5 py-2.5 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-black shadow-md shadow-amber-500/30 flex items-center gap-2 group-hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                style={{
+                  borderRadius: "9999px",
+                  background:
+                    "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+                }}
+                className="px-5 py-2.5 rounded-full text-white text-xs font-black shadow-md shadow-amber-500/30 flex items-center gap-2 group-hover:scale-105 active:scale-95 transition-all cursor-pointer whitespace-nowrap"
               >
                 <span>Vào Chấm Bài Tập</span>
                 <ArrowRight size={14} />

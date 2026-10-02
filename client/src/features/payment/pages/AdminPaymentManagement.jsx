@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import AdminPaymentTable from "../components/AdminPaymentTable";
 import useAdminPayment from "../hooks/useAdminPayment";
+import PaginationForm from "../../../shared/components/PaginationForm";
+import usePagination from "../../../shared/hooks/usePagination";
 
 const AdminPaymentManagement = () => {
   const {
@@ -9,8 +11,6 @@ const AdminPaymentManagement = () => {
     setSearchQuery,
     statusFilter,
     setStatusFilter,
-    currentPage,
-    setCurrentPage,
     GetHistory,
     loading,
   } = useAdminPayment();
@@ -30,19 +30,24 @@ const AdminPaymentManagement = () => {
 
     return matchStatus && matchSearch;
   });
+  const pagination = usePagination(filteredOrders, 5);
   return (
     <div className="w-full min-h-screen py-4 md:py-6 px-2 sm:px-4 md:px-5">
       <AdminPaymentTable
         transactions={transactions}
-        filteredOrders={filteredOrders}
+        filteredOrders={pagination.currentData}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         statusFilter={statusFilter}
         setStatusFilter={setStatusFilter}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
         loading={loading}
       />
+
+      {!loading && filteredOrders?.length > 0 && (
+        <div className="max-w-7xl mx-auto px-4 mt-6">
+          <PaginationForm pagination={pagination} itemName="giao dịch" />
+        </div>
+      )}
     </div>
   );
 };

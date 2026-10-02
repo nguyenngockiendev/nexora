@@ -30,6 +30,28 @@ const Lession = () => {
   const videoRef = useRef(null);
   const intervalRef = useRef(null);
 
+  // 1. Lock outer page body scroll while on this lesson study page
+  useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, []);
+
+  // 2. Track actual window.innerHeight regardless of CSS zoom
+  const [viewportHeight, setViewportHeight] = useState(() =>
+    typeof window !== "undefined" ? window.innerHeight - 35 : 650,
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setViewportHeight(window.innerHeight - 35);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   useEffect(() => {
     if (id) {
       FetchAllProcess(id);
@@ -121,9 +143,15 @@ const Lession = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row h-auto lg:h-[calc(100vh-2.5rem)] w-full bg-transparent rounded-[2rem] gap-4 p-1">
+    <div
+      style={{
+        height: `${viewportHeight}px`,
+        maxHeight: `${viewportHeight}px`,
+      }}
+      className="flex flex-col lg:flex-row items-stretch w-full bg-transparent rounded-2xl gap-3 p-0.5 overflow-hidden"
+    >
       {/* ── Left Content (Video Full-Width + Tabs nội dung) ── */}
-      <main className="flex-1 h-full overflow-y-auto custom-scrollbar z-10 relative bg-white/75 backdrop-blur-3xl border border-white/90 rounded-[2rem] p-5 lg:p-7 shadow-sm flex flex-col min-w-0">
+      <main className="flex-1 h-full max-h-full overflow-hidden z-10 relative bg-white/75 backdrop-blur-3xl border border-white/90 rounded-2xl p-3.5 lg:p-4 shadow-sm flex flex-col min-w-0">
         <LessionForm
           videoRef={videoRef}
           currentLesson={currentLesson}
@@ -146,8 +174,8 @@ const Lession = () => {
         />
       </main>
 
-      {/* ── Right Sidebar: Syllabus Playlist rộng rãi, tự cuộn riêng ── */}
-      <aside className="w-full lg:w-[340px] xl:w-[360px] flex-shrink-0 h-[560px] lg:h-full bg-white/75 backdrop-blur-3xl border border-white/90 rounded-[2rem] shadow-sm z-20 overflow-hidden flex flex-col">
+      {/* ── Right Sidebar: Syllabus Playlist cố định bằng đúng chiều cao cột bên trái ── */}
+      <aside className="w-full lg:w-[280px] xl:w-[300px] h-full max-h-full flex-shrink-0 bg-white/75 backdrop-blur-3xl border border-white/90 rounded-2xl shadow-sm z-20 overflow-hidden flex flex-col min-h-0">
         <SidebarLesson
           loading={loading}
           error={error}

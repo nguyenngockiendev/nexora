@@ -71,30 +71,40 @@ const CreateCoursesForm = ({
         className="rounded-[32px] p-6 sm:p-8 relative overflow-hidden transition-all shadow-sm"
         style={{
           background:
-            "linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 248, 240, 0.8) 100%)",
-          backdropFilter: "blur(24px)",
-          border: "1.5px solid rgba(255, 255, 255, 0.95)",
-          boxShadow: "0 10px 30px rgba(180, 100, 20, 0.05)",
+            "linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 41, 59, 0.90) 60%, rgba(15, 23, 42, 0.96) 100%)",
+          backdropFilter: "blur(32px)",
+          WebkitBackdropFilter: "blur(32px)",
+          border: "1px solid rgba(255, 255, 255, 0.16)",
+          boxShadow:
+            "0 18px 48px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.2)",
         }}
       >
         {/* Glow Background */}
         <div
           className="absolute -top-24 -right-24 w-80 h-80 rounded-full pointer-events-none opacity-40 blur-3xl"
           style={{
-            background: "radial-gradient(circle, #f97316 0%, transparent 70%)",
+            background:
+              "radial-gradient(circle, rgba(249, 115, 22, 0.35) 0%, rgba(245, 158, 11, 0.15) 50%, transparent 70%)",
           }}
         />
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-black bg-orange-100 text-orange-900 border border-orange-200 uppercase tracking-wider">
-              <Sparkles size={13} className="text-orange-600 animate-pulse" />
+            <div
+              className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider"
+              style={{
+                background: "rgba(255, 255, 255, 0.1)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                color: "#fb923c",
+              }}
+            >
+              <Sparkles size={13} className="text-orange-400 animate-pulse" />
               <span>Giảng Viên Nexora • Khởi Tạo Nội Dung</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
               {isEdit ? "Chỉnh Sửa Khóa Học" : "Tạo Khóa Học Mới"}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 font-medium">
+            <p className="text-xs sm:text-sm text-slate-300 font-medium">
               {isEdit
                 ? "Cập nhật và tối ưu hóa nội dung khóa học của bạn"
                 : "Thiết kế, xây dựng và xuất bản khóa học chất lượng cao tới hàng ngàn học viên"}
@@ -104,9 +114,14 @@ const CreateCoursesForm = ({
           <button
             type="button"
             onClick={() => navigate("/courses")}
-            className="self-start sm:self-center px-5 py-2.5 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-black text-xs border border-slate-200 shadow-2xs hover:shadow-sm transition-all flex items-center gap-2 cursor-pointer"
+            style={{
+              borderRadius: "9999px",
+              background: "rgba(255, 255, 255, 0.1)",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+            }}
+            className="self-start sm:self-center px-5 py-2.5 rounded-full text-white hover:bg-white/20 hover:border-white/30 font-black text-xs transition-all flex items-center gap-2 cursor-pointer shadow-2xs"
           >
-            <ArrowLeft size={16} />
+            <ArrowLeft size={16} className="text-slate-300" />
             <span>Quay lại</span>
           </button>
         </div>
@@ -343,7 +358,10 @@ const CreateCoursesForm = ({
                       className="w-full h-56 object-cover"
                     />
                     <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                      <label className="px-4 py-2 rounded-xl bg-white text-slate-800 font-black text-xs cursor-pointer shadow-md hover:bg-slate-100 transition-all">
+                      <label
+                        style={{ borderRadius: "9999px" }}
+                        className="px-4 py-2 rounded-full bg-white text-slate-800 font-black text-xs cursor-pointer shadow-md hover:bg-slate-100 transition-all"
+                      >
                         <span>Đổi ảnh khác</span>
                         <input
                           type="file"
@@ -355,7 +373,8 @@ const CreateCoursesForm = ({
                       <button
                         type="button"
                         onClick={() => setThumbnail(null)}
-                        className="px-4 py-2 rounded-xl bg-rose-500 text-white font-black text-xs cursor-pointer shadow-md hover:bg-rose-600 transition-all"
+                        style={{ borderRadius: "9999px" }}
+                        className="px-4 py-2 rounded-full bg-rose-500 text-white font-black text-xs cursor-pointer shadow-md hover:bg-rose-600 transition-all"
                       >
                         Xóa ảnh
                       </button>
@@ -492,11 +511,12 @@ const CreateCoursesForm = ({
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full h-12 rounded-2xl font-black text-xs sm:text-sm text-white shadow-lg shadow-orange-500/30 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                   style={{
+                    borderRadius: "9999px",
                     background:
                       "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
                   }}
+                  className="w-full h-12 rounded-full font-black text-xs sm:text-sm text-white shadow-lg shadow-orange-500/30 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {loading ? (
                     <>
@@ -520,7 +540,8 @@ const CreateCoursesForm = ({
                 <button
                   type="button"
                   onClick={() => navigate("/courses")}
-                  className="w-full h-11 rounded-2xl font-black text-xs text-slate-600 bg-white/80 hover:bg-white border border-slate-200/80 shadow-2xs hover:shadow-xs transition-all cursor-pointer"
+                  style={{ borderRadius: "9999px" }}
+                  className="w-full h-11 rounded-full font-black text-xs text-slate-600 bg-white/80 hover:bg-white border border-slate-200/80 shadow-2xs hover:shadow-xs transition-all cursor-pointer"
                 >
                   Hủy bỏ
                 </button>
@@ -561,18 +582,20 @@ const CreateCoursesForm = ({
               <button
                 type="button"
                 onClick={() => onCancel()}
-                className="flex-1 h-11 rounded-2xl font-black text-xs text-slate-700 bg-slate-100 hover:bg-slate-200 transition-all cursor-pointer"
+                style={{ borderRadius: "9999px" }}
+                className="flex-1 h-11 rounded-full font-black text-xs text-slate-700 bg-slate-100 hover:bg-slate-200 transition-all cursor-pointer"
               >
                 Để sau
               </button>
               <button
                 type="button"
                 onClick={() => onConfirm()}
-                className="flex-1 h-11 rounded-2xl font-black text-xs text-white shadow-md shadow-emerald-500/30 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
                 style={{
+                  borderRadius: "9999px",
                   background:
                     "linear-gradient(135deg, #10b981 0%, #059669 100%)",
                 }}
+                className="flex-1 h-11 rounded-full font-black text-xs text-white shadow-md shadow-emerald-500/30 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
               >
                 Lên Lịch Ngay ➔
               </button>

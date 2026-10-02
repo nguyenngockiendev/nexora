@@ -24,6 +24,7 @@ const LessionTableLession = ({
           <Button
             variant="light"
             className="quiz-btn-back rounded-pill"
+            style={{ borderRadius: "9999px" }}
             type="button"
             onClick={() => navigate("/instructor/lessons")}
           >
@@ -42,6 +43,7 @@ const LessionTableLession = ({
             <Button
               variant="light"
               className="quiz-btn-soft rounded-pill px-4 fw-semibold"
+              style={{ borderRadius: "9999px" }}
               type="button"
               onClick={() => navigate(`/create_lession/${courseId}`)}
             >
@@ -50,6 +52,7 @@ const LessionTableLession = ({
             <Button
               variant="primary"
               className="rounded-pill px-4 fw-semibold d-flex align-items-center gap-2"
+              style={{ borderRadius: "9999px" }}
               type="button"
               onClick={() => navigate("/create_quizz/lession")}
             >

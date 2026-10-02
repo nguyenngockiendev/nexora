@@ -48,6 +48,7 @@ const InstructorQuizCourseListView = ({
         <div className="d-flex align-items-center gap-3">
           <button
             type="button"
+            style={{ borderRadius: "9999px" }}
             className="btn quiz-btn-back rounded-pill px-3 py-1 text-xs"
             onClick={onBack}
           >
@@ -156,7 +157,7 @@ const InstructorQuizCourseListView = ({
               <button
                 type="button"
                 className="btn btn-outline-primary rounded-pill px-3 py-1 fw-bold text-xs d-flex align-items-center gap-1 shrink-0 ms-3"
-                style={{ fontSize: "0.8rem" }}
+                style={{ fontSize: "0.8rem", borderRadius: "9999px" }}
               >
                 <span>{currentConfig.actionBtn}</span>
                 <span>›</span>

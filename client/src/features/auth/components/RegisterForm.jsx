@@ -26,6 +26,7 @@ const RegisterForm = ({
   errors = {},
   onSendOtp,
   countdown = 0,
+  trig = false,
 }) => {
   const [password, setPassword] = useState("");
   const [fileName, setFileName] = useState("");
@@ -177,9 +178,10 @@ const RegisterForm = ({
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-orange-50 border border-orange-200 text-orange-600 text-xs font-bold hover:bg-orange-100 transition-all shrink-0 cursor-pointer"
+                style={{ borderRadius: "9999px" }}
+                className="flex items-center gap-2 px-4 py-1.5 bg-orange-50 border border-orange-200 text-orange-600 text-xs font-bold hover:bg-orange-100 transition-all shrink-0 cursor-pointer shadow-2xs hover:scale-[1.02] active:scale-95"
               >
-                <ImageIcon size={16} />
+                <ImageIcon size={15} />
                 <span>Chọn ảnh</span>
               </button>
               <span
@@ -222,10 +224,24 @@ const RegisterForm = ({
               <button
                 type="button"
                 onClick={onSendOtp}
-                className="absolute right-1.5 px-3.5 py-1.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-md shadow-orange-500/20 hover:shadow-orange-500/35 hover:-translate-y-0.5 flex items-center gap-1.5"
+                disabled={trig}
+                style={{
+                  borderRadius: "9999px",
+                  background: trig
+                    ? "rgba(226, 232, 240, 0.9)"
+                    : "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+                  boxShadow: trig
+                    ? "none"
+                    : "0 2px 8px rgba(249, 115, 22, 0.28)",
+                }}
+                className={`absolute right-1.5 px-3.5 py-1.5 text-xs font-bold transition-all flex items-center gap-1.5 select-none ${
+                  trig
+                    ? "text-slate-400 cursor-not-allowed pointer-events-none"
+                    : "text-white cursor-pointer hover:scale-[1.02] active:scale-95 hover:shadow-orange-500/30"
+                }`}
               >
                 <Send size={12} />
-                <span>Gửi mã</span>
+                <span>{trig ? `Gửi lại (${countdown}s)` : "Gửi mã"}</span>
               </button>
             </div>
             {errors.email && (
@@ -251,18 +267,16 @@ const RegisterForm = ({
                 maxLength={6}
                 {...register("otp")}
               />
-              {countdown > 0 ? (
-                <div className="absolute right-2 px-2.5 py-1 rounded-xl bg-orange-50 border border-orange-200/60 flex items-center gap-1 text-[11px] font-bold text-orange-600 pointer-events-none">
+              {countdown > 0 && trig && (
+                <div
+                  className="absolute right-2 px-2.5 py-1 bg-orange-50 border border-orange-200/60 flex items-center gap-1 text-[11px] font-bold text-orange-600 pointer-events-none"
+                  style={{ borderRadius: "9999px" }}
+                >
                   <Clock size={12} />
                   <span>
                     {String(Math.floor(countdown / 60)).padStart(2, "0")}:
                     {String(countdown % 60).padStart(2, "0")}
                   </span>
-                </div>
-              ) : (
-                <div className="absolute right-2 px-2.5 py-1 rounded-xl bg-orange-50 border border-orange-200/60 flex items-center gap-1 text-[11px] font-bold text-orange-600 pointer-events-none">
-                  <Clock size={12} />
-                  <span>04:59</span>
                 </div>
               )}
             </div>
@@ -340,11 +354,12 @@ const RegisterForm = ({
             </div>
           </div>
 
-          {/* Nút hành động bo tròn mềm mại (rounded-2xl) */}
+          {/* Nút hành động bo tròn mềm mại */}
           <div className="flex flex-col sm:flex-row items-center gap-3 mt-3">
             <button
               type="button"
-              className="w-full sm:w-1/2 flex justify-center items-center gap-2 py-3 px-4 rounded-2xl bg-white/80 hover:bg-white text-slate-700 text-xs font-bold border border-slate-200 transition-all cursor-pointer shadow-xs hover:shadow-md"
+              style={{ borderRadius: "9999px" }}
+              className="w-full sm:w-1/2 flex justify-center items-center gap-2 py-3 px-4 bg-white/80 hover:bg-white text-slate-700 text-xs font-bold border border-slate-200 transition-all cursor-pointer shadow-xs hover:scale-[1.02] active:scale-95"
               onClick={() => navigate("/login")}
             >
               <ArrowLeft size={15} />
@@ -354,7 +369,12 @@ const RegisterForm = ({
             <button
               type="submit"
               disabled={loading}
-              className="w-full sm:w-1/2 flex justify-center items-center gap-2 py-3 px-4 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-xs font-bold rounded-2xl shadow-lg shadow-orange-500/25 hover:shadow-orange-500/35 transition-all cursor-pointer hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+              style={{
+                borderRadius: "9999px",
+                background: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+                boxShadow: "0 8px 24px rgba(249, 115, 22, 0.28)",
+              }}
+              className="w-full sm:w-1/2 flex justify-center items-center gap-2 py-3 px-4 text-white text-xs font-extrabold transition-all cursor-pointer hover:scale-[1.02] active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
             >
               <span>
                 {loading ? "Đang tạo tài khoản..." : "Đăng Ký Tài Khoản"}

@@ -273,11 +273,110 @@
 }
 
 .heroPreview {
-  margin-bottom: 64px;
+  position: relative;
+  max-width: 960px;
+  margin: 0 auto 64px;
+}
+
+.floatingBadgeAi {
+  position: absolute;
+  top: -24px;
+  left: -20px;
+  z-index: 30;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 20px 45px rgba(234, 88, 12, 0.16), 0 4px 12px rgba(0,0,0,0.04);
+  animation: floatBadge1 4s ease-in-out infinite alternate;
+  text-align: left;
+}
+
+@keyframes floatBadge1 {
+  0% { transform: translateY(0) rotate(-1deg); }
+  100% { transform: translateY(-8px) rotate(1deg); }
+}
+
+.floatingBadgeLive {
+  position: absolute;
+  bottom: 24px;
+  right: -20px;
+  z-index: 30;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 20px 45px rgba(244, 63, 94, 0.16), 0 4px 12px rgba(0,0,0,0.04);
+  animation: floatBadge2 4.5s ease-in-out infinite alternate;
+  text-align: left;
+}
+
+@keyframes floatBadge2 {
+  0% { transform: translateY(0) rotate(1deg); }
+  100% { transform: translateY(-7px) rotate(-1deg); }
+}
+
+.livePulseDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 10px #ef4444;
+  animation: pulseLive 1.5s infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulseLive {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.3); }
+}
+
+.floatingBadgeIconMagic {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fef08a 0%, #f59e0b 100%);
+  color: #78350f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+}
+
+.floatingBadgeTitle {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.floatingBadgeSub {
+  font-size: 0.72rem;
+  color: #64748b;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.floatingBadgeLiveSub {
+  font-size: 0.72rem;
+  color: #10b981;
+  font-weight: 700;
+  margin-top: 2px;
 }
 
 .previewGlass {
-  max-width: 860px;
+  max-width: 960px;
   margin: 0 auto;
   background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(32px) saturate(190%);
@@ -345,48 +444,223 @@
   height: 38px;
   border-radius: 12px;
   background: rgba(249, 115, 22, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  font-size: 15px;
 }
 
 .previewNavItem[data-active] {
   background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  color: white;
   box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
 }
 
 .previewContent {
   flex: 1;
-  padding: 24px;
+  padding: 18px 20px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
+  background: linear-gradient(135deg, #fffbf7 0%, #fff6ef 100%);
 }
 
-.previewStatRow {
-  display: flex;
+.miniBento {
+  display: grid;
+  grid-template-columns: 1.8fr 1.2fr;
   gap: 14px;
 }
 
-.previewStat {
-  flex: 1;
-  height: 68px;
+.miniHeroCourse {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 41, 59, 0.90) 55%, rgba(234, 88, 12, 0.35) 100%), url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80') center/cover;
+  background-blend-mode: overlay;
+  border-radius: 20px;
+  padding: 18px 20px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  text-align: left;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.miniHeroBadges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.miniBadgeGold {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #78350f;
+  font-size: 8px;
+  font-weight: 900;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+}
+
+.miniBadgeOrange {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  color: white;
+  font-size: 8px;
+  font-weight: 900;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+}
+
+.miniCourseTitle {
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1.35;
+  margin: 10px 0 4px;
+  color: white;
+}
+
+.miniCourseMeta {
+  font-size: 0.72rem;
+  color: #cbd5e1;
+}
+
+.miniCourseFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.miniPrice {
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #fb923c;
+}
+
+.miniBtnCta {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  border: none;
+  box-shadow: 0 4px 10px rgba(234, 88, 12, 0.35);
+  cursor: pointer;
+}
+
+.miniFilters {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.miniFilterCard {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.95);
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(249, 115, 22, 0.12);
-  box-shadow: 0 4px 14px rgba(180, 100, 20, 0.04);
-}
-
-.previewCardRow {
+  padding: 10px 12px;
   display: flex;
-  gap: 14px;
-  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: left;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+  transition: transform 0.2s;
 }
 
-.previewCard {
-  flex: 1;
-  min-height: 125px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(249, 115, 22, 0.12);
-  box-shadow: 0 6px 16px rgba(180, 100, 20, 0.05);
+.miniFilterCard:hover {
+  transform: translateY(-2px);
+}
+
+.miniFilterIcon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+}
+
+.miniFilterName {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin-top: 6px;
+}
+
+.miniFilterSub {
+  font-size: 0.65rem;
+  color: #64748b;
+}
+
+.miniCoursesRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.miniCourseCard {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 14px;
+  padding: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+  text-align: left;
+}
+
+.miniCourseThumb {
+  height: 60px;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 6px;
+  position: relative;
+}
+
+.miniThumbTag {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(0,0,0,0.65);
+  color: white;
+  font-size: 7px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 9999px;
+  backdrop-filter: blur(4px);
+}
+
+.miniCourseCardTitle {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.miniCourseCardMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 3px;
+  font-size: 0.68rem;
+}
+
+.miniCardPrice {
+  font-weight: 900;
+  color: #ea580c;
+}
+
+.miniCardRating {
+  color: #d97706;
+  font-weight: 700;
 }
 
 .statsRow {
@@ -734,8 +1008,17 @@
     min-height: 200px;
   }
 
-  .previewCardRow {
-    flex-direction: column;
+  .floatingBadgeAi,
+  .floatingBadgeLive {
+    display: none;
+  }
+
+  .miniBento {
+    grid-template-columns: 1fr;
+  }
+
+  .miniCoursesRow {
+    grid-template-columns: 1fr;
   }
 
   .ctaCard {

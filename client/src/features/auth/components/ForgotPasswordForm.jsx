@@ -20,6 +20,7 @@ const FogotPassWordForm = ({
   errors = {},
   onSendOtp,
   countdown = 0,
+  trig,
 }) => {
   return (
     <div className="relative w-full">
@@ -36,14 +37,15 @@ const FogotPassWordForm = ({
           <p className="text-[11px] font-bold text-slate-700 m-0 leading-tight">
             Bảo mật tài khoản
           </p>
-          <span className="text-[10px] font-semibold text-orange-600">2 lớp</span>
+          <span className="text-[10px] font-semibold text-orange-600">
+            2 lớp
+          </span>
         </div>
         <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white shadow-sm shadow-orange-500/30">
           <Lock size={14} />
         </div>
       </div>
 
-      {/* Widget nổi 2: Góc dưới bên trái */}
       <div
         className="hidden sm:flex items-center gap-2.5 absolute -bottom-4 -left-4 lg:-left-6 z-20 px-3.5 py-2 rounded-2xl border border-white/80 shadow-lg shadow-orange-500/10"
         style={{
@@ -59,7 +61,9 @@ const FogotPassWordForm = ({
           <p className="text-[11px] font-bold text-slate-700 m-0 leading-tight">
             Mã hóa an toàn
           </p>
-          <span className="text-[10px] font-semibold text-emerald-600">AES-256</span>
+          <span className="text-[10px] font-semibold text-emerald-600">
+            AES-256
+          </span>
         </div>
       </div>
 
@@ -118,9 +122,10 @@ const FogotPassWordForm = ({
           </div>
         )}
 
-       
         <form
-          onSubmit={handleSubmit ? handleSubmit(onsubmit) : (e) => e.preventDefault()}
+          onSubmit={
+            handleSubmit ? handleSubmit(onsubmit) : (e) => e.preventDefault()
+          }
           className="w-full flex flex-col gap-4"
         >
           {/* Ô 1: Email + Nút Gửi mã Inline */}
@@ -141,9 +146,23 @@ const FogotPassWordForm = ({
               <button
                 type="button"
                 onClick={onSendOtp}
-                className="absolute right-1.5 px-3.5 py-1.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-sm hover:shadow-orange-500/20"
+                disabled={trig}
+                style={{
+                  borderRadius: "9999px",
+                  background: trig
+                    ? "rgba(226, 232, 240, 0.9)"
+                    : "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+                  boxShadow: trig
+                    ? "none"
+                    : "0 2px 8px rgba(249, 115, 22, 0.28)",
+                }}
+                className={`absolute right-1.5 px-3.5 py-1.5 text-xs font-bold transition-all select-none ${
+                  trig
+                    ? "text-slate-400 cursor-not-allowed pointer-events-none"
+                    : "text-white cursor-pointer hover:scale-[1.02] active:scale-95 hover:shadow-orange-500/30"
+                }`}
               >
-                Gửi mã
+                {trig ? `Gửi lại (${countdown}s)` : "Gửi mã"}
               </button>
             </div>
             {errors?.email && (
@@ -169,7 +188,10 @@ const FogotPassWordForm = ({
                 maxLength={6}
                 {...(register ? register("otp") : {})}
               />
-              <div className="absolute right-2 px-2.5 py-1 rounded-lg bg-orange-50 border border-orange-200/60 flex items-center gap-1 text-[11px] font-bold text-orange-600 pointer-events-none">
+              <div
+                className="absolute right-2 px-2.5 py-1 bg-orange-50 border border-orange-200/60 flex items-center gap-1 text-[11px] font-bold text-orange-600 pointer-events-none"
+                style={{ borderRadius: "9999px" }}
+              >
                 <Clock size={12} />
                 <span>{countdown > 0 ? `${countdown}s` : "59s"}</span>
               </div>
@@ -245,7 +267,8 @@ const FogotPassWordForm = ({
           <div className="flex flex-col sm:flex-row items-center gap-3 mt-3">
             <Link
               to="/login"
-              className="w-full sm:w-1/2 flex justify-center items-center gap-2 py-3 px-4 rounded-2xl bg-white/75 hover:bg-white text-slate-700 text-xs font-bold border border-slate-200 transition-all cursor-pointer shadow-xs whitespace-nowrap"
+              style={{ borderRadius: "9999px" }}
+              className="w-full sm:w-1/2 flex justify-center items-center gap-2 py-3 px-4 bg-white/80 hover:bg-white text-slate-700 text-xs font-bold border border-slate-200 transition-all cursor-pointer shadow-xs whitespace-nowrap hover:scale-[1.02] active:scale-95"
             >
               <ArrowLeft size={15} />
               <span>Quay lại đăng nhập</span>
@@ -253,7 +276,12 @@ const FogotPassWordForm = ({
 
             <button
               type="submit"
-              className="w-full sm:w-1/2 flex justify-center items-center gap-2 py-3 px-4 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-xs font-bold rounded-2xl shadow-lg shadow-orange-500/25 hover:shadow-orange-500/35 transition-all cursor-pointer hover:-translate-y-0.5 whitespace-nowrap"
+              style={{
+                borderRadius: "9999px",
+                background: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+                boxShadow: "0 8px 24px rgba(249, 115, 22, 0.28)",
+              }}
+              className="w-full sm:w-1/2 flex justify-center items-center gap-2 py-3 px-4 text-white text-xs font-extrabold transition-all cursor-pointer hover:scale-[1.02] active:scale-95 whitespace-nowrap"
             >
               <span>Cập nhật mật khẩu</span>
               <ArrowRight size={15} />
@@ -266,4 +294,3 @@ const FogotPassWordForm = ({
 };
 
 export default FogotPassWordForm;
-

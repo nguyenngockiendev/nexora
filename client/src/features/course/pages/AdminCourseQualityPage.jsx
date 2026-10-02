@@ -3,6 +3,8 @@ import { toast } from "react-toastify";
 import AdminCourseQualityView from "../components/AdminCourseQualityView";
 import useManagerCoursebyAdmin from "../hooks/useManagerCourseByAdmin";
 import { useEffect } from "react";
+import PaginationForm from "../../../shared/components/PaginationForm";
+import usePagination from "../../../shared/hooks/usePagination";
 
 const AdminCourseQualityPage = () => {
   const { courses, error, loading, getcourses, updateStatusCourseAndLession } =
@@ -22,8 +24,6 @@ const AdminCourseQualityPage = () => {
 
   const [inspectCourse, setInspectCourse] = useState(null);
   const [warningCourse, setWarningCourse] = useState(null);
-
-  const [localCourses, setLocalCourses] = useState(null);
 
   const [warningText, setWarningText] = useState("");
 
@@ -95,12 +95,12 @@ const AdminCourseQualityPage = () => {
     setWarningCourse(null);
     setWarningText("");
   };
-
+const pagination = usePagination(filteredCourses, 5);
   return (
     <div className="w-full">
       <AdminCourseQualityView
         courses={couseSecons}
-        filteredCourses={filteredCourses}
+        filteredCourses={pagination.currentData}
         loading={loading}
         error={error}
         searchTerm={searchTerm}
@@ -125,6 +125,12 @@ const AdminCourseQualityPage = () => {
         healthyCount={healthyCount}
         bannedCount={bannedCount}
       />
+
+      {!loading && couseSecons?.length > 0 && (
+              <div className="max-w-7xl mx-auto px-4 mt-6">
+                <PaginationForm pagination={pagination} itemName="khóa học" />
+              </div>
+            )}
     </div>
   );
 };

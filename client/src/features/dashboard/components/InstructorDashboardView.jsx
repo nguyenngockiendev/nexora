@@ -271,6 +271,12 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
             </h1>
             <p
               className="mt-4 max-w-xl text-base leading-7"
+              style={{ color: "#eda01c" }}
+            >
+              • Mức hưởng hiện tại: <strong> 70% </strong> doanh thu/khóa học
+            </p>
+            <p
+              className="mt-4 max-w-xl text-base leading-7"
               style={{ color: "#64748b" }}
             >
               Theo dõi hiệu quả khóa học, lớp trực tuyến, lượt đăng ký và doanh

@@ -1,12 +1,10 @@
-import { useState, useMemo } from "react";
-import { Search } from "lucide-react";
+import { useState, useMemo, useEffect } from "react";
 import { toast } from "react-toastify";
-import VoucherBanner from "../components/VoucherBanner";
-import VoucherTable from "../components/VoucherTable";
-import VoucherModal from "../components/VoucherModal";
+import VoucherManagementView from "../components/VoucherManagementView";
 import useVoucher from "../hooks/useVoucher";
-import { useEffect } from "react";
 import useGetCourses from "../../course/hooks/useCourse";
+import PaginationForm from "../../../shared/components/PaginationForm";
+import usePagination from "../../../shared/hooks/usePagination";
 
 const VoucherManagementPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -103,100 +101,35 @@ const VoucherManagementPage = () => {
 
   const hotVoucher =
     voucher.find((v) => v.isActive && v.discountValue === 100) || voucher[0];
-
+    const pagination = usePagination(filteredVouchers, 5);
   return (
-    <div className="w-full min-h-screen py-4 md:py-6 space-y-6">
-      <VoucherBanner onOpenCreate={handleOpenCreate} hotVoucher={hotVoucher} />
-
-      <div
-        className="p-6 rounded-3xl space-y-4"
-        style={{
-          background: "rgba(255, 255, 255, 0.65)",
-          backdropFilter: "blur(14px)",
-          WebkitBackdropFilter: "blur(14px)",
-          border: "1px solid rgba(255, 255, 255, 0.9)",
-          boxShadow: "0 10px 35px rgba(249, 115, 22, 0.05)",
-        }}
-      >
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
-          <div className="relative flex-1">
-            <Search
-              size={16}
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
-            />
-            <input
-              type="text"
-              placeholder="Tìm theo mã voucher (VD: NEXORA100, GIAM50K)..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl bg-white/80 border border-slate-200 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-slate-700"
-            />
-          </div>
-
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0">
-            <button
-              type="button"
-              onClick={() => setActiveTab("all")}
-              className={`px-3.5 py-2 text-xs rounded-xl font-semibold transition-all cursor-pointer ${
-                activeTab === "all"
-                  ? "bg-orange-500 text-white shadow-sm"
-                  : "bg-white/70 text-slate-600 hover:bg-white border border-slate-200/70"
-              }`}
-            >
-              Tất cả ({voucher.length})
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("active")}
-              className={`px-3.5 py-2 text-xs rounded-xl font-medium transition-all cursor-pointer ${
-                activeTab === "active"
-                  ? "bg-orange-500 text-white shadow-sm"
-                  : "bg-white/70 text-slate-600 hover:bg-white border border-slate-200/70"
-              }`}
-            >
-              Đang bật ({voucher.filter((v) => v.isActive).length})
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("inactive")}
-              className={`px-3.5 py-2 text-xs rounded-xl font-medium transition-all cursor-pointer ${
-                activeTab === "inactive"
-                  ? "bg-orange-500 text-white shadow-sm"
-                  : "bg-white/70 text-slate-600 hover:bg-white border border-slate-200/70"
-              }`}
-            >
-              Đã tắt / Hết hạn
-            </button>
-
-            <select
-              value={discountFilter}
-              onChange={(e) => setDiscountFilter(e.target.value)}
-              className="px-3 py-2 text-xs font-medium rounded-xl bg-white/80 border border-slate-200 text-slate-600 focus:outline-none focus:border-orange-500 cursor-pointer"
-            >
-              <option value="all">Tất cả loại giảm</option>
-              <option value="percentage">Phần trăm (%)</option>
-              <option value="fixed">Số tiền cố định (VNĐ)</option>
-            </select>
-          </div>
-        </div>
-
-        <VoucherTable
-          vouchers={filteredVouchers}
-          onEdit={handleOpenEdit}
-          onDelete={handleDelete}
-          onToggleStatus={handleToggleStatus}
-        />
-      </div>
-
-      <VoucherModal
-        isOpen={isModalOpen}
+    <div>
+      <VoucherManagementView
+        onOpenCreate={handleOpenCreate}
+        hotVoucher={hotVoucher}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        voucher={voucher}
+        discountFilter={discountFilter}
+        setDiscountFilter={setDiscountFilter}
+        filteredVouchers={pagination.currentData}
+        handleOpenEdit={handleOpenEdit}
+        handleDelete={handleDelete}
+        handleToggleStatus={handleToggleStatus}
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
         loadingVou={loadingVou}
         coursesall={coursesall}
-        onClose={() => setIsModalOpen(false)}
-        onSave={handleSaveVoucher}
+        handleSaveVoucher={handleSaveVoucher}
         editingVoucher={editingVoucher}
-        coursesList={coursesall}
-      />
+      />{" "}
+       {!loadingVou && filteredVouchers?.length > 0 && (
+              <div className="max-w-7xl mx-auto px-4 mt-6">
+                <PaginationForm pagination={pagination} itemName="khóa học" />
+              </div>
+            )}
     </div>
   );
 };

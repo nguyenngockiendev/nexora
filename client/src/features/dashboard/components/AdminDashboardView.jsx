@@ -261,21 +261,23 @@ const AdminDashboardView = ({
       <section
         className="relative overflow-visible rounded-3xl p-6 lg:p-8 flex flex-col md:flex-row md:items-end justify-between gap-6"
         style={{
-          background: "rgba(255,255,255,0.6)",
-          border: "1px solid rgba(255,255,255,0.8)",
+          background:
+            "linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 41, 59, 0.90) 60%, rgba(15, 23, 42, 0.96) 100%)",
+          border: "1px solid rgba(255, 255, 255, 0.16)",
           backdropFilter: "blur(32px)",
+          WebkitBackdropFilter: "blur(32px)",
           boxShadow:
-            "inset 0 1px 0 rgba(255,255,255,0.9), 0 16px 48px rgba(168,85,247,0.08)",
+            "0 18px 48px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.2)",
         }}
       >
         {/* Glow wrapper with overflow-hidden */}
         <div className="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
-          <div className="absolute top-0 left-16 right-16 h-[1px] bg-gradient-to-r from-transparent via-purple-400/50 to-transparent" />
+          <div className="absolute top-0 left-16 right-16 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
           <div
-            className="absolute -top-20 -right-20 w-80 h-80 rounded-full opacity-20"
+            className="absolute -top-20 -right-20 w-80 h-80 rounded-full opacity-25"
             style={{
               background:
-                "radial-gradient(circle, #a855f7 0%, #ec4899 50%, transparent 70%)",
+                "radial-gradient(circle, rgba(249, 115, 22, 0.35) 0%, rgba(245, 158, 11, 0.15) 50%, transparent 70%)",
               filter: "blur(40px)",
             }}
           />
@@ -285,22 +287,21 @@ const AdminDashboardView = ({
           <div
             className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-widest mb-4"
             style={{
-              background: "rgba(168,85,247,0.12)",
-              border: "1px solid rgba(168,85,247,0.25)",
-              color: "#9333ea",
+              background: "rgba(255, 255, 255, 0.1)",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+              color: "#fb923c",
             }}
           >
             <Shield size={14} />
             System Admin
           </div>
           <h1
-            className="text-4xl font-black leading-tight md:text-5xl"
-            style={{ color: "#1e293b" }}
+            className="text-4xl font-black leading-tight md:text-5xl text-white"
           >
             Trạm điều khiển,{" "}
             <span
               style={{
-                background: "linear-gradient(135deg, #a855f7, #d946ef)",
+                background: "linear-gradient(135deg, #fbbf24 0%, #f97316 60%, #ea580c 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
               }}
@@ -310,8 +311,7 @@ const AdminDashboardView = ({
             🛡️
           </h1>
           <p
-            className="mt-3 max-w-xl text-base leading-7"
-            style={{ color: "#64748b" }}
+            className="mt-3 max-w-xl text-base leading-7 text-slate-300"
           >
             Giám sát sức khỏe nền tảng, quản lý người dùng và theo dõi dòng tiền
             theo thời gian thực.
@@ -319,15 +319,22 @@ const AdminDashboardView = ({
         </div>
 
         {/* Bộ lọc thời gian */}
-        <div className="relative z-10 flex items-center gap-3 bg-white/70 backdrop-blur-md p-2 rounded-2xl border border-slate-200 shadow-sm">
-          <Calendar size={18} className="text-slate-400 ml-2" />
+        <div
+          className="relative z-10 flex items-center gap-3 p-2 rounded-2xl shadow-sm"
+          style={{
+            background: "rgba(255, 255, 255, 0.1)",
+            border: "1px solid rgba(255, 255, 255, 0.2)",
+            backdropFilter: "blur(16px)",
+          }}
+        >
+          <Calendar size={18} className="text-slate-300 ml-2" />
           <select
             value={timeFilter}
             onChange={(e) => setTimeFilter(e.target.value)}
-            className="bg-transparent border-none text-sm font-bold text-slate-700 focus:outline-none cursor-pointer pr-4"
+            className="bg-transparent border-none text-sm font-bold text-white focus:outline-none cursor-pointer pr-4"
           >
-            <option value="week">Tuần này</option>
-            <option value="month">Tháng này</option>
+            <option value="week" className="bg-slate-900 text-white">Tuần này</option>
+            <option value="month" className="bg-slate-900 text-white">Tháng này</option>
           </select>
         </div>
       </section>
@@ -335,28 +342,39 @@ const AdminDashboardView = ({
       {/* ── Stat Cards ── */}
       <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <div
-          className="rounded-3xl p-5 relative overflow-hidden flex flex-col justify-between"
+          className="rounded-3xl p-5 relative overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1 cursor-default"
           style={{
             background:
-              "linear-gradient(135deg, rgba(168,85,247,0.85) 0%, rgba(217,70,239,0.85) 100%)",
-            border: "1px solid rgba(255,255,255,0.2)",
-            boxShadow: "0 8px 32px rgba(168,85,247,0.25)",
+              "linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.90) 55%, rgba(15, 23, 42, 0.98) 100%)",
+            border: "1px solid rgba(255, 255, 255, 0.18)",
+            backdropFilter: "blur(24px)",
+            WebkitBackdropFilter: "blur(24px)",
+            boxShadow:
+              "0 14px 36px rgba(0, 0, 0, 0.22), inset 0 1.5px 1px rgba(255, 255, 255, 0.22), inset 0 -1px 1px rgba(0, 0, 0, 0.4)",
           }}
         >
-          <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
+          {/* Lớp bóng gương kính (Glossy glass reflection) */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none" />
           <div className="relative z-10 text-white">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-xs font-bold text-white/80 uppercase tracking-wider">
+              <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
                 Doanh thu
               </span>
-              <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-white/20 backdrop-blur-md">
-                <DollarSign size={14} className="text-white" />
+              <div
+                className="w-8 h-8 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110"
+                style={{
+                  background: "rgba(255, 255, 255, 0.12)",
+                  border: "1px solid rgba(255, 255, 255, 0.2)",
+                  color: "#ffffff",
+                }}
+              >
+                <DollarSign size={15} />
               </div>
             </div>
-            <strong className="block text-2xl xl:text-3xl font-black leading-none tracking-tight">
+            <strong className="block text-2xl xl:text-3xl font-black leading-none tracking-tight text-white">
               {formatCurrency(overview.totalRevenue)}
             </strong>
-            <div className="mt-4 pt-3 border-t border-white/20 text-xs font-medium text-white/80">
+            <div className="mt-4 pt-3 border-t border-white/10 text-xs font-medium text-slate-300">
               {timeFilter === "week" ? "Tuần" : "Tháng"} này
             </div>
           </div>
@@ -404,7 +422,7 @@ const AdminDashboardView = ({
             background: "rgba(255,255,255,0.6)",
             border: "1px solid rgba(255,255,255,0.8)",
             backdropFilter: "blur(20px)",
-            boxShadow: "0 16px 48px rgba(168,85,247,0.06)",
+            boxShadow: "0 16px 48px rgba(249,115,22,0.06)",
           }}
         >
           <div className="mb-6 flex items-center justify-between">
@@ -435,8 +453,8 @@ const AdminDashboardView = ({
                       x2="0"
                       y2="1"
                     >
-                      <stop offset="5%" stopColor="#a855f7" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#a855f7" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#f97316" stopOpacity={0.32} />
+                      <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid
@@ -455,7 +473,7 @@ const AdminDashboardView = ({
                     axisLine={false}
                     tickLine={false}
                     tick={{ fontSize: 12, fill: "#94a3b8" }}
-                    tickFormatter={(val) => `${val / 1000000}M`}
+                    tickFormatter={(val) => `${Number(val) / 1000000}M`}
                   />
                   <Tooltip
                     content={
@@ -466,7 +484,7 @@ const AdminDashboardView = ({
                     type="monotone"
                     dataKey="value"
                     name="Doanh thu"
-                    stroke="#a855f7"
+                    stroke="#f97316"
                     strokeWidth={3}
                     fillOpacity={1}
                     fill="url(#colorRevenue)"
@@ -488,7 +506,7 @@ const AdminDashboardView = ({
             background: "rgba(255,255,255,0.6)",
             border: "1px solid rgba(255,255,255,0.8)",
             backdropFilter: "blur(20px)",
-            boxShadow: "0 16px 48px rgba(236,72,153,0.06)",
+            boxShadow: "0 16px 48px rgba(249,115,22,0.06)",
           }}
         >
           <div className="mb-6">
@@ -534,14 +552,14 @@ const AdminDashboardView = ({
                   <Bar
                     dataKey="students"
                     name="Học viên"
-                    fill="#3b82f6"
+                    fill="#f97316"
                     radius={[4, 4, 0, 0]}
                     barSize={12}
                   />
                   <Bar
                     dataKey="instructors"
                     name="Giảng viên"
-                    fill="#ec4899"
+                    fill="#f59e0b"
                     radius={[4, 4, 0, 0]}
                     barSize={12}
                   />

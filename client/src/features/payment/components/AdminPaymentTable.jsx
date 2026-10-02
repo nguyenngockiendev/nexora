@@ -11,6 +11,7 @@ import {
   XCircle,
   Receipt,
   FileText,
+  BookOpen,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -21,8 +22,7 @@ const AdminPaymentTable = ({
   setSearchQuery,
   statusFilter,
   setStatusFilter,
-  currentPage,
-  setCurrentPage,
+
   loading,
 }) => {
   const navigate = useNavigate();
@@ -82,6 +82,10 @@ const AdminPaymentTable = ({
   const totalPending = transactions?.totalPurchasespending || 0;
   const countPending = transactions?.TotalPending || 0;
 
+  const allOrderHistory = transactions?.OrderHistory || [];
+  const allCount =
+    allOrderHistory.length || countComplete + countPending + countFailed;
+
   return (
     <div className="w-full space-y-7 pb-16">
       <div>
@@ -89,7 +93,8 @@ const AdminPaymentTable = ({
           Lịch Sử Thanh Toán &amp; Doanh Thu
         </h1>
         <p className="text-xs sm:text-sm font-semibold text-slate-500 mt-1">
-          Xem toàn bộ lịch sử mua khóa học, hóa đơn học viên và thanh quyết toán doanh thu
+          Xem toàn bộ lịch sử mua khóa học, hóa đơn học viên và thanh quyết toán
+          doanh thu
         </p>
       </div>
 
@@ -176,7 +181,7 @@ const AdminPaymentTable = ({
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+      <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
         <div className="relative flex-1 max-w-md">
           <Search
             size={18}
@@ -186,9 +191,10 @@ const AdminPaymentTable = ({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Tìm kiếm tên hoặc email"
-            className="w-full pl-11 pr-4 py-3 rounded-full text-xs sm:text-sm font-semibold text-slate-800 placeholder-slate-400 outline-none transition-all focus:ring-2 focus:ring-orange-500/20"
+            placeholder="Tìm kiếm theo tên học viên hoặc email..."
+            className="w-full pl-11 pr-4 py-2.5 rounded-full text-xs sm:text-sm font-semibold text-slate-800 placeholder-slate-400 outline-none transition-all focus:ring-2 focus:ring-orange-500/20"
             style={{
+              borderRadius: "9999px",
               background: "rgba(255, 255, 255, 0.85)",
               border: "1px solid rgba(255, 255, 255, 0.95)",
               boxShadow: "0 4px 15px rgba(0, 0, 0, 0.02)",
@@ -196,23 +202,133 @@ const AdminPaymentTable = ({
           />
         </div>
 
-        <div className="flex items-center gap-3">
-          <div
-            className="flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold text-slate-700 cursor-pointer hover:bg-white transition-all shadow-2xs"
+        <div
+          className="flex items-center gap-1.5 bg-white/80 p-1.5 rounded-full border border-slate-200/80 shadow-2xs overflow-x-auto"
+          style={{ borderRadius: "9999px" }}
+        >
+          <button
+            type="button"
+            onClick={() => setStatusFilter("all")}
             style={{
-              background: "rgba(255, 255, 255, 0.85)",
-              border: "1px solid rgba(255, 255, 255, 0.95)",
+              borderRadius: "9999px",
+              background:
+                statusFilter === "all"
+                  ? "linear-gradient(135deg, #f97316 0%, #ea580c 100%)"
+                  : "transparent",
             }}
+            className={`px-3.5 py-1.5 text-xs rounded-full font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 select-none ${
+              statusFilter === "all"
+                ? "text-white shadow-md shadow-orange-500/30 scale-[1.02]"
+                : "text-slate-600 hover:text-slate-900 hover:bg-white/80"
+            }`}
           >
-            <Calendar size={15} className="text-orange-500" />
-            <span>Tháng 8, 2026</span>
-            <ChevronDown size={14} className="text-slate-400" />
-          </div>
+            <span>Tất cả</span>
+            <span
+              className={`px-2 py-0.5 text-[10px] font-black transition-all ${
+                statusFilter === "all"
+                  ? "bg-white/25 text-white"
+                  : "bg-slate-200/70 text-slate-700"
+              }`}
+              style={{ borderRadius: "9999px" }}
+            >
+              {allCount}
+            </span>
+          </button>
 
           <button
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-black text-white shadow-md shadow-orange-500/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+            type="button"
+            onClick={() => setStatusFilter("completed")}
             style={{
-              background: "linear-gradient(135deg, #eca776, #9a3b08)",
+              borderRadius: "9999px",
+              background:
+                statusFilter === "completed"
+                  ? "linear-gradient(135deg, #10b981 0%, #059669 100%)"
+                  : "transparent",
+            }}
+            className={`px-3.5 py-1.5 text-xs rounded-full font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 select-none ${
+              statusFilter === "completed"
+                ? "text-white shadow-md shadow-emerald-500/30 scale-[1.02]"
+                : "text-slate-600 hover:text-slate-900 hover:bg-white/80"
+            }`}
+          >
+            <span>Đã thanh toán</span>
+            <span
+              className={`px-2 py-0.5 text-[10px] font-black transition-all ${
+                statusFilter === "completed"
+                  ? "bg-white/25 text-white"
+                  : "bg-slate-200/70 text-slate-700"
+              }`}
+              style={{ borderRadius: "9999px" }}
+            >
+              {countComplete}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setStatusFilter("pending")}
+            style={{
+              borderRadius: "9999px",
+              background:
+                statusFilter === "pending"
+                  ? "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)"
+                  : "transparent",
+            }}
+            className={`px-3.5 py-1.5 text-xs rounded-full font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 select-none ${
+              statusFilter === "pending"
+                ? "text-white shadow-md shadow-amber-500/30 scale-[1.02]"
+                : "text-slate-600 hover:text-slate-900 hover:bg-white/80"
+            }`}
+          >
+            <span>Chờ xử lý</span>
+            <span
+              className={`px-2 py-0.5 text-[10px] font-black transition-all ${
+                statusFilter === "pending"
+                  ? "bg-white/25 text-white"
+                  : "bg-slate-200/70 text-slate-700"
+              }`}
+              style={{ borderRadius: "9999px" }}
+            >
+              {countPending}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setStatusFilter("failed")}
+            style={{
+              borderRadius: "9999px",
+              background:
+                statusFilter === "failed"
+                  ? "linear-gradient(135deg, #f43f5e 0%, #e11d48 100%)"
+                  : "transparent",
+            }}
+            className={`px-3.5 py-1.5 text-xs rounded-full font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 select-none ${
+              statusFilter === "failed"
+                ? "text-white shadow-md shadow-rose-500/30 scale-[1.02]"
+                : "text-slate-600 hover:text-slate-900 hover:bg-white/80"
+            }`}
+          >
+            <span>Thất bại</span>
+            <span
+              className={`px-2 py-0.5 text-[10px] font-black transition-all ${
+                statusFilter === "failed"
+                  ? "bg-white/25 text-white"
+                  : "bg-slate-200/70 text-slate-700"
+              }`}
+              style={{ borderRadius: "9999px" }}
+            >
+              {countFailed}
+            </span>
+          </button>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-black text-white shadow-md shadow-orange-500/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer whitespace-nowrap"
+            style={{
+              background: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
               borderRadius: "9999px",
             }}
           >
@@ -284,7 +400,10 @@ const AdminPaymentTable = ({
                 >
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[3fr_1.5fr_1.2fr_1.4fr_1fr_1.1fr_0.5fr] items-center gap-4 w-full">
                     <div className="flex items-center gap-3 min-w-0">
-                      <span className="w-8 h-8 rounded-xl bg-slate-100/90 flex items-center justify-center text-slate-700 transition-transform duration-300 shadow-2xs flex-shrink-0">
+                      <span
+                        style={{ borderRadius: "9999px" }}
+                        className="w-8 h-8 rounded-full bg-slate-100/90 flex items-center justify-center text-slate-700 transition-transform duration-300 shadow-2xs flex-shrink-0"
+                      >
                         {isExpanded ? (
                           <ChevronDown size={16} />
                         ) : (
@@ -294,7 +413,8 @@ const AdminPaymentTable = ({
                       <img
                         src={studentAvatar}
                         alt={studentName}
-                        className="w-10 h-10 rounded-xl object-cover border border-white shadow-xs flex-shrink-0"
+                        style={{ borderRadius: "9999px" }}
+                        className="w-10 h-10 rounded-full object-cover border border-white shadow-xs flex-shrink-0"
                       />
                       <div className="truncate min-w-0">
                         <p className="text-xs sm:text-sm font-bold text-slate-900 truncate">
@@ -329,7 +449,9 @@ const AdminPaymentTable = ({
                     <div className="flex justify-end">
                       <button
                         type="button"
-                        className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all cursor-pointer"
+                        style={{ borderRadius: "9999px" }}
+                        className="p-2 rounded-full text-slate-400 hover:text-orange-600 hover:bg-orange-50/80 transition-all cursor-pointer"
+                        title="Tùy chọn"
                       >
                         <Settings size={16} />
                       </button>
@@ -397,9 +519,11 @@ const AdminPaymentTable = ({
                                       )
                                     }
                                     type="button"
-                                    className="px-4 py-2 rounded-full text-xs font-bold text-orange-600 bg-orange-50 border border-orange-200/80 hover:bg-orange-100 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer shadow-2xs"
+                                    style={{ borderRadius: "9999px" }}
+                                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold text-orange-600 bg-orange-50/90 border border-orange-200/80 hover:bg-orange-500 hover:text-white hover:border-transparent hover:scale-[1.02] active:scale-95 transition-all cursor-pointer shadow-2xs whitespace-nowrap"
                                   >
-                                    Xem giáo trình
+                                    <BookOpen size={13} />
+                                    <span>Xem giáo trình</span>
                                   </button>
                                 </div>
                               </div>
@@ -466,19 +590,25 @@ const AdminPaymentTable = ({
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-end gap-4 border-t border-amber-200/60 mt-5 pt-4">
+                    <div className="flex items-center justify-end gap-3 border-t border-amber-200/60 mt-5 pt-4">
                       <button
                         type="button"
-                        className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100/70 px-3.5 py-1.5 rounded-xl transition-all cursor-pointer"
+                        style={{ borderRadius: "9999px" }}
+                        className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-700 hover:text-slate-900 bg-white/80 hover:bg-white border border-slate-200/80 px-4 py-2 rounded-full shadow-2xs transition-all cursor-pointer"
                       >
                         <Receipt size={16} className="text-slate-500" />
                         <span>Xem hóa đơn</span>
                       </button>
                       <button
                         type="button"
-                        className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-orange-600 hover:text-orange-700 hover:bg-orange-50/70 px-3.5 py-1.5 rounded-xl transition-all cursor-pointer"
+                        style={{
+                          borderRadius: "9999px",
+                          background:
+                            "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+                        }}
+                        className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-white shadow-md shadow-orange-500/20 hover:scale-[1.02] active:scale-95 px-4 py-2 rounded-full transition-all cursor-pointer"
                       >
-                        <FileText size={16} className="text-orange-500" />
+                        <FileText size={16} className="text-white" />
                         <span>Tải hóa đơn PDF</span>
                       </button>
                     </div>
@@ -487,26 +617,6 @@ const AdminPaymentTable = ({
               </div>
             );
           })}
-        </div>
-        <div className="flex items-center justify-center gap-2 pt-6">
-          <button
-            type="button"
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-            className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-xs font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-40 cursor-pointer"
-          >
-            &lt;
-          </button>
-          <span className="px-3 py-1 rounded-full text-xs font-bold text-slate-600 bg-white border border-slate-200 shadow-2xs">
-            1-5 trên {transactions?.length || 5}
-          </span>
-          <button
-            type="button"
-            onClick={() => setCurrentPage((p) => p + 1)}
-            className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-xs font-bold text-slate-600 hover:bg-slate-50 cursor-pointer"
-          >
-            &gt;
-          </button>
         </div>
       </div>
     </div>

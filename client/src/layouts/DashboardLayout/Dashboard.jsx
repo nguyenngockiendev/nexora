@@ -5,7 +5,6 @@ import { Menu } from "lucide-react";
 
 import useDashboats from "../../features/dashboard/hooks/useDashboats";
 import CornerOrangeButton from "./components/ButtonInfor";
-import NotificationBell from "./components/Notification";
 
 const Dashboard = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -33,9 +32,9 @@ const Dashboard = () => {
       />
 
       <div
-        className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out z-10 ${collapsed ? "md:ml-[80px]" : "md:ml-[260px]"} ml-0`}
+        className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out z-10 ${collapsed ? "md:ml-[74px]" : "md:ml-[225px]"} ml-0`}
       >
-        <main className="relative flex-1 p-3 md:p-5 overflow-x-hidden">
+        <main className="relative flex-1 p-2.5 md:p-3.5 overflow-x-hidden">
           {/* Top bar controls on mobile */}
           <div className="flex items-center justify-between md:hidden mb-3">
             <button
@@ -48,9 +47,6 @@ const Dashboard = () => {
             </button>
           </div>
 
-          <div className="absolute top-3 right-20 sm:right-24 z-40">
-            <NotificationBell user={dashboard} />
-          </div>
           <CornerOrangeButton dashboard={dashboard} />
           <Outlet context={{ dashboard, setDashboard, loading }} />
         </main>
