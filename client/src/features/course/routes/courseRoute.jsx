@@ -1,14 +1,13 @@
-import { lazy } from "react";
+import LiveclassRoom from "../../class/pages/LiveClassRoomPage";
+import CourseEnrollments from "../../enrollments/pages/CourseEnrollmentsPage";
+import Lession from "../../lesson/pages/Lession";
+import DetailsCourseLive from "../pages/CourseDetailsLive";
+import CourseDetailsRecorded from "../pages/CourseDetailsRecorded";
+import Courses from "../pages/Courses";
+import CreateCourses from "../pages/CreateCourses";
+import UpdateCourse from "../pages/UpdateCourse";
 
-const LiveclassRoom = lazy(() => import("../../class/pages/LiveClassRoomPage"));
-const CourseEnrollments = lazy(() => import("../../enrollments/pages/CourseEnrollmentsPage"));
-const Lession = lazy(() => import("../../lesson/pages/Lession"));
-const DetailsCourseLive = lazy(() => import("../pages/CourseDetailsLive"));
-const CourseDetailsRecorded = lazy(() => import("../pages/CourseDetailsRecorded"));
-const Courses = lazy(() => import("../pages/Courses"));
-const CreateCourses = lazy(() => import("../pages/CreateCourses"));
-const UpdateCourse = lazy(() => import("../pages/UpdateCourse"));
-const AdminCourseQualityPage = lazy(() => import("../pages/AdminCourseQualityPage"));
+import AdminCourseQualityPage from "../pages/AdminCourseQualityPage";
 
 const courseRoute = [
   {

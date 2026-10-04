@@ -1,10 +1,8 @@
-import { lazy } from "react";
-
-const AdminUserPage = lazy(() => import("../pages/AdminUserPage"));
-const DetailsPage = lazy(() => import("../pages/DetailsUserPage"));
-const BecomeInstructor = lazy(() => import("../pages/BecomeInstructor"));
-const AdminTeacherRequests = lazy(() => import("../pages/AdminTeacherRequests"));
-const ProfilePage = lazy(() => import("../pages/ProfilePage"));
+import AdminUserPage from "../pages/AdminUserPage";
+import DetailsPage from "../pages/DetailsUserPage";
+import BecomeInstructor from "../pages/BecomeInstructor";
+import AdminTeacherRequests from "../pages/AdminTeacherRequests";
+import ProfilePage from "../pages/ProfilePage";
 
 const userRoutes = [
   {

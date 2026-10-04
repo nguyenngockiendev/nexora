@@ -1,7 +1,5 @@
-import { lazy } from "react";
-
-const HelpPage = lazy(() => import("../pages/HelpPage"));
-const AdminTeacherRequests = lazy(() => import("../../user/pages/AdminTeacherRequests"));
+import HelpPage from "../pages/HelpPage";
+import AdminTeacherRequests from "../../user/pages/AdminTeacherRequests";
 
 const helpRoutes = [
   {

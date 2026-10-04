@@ -1,11 +1,9 @@
-import { lazy } from "react";
-
-const ClassDetailsPage = lazy(() => import("../pages/ClassDetailsPage"));
-const CreateClass = lazy(() => import("../pages/CreateClasssPage"));
-const LiveclassRoom = lazy(() => import("../pages/LiveClassRoomPage"));
-const ManageClassStudents = lazy(() => import("../pages/ManageClassStudent"));
-const ManageLiveclassRoom = lazy(() => import("../pages/ManageLiveClassPage"));
-const MyClass = lazy(() => import("../pages/MyClassPage"));
+import ClassDetailsPage from "../pages/ClassDetailsPage";
+import CreateClass from "../pages/CreateClasssPage";
+import LiveclassRoom from "../pages/LiveClassRoomPage";
+import ManageClassStudents from "../pages/ManageClassStudent";
+import ManageLiveclassRoom from "../pages/ManageLiveClassPage";
+import MyClass from "../pages/MyClassPage";
 
 const ClassRoutes = [
   {

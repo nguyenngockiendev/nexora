@@ -1,11 +1,9 @@
-import { lazy } from "react";
-
-const CreateExamPage = lazy(() => import("../pages/CreateExamPage"));
-const TakeQuizPage = lazy(() => import("../pages/TakeQuizPage"));
-const StudentQuizListPage = lazy(() => import("../pages/StudentQuizListPage"));
-const AssessmentHubPage = lazy(() => import("../pages/AssessmentHubPage"));
-const InstructorQuizCourseListPage = lazy(() => import("../pages/InstructorQuizCourseListPage"));
-const InstructorQuizTrackingPage = lazy(() => import("../pages/InstructorQuizTrackingPage"));
+import CreateExamPage from "../pages/CreateExamPage";
+import TakeQuizPage from "../pages/TakeQuizPage";
+import StudentQuizListPage from "../pages/StudentQuizListPage";
+import AssessmentHubPage from "../pages/AssessmentHubPage";
+import InstructorQuizCourseListPage from "../pages/InstructorQuizCourseListPage";
+import InstructorQuizTrackingPage from "../pages/InstructorQuizTrackingPage";
 
 const quizzRoutes = [
   {

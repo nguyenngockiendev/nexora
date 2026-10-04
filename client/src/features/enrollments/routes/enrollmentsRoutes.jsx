@@ -1,7 +1,5 @@
-import { lazy } from "react";
-
-const CourseEnrollments = lazy(() => import("../pages/CourseEnrollmentsPage"));
-const MyCourses = lazy(() => import("../pages/MyCourse"));
+import CourseEnrollments from "../pages/CourseEnrollmentsPage";
+import MyCourses from "../pages/MyCourse";
 
 const enrollmentsRoutes = [
   {

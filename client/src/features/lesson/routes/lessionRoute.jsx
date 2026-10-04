@@ -1,9 +1,7 @@
-import { lazy } from "react";
-
-const Createlession = lazy(() => import("../pages/CreateLession"));
-const UpdateLessonPage = lazy(() => import("../pages/UpdateLessonPage"));
-const InstructorLessonCourseListPage = lazy(() => import("../pages/InstructorLessonCourseListPage"));
-const InstructorCurriculumPage = lazy(() => import("../pages/InstructorCurriculumPage"));
+import Createlession from "../pages/CreateLession";
+import UpdateLessonPage from "../pages/UpdateLessonPage";
+import InstructorLessonCourseListPage from "../pages/InstructorLessonCourseListPage";
+import InstructorCurriculumPage from "../pages/InstructorCurriculumPage";
 
 const lessionRoute = [
   {

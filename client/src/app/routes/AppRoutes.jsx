@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Suspense } from "react";
 
 import Dashboard from "../../layouts/DashboardLayout/Dashboard";
 import HomePage from "../../demo/HomePage/HomePage";
@@ -15,15 +14,6 @@ import paymentRoute from "../../features/payment/routes/paymentRoute";
 import cartRoute from "../../features/cart/routes/cartRoute";
 import helpRoutes from "../../features/help/routes/helpRoutes";
 import voucherRoutes from "../../features/voucher/routes/voucherRoutes";
-
-const LoadingFallback = () => (
-  <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50">
-    <div className="w-10 h-10 border-4 border-orange-500/20 border-t-orange-500 rounded-full animate-spin" />
-    <span className="mt-3 text-xs font-bold text-slate-400 tracking-wider uppercase">
-      Đang tải...
-    </span>
-  </div>
-);
 
 function AppRoutes() {
   const routes = [
@@ -42,27 +32,25 @@ function AppRoutes() {
 
   return (
     <BrowserRouter>
-      <Suspense fallback={<LoadingFallback />}>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
 
-          {authRoutes.map((route) => (
-            <Route key={route.path} path={route.path} element={route.element} />
-          ))}
+        {authRoutes.map((route) => (
+          <Route key={route.path} path={route.path} element={route.element} />
+        ))}
 
-          <Route path="/" element={<Dashboard />}>
-            {routes.map((route) => {
-              return (
-                <Route
-                  key={route.path}
-                  path={route.path}
-                  element={route.element}
-                />
-              );
-            })}
-          </Route>
-        </Routes>
-      </Suspense>
+        <Route path="/" element={<Dashboard />}>
+          {routes.map((route) => {
+            return (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={route.element}
+              />
+            );
+          })}
+        </Route>
+      </Routes>
     </BrowserRouter>
   );
 }
