@@ -2,16 +2,48 @@ import { CheckCircle2, AlertCircle, XCircle } from "lucide-react";
 import HistoryTable from "../components/OrderHistoryTable";
 import usePayment from "../hooks/usePayment";
 import { useEffect, useState } from "react";
+import useShareSocket from "../../../shared/hooks/useSocket";
+import { toast } from "react-toastify";
+
 import usePagination from "../../../shared/hooks/usePagination";
 import PaginationForm from "../../../shared/components/PaginationForm";
 
 const OrderHistory = () => {
   const { order, Resumepayment, deleteOrder, orderhistory } = usePayment();
+  const socket = useShareSocket();
 
   const [actionLoadingId, setActionLoadingId] = useState(null);
+  const [time, setTime] = useState(300);
+  const [urlPayment, seUrlPayment] = useState("");
+
   useEffect(() => {
     orderhistory();
   }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+    const handleSuccess = (data) => {
+      toast.success(data?.message || "Thanh toán thành công!");
+      seUrlPayment("");
+      orderhistory();
+    };
+    socket.on("payment_success", handleSuccess);
+    return () => socket.off("payment_success", handleSuccess);
+  }, [socket]);
+
+  useEffect(() => {
+    if (!urlPayment) {
+      setTime(300);
+      return;
+    }
+    if (time <= 0) {
+      return;
+    }
+    const timer = setInterval(() => {
+      setTime((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [urlPayment, time]);
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -91,7 +123,11 @@ const OrderHistory = () => {
   const handleResumePayment = async (orderId) => {
     try {
       setActionLoadingId(orderId);
-      await Resumepayment(orderId);
+      const res = await Resumepayment(orderId);
+      if (res?.url) {
+        seUrlPayment(res.url);
+        setTime(300);
+      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -112,10 +148,14 @@ const OrderHistory = () => {
       setActionLoadingId(null);
     }
   };
-const pagination = usePagination(order, 5);
+  const pagination = usePagination(order, 5);
+
   return (
     <div>
       <HistoryTable
+        time={time}
+        urlPaymet={urlPayment}
+        onClose={() => seUrlPayment("")}
         orders={pagination.currentData}
         formatPrice={formatPrice}
         formatDate={formatDate}

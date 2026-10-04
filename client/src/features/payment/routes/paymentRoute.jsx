@@ -1,5 +1,7 @@
-import OrderHistory from "../pages/OrderHistory";
-import AdminPaymentManagement from "../pages/AdminPaymentManagement";
+import { lazy } from "react";
+
+const OrderHistory = lazy(() => import("../pages/OrderHistory"));
+const AdminPaymentManagement = lazy(() => import("../pages/AdminPaymentManagement"));
 
 const paymentRoute = [
   {

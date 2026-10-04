@@ -1,4 +1,6 @@
-import VoucherManagementPage from "../pages/VoucherManagementPage";
+import { lazy } from "react";
+
+const VoucherManagementPage = lazy(() => import("../pages/VoucherManagementPage"));
 
 const voucherRoutes = [
   {

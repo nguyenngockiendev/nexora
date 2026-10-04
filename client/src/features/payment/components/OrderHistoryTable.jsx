@@ -12,6 +12,7 @@ import {
   CheckCircle2,
   Clock,
   Wallet,
+  X,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -23,9 +24,19 @@ const HistoryTable = ({
   handleResumePayment,
   handleCancelOrder,
   actionLoadingId,
+  time,
+  urlPaymet,
+  onClose,
 }) => {
   const navigate = useNavigate();
   const [expandedOrderId, setExpandedOrderId] = useState(null);
+  const [activeOrderId, setActiveOrderId] = useState(null);
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
 
   const toggleExpand = (orderId) => {
     setExpandedOrderId((prev) => (prev === orderId ? null : orderId));
@@ -360,10 +371,11 @@ const HistoryTable = ({
                             <button
                               type="button"
                               disabled={actionLoadingId !== null}
-                              onClick={() =>
+                              onClick={() => {
+                                setActiveOrderId(order._id);
                                 handleResumePayment &&
-                                handleResumePayment(order._id)
-                              }
+                                  handleResumePayment(order._id);
+                              }}
                               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-black text-white shadow-md shadow-orange-500/20 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50"
                               style={{
                                 borderRadius: "9999px",
@@ -372,7 +384,7 @@ const HistoryTable = ({
                               }}
                             >
                               {actionLoadingId === order._id ? (
-                                "Đang mở VNPay..."
+                                "Đang tạo mã QR..."
                               ) : (
                                 <>
                                   <CreditCard size={12} />
@@ -475,6 +487,83 @@ const HistoryTable = ({
           </div>
         )}
       </div>
+
+      {/* Modal Quét Mã Thanh Toán QR */}
+      {urlPaymet && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn"
+          onClick={(e) => {
+            if (e.target === e.currentTarget && onClose) onClose();
+          }}
+        >
+          <div className="relative w-full max-w-sm p-6 bg-white rounded-3xl shadow-2xl border border-slate-100 flex flex-col items-center">
+            {/* Nút đóng X */}
+            <button
+              type="button"
+              onClick={onClose}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition-colors cursor-pointer"
+            >
+              <X size={18} />
+            </button>
+
+            {/* Header */}
+            <div className="text-center mb-3">
+              <h3 className="text-lg font-black text-slate-800 tracking-tight">
+                Quét Mã VietQR
+              </h3>
+              <p className="text-xs text-slate-500 font-semibold mt-0.5">
+                Mở ứng dụng ngân hàng để quét mã thanh toán
+              </p>
+            </div>
+
+            {/* Khung QR chuẩn y hệt CartView */}
+            <div className="space-y-2.5 w-full">
+              {time > 0 ? (
+                <div className="flex items-center justify-between px-3.5 py-1.5 rounded-xl bg-orange-50/80 border border-orange-100 text-xs font-semibold">
+                  <span className="flex items-center gap-1.5 text-slate-500 text-[11px]">
+                    <Clock size={13} className="text-orange-500" /> Thời gian quét mã:
+                  </span>
+                  <span className="font-mono font-black text-orange-600 tracking-wider text-xs">
+                    {formatTime(time)}
+                  </span>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between px-3.5 py-1.5 rounded-xl bg-rose-50 border border-rose-200 text-xs font-bold text-rose-600">
+                  <span className="text-[11px]">Mã đã hết hạn!</span>
+                  {activeOrderId && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleResumePayment &&
+                        handleResumePayment(activeOrderId)
+                      }
+                      className="px-2.5 py-0.5 rounded-lg bg-rose-600 text-white text-[11px] hover:bg-rose-700 transition-colors cursor-pointer"
+                    >
+                      Tạo lại
+                    </button>
+                  )}
+                </div>
+              )}
+
+              <div
+                className={`p-1 rounded-[22px] bg-white border border-orange-200 shadow-md text-center overflow-hidden transition-all ${
+                  time === 0 ? "opacity-30 grayscale pointer-events-none" : ""
+                }`}
+              >
+                <img
+                  src={urlPaymet}
+                  alt="Mã VietQR Thanh Toán"
+                  className="w-full h-auto object-contain rounded-[18px]"
+                />
+              </div>
+            </div>
+
+            <p className="text-[11px] font-semibold text-center text-slate-400 mt-4">
+              Hệ thống sẽ tự động kích hoạt khóa học ngay khi nhận được thanh toán
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

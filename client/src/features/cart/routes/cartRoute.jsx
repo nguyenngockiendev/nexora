@@ -1,4 +1,6 @@
-import CartPage from "../pages/CartPage";
+import { lazy } from "react";
+
+const CartPage = lazy(() => import("../pages/CartPage"));
 
 const cartRoute = [
   {

@@ -55,6 +55,7 @@ const usePayment = () => {
       setError(null);
       const res = await resumepaymentCourse(orderId);
       setQrpayment(res);
+      return res;
     } catch (error) {
       console.log("payment error", error);
       const message = error.response?.data?.message || "payment failed!";
