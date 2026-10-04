@@ -9,6 +9,7 @@ const {
   GetAssessments,
   TrackingQuizz,
   UpdateAttempQuizz,
+  UpdateAttempQuizzAll,
 } = require("../service/quiz-service");
 
 const CreateQuiz = async (req, res) => {
@@ -53,6 +54,26 @@ const UpdateQuizz = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(error.status || 500).json({ message: error.message });
+  }
+};
+
+const UpdateQuizzAll = async (req, res) => {
+  try {
+    const data = {
+      quizId: req.params.quizId,
+      userId: req.user.userId,
+    };
+    const result = await UpdateAttempQuizzAll(data);
+    res.status(200).json({
+      success: true,
+      message: "Cập nhật thành công!",
+      data: result,
+    });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(error.status || 500)
+      .json({ success: false, message: error.message });
   }
 };
 
@@ -147,6 +168,7 @@ const RetakeQuizz = async (req, res) => {
 };
 module.exports = {
   RetakeQuizz,
+  UpdateQuizzAll,
   GetResultQuizz,
   GetAssessmentHubData,
   CreateQuiz,

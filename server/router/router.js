@@ -61,6 +61,7 @@ const {
   GetAssessmentHubData,
   GetResultQuizz,
   RetakeQuizz,
+  UpdateQuizzAll,
 } = require("../controller/quiz-controller");
 const {
   GetAlluser,
@@ -472,6 +473,12 @@ Router.delete(
   authMiddleware,
   checkRole("admin", "instructor"),
   deleteVou,
+);
+Router.patch(
+  "/retake_quizz/:quizId/all",
+  authMiddleware,
+  checkRole("admin", "instructor"),
+  UpdateQuizzAll,
 );
 Router.post(
   "/vouchers_preview",

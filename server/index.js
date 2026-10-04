@@ -9,8 +9,12 @@ const Router = require("./router/router");
 const registerSoket = require("./socket");
 
 const app = express();
-app.use(cors());
-const PORT = process.env.PORT || 9000;
+app.use(
+  cors({
+    origin: [process.env.CLIENT_URL, "http://localhost:5173"],
+  }),
+);
+const PORT = process.env.PORT;
 app.use(express.json());
 DBconnection();
 app.use("/uploads", express.static("uploads"));
@@ -19,7 +23,7 @@ app.use("/api", Router);
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || "*",
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
     methods: ["GET", "POST"],
   },
 });

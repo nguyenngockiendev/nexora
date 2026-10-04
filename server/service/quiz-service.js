@@ -65,7 +65,9 @@ const GetQuizzById = async (data) => {
 
     return {
       ...res,
-      questions: res.questions.map(({ correctAnswer, explanation, ...rest }) => rest),
+      questions: res.questions.map(
+        ({ correctAnswer, explanation, ...rest }) => rest,
+      ),
     };
   } catch (error) {
     console.log(error);
@@ -150,7 +152,7 @@ const CreateAttempQuiz = async (data) => {
       };
     });
     const IsExitAttemps = await QuizAttempts.findOne({
-      _id: data.attempsId,
+      lessonId: data.lessonId,
       studentId: data.id,
     });
     if (IsExitAttemps) {
@@ -163,7 +165,7 @@ const CreateAttempQuiz = async (data) => {
         status: "submitted",
       };
       const update = await QuizAttempts.findByIdAndUpdate(
-        data.attempsId,
+        IsExitAttemps._id,
         result,
         {
           new: true,
@@ -398,7 +400,7 @@ const TrackingQuizz = async (data) => {
     })
 
       .populate("lessonId")
-      .populate("quizId", "title duration questions passScore")
+      .populate("quizId", "title duration questions passScore _id")
       .populate("studentId", "name email avatar")
       .populate("courseId", "_id");
 
@@ -413,6 +415,7 @@ const TrackingQuizz = async (data) => {
       return {
         _id: item._id,
         lessonId: lesson._id,
+        quizId: quiz._id,
         courseId: item.courseId?._id,
         lessonTitle: lesson.title,
         title: quiz.title || lesson.title || "Bài Kiểm Tra",
@@ -487,9 +490,44 @@ const UpdateAttempQuizz = async (data) => {
     throw error;
   }
 };
+const UpdateAttempQuizzAll = async (data) => {
+  try {
 
+    const isExitAttemps = await QuizAttempts.findOne({ quizId: data.quizId });
+    if(!isExitAttemps){
+      throw { status: 404, message: "Không tìm thấy bài kiểm tra!" };
+    }
+    const IsexitCour = await Courses.findOne({
+      _id: isExitAttemps.courseId,
+      instructor: data.userId,
+    });
+    if (!IsexitCour) {
+      throw { status: 404, message: "Bạn không có quyền vào nguồn này!" };
+    }
+
+    if (isExitAttemps.status === "retake") {
+      throw {
+        status: 400,
+        message: "Đang có học sinh trong trạng thái thi lại chưa nộp bài!",
+      };
+    }
+    const update = await QuizAttempts.updateMany(
+      { quizId: data.quizId },
+      {
+        status: "retake",
+        $inc: { retakeCount: 1 },
+      },
+      { new: true },
+    );
+    return update;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 module.exports = {
   UpdateAttempQuizz,
+  UpdateAttempQuizzAll,
   TrackingQuizz,
   GetAssessments,
   CreateQuizByIntructor,
