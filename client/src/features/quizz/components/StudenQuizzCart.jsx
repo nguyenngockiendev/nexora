@@ -20,7 +20,10 @@ const StudentQuizzCart = ({
           </p>
         </div>
 
-        <div className="flex items-center gap-1.5 p-1 bg-white/70 backdrop-blur-md rounded-2xl border border-slate-200/70 self-start md:self-auto shadow-xs">
+        <div
+          className="flex items-center gap-1.5 p-1.5 bg-white/70 backdrop-blur-md border border-slate-200/70 self-start md:self-auto shadow-xs"
+          style={{ borderRadius: "9999px" }}
+        >
           {[
             { key: "ALL", label: "Tất cả" },
             { key: "NOT_STARTED", label: "Chưa làm" },
@@ -32,11 +35,12 @@ const StudentQuizzCart = ({
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`px-4 py-1.5 text-xs font-bold transition-all cursor-pointer ${
                   isActive
                     ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs"
                     : "text-slate-600 hover:text-orange-600 hover:bg-white/80"
                 }`}
+                style={{ borderRadius: "9999px" }}
               >
                 {tab.label}
               </button>
@@ -55,7 +59,8 @@ const StudentQuizzCart = ({
           placeholder="Tìm kiếm bài kiểm tra, khóa học..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 bg-white/80 backdrop-blur-md border border-slate-200/80 rounded-2xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15 transition-all shadow-xs"
+          className="w-full pl-10 pr-4 py-2.5 bg-white/80 backdrop-blur-md border border-slate-200/80 text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/15 transition-all shadow-xs"
+          style={{ borderRadius: "9999px" }}
         />
       </div>
 
@@ -132,22 +137,24 @@ const StudentQuizzCart = ({
                       onClick={() =>
                         navigate(`/quizz/lession/${quiz.lessonId}`)
                       }
-                      className="px-3.5 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-xs hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200 transition-all cursor-pointer shadow-xs"
+                      className="px-4 py-2 border border-slate-200 bg-white text-slate-700 font-bold text-xs hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200 transition-all cursor-pointer shadow-xs"
+                      style={{ borderRadius: "9999px" }}
                     >
                       Xem lịch sử
                     </button>
                   )}
 
-                  {isFailed  && reteke && (
+                  {isFailed && reteke && (
                     <button
                       type="button"
                       onClick={() =>
                         navigate(`/quizz/lession/${quiz.lessonId}`)
                       }
-                      className="px-4 py-1.5 rounded-xl text-white font-bold text-xs transition-all shadow-xs cursor-pointer hover:scale-105"
+                      className="px-5 py-2 text-white font-bold text-xs transition-all shadow-md shadow-orange-500/20 cursor-pointer hover:scale-105 active:scale-95"
                       style={{
                         background:
                           "linear-gradient(135deg, #f97316, #ea580c)",
+                        borderRadius: "9999px",
                       }}
                     >
                       Thi lại
@@ -160,10 +167,11 @@ const StudentQuizzCart = ({
                       onClick={() =>
                         navigate(`/quizz/lession/${quiz.lessonId}`)
                       }
-                      className="px-4 py-2 rounded-xl text-white font-bold text-xs transition-all shadow-sm cursor-pointer hover:scale-105 active:scale-95"
+                      className="px-5 py-2 text-white font-bold text-xs transition-all shadow-md shadow-orange-500/20 cursor-pointer hover:scale-105 active:scale-95"
                       style={{
                         background:
                           "linear-gradient(135deg, #f97316, #ea580c)",
+                        borderRadius: "9999px",
                       }}
                     >
                       Bắt đầu làm bài

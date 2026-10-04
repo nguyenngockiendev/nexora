@@ -69,32 +69,46 @@ const MyClassCart = ({
       {/* ── 2. NEXT SESSION HIGHLIGHT (Hero Banner) ── */}
       {nextClass && (
         <section
-          className="relative overflow-hidden rounded-[2rem] p-6 lg:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
+          className="relative overflow-hidden rounded-3xl p-5 lg:py-6 lg:px-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-sm transition-all"
           style={{
-            background: 'rgba(255,255,255,0.65)',
-            border: '1px solid rgba(255,255,255,0.85)',
-            backdropFilter: 'blur(24px)',
-            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.9), 0 12px 36px rgba(194,110,30,0.06)',
+            background:
+              "linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 41, 59, 0.90) 60%, rgba(15, 23, 42, 0.96) 100%)",
+            backdropFilter: "blur(32px)",
+            WebkitBackdropFilter: "blur(32px)",
+            border: "1px solid rgba(255, 255, 255, 0.16)",
+            boxShadow:
+              "0 18px 48px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.2)",
           }}
         >
-          <div className="absolute -top-32 -right-20 w-[350px] h-[350px] rounded-full opacity-20 pointer-events-none animate-pulse" style={{ background: 'radial-gradient(circle, #f97316 0%, transparent 60%)', filter: 'blur(40px)', animationDuration: '5s' }} />
+          <div
+            className="absolute -top-32 -right-20 w-[350px] h-[350px] rounded-full pointer-events-none opacity-40 blur-3xl animate-pulse"
+            style={{
+              background:
+                "radial-gradient(circle, rgba(249, 115, 22, 0.35) 0%, rgba(245, 158, 11, 0.15) 50%, transparent 60%)",
+              animationDuration: "5s",
+            }}
+          />
 
           <div className="relative z-10 max-w-2xl">
             <div
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-3 shadow-sm"
-              style={{ background: 'rgba(249,115,22,0.12)', border: '1px solid rgba(249,115,22,0.25)', color: '#ea580c' }}
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-2.5 shadow-2xs"
+              style={{
+                background: "rgba(255, 255, 255, 0.1)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                color: "#fb923c",
+              }}
             >
-              <span className="w-2 h-2 rounded-full bg-orange-500 animate-ping" /> Lớp Học Sắp Diễn Ra Tiếp Theo
+              <span className="w-2 h-2 rounded-full bg-orange-400 animate-ping" /> Lớp Học Sắp Diễn Ra Tiếp Theo
             </div>
-            <h2 className="text-3xl md:text-4xl font-extrabold mb-2 text-slate-800 leading-snug">
+            <h2 className="text-2xl md:text-3xl font-black mb-2 text-white leading-snug tracking-tight">
               {nextClass.className}
             </h2>
-            <div className="flex flex-wrap gap-4 text-xs font-medium text-slate-500">
+            <div className="flex flex-wrap gap-4 text-xs font-medium text-slate-300">
               <span className="flex items-center gap-1.5">
-                <Calendar size={14} className="text-orange-500" /> Khai giảng: {nextClass.startDate}
+                <Calendar size={14} className="text-orange-400" /> Khai giảng: {nextClass.startDate}
               </span>
               <span className="flex items-center gap-1.5">
-                <Clock size={14} className="text-orange-500" /> {getDayLabel(nextClass.schedule?.day)} ({nextClass.schedule?.startTime} - {nextClass.schedule?.endTime})
+                <Clock size={14} className="text-orange-400" /> {getDayLabel(nextClass.schedule?.day)} ({nextClass.schedule?.startTime} - {nextClass.schedule?.endTime})
               </span>
             </div>
           </div>
@@ -104,7 +118,7 @@ const MyClassCart = ({
               <button
                 className="w-full md:w-auto flex items-center justify-center gap-2.5 px-7 py-3 rounded-full font-bold text-white text-sm transition-all duration-300 hover:scale-105 hover:shadow-xl group cursor-pointer"
                 style={{
-                  background: 'linear-gradient(135deg, #f97316, #fb923c)',
+                  background: 'linear-gradient(135deg, #f97316, #ea580c)',
                   boxShadow: '0 6px 20px rgba(249,115,22,0.3)',
                   borderRadius: '9999px',
                 }}

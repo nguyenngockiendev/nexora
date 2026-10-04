@@ -60,7 +60,7 @@ const CoursesForm = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
           {/* Khối Trái (~66%): Khóa học xuất sắc nhất Hero Banner */}
           <div
-            className="lg:col-span-8 relative rounded-3xl overflow-hidden p-6 md:p-7 flex flex-col justify-between shadow-md shadow-orange-500/10 min-h-[320px] group transition-all duration-300 hover:shadow-lg"
+            className="lg:col-span-8 keep-dark relative rounded-3xl overflow-hidden p-6 md:p-7 flex flex-col justify-between shadow-md shadow-orange-500/10 min-h-[320px] group transition-all duration-300 hover:shadow-lg"
             style={{
               background:
                 "linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 41, 59, 0.90) 55%, rgba(234, 88, 12, 0.28) 100%)",

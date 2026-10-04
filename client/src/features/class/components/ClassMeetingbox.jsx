@@ -83,42 +83,49 @@ const ClassRoom = ({
         className="relative rounded-[2.5rem] overflow-hidden p-8 md:p-12 flex flex-col items-center justify-center text-center gap-4 shadow-xl transition-all"
         style={{
           background:
-            "linear-gradient(135deg, rgba(40,30,20,0.65) 0%, rgba(70,50,30,0.55) 50%, rgba(30,25,20,0.7) 100%)",
-          backdropFilter: "blur(30px)",
-          border: "1px solid rgba(255,255,255,0.2)",
+            "linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 41, 59, 0.90) 60%, rgba(15, 23, 42, 0.96) 100%)",
+          backdropFilter: "blur(32px)",
+          WebkitBackdropFilter: "blur(32px)",
+          border: "1px solid rgba(255, 255, 255, 0.16)",
           boxShadow:
-            "0 20px 60px rgba(0,0,0,0.15), inset 0 1px 1px rgba(255,255,255,0.3)",
+            "0 18px 48px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.2)",
         }}
       >
         <div className="absolute top-4 left-6 z-20">
           <button
             onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold text-white/90 bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm group cursor-pointer"
-            style={{ borderRadius: "9999px" }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold text-white hover:bg-white/20 transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm group cursor-pointer"
+            style={{
+              borderRadius: "9999px",
+              background: "rgba(255, 255, 255, 0.1)",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+            }}
           >
             <ArrowLeft
               size={15}
-              className="group-hover:-translate-x-1 transition-transform"
+              className="group-hover:-translate-x-1 transition-transform text-slate-300"
             />
             <span>Quay lại</span>
           </button>
         </div>
 
+        {/* Ambient Glow */}
         <div
-          className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full pointer-events-none opacity-40 blur-[90px]"
+          className="absolute -top-24 -right-24 w-80 h-80 rounded-full pointer-events-none opacity-40 blur-3xl"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(249, 115, 22, 0.35) 0%, rgba(245, 158, 11, 0.15) 50%, transparent 70%)",
+          }}
+        />
+        <div
+          className="absolute -bottom-24 left-10 w-72 h-72 rounded-full pointer-events-none opacity-20 blur-[80px]"
           style={{
             background: "radial-gradient(circle, #f97316 0%, transparent 70%)",
           }}
         />
-        <div
-          className="absolute -bottom-24 right-10 w-72 h-72 rounded-full pointer-events-none opacity-30 blur-[80px]"
-          style={{
-            background: "radial-gradient(circle, #fbbf24 0%, transparent 70%)",
-          }}
-        />
 
         <div className="relative z-10 flex flex-col items-center gap-3 max-w-2xl">
-          <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight drop-shadow-md">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight drop-shadow-md">
             {classs?.className || "Phòng Học Trực Tuyến"}
           </h1>
         </div>
@@ -127,9 +134,9 @@ const ClassRoom = ({
           onClick={() => window.open(classs?.meetingLink, "_blank")}
           className="relative z-10 flex items-center gap-2.5 px-7 py-3 rounded-full font-bold text-white text-sm transition-all duration-300 hover:scale-105 hover:shadow-2xl group active:scale-95 cursor-pointer"
           style={{
-            background: "linear-gradient(135deg, #f97316, #fb923c)",
+            background: "linear-gradient(135deg, #f97316, #ea580c)",
             borderRadius: "9999px",
-            boxShadow: "0 8px 24px rgba(249,115,22,0.45)",
+            boxShadow: "0 8px 24px rgba(249, 115, 22, 0.4)",
           }}
         >
           <Video className="w-4 h-4 group-hover:rotate-12 transition-transform" />
@@ -143,12 +150,15 @@ const ClassRoom = ({
         <div className="lg:col-span-8 space-y-8">
           {/* Teacher Profile Card */}
           <div
-            className="p-5 rounded-[2rem] transition-all flex items-center gap-4 relative overflow-hidden"
+            className="p-5 rounded-[2rem] transition-all flex items-center gap-4 relative overflow-hidden shadow-sm"
             style={{
-              background: "rgba(255,255,255,0.7)",
-              border: "1px solid rgba(255,255,255,0.8)",
+              background:
+                "linear-gradient(145deg, rgba(30, 41, 59, 0.70) 0%, rgba(15, 23, 42, 0.75) 100%)",
+              border: "1px solid rgba(255, 255, 255, 0.14)",
               backdropFilter: "blur(20px)",
-              boxShadow: "0 4px 20px rgba(194,110,30,0.04)",
+              WebkitBackdropFilter: "blur(20px)",
+              boxShadow:
+                "0 8px 28px rgba(0, 0, 0, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.12)",
             }}
           >
             <img
@@ -157,11 +167,11 @@ const ClassRoom = ({
                 "https://ui-avatars.com/api/?name=Teacher&background=random"
               }
               alt="Giảng viên"
-              className="w-16 h-16 rounded-full object-cover ring-4 ring-white/90 shadow-md shrink-0"
+              className="w-16 h-16 rounded-full object-cover ring-2 ring-orange-500/50 shadow-md shrink-0"
             />
             <div className="flex-1 min-w-0 space-y-1.5">
               <div className="flex items-center gap-1.5">
-                <h3 className="text-lg font-extrabold text-slate-800 truncate">
+                <h3 className="text-lg font-black text-white truncate">
                   {classs?.instructorId?.name || "Giảng viên Nexora"}
                 </h3>
                 <span className="w-4 h-4 rounded-full bg-blue-500 text-white flex items-center justify-center text-[9px] font-extrabold shrink-0 shadow-sm">
@@ -171,18 +181,24 @@ const ClassRoom = ({
 
               <div className="flex flex-wrap items-center gap-2">
                 <span
-                  className="px-3 py-1 bg-white/90 text-orange-600 rounded-full text-xs font-semibold border border-orange-200/80 shadow-sm flex items-center gap-1.5"
-                  style={{ borderRadius: "9999px" }}
+                  className="px-3 py-1 text-orange-400 rounded-full text-xs font-semibold shadow-sm flex items-center gap-1.5"
+                  style={{
+                    background: "rgba(249, 115, 22, 0.15)",
+                    border: "1px solid rgba(249, 115, 22, 0.3)",
+                    borderRadius: "9999px",
+                  }}
                 >
-                  <span className="text-orange-500 text-[11px]">⚛️</span> Chuyên
-                  gia đào tạo
+                  <span className="text-[11px]">⚛️</span> Chuyên gia đào tạo
                 </span>
                 <span
-                  className="px-3 py-1 bg-white/90 text-amber-700 rounded-full text-xs font-semibold border border-amber-200/80 shadow-sm flex items-center gap-1.5"
-                  style={{ borderRadius: "9999px" }}
+                  className="px-3 py-1 text-amber-300 rounded-full text-xs font-semibold shadow-sm flex items-center gap-1.5"
+                  style={{
+                    background: "rgba(245, 158, 11, 0.15)",
+                    border: "1px solid rgba(245, 158, 11, 0.3)",
+                    borderRadius: "9999px",
+                  }}
                 >
-                  <span className="text-amber-500 text-[11px]">🏆</span> Giảng
-                  viên xuất sắc
+                  <span className="text-[11px]">🏆</span> Giảng viên xuất sắc
                 </span>
               </div>
             </div>

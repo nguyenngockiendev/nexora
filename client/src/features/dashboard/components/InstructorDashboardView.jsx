@@ -222,46 +222,47 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
   return (
     <div className="p-4 md:p-6 space-y-5">
       <section
-        className="relative overflow-hidden rounded-3xl p-6 lg:p-8"
+        className="relative overflow-hidden rounded-3xl p-5 lg:py-6 lg:px-8 shadow-sm transition-all"
         style={{
-          background: "rgba(255,255,255,0.6)",
-          border: "1px solid rgba(255,255,255,0.8)",
+          background:
+            "linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 41, 59, 0.90) 60%, rgba(15, 23, 42, 0.96) 100%)",
           backdropFilter: "blur(32px)",
+          WebkitBackdropFilter: "blur(32px)",
+          border: "1px solid rgba(255, 255, 255, 0.16)",
           boxShadow:
-            "inset 0 1px 0 rgba(255,255,255,0.9), 0 16px 48px rgba(194,110,30,0.08)",
+            "0 18px 48px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.2)",
         }}
       >
-        <div className="absolute top-0 left-16 right-16 h-[1px] bg-gradient-to-r from-transparent via-orange-400/40 to-transparent" />
+        <div className="absolute top-0 left-16 right-16 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
         <div
-          className="absolute -top-20 -right-20 w-64 h-64 rounded-full opacity-20 pointer-events-none"
+          className="absolute -top-20 -right-20 w-80 h-80 rounded-full opacity-35 pointer-events-none"
           style={{
-            background: "radial-gradient(circle, #f97316 0%, transparent 70%)",
+            background:
+              "radial-gradient(circle, rgba(249, 115, 22, 0.35) 0%, rgba(245, 158, 11, 0.15) 50%, transparent 70%)",
             filter: "blur(40px)",
           }}
         />
 
-        <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1fr)_275px] items-center">
           <div>
             <div
               className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-widest"
               style={{
-                background: "rgba(249,115,22,0.12)",
-                border: "1px solid rgba(249,115,22,0.25)",
-                color: "#ea580c",
+                background: "rgba(255, 255, 255, 0.1)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                color: "#fb923c",
+                borderRadius: "9999px",
               }}
             >
               <TrendingUp size={13} />
               Tổng quan giảng viên
             </div>
-            <h1
-              className="mt-5 max-w-2xl text-4xl font-black leading-tight md:text-5xl"
-              style={{ color: "#1e293b" }}
-            >
+            <h1 className="mt-3.5 max-w-2xl text-2xl sm:text-3xl lg:text-4xl font-black leading-tight text-white">
               Chào mừng trở lại,{" "}
               <span
                 style={{
                   background:
-                    "linear-gradient(135deg, #f97316, #f59e0b, #fb923c)",
+                    "linear-gradient(135deg, #fbbf24 0%, #f97316 60%, #ea580c 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                 }}
@@ -269,60 +270,49 @@ const InstructorDashboardView = ({ dashboard, error, loading, onRetry }) => {
                 {intructorname?.name}
               </span>
             </h1>
-            <p
-              className="mt-4 max-w-xl text-base leading-7"
-              style={{ color: "#eda01c" }}
-            >
-              • Mức hưởng hiện tại: <strong> 70% </strong> doanh thu/khóa học
+            <p className="mt-2.5 max-w-xl text-xs sm:text-sm font-semibold text-orange-400">
+              • Mức hưởng hiện tại: <strong className="text-white"> 70% </strong> doanh thu/khóa học
             </p>
-            <p
-              className="mt-4 max-w-xl text-base leading-7"
-              style={{ color: "#64748b" }}
-            >
+            <p className="mt-1.5 max-w-xl text-xs sm:text-sm leading-relaxed text-slate-300">
               Theo dõi hiệu quả khóa học, lớp trực tuyến, lượt đăng ký và doanh
               thu trong cùng một không gian làm việc.
             </p>
           </div>
 
           <div
-            className="rounded-3xl p-5"
+            className="rounded-3xl p-5 relative overflow-hidden shadow-sm"
             style={{
               background:
-                "linear-gradient(135deg, rgba(249,115,22,0.2) 0%, rgba(251,146,60,0.12) 100%)",
-              border: "1px solid rgba(249,115,22,0.25)",
+                "linear-gradient(145deg, rgba(30, 41, 59, 0.70) 0%, rgba(15, 23, 42, 0.75) 100%)",
+              border: "1px solid rgba(255, 255, 255, 0.14)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
               boxShadow:
-                "inset 0 1px 0 rgba(255,255,255,0.6), 0 8px 32px rgba(194,110,30,0.12)",
+                "0 8px 28px rgba(0, 0, 0, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.12)",
             }}
           >
             <div className="flex items-center justify-between">
-              <span
-                className="text-sm font-semibold"
-                style={{ color: "#64748b" }}
-              >
+              <span className="text-xs sm:text-sm font-semibold text-slate-300">
                 Tổng doanh thu
               </span>
               <div
-                className="w-9 h-9 rounded-xl flex items-center justify-center"
+                className="w-9 h-9 rounded-xl flex items-center justify-center bg-white/10 border border-white/10"
                 style={{
-                  background: "rgba(249,115,22,0.15)",
                   boxShadow: "0 0 12px rgba(249,115,22,0.2)",
                 }}
               >
-                <Wallet size={16} style={{ color: "#ea580c" }} />
+                <Wallet size={16} className="text-orange-400" />
               </div>
             </div>
-            <strong
-              className="mt-6 block text-3xl font-black leading-none md:text-4xl"
-              style={{ color: "#1e293b" }}
-            >
+            <strong className="mt-4 block text-2xl sm:text-3xl font-black leading-none text-white">
               {formatCurrency(overview.totalRevenue)}
             </strong>
             <div
-              className="mt-5 flex items-center justify-between border-t pt-4 text-sm"
-              style={{ borderColor: "rgba(249,115,22,0.15)" }}
+              className="mt-4 flex items-center justify-between border-t pt-3.5 text-xs sm:text-sm"
+              style={{ borderColor: "rgba(255, 255, 255, 0.1)" }}
             >
-              <span style={{ color: "#64748b" }}>Đơn hàng hoàn tất</span>
-              <span className="font-bold" style={{ color: "#1e293b" }}>
+              <span className="text-slate-300">Đơn hàng hoàn tất</span>
+              <span className="font-bold text-white">
                 {formatNumber(overview.completedOrders)}
               </span>
             </div>

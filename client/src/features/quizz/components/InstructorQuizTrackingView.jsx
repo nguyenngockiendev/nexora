@@ -10,6 +10,7 @@ const CONFIG = {
     emptySidebar: "Khóa học này chưa có bài Quizz nào.",
     headerLabel: "Đang xem bảng điểm bài:",
     actionBtnText: "Xem Đề Thi",
+    actionBtnRetake: "Thi lại bài này",
     stat1Label: "Tổng Lượt Thi",
     stat2Label: "Điểm Trung Bình",
     stat3Label: "Tỷ Lệ Đạt",
@@ -56,6 +57,7 @@ const InstructorQuizTrackingView = ({
   onOpenSubmissionModal,
   onOpenGradingModal,
   onAllowRetake,
+  handleAllwRetake,
 }) => {
   const currentConfig = CONFIG[mode] || CONFIG.recorded;
 
@@ -377,7 +379,14 @@ const InstructorQuizTrackingView = ({
                   </div>
                 </div>
 
-                {/* ACTION: XEM ĐỀ */}
+                <Button
+                  variant="outline-primary"
+                  className="rounded-pill px-3 py-1.5 fw-bold text-xs d-flex align-items-center gap-1.5 shrink-0"
+                  onClick={() => handleAllwRetake(activeQuiz.quizId)}
+                >
+                  <span>📝</span>
+                  <span>{currentConfig.actionBtnRetake}</span>
+                </Button>
                 <Button
                   variant="outline-primary"
                   className="rounded-pill px-3 py-1.5 fw-bold text-xs d-flex align-items-center gap-1.5 shrink-0"
