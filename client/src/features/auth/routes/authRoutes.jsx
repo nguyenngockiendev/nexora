@@ -1,9 +1,7 @@
 
-import { lazy } from "react";
-
-const FogotPassword = lazy(() => import("../pages/ForgotPassWord"));
-const Login = lazy(() => import("../pages/Login"));
-const Register = lazy(() => import("../pages/Register"));
+import FogotPassword from "../pages/ForgotPassWord";
+import Login from "../pages/Login";
+import Register from "../pages/Register";
 
 const authRoutes = [
  

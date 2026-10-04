@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { lazy, Suspense } from "react";
+import { Suspense } from "react";
 
-const Dashboard = lazy(() => import("../../layouts/DashboardLayout/Dashboard"));
+import Dashboard from "../../layouts/DashboardLayout/Dashboard";
 import HomePage from "../../demo/HomePage/HomePage";
 import courseRoute from "../../features/course/routes/courseRoute";
 import authRoutes from "../../features/auth/routes/authRoutes";
