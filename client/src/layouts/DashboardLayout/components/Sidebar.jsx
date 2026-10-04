@@ -1,7 +1,8 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import Nav_Sidebar from "../Nav_sidebar";
-import { ChevronLeft, ChevronRight, LogOut } from "lucide-react";
+import { ChevronLeft, ChevronRight, LogOut, Lightbulb } from "lucide-react";
 import { useCart } from "../../../features/cart/hooks/useCart";
+import { useState, useEffect } from "react";
 
 const Sidebar = ({
   collapsed,
@@ -11,10 +12,28 @@ const Sidebar = ({
   dashboard,
 }) => {
   const { cartItems } = useCart();
+  const [isDark, setIsDark] = useState(() => {
+    return localStorage.getItem("theme") !== "light";
+  });
+
   const handleNavClick = () => {
     if (window.innerWidth <= 768) setMobileOpen(false);
   };
   const navigation = useNavigate();
+
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add("dark-coc-coc");
+    } else {
+      document.documentElement.classList.remove("dark-coc-coc");
+    }
+  }, [isDark]);
+
+  const toggleDarkMode = () => {
+    const newMode = !isDark;
+    setIsDark(newMode);
+    localStorage.setItem("theme", newMode ? "dark" : "light");
+  };
 
   return (
     <>
@@ -53,9 +72,28 @@ const Sidebar = ({
               className="w-8 h-8 object-contain shrink-0 transition-transform hover:scale-105"
             />
             {!collapsed && (
-              <span className="font-extrabold text-base text-slate-800 tracking-tight whitespace-nowrap">
-                Nexora LMS
-              </span>
+              <div className="flex items-center gap-1.5">
+                <span className="font-extrabold text-base text-slate-800 tracking-tight whitespace-nowrap">
+                  Nexora LMS
+                </span>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleDarkMode();
+                  }}
+                  className="p-1 rounded-full hover:scale-115 active:scale-90 transition-all cursor-pointer group flex items-center justify-center"
+                >
+                  <Lightbulb
+                    size={16}
+                    className={
+                      isDark
+                        ? "text-amber-400 fill-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.8)]"
+                        : "text-slate-400 group-hover:text-amber-500 transition-colors"
+                    }
+                  />
+                </button>
+              </div>
             )}
           </div>
 
@@ -127,17 +165,21 @@ const Sidebar = ({
                           style={{ color: isActive ? "#ea580c" : "#64748b" }}
                         >
                           {item.icon && <item.icon size={17} />}
-                          {collapsed && item.path === "cart" && cartItems?.length > 0 && (
-                            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-orange-500 text-white text-[9px] font-black flex items-center justify-center shadow-xs">
-                              {cartItems.length > 9 ? "9+" : cartItems.length}
-                            </span>
-                          )}
+                          {collapsed &&
+                            item.path === "cart" &&
+                            cartItems?.length > 0 && (
+                              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-orange-500 text-white text-[9px] font-black flex items-center justify-center shadow-xs">
+                                {cartItems.length > 9 ? "9+" : cartItems.length}
+                              </span>
+                            )}
                         </span>
                         {!collapsed && (
                           <div className="flex items-center justify-between flex-1 min-w-0">
                             <span
                               className="text-xs font-semibold whitespace-nowrap truncate no-underline"
-                              style={{ color: isActive ? "#ea580c" : "#334155" }}
+                              style={{
+                                color: isActive ? "#ea580c" : "#334155",
+                              }}
                             >
                               {item.name}
                             </span>
@@ -174,9 +216,7 @@ const Sidebar = ({
           <div
             onClick={() => navigation("/profile")}
             className={`flex items-center rounded-2xl cursor-pointer hover:bg-orange-500/10 transition-colors ${
-              collapsed
-                ? "w-11 h-11 justify-center mx-auto"
-                : "gap-3 px-3 py-2"
+              collapsed ? "w-11 h-11 justify-center mx-auto" : "gap-3 px-3 py-2"
             }`}
             title="Xem thông tin cá nhân"
           >

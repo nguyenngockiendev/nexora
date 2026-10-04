@@ -271,3 +271,20 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(249, 115, 22, 0.8);
 }
+
+
+html.dark-coc-coc {
+  filter: invert(0.9) hue-rotate(180deg) !important;
+  background-color: #121212 !important;
+}
+
+html.dark-coc-coc img,
+html.dark-coc-coc video,
+html.dark-coc-coc canvas,
+html.dark-coc-coc .keep-dark,
+html.dark-coc-coc [style*="rgba(15, 23, 42"],
+html.dark-coc-coc [style*="rgba(15,23,42"] {
+  filter: invert(1) hue-rotate(180deg) !important;
+}
+
+
