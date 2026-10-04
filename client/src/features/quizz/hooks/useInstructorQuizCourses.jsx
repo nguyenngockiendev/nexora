@@ -6,7 +6,9 @@ import {
   GetInstructorLiveClasses,
   GetTrackingAssignments,
   GradeAssignmentSubmission,
+  UpdateQuizzAllAPI,
 } from "../api/quizz-api";
+import { toast } from "react-toastify";
 
 const useInstructorQuizCourses = (mode = "recorded") => {
   const [error, setError] = useState(null);
@@ -14,26 +16,47 @@ const useInstructorQuizCourses = (mode = "recorded") => {
   const [courses, setCourses] = useState([]);
   const [resultQuizz, setResultQuizz] = useState([]);
 
-  const fetchCourses = useCallback(async (customMode = mode) => {
+  const fetchCourses = useCallback(
+    async (customMode = mode) => {
+      try {
+        setError(null);
+        setLoading(true);
+        const res =
+          customMode === "assessments"
+            ? await GetInstructorLiveClasses()
+            : await GetRecordedCourses();
+        setCourses(Array.isArray(res) ? res : []);
+        return res;
+      } catch (err) {
+        console.error(err);
+        const message =
+          err.response?.data?.message ||
+          "Lỗi khi lấy danh sách khóa học / lớp học";
+        setError(message);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [mode],
+  );
+
+  const UpdateQuizzAll = async (quizId) => {
     try {
-      setError(null);
       setLoading(true);
-      const res =
-        customMode === "assessments"
-          ? await GetInstructorLiveClasses()
-          : await GetRecordedCourses();
-      setCourses(Array.isArray(res) ? res : []);
-      return res;
-    } catch (err) {
-      console.error(err);
-      const message =
-        err.response?.data?.message || "Lỗi khi lấy danh sách khóa học / lớp học";
-      setError(message);
+      const updates = await UpdateQuizzAllAPI(quizId);
+      return updates;
+    } catch (error) {
+      const msg =
+        error.response?.data?.message || error?.message || "Lỗi server";
+
+      setError(msg);
+      toast.error(msg);
+
+      return { success: false, message: msg };
     } finally {
       setLoading(false);
     }
-  }, [mode]);
-
+  };
   const getResultquizz = async (courseId) => {
     try {
       setError(null);
@@ -115,6 +138,7 @@ const useInstructorQuizCourses = (mode = "recorded") => {
     setResultQuizz,
     updateStatusRetake,
     gradeSubmission,
+    UpdateQuizzAll,
   };
 };
 

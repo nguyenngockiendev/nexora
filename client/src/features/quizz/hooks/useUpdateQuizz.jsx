@@ -1,5 +1,6 @@
-import {  useState } from "react";
+import { useState } from "react";
 import { GetQuizzByid, UpdateQuizzByid } from "../../lesson/api/lession-api";
+
 
 const useUpdateQuizz = () => {
   const [error, setError] = useState(null);
@@ -21,6 +22,7 @@ const useUpdateQuizz = () => {
       setLoading(false);
     }
   };
+ 
   const Quizz = async (lessonId) => {
     if (!lessonId || lessonId === "undefined") {
       setQuizz(null);
@@ -30,7 +32,7 @@ const useUpdateQuizz = () => {
       setError(null);
       const res = await GetQuizzByid(lessonId);
       setQuizz(res);
-      
+
       return res;
     } catch (error) {
       setQuizz(null);

@@ -70,8 +70,13 @@ const GradeAssignmentSubmission = async (submissionId, data) => {
   const res = await api.patch(`/instructor/grade-submission/${submissionId}`, data);
   return res;
 };
+const UpdateQuizzAllAPI = async (quizId) => {
+  const res = await api.patch(`/retake_quizz/${quizId}/all`);
+  return res;
+};
 
 export {
+  UpdateQuizzAllAPI,
   GetInstructorLiveClasses,
   GetTrackingAssignments,
   GradeAssignmentSubmission,

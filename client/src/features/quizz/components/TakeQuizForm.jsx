@@ -8,6 +8,7 @@ import {
   Row,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { ArrowRight, RotateCcw, Trophy, Sparkles } from "lucide-react";
 import "../style/CreateExamPage.css";
 
 const OPTION_LABELS = ["A", "B", "C", "D"];
@@ -100,86 +101,150 @@ const TakeQuizForm = ({
             )}
           </Card.Body>
         </Card>
+        {/* ── Mascot + Speech Bubble Section ── */}
+        <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10 my-4 max-w-4xl mx-auto w-full px-3">
+          {/* Mascot Image */}
+          <div className="relative shrink-0 flex items-center justify-center">
+            <img
+              src={result.pass ? "/pass.png" : "/false.png"}
+              alt="Mascot"
+              className="w-56 h-56 sm:w-64 sm:h-64 md:w-72 md:h-72 object-contain drop-shadow-md transition-transform duration-300 hover:scale-105"
+            />
+          </div>
 
-        {/* Danh sách câu hỏi xem lại */}
-        <div className="d-flex flex-column gap-3">
-          <h4 className="fw-bold text-slate-800 fs-5 mb-0">
-            Xem lại chi tiết câu trả lời
-          </h4>
-          {quiz?.questions?.map((q, qIndex) => {
-            const selected = answers[q._id];
-            const isCorrect = selected === q.correctAnswer;
+          {/* Speech Bubble (Bong bóng hội thoại) */}
+          <div
+            className="relative p-6 sm:p-7 rounded-[2rem] shadow-lg max-w-md w-full border backdrop-blur-xl transition-all flex flex-col justify-between"
+            style={{
+              background: result.pass
+                ? "linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(254, 243, 232, 0.96) 100%)"
+                : "linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(255, 241, 242, 0.96) 100%)",
+              borderColor: result.pass
+                ? "rgba(249, 115, 22, 0.3)"
+                : "rgba(244, 63, 94, 0.3)",
+              boxShadow: result.pass
+                ? "0 14px 35px rgba(249, 115, 22, 0.12)"
+                : "0 14px 35px rgba(244, 63, 94, 0.1)",
+            }}
+          >
+            {/* Đuôi nhọn hội thoại (Desktop: trỏ sang Mascot bên trái) */}
+            <div
+              className="hidden md:block absolute -left-[18px] top-12 w-5 h-6 pointer-events-none"
+              style={{ filter: "drop-shadow(-2px 2px 2px rgba(0,0,0,0.03))" }}
+            >
+              <svg viewBox="0 0 20 24" className="w-full h-full" style={{ overflow: "visible" }}>
+                <path
+                  d="M 20,2 Q 10,8 1,22 Q 11,18 20,17 Z"
+                  fill={result.pass ? "#fffcf8" : "#fff7f8"}
+                  stroke={result.pass ? "rgba(249, 115, 22, 0.3)" : "rgba(244, 63, 94, 0.3)"}
+                  strokeWidth="1.5"
+                />
+                {/* Che đường viền để đuôi và hộp thoại nối liền mạch */}
+                <line
+                  x1="19.5"
+                  y1="2.5"
+                  x2="19.5"
+                  y2="16.5"
+                  stroke={result.pass ? "#fffcf8" : "#fff7f8"}
+                  strokeWidth="3.5"
+                />
+              </svg>
+            </div>
 
-            return (
-              <Card key={q._id || qIndex} className="quiz-card">
-                <Card.Body className="p-3 px-4">
-                  <div className="d-flex justify-content-between align-items-start gap-3 mb-3">
-                    <h6 className="fw-bold mb-0 leading-relaxed">
-                      <span className="text-orange-600 me-2">
-                        Câu {qIndex + 1}:
-                      </span>
-                      {q.question}
-                    </h6>
-                    <Badge
-                      bg={isCorrect ? "success" : "danger"}
-                      className="px-2.5 py-1 rounded-pill"
-                    >
-                      {isCorrect ? "Đúng ✓" : "Sai ✕"}
-                    </Badge>
-                  </div>
+            {/* Đuôi nhọn hội thoại (Mobile: trỏ lên Mascot ở phía trên) */}
+            <div
+              className="md:hidden absolute -top-[15px] left-12 w-6 h-4 pointer-events-none"
+              style={{ filter: "drop-shadow(0px -2px 2px rgba(0,0,0,0.03))" }}
+            >
+              <svg viewBox="0 0 24 16" className="w-full h-full" style={{ overflow: "visible" }}>
+                <path
+                  d="M 2,16 Q 8,10 22,1 Q 18,11 17,16 Z"
+                  fill={result.pass ? "#fffcf8" : "#fff7f8"}
+                  stroke={result.pass ? "rgba(249, 115, 22, 0.3)" : "rgba(244, 63, 94, 0.3)"}
+                  strokeWidth="1.5"
+                />
+                {/* Che viền phía trên */}
+                <line
+                  x1="2.5"
+                  y1="15.5"
+                  x2="16.5"
+                  y2="15.5"
+                  stroke={result.pass ? "#fffcf8" : "#fff7f8"}
+                  strokeWidth="3.5"
+                />
+              </svg>
+            </div>
 
-                  <Row className="g-2">
-                    {q.options.map((optionText, oIndex) => {
-                      const isSelected = selected === oIndex;
-                      const isCorrectOption = q.correctAnswer === oIndex;
-
-                      let answerClass = "quiz-input bg-white";
-                      if (isCorrectOption) {
-                        answerClass =
-                          "quiz-input bg-success text-white fw-bold border-success";
-                      } else if (isSelected && !isCorrectOption) {
-                        answerClass =
-                          "quiz-input bg-danger text-white fw-bold border-danger";
-                      }
-
-                      return (
-                        <Col sm={6} key={oIndex}>
-                          <InputGroup className="quiz-input-group">
-                            <InputGroup.Text
-                              className={`quiz-answer-key ${
-                                isCorrectOption
-                                  ? "bg-success text-white"
-                                  : isSelected
-                                    ? "bg-danger text-white"
-                                    : ""
-                              }`}
-                            >
-                              {OPTION_LABELS[oIndex]}
-                            </InputGroup.Text>
-                            <Form.Control
-                              type="text"
-                              readOnly
-                              value={optionText}
-                              className={answerClass}
-                            />
-                          </InputGroup>
-                        </Col>
-                      );
-                    })}
-                  </Row>
-
-                  {q.explanation && (
-                    <div className="mt-3 p-2.5 rounded bg-light border-start border-3 border-info">
-                      <span className="fw-bold text-info small d-block">
-                        Giải thích:
-                      </span>
-                      <span className="small text-muted">{q.explanation}</span>
-                    </div>
-                  )}
-                </Card.Body>
-              </Card>
-            );
-          })}
+            {result.pass ? (
+              <>
+                <div>
+                  <span
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider text-orange-600 bg-orange-100/90 border border-orange-200"
+                    style={{ borderRadius: "9999px" }}
+                  >
+                    <Trophy size={13} className="text-orange-500" /> Xuất sắc
+                  </span>
+                  <h4 className="text-xl font-black text-slate-800 mt-2.5 mb-2">
+                    Tưởng bài này thế nào... 😏
+                  </h4>
+                  <p className="text-xs sm:text-sm font-semibold text-slate-600 leading-relaxed mb-5">
+                    Hóa ra cũng chỉ có vậy thôi! Bài này quá dễ đối với bạn rồi. Kiến thức đã nằm chắc trong tay, giữ vững phong độ này và sang bài tiếp theo ngay nào!
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => navigate(-1)}
+                  className="w-full flex items-center justify-center gap-2 py-3 px-6 rounded-full text-xs sm:text-sm font-black text-white transition-all shadow-md shadow-orange-500/25 hover:shadow-orange-500/40 hover:scale-105 active:scale-95 cursor-pointer"
+                  style={{
+                    background: "linear-gradient(135deg, #f97316, #ea580c)",
+                    borderRadius: "9999px",
+                  }}
+                >
+                  <span>Chinh Phục Bài Học Tiếp Theo</span>
+                  <ArrowRight size={16} />
+                </button>
+              </>
+            ) : (
+              <>
+                <div>
+                  <span
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider text-rose-600 bg-rose-100/90 border border-rose-200"
+                    style={{ borderRadius: "9999px" }}
+                  >
+                    <Sparkles size={13} className="text-rose-500" /> Cố lên nhé
+                  </span>
+                  <h4 className="text-xl font-black text-slate-800 mt-2.5 mb-2">
+                    Hơi tiếc một xíu nè... 🥺
+                  </h4>
+                  <p className="text-xs sm:text-sm font-semibold text-slate-600 leading-relaxed mb-5">
+                    Chỉ thiếu một tẹo điểm nữa thôi là chạm đích rồi! Đừng nản lòng nhé, bạn hãy mở lại video bài giảng để ôn tập kỹ hơn rồi quay lại phục thù nha.
+                  </p>
+                </div>
+                <div className="flex flex-col sm:flex-row items-center gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => navigate(-1)}
+                    className="w-full sm:flex-1 py-2.5 px-4 text-xs font-bold text-slate-700 bg-white border border-slate-200/90 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-300 transition-all cursor-pointer shadow-xs text-center"
+                    style={{ borderRadius: "9999px" }}
+                  >
+                    📺 Xem Lại Bài Giảng
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => window.location.reload()}
+                    className="w-full sm:flex-1 flex items-center justify-center gap-1.5 py-2.5 px-4 text-xs font-bold text-white transition-all shadow-md shadow-orange-500/20 hover:scale-105 active:scale-95 cursor-pointer text-center"
+                    style={{
+                      background: "linear-gradient(135deg, #f97316, #ea580c)",
+                      borderRadius: "9999px",
+                    }}
+                  >
+                    <RotateCcw size={13} />
+                    <span>Làm Lại Bài Thi</span>
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
     );

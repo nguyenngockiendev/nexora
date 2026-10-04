@@ -20,6 +20,7 @@ const InstructorQuizTrackingPage = ({ mode = "recorded" }) => {
     resultQuizz,
     updateStatusRetake,
     gradeSubmission,
+    UpdateQuizzAll,
   } = useInstructorQuizCourses(mode);
 
   useEffect(() => {
@@ -38,7 +39,10 @@ const InstructorQuizTrackingPage = ({ mode = "recorded" }) => {
   useEffect(() => {
     if (resultQuizz && resultQuizz.length > 0) {
       setQuizzesData(resultQuizz);
-      if (!selectedQuizId || !resultQuizz.find((q) => q._id === selectedQuizId)) {
+      if (
+        !selectedQuizId ||
+        !resultQuizz.find((q) => q._id === selectedQuizId)
+      ) {
         setSelectedQuizId(resultQuizz[0]._id);
       }
     } else {
@@ -68,6 +72,19 @@ const InstructorQuizTrackingPage = ({ mode = "recorded" }) => {
         getResultquizz(targetId);
       } catch (err) {
         console.error(err);
+      }
+    }
+  };
+  const handleAllwRetake = async (quizID) => {
+    if (window.confirm(`Bạn có chắc chắn muốn cho thi lại bài này!`)) {
+      try {
+        const result = await UpdateQuizzAll(quizID);
+        if (result.success) {
+          toast.success(`Đã mở quyền thi lại thành công cho tất cả học sinh!`);
+          getResultquizz(targetId);
+        }
+      } catch (error) {
+        console.error(error);
       }
     }
   };
@@ -102,6 +119,7 @@ const InstructorQuizTrackingPage = ({ mode = "recorded" }) => {
     <div>
       <InstructorQuizTrackingView
         mode={mode}
+        handleAllwRetake={handleAllwRetake}
         courseTitle={currentCourseOrClassTitle}
         quizzes={quizzesData}
         selectedQuizId={selectedQuizId}
