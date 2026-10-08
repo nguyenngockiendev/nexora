@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import useEditUsers from "../hooks/useEditUser";
 
 import { useOutletContext } from "react-router-dom";
+import ProfileShecma from "../../../shared/validation/profile";
 
 const ProfilePage = () => {
   const { dashboard, setDashboard } = useOutletContext();
@@ -59,6 +60,16 @@ const ProfilePage = () => {
 
   const handleSaveProfile = async (e) => {
     e.preventDefault();
+    const validation = ProfileShecma.safeParse({
+      fullName: formData.fullName,
+      phone: formData.phone,
+    });
+
+    if (!validation.success) {
+      const errorMsg = validation.error.issues[0]?.message;
+      toast.error(errorMsg);
+      return;
+    }
     const newdata = new FormData();
     if (formData.fullName) newdata.append("name", formData.fullName);
     if (formData.phone) newdata.append("phone", formData.phone);
@@ -68,8 +79,8 @@ const ProfilePage = () => {
     }
 
     const result = await updateProfile(newdata);
-    if (result) {
-      setDashboard(result);
+    if (result.success) {
+      setDashboard(result.data);
       toast.success("Cập nhật thông tin cá nhân thành công! ✨");
     }
   };

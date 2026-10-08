@@ -372,6 +372,9 @@ const GetuserbyId = async (data) => {
 
 const UpdateProfile = async (data) => {
   try {
+    if (!Number(data.phone)) {
+      throw { status: 403, message: "Số điện thoại không bao gồm chữ!" };
+    }
     const filldata = ["name", "avatar", "phone"];
     const inforuser = {};
 

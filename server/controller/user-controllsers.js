@@ -192,7 +192,11 @@ const ChangeUserProfile = async (req, res) => {
       phone: req.body.phone,
     };
     const result = await UpdateProfile(data);
-    res.status(200).json(result);
+    res.status(201).json({
+      success: true,
+      message: "Cập nhật thông tin thành công!",
+      data: result,
+    });
   } catch (error) {
     res.status(error.status || 500).json({ message: error.message });
   }

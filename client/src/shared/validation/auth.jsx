@@ -12,8 +12,9 @@ const registerShecma = z
       ),
     name: z
       .string()
-      .min(1, "Họ và tên không được để trống")
-      .max(15, "Họ và tên tối đa 15 ký tự"),
+      .trim()
+      .min(2, "Họ và tên phải có ít nhất 2 ký tự")
+      .max(50, "Họ và tên không được vượt quá 50 ký tự"),
 
     password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
     repeatpassword: z.string().min(1, "Vui lòng xác nhận lại mật khẩu"),

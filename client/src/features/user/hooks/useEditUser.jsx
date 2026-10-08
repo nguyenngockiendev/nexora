@@ -5,6 +5,7 @@ import {
   ChangeUserRole,
   UpdateProfileUser,
 } from "../api/user-api";
+import { toast } from "react-toastify";
 
 const useEditUsers = () => {
   const [loading, Setloading] = useState(false);
@@ -48,8 +49,12 @@ const useEditUsers = () => {
       const res = await UpdateProfileUser(data);
       return res;
     } catch (error) {
-      console.log(error);
-      Seterror(error?.message || "An error occurred");
+      const msg =
+        error.response?.data?.message || error?.message || "Lỗi server";
+
+      Seterror(msg);
+      toast.error(msg);
+      return { success: false, message: msg };
     } finally {
       Setloading(false);
     }
