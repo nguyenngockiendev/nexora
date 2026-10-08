@@ -46,8 +46,8 @@ const Login = () => {
   const onsumbmitByGG = async (googleToken) => {
     try {
       const result = await loginByGoole(googleToken);
-      if (result.success) {
-        const tokenString = result.data;
+      if (result) {
+        const tokenString = result;
         localStorage.setItem("token", tokenString);
         const userid = jwtDecode(tokenString);
         localStorage.setItem("userId", userid?.userId);
