@@ -34,11 +34,7 @@ const LoginByGoogleController = async (req, res) => {
   try {
     const googleToken = req.body.googleToken;
     const result = await loginByGoogleService(googleToken);
-    res.status(201).json({
-      success: true,
-      message: "Thành công!",
-      data: result,
-    });
+    res.status(200).json(result);
   } catch (error) {
     console.log(error);
     res
@@ -66,7 +62,7 @@ const RegisterController = async (req, res) => {
     const data = {
       name: req.body.name,
       email: req.body.email,
-      otp:req.body.otp,
+      otp: req.body.otp,
       password: req.body.password,
       repeatpassword: req.body.repeatpassword,
       avatar: avatar.secure_url,
