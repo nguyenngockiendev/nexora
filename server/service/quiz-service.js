@@ -223,8 +223,9 @@ const GetCourse = async (data) => {
     if (data.role === "student") {
       throw { status: 404, message: "không có quyền!" };
     }
-    const listCourse = await Courses.findOne({
+    const listCourse = await Courses.find({
       instructor: data.userId,
+      type: "recorded",
     });
     if (!listCourse) {
       throw {
@@ -233,13 +234,14 @@ const GetCourse = async (data) => {
           "khóa học không tồn tại! Bạn hãy tạo bài học trước rồi mới tạo Quiz nhé ",
       };
     }
+    const courseIds = listCourse.map((c) => c._id);
     const listLession = await Lessons.find({
-      courseId: listCourse._id,
+      courseId: { $in: courseIds },
     })
       .select("title status duration type")
       .populate("courseId", "title")
       .lean();
-    if (listCourse.length === 0) {
+    if (listLession.length === 0) {
       throw { status: 404, message: "bài học không tồn tại" };
     }
     return listLession;
@@ -494,9 +496,8 @@ const UpdateAttempQuizz = async (data) => {
 };
 const UpdateAttempQuizzAll = async (data) => {
   try {
-
     const isExitAttemps = await QuizAttempts.findOne({ quizId: data.quizId });
-    if(!isExitAttemps){
+    if (!isExitAttemps) {
       throw { status: 404, message: "Không tìm thấy bài kiểm tra!" };
     }
     const IsexitCour = await Courses.findOne({
