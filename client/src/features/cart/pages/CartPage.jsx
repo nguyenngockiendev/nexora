@@ -11,7 +11,7 @@ import useCartPreview from "../hooks/useCartPreview";
 const CartPage = () => {
   const { cartItems, removeFromCart, clearCart, totalPrice } = useCart();
   const { qrpayment, payment, loading: paymentLoading } = usePayment();
-  const { voucherPreview, loading, error, GetVoucherPreview } =
+  const { voucherPreview, loading, error, GetVoucherPreview, clearVoucherPreview } =
     useCartPreview();
   const socket = useShareSocket();
   const navigate = useNavigate();
@@ -56,6 +56,7 @@ const CartPage = () => {
       <CartView
         voucherPreview={voucherPreview}
         handReviewCart={handReviewCart}
+        clearVoucherPreview={clearVoucherPreview}
         cartItems={cartItems}
         totalPrice={totalPrice}
         removeFromCart={removeFromCart}

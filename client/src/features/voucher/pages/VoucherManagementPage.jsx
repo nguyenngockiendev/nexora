@@ -124,12 +124,9 @@ const VoucherManagementPage = () => {
         coursesall={coursesall}
         handleSaveVoucher={handleSaveVoucher}
         editingVoucher={editingVoucher}
+        pagination={pagination}
       />{" "}
-       {!loadingVou && filteredVouchers?.length > 0 && (
-              <div className="max-w-7xl mx-auto px-4 mt-6">
-                <PaginationForm pagination={pagination} itemName="khóa học" />
-              </div>
-            )}
+       
     </div>
   );
 };

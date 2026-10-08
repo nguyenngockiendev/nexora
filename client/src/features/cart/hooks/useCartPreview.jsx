@@ -24,11 +24,17 @@ const useCartPreview = () => {
       setLoading(false);
     }
   };
+  const clearVoucherPreview = () => {
+    setVoucherPreview(null);
+    setError(null);
+  };
+
   return {
     voucherPreview,
     loading,
     error,
     GetVoucherPreview,
+    clearVoucherPreview,
   };
 };
 export default useCartPreview;

@@ -4,14 +4,17 @@ import { toast } from "react-toastify";
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
+  const userId = localStorage.getItem("userId");
+  const cartKey = `cart_${userId}`;
+
   const [cartItems, setCartItems] = useState(() => {
-    const localData = localStorage.getItem("cart");
+    const localData = localStorage.getItem(cartKey);
     return localData ? JSON.parse(localData) : [];
   });
 
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cartItems));
-  }, [cartItems]);
+    localStorage.setItem(cartKey, JSON.stringify(cartItems));
+  }, [cartItems, cartKey]);
 
   const addToCart = (course) => {
     setCartItems((prevItems) => {

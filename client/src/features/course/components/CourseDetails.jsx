@@ -12,7 +12,13 @@ import {
 import { Link, useOutletContext } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
-const DetailsCourse = ({ detalscourse = [], error, loading, handAddcart }) => {
+const DetailsCourse = ({
+  detalscourse = [],
+  error,
+  loading,
+  handAddcart,
+  courseId,
+}) => {
   const courseInfo = detalscourse?.[0]?.courseId || {};
   const instructor =
     (courseInfo?.instructor &&
@@ -214,6 +220,19 @@ const DetailsCourse = ({ detalscourse = [], error, loading, handAddcart }) => {
               Lựa chọn lịch học và thời gian phù hợp nhất với bạn
             </p>
           </div>
+
+          {isOwner && (
+            <Link
+              to={`/create-class/${courseId || courseInfo?._id}`}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-black text-white shadow-md shadow-orange-500/20 hover:scale-105 active:scale-95 transition-all self-start md:self-auto cursor-pointer"
+              style={{
+                background: "linear-gradient(135deg, #f97316, #ea580c)",
+                borderRadius: "9999px",
+              }}
+            >
+              <span>+ Mở Lớp Học Mới</span>
+            </Link>
+          )}
         </div>
 
         {loading && (
@@ -446,12 +465,27 @@ const DetailsCourse = ({ detalscourse = [], error, loading, handAddcart }) => {
           <div className="flex flex-col items-center justify-center text-center p-14 rounded-[2.5rem] bg-white/60 backdrop-blur-2xl border border-dashed border-orange-200">
             <Video size={36} className="text-orange-400 mb-2 opacity-70" />
             <h4 className="text-lg font-black text-slate-800 mb-1">
-              Chưa có lớp học nào được lên lịch
+              {isOwner
+                ? "Khóa học chưa có lớp học nào"
+                : "Chưa có lớp học nào được lên lịch"}
             </h4>
-            <p className="text-xs md:text-sm font-semibold text-slate-500">
-              Vui lòng quay lại sau hoặc liên hệ với giảng viên để biết thêm
-              thông tin về các đợt mở lớp tiếp theo.
+            <p className="text-xs md:text-sm font-semibold text-slate-500 max-w-md mb-4">
+              {isOwner
+                ? "Bạn là giảng viên của khóa học này. Hãy lên lịch cho buổi học trực tuyến đầu tiên để học viên có thể đăng ký ngay nhé!"
+                : "Vui lòng quay lại sau hoặc liên hệ với giảng viên để biết thêm thông tin về các đợt mở lớp tiếp theo."}
             </p>
+            {isOwner && (
+              <Link
+                to={`/create-class/${courseId || courseInfo?._id}`}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs font-black text-white shadow-lg shadow-orange-500/25 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                style={{
+                  background: "linear-gradient(135deg, #f97316, #ea580c)",
+                  borderRadius: "9999px",
+                }}
+              >
+                <span>+ Lên Lịch Phòng Học Ngay</span>
+              </Link>
+            )}
           </div>
         )}
       </div>

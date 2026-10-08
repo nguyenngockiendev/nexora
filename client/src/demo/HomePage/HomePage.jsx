@@ -81,7 +81,7 @@ function HomePage() {
           </div>
 
           <nav className={styles.navLinks}>
-            <Link to="/courses">Khóa học</Link>
+            <Link to="#">Khóa học</Link>
             <a href="#features">Tính năng</a>
             <a href="#how-it-works">Quy trình</a>
             <a href="#testimonials">Đánh giá</a>

@@ -6,11 +6,11 @@ import {
   ShieldCheck,
   Radio,
   Video,
-  BookOpen,
   QrCode,
   Loader2,
   Clock,
   ShoppingBag,
+  Tag,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -23,13 +23,24 @@ const CartView = ({
   qrUrl = null,
   handlePayment = () => {},
   voucherPreview,
-  handReviewCart
+  handReviewCart,
+  clearVoucherPreview,
 }) => {
   const navigate = useNavigate();
 
   const [couponCode, setCouponCode] = useState("");
   const [selectedPayment, setSelectedPayment] = useState("qr");
   const [time, setTime] = useState(300);
+
+  const handleApplyVoucher = () => {
+    if (!couponCode.trim()) return;
+    handReviewCart && handReviewCart(couponCode.trim());
+  };
+
+  const handleRemoveVoucher = () => {
+    setCouponCode("");
+    clearVoucherPreview && clearVoucherPreview();
+  };
 
   useEffect(() => {
     if (!qrUrl) {
@@ -152,9 +163,21 @@ const CartView = ({
 
                       <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700">
                         {(() => {
-                          const rawRating = item?.rating ?? item?.rattingforcoure ?? item?.avgRatingcou ?? item?.averageRating;
-                          const ratingVal = (!isNaN(Number(rawRating)) && Number(rawRating) > 0) ? Number(rawRating) : 5.0;
-                          const reviewsCount = Number(item?.reviewsCount ?? item?.Rattingleng ?? item?.totalReviews ?? 0);
+                          const rawRating =
+                            item?.rating ??
+                            item?.rattingforcoure ??
+                            item?.avgRatingcou ??
+                            item?.averageRating;
+                          const ratingVal =
+                            !isNaN(Number(rawRating)) && Number(rawRating) > 0
+                              ? Number(rawRating)
+                              : 5.0;
+                          const reviewsCount = Number(
+                            item?.reviewsCount ??
+                              item?.Rattingleng ??
+                              item?.totalReviews ??
+                              0,
+                          );
 
                           return (
                             <>
@@ -163,11 +186,17 @@ const CartView = ({
                                   <Star
                                     key={i}
                                     size={13}
-                                    className={i < Math.round(ratingVal) ? "fill-amber-400 text-amber-400" : "text-slate-300"}
+                                    className={
+                                      i < Math.round(ratingVal)
+                                        ? "fill-amber-400 text-amber-400"
+                                        : "text-slate-300"
+                                    }
                                   />
                                 ))}
                               </div>
-                              <span className="font-extrabold">{ratingVal.toFixed(1)}</span>
+                              <span className="font-extrabold">
+                                {ratingVal.toFixed(1)}
+                              </span>
                               <span className="text-slate-400 font-semibold">
                                 ({reviewsCount} đánh giá)
                               </span>
@@ -240,18 +269,50 @@ const CartView = ({
                   placeholder="Nhập mã giảm giá"
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                  className="w-full pl-4 pr-24 py-2.5 rounded-full text-xs font-semibold bg-white border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-slate-800 placeholder-slate-400 shadow-2xs uppercase tracking-wider"
+                  disabled={Boolean(voucherPreview?.code)}
+                  className={`w-full pl-4 pr-24 py-2.5 rounded-full text-xs font-semibold border focus:outline-none transition-all shadow-2xs uppercase tracking-wider ${
+                    voucherPreview?.code
+                      ? "bg-emerald-50/60 border-emerald-300 text-emerald-800 font-bold"
+                      : "bg-white border-slate-200 focus:ring-2 focus:ring-orange-500/20 text-slate-800 placeholder-slate-400"
+                  }`}
                   style={{ borderRadius: "9999px" }}
                 />
-                <button
-                  type="button"
-                  onClick={() => handReviewCart && handReviewCart(couponCode)}
-                  className="absolute right-1 px-4 py-1.5 rounded-full text-xs font-black text-slate-700 bg-slate-100 hover:bg-slate-200 hover:text-orange-600 transition-all cursor-pointer"
-                  style={{ borderRadius: "9999px" }}
-                >
-                  Áp dụng
-                </button>
+                {voucherPreview?.code ? (
+                  <button
+                    type="button"
+                    onClick={handleRemoveVoucher}
+                    className="absolute right-1 px-3 py-1.5 rounded-full text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 transition-all cursor-pointer flex items-center gap-1"
+                    style={{ borderRadius: "9999px" }}
+                  >
+                    <span>Hủy mã</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleApplyVoucher}
+                    className="absolute right-1 px-4 py-1.5 rounded-full text-xs font-black text-slate-700 bg-slate-100 hover:bg-slate-200 hover:text-orange-600 transition-all cursor-pointer"
+                    style={{ borderRadius: "9999px" }}
+                  >
+                    Áp dụng
+                  </button>
+                )}
               </div>
+
+              {!voucherPreview?.code && (
+                <p className="text-[11px] font-medium text-slate-500 px-1 flex items-center gap-1.5 flex-wrap">
+                  <Tag size={12} className="text-orange-500 shrink-0" />
+                  <span>Mã test:</span>
+                  <button
+                    type="button"
+                    onClick={() => setCouponCode("NEXKUQQF")}
+                    className="px-2 py-0.5 rounded-md bg-orange-50 text-orange-600 font-mono font-bold text-[11px] border border-orange-200 hover:bg-orange-100 hover:text-orange-700 transition-colors cursor-pointer"
+                    title="Nhấn để tự động điền mã giảm 100%"
+                  >
+                   NEXKUQQF
+                  </button>
+                  <span className="text-slate-400 text-[10px]">(Giảm 100% học thử 0đ)</span>
+                </p>
+              )}
 
               {Number(voucherPreview?.discountAmount || 0) > 0 && (
                 <div className="flex items-center justify-between text-xs font-bold text-emerald-600 px-1 py-1 rounded-lg bg-emerald-50/80 border border-emerald-100">
@@ -259,7 +320,11 @@ const CartView = ({
                     ✓ Đã áp mã {voucherPreview?.code}:
                   </span>
                   <span>
-                    -{Number(voucherPreview.discountAmount).toLocaleString("vi-VN")} đ
+                    -
+                    {Number(voucherPreview.discountAmount).toLocaleString(
+                      "vi-VN",
+                    )}{" "}
+                    đ
                   </span>
                 </div>
               )}
@@ -273,7 +338,11 @@ const CartView = ({
                 {Number(
                   voucherPreview?.finalPrice !== undefined
                     ? voucherPreview.finalPrice
-                    : Math.max(0, (totalPrice || 0) - Number(voucherPreview?.discountAmount || 0))
+                    : Math.max(
+                        0,
+                        (totalPrice || 0) -
+                          Number(voucherPreview?.discountAmount || 0),
+                      ),
                 ).toLocaleString("vi-VN")}{" "}
                 đ
               </span>
@@ -321,11 +390,21 @@ const CartView = ({
               {paymentLoading ? (
                 <>
                   <Loader2 size={18} className="animate-spin" />
-                  <span>Đang xử lý thanh toán...</span>
+                  <span>
+                    {" "}
+                    {totalPrice === 0
+                      ? "Mở khóa học Free"
+                      : "Đang xử lý thanh toán..."}
+                  </span>
                 </>
               ) : (
                 <>
-                  <span>Tiến hành thanh toán</span>
+                  <span>
+                    {" "}
+                    {totalPrice === 0
+                      ? "Mở khóa học Free"
+                      : "Tiến hành thanh toán"}
+                  </span>
                   <ArrowRight size={18} />
                 </>
               )}
@@ -335,7 +414,8 @@ const CartView = ({
                 {time > 0 ? (
                   <div className="flex items-center justify-between px-3.5 py-1.5 rounded-xl bg-orange-50/80 border border-orange-100 text-xs font-semibold">
                     <span className="flex items-center gap-1.5 text-slate-500 text-[11px]">
-                      <Clock size={13} className="text-orange-500" /> Thời gian quét mã:
+                      <Clock size={13} className="text-orange-500" /> Thời gian
+                      quét mã:
                     </span>
                     <span className="font-mono font-black text-orange-600 tracking-wider text-xs">
                       {formatTime(time)}
@@ -354,7 +434,9 @@ const CartView = ({
                   </div>
                 )}
 
-                <div className={`p-1 rounded-[22px] bg-white border border-orange-200 shadow-md text-center overflow-hidden transition-all ${time === 0 ? "opacity-30 grayscale pointer-events-none" : ""}`}>
+                <div
+                  className={`p-1 rounded-[22px] bg-white border border-orange-200 shadow-md text-center overflow-hidden transition-all ${time === 0 ? "opacity-30 grayscale pointer-events-none" : ""}`}
+                >
                   <img
                     src={qrUrl}
                     alt="Mã VietQR Thanh Toán"
@@ -386,7 +468,8 @@ const CartView = ({
               Giỏ Hàng Của Bạn Đang Trống
             </h2>
             <p className="text-xs sm:text-sm font-semibold text-slate-500 leading-relaxed">
-              Bạn chưa thêm khóa học nào vào giỏ hàng. Hãy khám phá hàng trăm khóa học lập trình chất lượng cao để nâng cao kỹ năng của bạn!
+              Bạn chưa thêm khóa học nào vào giỏ hàng. Hãy khám phá hàng trăm
+              khóa học lập trình chất lượng cao để nâng cao kỹ năng của bạn!
             </p>
           </div>
           <button

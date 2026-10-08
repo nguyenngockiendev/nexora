@@ -25,6 +25,7 @@ const DetailsCourseLive = () => {
         error={error}
         loading={loading}
         handAddcart={handAddcart}
+        courseId={courseId}
       />
     </div>
   );

@@ -203,7 +203,7 @@ const LoginForm = ({
                   </>
                 )}
               </button>
-           
+
               <div className="relative flex items-center justify-center my-3">
                 <div className="border-t border-slate-200 w-full"></div>
                 <span className="bg-white/80 px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider absolute">
@@ -211,7 +211,6 @@ const LoginForm = ({
                 </span>
               </div>
 
-              
               <div className="flex justify-center w-full">
                 <GoogleLogin
                   onSuccess={(credentialResponse) => {
@@ -242,10 +241,16 @@ const LoginForm = ({
               <div className="mt-2 pt-2 border-t border-slate-200/80 text-[10px] text-slate-500 space-y-0.5">
                 <p className="font-bold text-slate-700 m-0">Tài khoản test:</p>
                 <p className="m-0">
-                  Admin: <strong>admin@example.com - 1</strong> | Giảng viên: <strong>instructor@example.com - 1</strong>
+                  Admin: <strong>admin@example.com : 1</strong>
                 </p>
                 <p className="m-0">
-                  Học viên: <strong>student@example.com - 1</strong>
+                  Giảng viên: <strong>instructor@example.com : 1</strong>
+                </p>
+                <p className="m-0">
+                  Học viên: <strong>student@example.com : 1</strong>
+                </p>
+                <p className="m-0">
+                 khi vào lần đầu hệ thống cần 15s để khởi động, bạn hãy đợi một chút!
                 </p>
               </div>
             </form>

@@ -12,6 +12,7 @@ const Register = () => {
     register,
     handleSubmit,
     getValues,
+    trigger,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(registerShecma),
@@ -37,6 +38,10 @@ const Register = () => {
 
   const onSendOtp = async () => {
     try {
+      const emailvld = await trigger("email");
+      if (!emailvld) {
+        return;
+      }
       const email = getValues("email");
       const data = {
         email: email,

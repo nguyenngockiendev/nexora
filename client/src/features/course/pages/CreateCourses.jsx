@@ -75,9 +75,12 @@ const CreateCourses = () => {
         return;
       }
       if (data?.type === "live") {
+        const createdCourseId =
+          result?.result?._id || result?.data?.result?._id || result?._id;
+        toast.success("Tạo khóa học trực tuyến thành công!");
         setExits(true);
         setnNotification({
-          onConfirm: () => navigate(`/create-class/${result.result._id}`),
+          onConfirm: () => navigate(`/create-class/${createdCourseId}`),
           onCancel: () => navigate("/courses-all"),
         });
         return;

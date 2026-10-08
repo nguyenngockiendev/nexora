@@ -551,6 +551,16 @@ const CoursesForm = ({
                         Thêm giỏ
                       </button>
                     )}
+                    {mode === "mine" && isLive && (
+                      <button
+                        onClick={() => navigate(`/create-class/${cou._id}`)}
+                        className="flex-1 py-1.5 px-2.5 rounded-full text-xs font-bold text-orange-600 bg-orange-50 border border-orange-200 hover:bg-orange-100 hover:scale-[1.02] active:scale-95 transition-all shadow-2xs text-center cursor-pointer"
+                        style={{ borderRadius: "9999px" }}
+                        title="Tạo lớp học trực tuyến mới cho khóa học này"
+                      >
+                        + Tạo lớp
+                      </button>
+                    )}
                     <button
                       disabled={paymentloading}
                       onClick={() => {

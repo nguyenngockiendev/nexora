@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-
+import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 
 import useLogin from "../hooks/uselogin";
@@ -34,8 +34,9 @@ const Login = () => {
       const result = await login(data);
 
       if (result) {
+        const userid = jwtDecode(result);
         localStorage.setItem("token", result);
-
+        localStorage.setItem("userId", userid?.userId);
         navigate("/courses-all");
       }
     } catch (err) {
@@ -46,8 +47,10 @@ const Login = () => {
     try {
       const result = await loginByGoole(googleToken);
       if (result.success) {
-        localStorage.setItem("token", result.data);
-
+        const tokenString = result.data;
+        localStorage.setItem("token", tokenString);
+        const userid = jwtDecode(tokenString);
+        localStorage.setItem("userId", userid?.userId);
         navigate("/courses-all");
       }
     } catch (error) {

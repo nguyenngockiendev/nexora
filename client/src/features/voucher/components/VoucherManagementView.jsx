@@ -3,6 +3,7 @@ import { Search } from "lucide-react";
 import VoucherBanner from "./VoucherBanner";
 import VoucherTable from "./VoucherTable";
 import VoucherModal from "./VoucherModal";
+import PaginationForm from "../../../shared/components/PaginationForm";
 
 const VoucherManagementView = ({
   onOpenCreate,
@@ -24,6 +25,7 @@ const VoucherManagementView = ({
   coursesall,
   handleSaveVoucher,
   editingVoucher,
+  pagination
 }) => {
   return (
     <div className="w-full min-h-screen py-4 md:py-6 space-y-6">
@@ -155,6 +157,12 @@ const VoucherManagementView = ({
           onDelete={handleDelete}
           onToggleStatus={handleToggleStatus}
         />
+
+        {pagination && (
+          <div className="mt-4 pt-4 border-t border-slate-100">
+            <PaginationForm pagination={pagination} itemName="voucher" />
+          </div>
+        )}
       </div>
 
       <VoucherModal

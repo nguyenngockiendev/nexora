@@ -7,6 +7,10 @@ import MyClass from "../pages/MyClassPage";
 
 const ClassRoutes = [
   {
+    path: "create-class/:courseId",
+    element: <CreateClass />,
+  },
+  {
     path: "courses/create/class/:courseId",
     element: <CreateClass />,
   },

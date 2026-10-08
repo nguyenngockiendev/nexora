@@ -56,13 +56,23 @@ const CreateClass = () => {
 
   const onSubmit = async (data) => {
     try {
-      await Create(data, courseId);
-
-      toast.success(notification || "Create class successfully!");
-      navigate("/my/class");
-      return;
+      if (!courseId) {
+        toast.error("Không tìm thấy mã khóa học để tạo lớp!");
+        return;
+      }
+      const res = await Create(data, courseId);
+      if (res) {
+        toast.success("Tạo lớp học trực tuyến thành công!");
+        navigate("/my/class");
+        return;
+      } else if (notification) {
+        toast.error(notification);
+      }
     } catch (error) {
       console.error(error);
+      toast.error(
+        error?.response?.data?.message || "Có lỗi xảy ra khi tạo lớp học!",
+      );
     }
   };
   return (

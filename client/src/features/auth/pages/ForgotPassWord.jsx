@@ -12,6 +12,7 @@ const FogotPassword = () => {
     handleSubmit,
     getValues,
     formState: { errors },
+    trigger,
   } = useForm({
     resolver: zodResolver(fogotShecma),
     mode: "onBlur",
@@ -50,6 +51,10 @@ const FogotPassword = () => {
 
   const onSendOtp = async () => {
     try {
+      const isValid = await trigger("email");
+      if (!isValid) {
+        return;
+      }
       const email = getValues("email");
       const data = {
         email: email,
