@@ -14,6 +14,7 @@ import paymentRoute from "../../features/payment/routes/paymentRoute";
 import cartRoute from "../../features/cart/routes/cartRoute";
 import helpRoutes from "../../features/help/routes/helpRoutes";
 import voucherRoutes from "../../features/voucher/routes/voucherRoutes";
+import ProtectedRoute from "./ProtectedRoute";
 
 function AppRoutes() {
   const routes = [
@@ -38,17 +39,18 @@ function AppRoutes() {
         {authRoutes.map((route) => (
           <Route key={route.path} path={route.path} element={route.element} />
         ))}
-
-        <Route path="/" element={<Dashboard />}>
-          {routes.map((route) => {
-            return (
-              <Route
-                key={route.path}
-                path={route.path}
-                element={route.element}
-              />
-            );
-          })}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<Dashboard />}>
+            {routes.map((route) => {
+              return (
+                <Route
+                  key={route.path}
+                  path={route.path}
+                  element={route.element}
+                />
+              );
+            })}
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
