@@ -233,7 +233,9 @@ const GetCourse = async (data) => {
           "khóa học không tồn tại! Bạn hãy tạo bài học trước rồi mới tạo Quiz nhé ",
       };
     }
-    const listLession = await Lessons.find()
+    const listLession = await Lessons.find({
+      courseId: listCourse._id,
+    })
       .select("title status duration type")
       .populate("courseId", "title")
       .lean();

@@ -105,10 +105,38 @@ const CreatenewCourses = async (data) => {
     if (data?.role !== "instructor" && data?.role !== "admin") {
       throw { status: 403, message: "Bạn không có quyền tạo khóa học!" };
     }
+    for (const item in data) {
+      if (
+        data[item] === "" ||
+        data[item] === undefined ||
+        data[item] === null
+      ) {
+        throw {
+          status: 400,
+          message: `Nhập thiếu thông tin ${item},hãy nhập đầy đủ thông tin khóa học!`,
+        };
+      }
+    }
+    if (data?.type == "recorded" && data?.type !== "live") {
+      if (!Number(data.price)) {
+        throw { status: 403, message: "Giá khóa học sai định dạng!" };
+      }
+    }
 
-    const newCourses = new Courses(data);
+    if (data.price < 0) {
+      throw { status: 403, message: "Giá khóa học không được < 0!" };
+    }
 
-    await newCourses.save();
+    const newCourses = await Courses.create({
+      title: data.title,
+      description: data.description,
+      price: data.price,
+      level: data.level,
+      type: data.type,
+      thumbnail: data.thumbnail,
+      instructor: data.instructor,
+    });
+
     return { message: " Tạo khóa học thành công!", result: newCourses };
   } catch (error) {
     console.log(error);

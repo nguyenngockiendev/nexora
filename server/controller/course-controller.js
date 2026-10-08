@@ -45,12 +45,16 @@ const CreateCourses = async (req, res) => {
       thumbnail = await uploadFile(req?.file?.path, false);
     }
     const data = {
-      ...req.body,
       instructor: req.user.userId,
       role: req.user.role,
+      title: req.body.title,
+      description: req.body.description,
+      price: req.body.price,
+      level: req.body.level,
+      type: req.body.type,
       thumbnail: thumbnail.secure_url,
     };
-
+ 
     const result = await CreatenewCourses(data);
     res.status(200).json(result);
   } catch (error) {
