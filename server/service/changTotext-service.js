@@ -1,4 +1,5 @@
 const fs = require("fs");
+const https = require("https");
 const ffmpeg = require("fluent-ffmpeg");
 const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 ffmpeg.setFfmpegPath(ffmpegPath);
@@ -8,14 +9,24 @@ const LessonTranscripts = require("../model/LessonTranscripts");
 const Lessons = require("../model/Lessons");
 const { TranscribeAI } = require("./ModunAIgenerate/quizAI.service");
 
-const cutAudio = (videoUrl, start, duration) => {
+const downloadAudio = async (url, savePath) => {
+  if (!fs.existsSync("./temp")) {
+    fs.mkdirSync("./temp", { recursive: true });
+  }
+  const response = await fetch(url);
+  const buffer = await response.arrayBuffer();
+  fs.writeFileSync(savePath, Buffer.from(buffer));
+  return savePath;
+};
+
+const cutAudio = (inputLocalPath, start, duration) => {
   return new Promise((resolve, reject) => {
     if (!fs.existsSync("./temp")) {
       fs.mkdirSync("./temp", { recursive: true });
     }
     const outputPath = `./temp/audio-${start}-${Date.now()}.mp3`;
 
-    ffmpeg(videoUrl)
+    ffmpeg(inputLocalPath)
       .setStartTime(start)
       .setDuration(duration)
       .noVideo()
@@ -40,11 +51,13 @@ const ChunkingVideo = async (lessionId) => {
       _id: lessionId,
       status: "PROCESSING",
     });
-
     if (!video) {
       await new Promise((resolve) => setTimeout(resolve, 5000));
       return;
     }
+    const localFile = `./temp/source-${lessionId}.mp3`;
+    const replaceMp3 = video.videoUrl.replace(/\.[^/.]+$/, ".mp3");
+    await downloadAudio(replaceMp3, localFile);
 
     const chunking = 1800;
     const allSegments = [];
@@ -54,7 +67,7 @@ const ChunkingVideo = async (lessionId) => {
     for (let start = 0; start < video.duration; start += chunking) {
       const end = Math.min(start + chunking, video.duration);
       const duration = Math.max(end - start, 1);
-      const audiopath = await cutAudio(video.videoUrl, start, duration);
+      const audiopath = await cutAudio(localFile, start, duration);
 
       try {
         const output = await TranscribeAI(audiopath);
@@ -133,16 +146,19 @@ const ChunkingVideo = async (lessionId) => {
         status: "DONE",
       });
     }
-     if (parentPort) {
-        parentPort.postMessage({
-          lessionId: lessionId,
-          status: "Transcrip ready",
-          percent: 100,
-        });
-      }
+    if (parentPort) {
+      parentPort.postMessage({
+        lessionId: lessionId,
+        status: "Transcrip ready",
+        percent: 100,
+      });
+    }
 
     video.status = "TRANSCRIPT_READY";
     await video.save();
+    if (fs.existsSync(localFile)) {
+      fs.unlinkSync(localFile);
+    }
   } catch (error) {
     console.error("Lỗi trong ChunkingVideo:", error);
   }
