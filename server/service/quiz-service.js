@@ -390,7 +390,7 @@ const GetAssessments = async (data) => {
 const TrackingQuizz = async (data) => {
   try {
     if (data.role === "student") {
-      throw { status: 404, message: "Không đủ quyền!" };
+      throw { status: 403, message: "Không đủ quyền!" };
     }
     const IsexitCour = await Courses.findOne({
       _id: data.courseId,
@@ -399,29 +399,65 @@ const TrackingQuizz = async (data) => {
     if (!IsexitCour) {
       throw { status: 404, message: "Bạn không có quyền vào nguồn này!" };
     }
-    const result = await QuizAttempts.find({
+
+    const quizzes = await Quizz.find({
       courseId: data.courseId,
     })
+      .populate("lessonId", "title")
+      .lean();
 
-      .populate("lessonId")
-      .populate("quizId", "title duration questions passScore _id")
-      .populate("studentId", "name email avatar")
-      .populate("courseId", "_id");
-
-    if (result.length == 0) {
-      throw { status: 404, message: "Không tồn tại khóa học!" };
+    if (!quizzes || quizzes.length === 0) {
+      return [];
     }
 
-    const finalResult = result.map((item) => {
-      const quiz = item.quizId || {};
-      const lesson = item.lessonId || {};
+    const quizIds = quizzes.map((q) => q._id);
+    const attempts = await QuizAttempts.find({
+      quizId: { $in: quizIds },
+    })
+      .populate("studentId", "name email avatar")
+      .lean();
+
+    const attemptsByQuizId = {};
+    attempts.forEach((item) => {
+      const qId = item.quizId ? item.quizId.toString() : null;
+      if (!qId) return;
+      if (!attemptsByQuizId[qId]) {
+        attemptsByQuizId[qId] = [];
+      }
+
+      const student = item.studentId || {};
+      attemptsByQuizId[qId].push({
+        _id: item._id,
+        student: {
+          _id: student._id,
+          name: student.name || "Học viên",
+          email: student.email || "",
+          avatar: student.avatar || "",
+        },
+        score: item.score,
+        timeTaken: item.timeTaken,
+        createdAt: item.createdAt,
+        status: item.status,
+        retakeCount: item.retakeCount || 0,
+        answers: (item.answers || []).map((answer) => ({
+          questionId: answer.questionId,
+          selectedAnswer: answer.selectedAnswer,
+          isCorrect: answer.isCorrect,
+        })),
+      });
+    });
+
+    const finalResult = quizzes.map((quiz) => {
+      const lesson = quiz.lessonId || {};
+      const qIdStr = quiz._id.toString();
+      const quizAttempts = attemptsByQuizId[qIdStr] || [];
 
       return {
-        _id: item._id,
+        _id: quiz._id,
         lessonId: lesson._id,
         quizId: quiz._id,
-        courseId: item.courseId?._id,
-        lessonTitle: lesson.title,
+        courseId: quiz.courseId,
+        lessonTitle: lesson.title || "Bài học",
         title: quiz.title || lesson.title || "Bài Kiểm Tra",
         duration: quiz.duration || 15,
         passScore: quiz.passScore ?? 7.0,
@@ -430,34 +466,12 @@ const TrackingQuizz = async (data) => {
           questionText: question.question,
           options: question.options,
           correctAnswer: question.correctAnswer,
+          explanation: question.explanation,
         })),
-
-        attempts: [
-          {
-            _id: item._id,
-
-            student: {
-              _id: item.studentId._id,
-              name: item.studentId.name,
-              email: item.studentId.email,
-              avatar: item.studentId.avatar,
-            },
-
-            score: item.score,
-            timeTaken: item.timeTaken,
-            createdAt: item.createdAt,
-            status: item.status,
-            retakeCount: item.retakeCount,
-
-            answers: item.answers.map((answer) => ({
-              questionId: answer.questionId,
-              selectedAnswer: answer.selectedAnswer,
-              isCorrect: answer.isCorrect,
-            })),
-          },
-        ],
+        attempts: quizAttempts,
       };
     });
+
     return finalResult;
   } catch (error) {
     console.log(error);
