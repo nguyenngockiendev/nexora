@@ -127,7 +127,7 @@ const Nav_Sidebar = [
         name: "Lịch sử đơn hàng",
         path: "payment_History",
         icon: CreditCard,
-        roles: ["student", "instructor"],
+        roles: ["student", "instructor" ,"admin"],
       },
       {
         name: "Quản lý giao dịch",
@@ -139,7 +139,7 @@ const Nav_Sidebar = [
         name: "Giỏ Hàng",
         path: "cart",
         icon: ShoppingBag,
-        roles: ["student", "instructor"],
+        roles: ["student", "instructor", "admin"],
       },
       {
         name: "Hỗ trợ",
