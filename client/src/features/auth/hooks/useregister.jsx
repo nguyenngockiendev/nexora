@@ -5,10 +5,12 @@ import { toast } from "react-toastify";
 const useUserRegister = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [sendingOtp, setSendingOtp] = useState(false);
 
   const senOtp = async (data) => {
     try {
       setError(null);
+      setSendingOtp(true);
       const res = await senOtpAPI(data);
       return res;
     } catch (error) {
@@ -16,6 +18,8 @@ const useUserRegister = () => {
         error.response?.data?.message || error?.message || "Lỗi server";
       setError(msg);
       toast.error(msg);
+    } finally {
+      setSendingOtp(false);
     }
   };
 
@@ -34,6 +38,6 @@ const useUserRegister = () => {
       setLoading(false);
     }
   };
-  return { registers, error, loading, senOtp };
+  return { registers, error, loading, senOtp, sendingOtp };
 };
 export default useUserRegister;

@@ -70,6 +70,7 @@ const ProfilePage = () => {
       toast.error(errorMsg);
       return;
     }
+    
     const newdata = new FormData();
     if (formData.fullName) newdata.append("name", formData.fullName);
     if (formData.phone) newdata.append("phone", formData.phone);

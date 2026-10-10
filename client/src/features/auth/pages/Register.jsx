@@ -18,7 +18,7 @@ const Register = () => {
     resolver: zodResolver(registerShecma),
     mode: "onBlur",
   });
-  const { registers, error, loading, senOtp } = useUserRegister();
+  const { registers, error, loading, senOtp, sendingOtp } = useUserRegister();
   const [avatar, Setavatar] = useState(null);
   const [countdown, setCountdown] = useState(60);
   const [trig, setTrig] = useState(false);
@@ -48,7 +48,7 @@ const Register = () => {
         type: "register",
       };
       const result = await senOtp(data);
-      if (result.success) {
+      if (result?.success) {
         setCountdown(60);
         setTrig(true);
         toast.success(result.message);
@@ -97,6 +97,7 @@ const Register = () => {
           onSendOtp={onSendOtp}
           countdown={countdown}
           trig={trig}
+          sendingOtp={sendingOtp}
         />
       </div>
     </div>

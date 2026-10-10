@@ -12,6 +12,7 @@ import {
   ShieldCheck,
   GraduationCap,
   Clock,
+  Loader2,
 } from "lucide-react";
 import { useState, useRef } from "react";
 
@@ -27,10 +28,12 @@ const RegisterForm = ({
   onSendOtp,
   countdown = 0,
   trig = false,
+  sendingOtp = false,
 }) => {
   const [password, setPassword] = useState("");
   const [fileName, setFileName] = useState("");
   const fileInputRef = useRef(null);
+  const otpDisabled = trig || sendingOtp;
 
   const getStrength = (val) => {
     let score = 0;
@@ -224,24 +227,34 @@ const RegisterForm = ({
               <button
                 type="button"
                 onClick={onSendOtp}
-                disabled={trig}
+                disabled={otpDisabled}
                 style={{
                   borderRadius: "9999px",
-                  background: trig
+                  background: otpDisabled
                     ? "rgba(226, 232, 240, 0.9)"
                     : "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
-                  boxShadow: trig
+                  boxShadow: otpDisabled
                     ? "none"
                     : "0 2px 8px rgba(249, 115, 22, 0.28)",
                 }}
                 className={`absolute right-1.5 px-3.5 py-1.5 text-xs font-bold transition-all flex items-center gap-1.5 select-none ${
-                  trig
+                  otpDisabled
                     ? "text-slate-400 cursor-not-allowed pointer-events-none"
                     : "text-white cursor-pointer hover:scale-[1.02] active:scale-95 hover:shadow-orange-500/30"
                 }`}
               >
-                <Send size={12} />
-                <span>{trig ? `Gửi lại (${countdown}s)` : "Gửi mã"}</span>
+                {sendingOtp ? (
+                  <Loader2 size={12} className="animate-spin" />
+                ) : (
+                  <Send size={12} />
+                )}
+                <span>
+                  {sendingOtp
+                    ? "Đang gửi..."
+                    : trig
+                      ? `Gửi lại (${countdown}s)`
+                      : "Gửi mã"}
+                </span>
               </button>
             </div>
             {errors.email && (

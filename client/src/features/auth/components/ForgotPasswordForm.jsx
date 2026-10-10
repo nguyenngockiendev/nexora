@@ -9,6 +9,7 @@ import {
   KeyRound,
   ShieldCheck,
   Clock,
+  Loader2,
 } from "lucide-react";
 
 const FogotPassWordForm = ({
@@ -21,7 +22,10 @@ const FogotPassWordForm = ({
   onSendOtp,
   countdown = 0,
   trig,
+  sendingOtp = false,
+  loading = false,
 }) => {
+  const otpDisabled = trig || sendingOtp;
   return (
     <div className="relative w-full">
       {/* Widget nổi 1: Góc trên bên phải */}
@@ -146,23 +150,30 @@ const FogotPassWordForm = ({
               <button
                 type="button"
                 onClick={onSendOtp}
-                disabled={trig}
+                disabled={otpDisabled}
                 style={{
                   borderRadius: "9999px",
-                  background: trig
+                  background: otpDisabled
                     ? "rgba(226, 232, 240, 0.9)"
                     : "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
-                  boxShadow: trig
+                  boxShadow: otpDisabled
                     ? "none"
                     : "0 2px 8px rgba(249, 115, 22, 0.28)",
                 }}
-                className={`absolute right-1.5 px-3.5 py-1.5 text-xs font-bold transition-all select-none ${
-                  trig
+                className={`absolute right-1.5 px-3.5 py-1.5 text-xs font-bold transition-all flex items-center gap-1.5 select-none ${
+                  otpDisabled
                     ? "text-slate-400 cursor-not-allowed pointer-events-none"
                     : "text-white cursor-pointer hover:scale-[1.02] active:scale-95 hover:shadow-orange-500/30"
                 }`}
               >
-                {trig ? `Gửi lại (${countdown}s)` : "Gửi mã"}
+                {sendingOtp && <Loader2 size={12} className="animate-spin" />}
+                <span>
+                  {sendingOtp
+                    ? "Đang gửi..."
+                    : trig
+                      ? `Gửi lại (${countdown}s)`
+                      : "Gửi mã"}
+                </span>
               </button>
             </div>
             {errors?.email && (
@@ -188,13 +199,15 @@ const FogotPassWordForm = ({
                 maxLength={6}
                 {...(register ? register("otp") : {})}
               />
-              <div
-                className="absolute right-2 px-2.5 py-1 bg-orange-50 border border-orange-200/60 flex items-center gap-1 text-[11px] font-bold text-orange-600 pointer-events-none"
-                style={{ borderRadius: "9999px" }}
-              >
-                <Clock size={12} />
-                <span>{countdown > 0 ? `${countdown}s` : "59s"}</span>
-              </div>
+              {countdown > 0 && trig && (
+                <div
+                  className="absolute right-2 px-2.5 py-1 bg-orange-50 border border-orange-200/60 flex items-center gap-1 text-[11px] font-bold text-orange-600 pointer-events-none"
+                  style={{ borderRadius: "9999px" }}
+                >
+                  <Clock size={12} />
+                  <span>{countdown}s</span>
+                </div>
+              )}
             </div>
             {errors?.otp && (
               <p className="text-[11px] text-rose-500 font-semibold flex items-center gap-1 mt-0.5">
@@ -230,10 +243,10 @@ const FogotPassWordForm = ({
               <div className="h-1.5 flex-1 rounded-full bg-slate-200" />
             </div>
 
-            {errors?.newpassword && (
+            {errors?.newPassword && (
               <p className="text-[11px] text-rose-500 font-semibold flex items-center gap-1 mt-0.5">
                 <AlertCircle size={12} className="shrink-0" />
-                <span>{errors.newpassword.message}</span>
+                <span>{errors.newPassword.message}</span>
               </p>
             )}
           </div>
@@ -276,15 +289,16 @@ const FogotPassWordForm = ({
 
             <button
               type="submit"
+              disabled={loading}
               style={{
                 borderRadius: "9999px",
                 background: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
                 boxShadow: "0 8px 24px rgba(249, 115, 22, 0.28)",
               }}
-              className="w-full sm:w-1/2 flex justify-center items-center gap-2 py-3 px-4 text-white text-xs font-extrabold transition-all cursor-pointer hover:scale-[1.02] active:scale-95 whitespace-nowrap"
+              className="w-full sm:w-1/2 flex justify-center items-center gap-2 py-3 px-4 text-white text-xs font-extrabold transition-all cursor-pointer hover:scale-[1.02] active:scale-95 whitespace-nowrap disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
             >
-              <span>Cập nhật mật khẩu</span>
-              <ArrowRight size={15} />
+              <span>{loading ? "Đang cập nhật..." : "Cập nhật mật khẩu"}</span>
+              {!loading && <ArrowRight size={15} />}
             </button>
           </div>
         </form>

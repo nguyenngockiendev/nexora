@@ -6,6 +6,7 @@ import { fogotShecma } from "../../../shared/validation/auth";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 const FogotPassword = () => {
   const {
     register,
@@ -17,9 +18,11 @@ const FogotPassword = () => {
     resolver: zodResolver(fogotShecma),
     mode: "onBlur",
   });
-  const { senOtp, error, forgotPass } = useForgotPassword();
+  const { senOtp, error, forgotPass, sendingOtp, loading } =
+    useForgotPassword();
   const [countdown, setCountdown] = useState(60);
   const [trig, setTrig] = useState(false);
+  const navigate = useNavigate();
   const onsubmit = async (data) => {
     try {
       const datas = {
@@ -27,8 +30,9 @@ const FogotPassword = () => {
         type: "forgot_password",
       };
       const result = await forgotPass(datas);
-      if (result.success) {
+      if (result?.success) {
         toast.success(result.message);
+        navigate("/login");
       }
     } catch (error) {
       console.error(error);
@@ -62,7 +66,7 @@ const FogotPassword = () => {
       };
       const result = await senOtp(data);
 
-      if (result.success) {
+      if (result?.success) {
         setTrig(true);
         setCountdown(60);
         toast.success(result.message);
@@ -88,6 +92,8 @@ const FogotPassword = () => {
           onSendOtp={onSendOtp}
           countdown={countdown}
           trig={trig}
+          sendingOtp={sendingOtp}
+          loading={loading}
         />
       </div>
     </div>

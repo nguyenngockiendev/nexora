@@ -41,10 +41,7 @@ const fogotShecma = z
     otp: z
       .string()
       .length(6, "Mã OTP phải đủ 6 chữ số")
-      .regex(
-        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-        "Email không hợp lệ (phải có dạng @domain.com)",
-      ),
+      .regex(/^[0-9]{6}$/, "Mã OTP chỉ gồm 6 chữ số"),
     newPassword: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
     repeatpassword: z.string().min(1, "Vui lòng xác nhận lại mật khẩu"),
   })
