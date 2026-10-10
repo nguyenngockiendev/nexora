@@ -123,7 +123,7 @@ const {
 
 const Router = require("express").Router();
 
-Router.post("/login", createLimiter(3, 5), AuthController);
+Router.post("/login", createLimiter(10, 5), AuthController);
 Router.post(
   "/register",
   createLimiter(3, 5),
@@ -176,7 +176,12 @@ Router.get(
   getLessionbyIntructor,
 );
 
-Router.put("/create-payment", createLimiter(5, 10), authMiddleware, payment);
+Router.put(
+  "/create-payment",
+  authMiddleware,
+  createLimiter(5, 5, true),
+  payment,
+);
 
 Router.post("/payment/sepay-webhook", sepayCallback);
 Router.get("/enrollments", authMiddleware, Getorderbyuser);
@@ -264,9 +269,11 @@ Router.put(
 );
 Router.post(
   "/create_attemp/quizz/:lessonId",
-  createLimiter(10, 5),
+
   authMiddleware,
+
   checkRole("student"),
+  createLimiter(10, 5, true),
   CreateAttemp,
 );
 ////
@@ -277,13 +284,19 @@ Router.patch(
 );
 Router.get("/process/:lessonId", authMiddleware, GetProcess);
 Router.get("/process/course/:courseId", authMiddleware, GetAllProcess);
-(Router.get("/sendMessage/:classId", authMiddleware, SenMessLimit),
+(Router.get(
+  "/sendMessage/:classId",
+  authMiddleware,
+  createLimiter(20, 1, true),
+  SenMessLimit,
+),
   Router.get("/order_history", authMiddleware, GetOrderHistory));
 
 Router.put(
   "/resume-payment/:orderId",
-  createLimiter(5, 10),
+
   authMiddleware,
+  createLimiter(5, 5, true),
   ResumePay,
 );
 Router.delete("/delete-order/:orderId", authMiddleware, DeleteOrderbyUser);
@@ -311,17 +324,19 @@ Router.get(
 
 Router.post(
   "/courses/:courseId/ratings",
-  createLimiter(5, 10),
+
   authMiddleware,
+  createLimiter(10, 3, true),
   CreateAndUpdateRating,
 );
 Router.get("/courses/:courseId/ratings", GetRating);
 Router.delete("/ratings/:ratingId", authMiddleware, DeleteRatingByuser);
 Router.get(
   "/generate/:lessionId/quizz",
-  createLimiter(3, 5),
+
   authMiddleware,
   checkRole("instructor", "admin"),
+  createLimiter(3, 3, true),
   GenerateQuizAI,
 );
 Router.get(

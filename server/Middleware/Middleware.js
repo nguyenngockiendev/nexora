@@ -18,10 +18,16 @@ const authMiddleware = (req, res, next) => {
     return res.status(401).json({ message: "NOT AUTHORIZED" });
   }
 };
-const createLimiter = (countlimit, time) => {
+const createLimiter = (countlimit, time, byuser = false) => {
   const limit = rateLimit({
     windowMs: time * 60 * 1000,
     max: countlimit,
+    keyGenerator: (req) => {
+      if (byuser && req.user?.userId) {
+        return `user_${req.user.userId}`;
+      }
+      return req.ip;
+    },
     handler: (req, res, next) => {
       return res.status(429).json({
         success: false,
@@ -45,4 +51,3 @@ const checkRole = (...role) => {
 };
 
 module.exports = { authMiddleware, createLimiter, checkRole };
-
