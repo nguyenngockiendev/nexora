@@ -260,6 +260,7 @@ const Sidebar = ({
             }`}
             onClick={() => {
               localStorage.removeItem("token");
+              localStorage.removeItem("userId");
               navigation("/login");
             }}
             title={collapsed ? "Đăng xuất" : undefined}

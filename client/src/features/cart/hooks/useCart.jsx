@@ -1,20 +1,39 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const userId = localStorage.getItem("userId");
-  const cartKey = `cart_${userId}`;
-
-  const [cartItems, setCartItems] = useState(() => {
-    const localData = localStorage.getItem(cartKey);
-    return localData ? JSON.parse(localData) : [];
-  });
+  const [userId, setUserId] = useState(
+    () => localStorage.getItem("userId") || "guest",
+  );
+  const [cartItems, setCartItems] = useState([]);
+  const isLoadedRef = useRef(false);
 
   useEffect(() => {
-    localStorage.setItem(cartKey, JSON.stringify(cartItems));
-  }, [cartItems, cartKey]);
+    const checkUser = () => {
+      const currentId = localStorage.getItem("userId") || "guest";
+      setUserId((prev) => (prev !== currentId ? currentId : prev));
+    };
+
+    const interval = setInterval(checkUser, 500);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    isLoadedRef.current = false;
+    const key = `cart_${userId}`;
+    const localData = localStorage.getItem(key);
+    setCartItems(localData ? JSON.parse(localData) : []);
+    isLoadedRef.current = true;
+  }, [userId]);
+
+  useEffect(() => {
+    if (isLoadedRef.current) {
+      const key = `cart_${userId}`;
+      localStorage.setItem(key, JSON.stringify(cartItems));
+    }
+  }, [cartItems, userId]);
 
   const addToCart = (course) => {
     setCartItems((prevItems) => {
