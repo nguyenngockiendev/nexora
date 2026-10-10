@@ -233,7 +233,9 @@ const deleteVoucher = async (data) => {
         message: "Bạn không có quyền chỉnh sửa voucher này!",
       };
     }
-    if (countVou.usedCount > 0) {
+    const isExpired =
+      !countVou.expiryDate || new Date(countVou.expiryDate) < new Date();
+    if (countVou.usedCount > 0 && !isExpired) {
       throw { status: 400, message: "không được xóa mã này!" };
     }
     const result = await Vouchers.findByIdAndDelete(data.vouchersid);

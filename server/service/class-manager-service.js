@@ -138,9 +138,8 @@ const ChangeStatusClass = async (data) => {
       throw { status: 404, message: "Lớp học không tồn tại!" };
     }
     if (
-      data?.role !== "admin" &&
       result.instructorId.toString() !==
-        (data.instructorId || data.userId || "").toString()
+      (data.instructorId || data.userId || "").toString()
     ) {
       throw {
         status: 403,
@@ -617,7 +616,10 @@ const GradeStudentSubmission = async (data) => {
         instructorId: data.userId,
       });
       if (!isClass) {
-        throw { status: 403, message: "Bạn không phải giáo viên của lớp học này!" };
+        throw {
+          status: 403,
+          message: "Bạn không phải giáo viên của lớp học này!",
+        };
       }
     }
     const update = await AssignmentSubmissions.findByIdAndUpdate(

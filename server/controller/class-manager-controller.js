@@ -80,6 +80,7 @@ const ChangeStatus = async (req, res) => {
   try {
     const data = {
       role: req.user.role,
+      userId: req.user.userId,
       classId: req.params.classId,
       ...req.body,
     };

@@ -93,6 +93,7 @@ const VoucherManagementPage = () => {
     } else {
       const result = await CreateVoucher(payload);
       if (result.success === true) {
+        GetVoucher();
         toast.success(`Tạo mới voucher ${savedData.code} thành công`);
         setIsModalOpen(false);
       }
@@ -101,7 +102,7 @@ const VoucherManagementPage = () => {
 
   const hotVoucher =
     voucher.find((v) => v.isActive && v.discountValue === 100) || voucher[0];
-    const pagination = usePagination(filteredVouchers, 5);
+  const pagination = usePagination(filteredVouchers, 5);
   return (
     <div>
       <VoucherManagementView
@@ -126,7 +127,6 @@ const VoucherManagementPage = () => {
         editingVoucher={editingVoucher}
         pagination={pagination}
       />{" "}
-       
     </div>
   );
 };
