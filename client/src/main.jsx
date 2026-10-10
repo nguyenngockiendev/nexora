@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-
+import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
 import AppRoute from "./app/routes/AppRoutes.jsx";

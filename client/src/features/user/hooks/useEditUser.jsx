@@ -14,13 +14,17 @@ const useEditUsers = () => {
   const getchane = async (idban) => {
     try {
       Setloading(true);
-      await Changerole({
+      const result = await Changerole({
         id: idban._id,
         status: idban.status === "active" ? "inactive" : "active",
       });
+      return result;
     } catch (error) {
-      console.log(error);
-      Seterror(error?.message || "An error occurred");
+      const msg =
+        error.response?.data?.message || error?.message || "Lỗi server";
+      Seterror(msg);
+      toast.error(msg);
+      return { success: false, message: msg };
     } finally {
       Setloading(false);
     }

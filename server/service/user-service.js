@@ -102,15 +102,25 @@ const GetUserById = async (data) => {
 const ChangeStatusByAdmin = async (data) => {
   try {
     if (data?.role !== "admin") {
-      throw { status: 404, message: "You don't have enough authority." };
+      throw { status: 404, message: "Bạn ko có quyền." };
     }
-
+    const isAdmin = await Users.findOne({
+      _id: data.userId,
+      role: "admin",
+    });
+    if (isAdmin) {
+      throw {
+        status: 404,
+        message: "Không thể thay đổi trạng thái với role ADMIN!",
+      };
+    }
     const upadaterole = await user.findByIdAndUpdate(
       data?.userId,
       { status: data?.status },
       { new: true },
     );
-    return { upadaterole: upadaterole, message: "Change succesfullly!" };
+
+    return upadaterole;
   } catch (error) {
     console.log(error);
     throw error;

@@ -86,7 +86,6 @@ const useVoucher = () => {
     } catch (error) {
       const msg =
         error.response?.data?.message || error?.message || "Lỗi server";
-
       Seterror(msg);
       toast.error(msg);
       return { success: false, message: msg };

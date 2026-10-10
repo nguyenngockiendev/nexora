@@ -54,13 +54,11 @@ const AdminUserPage = () => {
 
   const handleChangeStatus = async (user) => {
     try {
-      await getchane(user);
-      await getAll();
-      toast.success(
-        `Đã ${
-          user.status === "active" ? "tạm khóa" : "mở khóa"
-        } tài khoản ${user.name} thành công!`,
-      );
+      const result = await getchane(user);
+      if (result?.success) {
+        await getAll();
+        toast.success(result?.message);
+      }
     } catch (error) {
       console.log(error);
       toast.error("Thao tác đổi trạng thái thất bại!");
