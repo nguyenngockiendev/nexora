@@ -34,7 +34,7 @@ const Nav_Sidebar = [
         roles: ["student", "admin", "instructor"],
       },
       {
-        name: "Khóa học của tôi",
+        name: "Quản lý khóa học",
         path: "courses",
         icon: BookOpen,
         roles: ["instructor", "admin"],
@@ -43,7 +43,7 @@ const Nav_Sidebar = [
         name: "Khóa học đã mua",
         path: "student",
         icon: PlusCircle,
-        roles: ["student"],
+        roles: ["student", "instructor", "admin"],
       },
     ],
   },
