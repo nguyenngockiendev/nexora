@@ -13,7 +13,15 @@ const downloadAudio = async (url, savePath) => {
   if (!fs.existsSync("./temp")) {
     fs.mkdirSync("./temp", { recursive: true });
   }
-  const response = await fetch(url);
+  let response;
+  for (let attempt = 1; attempt <= 5; attempt++) {
+    response = await fetch(url);
+    if (response.ok) break;
+    if (attempt === 5) {
+      throw new Error(`Không tải được audio (HTTP ${response.status})`);
+    }
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+  }
   const buffer = await response.arrayBuffer();
   fs.writeFileSync(savePath, Buffer.from(buffer));
   return savePath;
@@ -161,6 +169,18 @@ const ChunkingVideo = async (lessionId) => {
     }
   } catch (error) {
     console.error("Lỗi trong ChunkingVideo:", error);
+    try {
+      await Lessons.findByIdAndUpdate(lessionId, { status: "FAILED" });
+      if (parentPort) {
+        parentPort.postMessage({
+          lessionId: lessionId,
+          status: "FAILED",
+          error: error?.message || "Chuyển video thành text thất bại!",
+        });
+      }
+    } catch (e) {
+      console.error("Không thể cập nhật trạng thái FAILED:", e);
+    }
   }
 };
 

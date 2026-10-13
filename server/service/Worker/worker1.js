@@ -16,6 +16,10 @@ const ChantextThear = async () => {
       if (parentPort) {
         parentPort.postMessage({ error: error?.message || error });
       }
+    } finally {
+      if (parentPort) {
+        parentPort.postMessage({ done: true });
+      }
     }
   });
 };

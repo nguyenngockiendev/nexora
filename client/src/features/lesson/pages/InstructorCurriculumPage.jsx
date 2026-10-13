@@ -28,6 +28,21 @@ const InstructorCurriculumPage = () => {
     }
     socket.on("messageChangettext", (result) => {
       setProcess(result);
+      if (result?.lessionId && result?.percent === 100) {
+        setArrlession((preve) =>
+          preve.map((e) =>
+            e._id === result.lessionId
+              ? { ...e, status: "TRANSCRIPT_READY" }
+              : e,
+          ),
+        );
+      } else if (result?.lessionId && result?.status === "FAILED") {
+        setArrlession((preve) =>
+          preve.map((e) =>
+            e._id === result.lessionId ? { ...e, status: "FAILED" } : e,
+          ),
+        );
+      }
     });
     return () => {
       socket.off("messageChangettext");

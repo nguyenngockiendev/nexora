@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { rateLimit } = require("express-rate-limit");
+const { rateLimit, ipKeyGenerator } = require("express-rate-limit");
 require("dotenv").config();
 
 const authMiddleware = (req, res, next) => {
@@ -26,7 +26,7 @@ const createLimiter = (countlimit, time, byuser = false) => {
       if (byuser && req.user?.userId) {
         return `user_${req.user.userId}`;
       }
-      return req.ip;
+      return ipKeyGenerator(req.ip);
     },
     handler: (req, res, next) => {
       return res.status(429).json({

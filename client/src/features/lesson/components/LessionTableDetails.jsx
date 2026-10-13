@@ -127,7 +127,9 @@ const LessionTableLession = ({
                             ? "text-success"
                             : item.status === "PROCESSING"
                               ? "text-warning"
-                              : "text-muted"
+                              : item.status === "FAILED"
+                                ? "text-danger"
+                                : "text-muted"
                         }`}
                       >
                         {item.status === "TRANSCRIPT_READY" ||
@@ -138,13 +140,15 @@ const LessionTableLession = ({
                             ? process?.lessionId === item._id &&
                               process?.percent !== undefined
                               ? `⌛ Đang bóc tách ${process.percent}%...`
-                              : "⌛ Đang bóc tách ngầm..."
-                            : "● Chờ xử lý"}
+                              : "⌛ Đang chờ / bóc tách ngầm..."
+                            : item.status === "FAILED"
+                              ? "✕ Tạo phụ đề thất bại"
+                              : "● Chờ xử lý"}
                       </small>
                     )}
                   </div>
                 </div>
-                {item.status === "PENDING" &&
+                {(item.status === "PENDING" || item.status === "FAILED") &&
                   dashboard.role === "instructor" && (
                     <div>
                       <Button
@@ -153,9 +157,10 @@ const LessionTableLession = ({
                           handupdatetracrip(item._id);
                         }}
                         variant="light"
-                        disabled={process}
                       >
-                        ⚡ Tự động phân tích video
+                        {item.status === "FAILED"
+                          ? "🔄 Thử lại"
+                          : "⚡ Tự động phân tích video"}
                       </Button>
                     </div>
                   )}
