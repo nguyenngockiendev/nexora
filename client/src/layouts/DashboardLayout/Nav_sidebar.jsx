@@ -85,7 +85,7 @@ const Nav_Sidebar = [
         name: "bài học",
         path: "instructor/lessons",
         icon: BrainCircuit,
-        roles: ["instructor"],
+        roles: ["instructor ", "admin"],
       },
 
       {

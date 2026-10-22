@@ -13,6 +13,8 @@ const LessionTableLession = ({
   selectedLesson,
   handselectedLesson,
   onClose,
+  activeTab,
+  setActiveTab,
 }) => {
   const { dashboard } = useOutletContext();
   const role = dashboard?.role;
@@ -61,6 +63,27 @@ const LessionTableLession = ({
           </div>
         )}
       </div>
+
+      {role === "admin" && (
+        <div className="d-flex align-items-center gap-2 mb-4">
+          <Button
+            variant={activeTab === "lessons" ? "warning" : "light"}
+            className="rounded-pill px-4 fw-bold text-dark shadow-sm"
+            style={{ borderRadius: "9999px" }}
+            onClick={() => setActiveTab && setActiveTab("lessons")}
+          >
+            📹 Danh Sách Video Bài Giảng
+          </Button>
+          <Button
+            variant={activeTab === "exam_bank" ? "warning" : "light"}
+            className="rounded-pill px-4 fw-bold text-dark shadow-sm"
+            style={{ borderRadius: "9999px" }}
+            onClick={() => setActiveTab && setActiveTab("exam_bank")}
+          >
+            📚 Kho Đề Thi Ôn Luyện
+          </Button>
+        </div>
+      )}
 
       <Card className="quiz-card p-3">
         <Card.Header className="quiz-card-header d-flex justify-content-between align-items-center bg-transparent border-bottom-0 pb-2">

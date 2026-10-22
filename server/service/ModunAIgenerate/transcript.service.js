@@ -1,8 +1,9 @@
-const DBconnection = require("../../config/db");
+const fs = require("fs");
+const Courses = require("../../model/Courses");
 const Lessons = require("../../model/Lessons");
 const LessonTranscripts = require("../../model/LessonTranscripts");
-const { QuizzGenWithAI } = require("./quizAI.service");
-const PromtsforAI = require("./transcript.prompt");
+const { QuizzGenWithAI, ScanPDFWithAI } = require("./quizAI.service");
+const { PromtsforAI, PromtsPdfforAI } = require("./transcript.prompt");
 
 const DEFAULTQUESTION = 25;
 const generateQuizAI = async (data) => {
@@ -70,6 +71,52 @@ const generateQuizAI = async (data) => {
   }
 };
 
+const ScanPDFAI = async (data) => {
+  try {
+    if (!data.file) {
+      throw {
+        status: 400,
+        message: "Vui lòng chọn file PDF đề thi!",
+      };
+    }
+
+    const isExampdf = await Courses.findById(data.courseId);
+
+    if (!isExampdf) {
+      throw {
+        status: 404,
+        message:
+          "Lỗi sinh nộp bài scan PDF. Không tồn tại Course, hãy chắc chắn bạn tạo course!",
+      };
+    }
+    const resultpromt = PromtsPdfforAI(data.file);
+    const result = await ScanPDFWithAI(resultpromt);
+    for (const question of result) {
+      if (
+        !question.question ||
+        !question.options ||
+        question.options.length < 2 ||
+        question.correctAnswer === undefined
+      ) {
+        throw {
+          status: 400,
+          message:
+            "Lỗi sinh bài thi: Câu hỏi không hợp lệ, thiếu trường hoặc số lượng phương án không đúng!",
+        };
+      }
+    }
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  } finally {
+    if (data.file && fs.existsSync(data.file)) {
+      fs.unlinkSync(data.file);
+    }
+  }
+};
+
 module.exports = {
   generateQuizAI,
+  ScanPDFAI,
 };

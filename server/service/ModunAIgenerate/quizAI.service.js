@@ -25,6 +25,22 @@ const GenAI = async (prompt) => {
   }
 };
 
+const ScanPDFWithAI = async (promt) => {
+  try {
+    const respons = await GenAI(promt);
+    if (!respons?.text) {
+      console.error(
+        "Gemini không có text, candidates:",
+        JSON.stringify(respons?.candidates, null, 2),
+      );
+      throw new Error("Gemini không trả về nội dung text hoặc bị chặn!");
+    }
+    return JSON.parse(respons.text);
+  } catch (error) {
+    console.error("Lỗi khi gọi Gemini API:", error);
+    throw error;
+  }
+};
 const TranscribeAI = async (audioPath) => {
   try {
     const res = await groq.audio.transcriptions.create({
@@ -55,4 +71,5 @@ const QuizzGenWithAI = async (promt) => {
 module.exports = {
   QuizzGenWithAI,
   TranscribeAI,
+  ScanPDFWithAI,
 };

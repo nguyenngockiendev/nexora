@@ -106,7 +106,15 @@ const {
   GetRating,
   DeleteRatingByuser,
 } = require("../controller/rating-controller");
-const { GenerateQuizAI } = require("../controller/AIgenerete");
+const { GenerateQuizAI, GeneratePDFAI } = require("../controller/AIgenerete");
+const {
+  CreateExamBankController,
+  GetExamsByCourseController,
+  GetExamDetailController,
+  DeleteExamController,
+  SyncFocusExamController,
+  GetFocusExamController,
+} = require("../controller/examBank-controller");
 const {
   ReplybyAdmin,
   GetAllNotifi,
@@ -503,4 +511,49 @@ Router.post(
 );
 Router.post("/login_google", createLimiter(3, 5), LoginByGoogleController);
 Router.post("/forgot-password", createLimiter(3, 10), forgotPasswordController);
+Router.post(
+  "/scan_pdf/:courseId",
+  authMiddleware,
+  checkRole("admin"),
+  upload.single("file"),
+  GeneratePDFAI,
+);
+// Exam Bank & Focus Exam API
+Router.post(
+  "/exam-bank/create",
+  authMiddleware,
+  checkRole("admin"),
+  CreateExamBankController,
+);
+Router.get(
+  "/exam-bank/:courseId",
+  authMiddleware,
+  checkRole("admin"),
+  GetExamsByCourseController,
+);
+Router.get(
+  "/exam-bank/detail/:examId",
+  authMiddleware,
+  checkRole("admin"),
+  GetExamDetailController,
+);
+Router.delete(
+  "/exam-bank/:examId",
+  authMiddleware,
+  checkRole("admin"),
+  DeleteExamController,
+);
+Router.post(
+  "/exam-bank/focus/sync/:courseId",
+  authMiddleware,
+  checkRole("admin"),
+  SyncFocusExamController,
+);
+Router.get(
+  "/exam-bank/focus/:courseId",
+  authMiddleware,
+  checkRole("admin"),
+  GetFocusExamController,
+);
+
 module.exports = Router;

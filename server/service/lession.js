@@ -165,9 +165,6 @@ const GetLessionByid = async (data) => {
 };
 const GetCoursewithLessionById = async (data) => {
   try {
-    if (data?.role !== "instructor") {
-      throw { status: 403, message: "forbidden" };
-    }
     const result = await Courses.aggregate([
       {
         $match: {
