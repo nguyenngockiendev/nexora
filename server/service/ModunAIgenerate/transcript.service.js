@@ -4,13 +4,11 @@ const Lessons = require("../../model/Lessons");
 const LessonTranscripts = require("../../model/LessonTranscripts");
 const { QuizzGenWithAI, ScanPDFWithAI } = require("./quizAI.service");
 const { PromtsforAI, PromtsPdfforAI } = require("./transcript.prompt");
+const { PDFDocument } = require("pdf-lib");
 
 const DEFAULTQUESTION = 25;
 const generateQuizAI = async (data) => {
   try {
-    if (data.role === "" || data.role === null) {
-      throw { status: 404, message: "Không có quyền!" };
-    }
     if (data.questionCount === null) {
       throw { status: 404, message: "chưa nhập số lượng câu mong muốn!" };
     }
@@ -89,8 +87,64 @@ const ScanPDFAI = async (data) => {
           "Lỗi sinh nộp bài scan PDF. Không tồn tại Course, hãy chắc chắn bạn tạo course!",
       };
     }
-    const resultpromt = PromtsPdfforAI(data.file);
-    const result = await ScanPDFWithAI(resultpromt);
+
+    const pdfBuffer = fs.readFileSync(data.file);
+    const sourcePdf = await PDFDocument.load(pdfBuffer);
+    const totalPages = sourcePdf.getPageCount();
+    const pagesPerChunk = 12;
+
+    const uniqueQuestions = new Map();
+
+    for (let start = 0; start < totalPages; start += pagesPerChunk) {
+      const end = Math.min(start + pagesPerChunk + 1, totalPages);
+      const subPdf = await PDFDocument.create();
+
+      const pageIndices = [];
+      for (let i = start; i < end; i++) {
+        pageIndices.push(i);
+      }
+
+      const copiedPages = await subPdf.copyPages(sourcePdf, pageIndices);
+      copiedPages.forEach((page) => subPdf.addPage(page));
+
+      const subPdfBytes = await subPdf.save();
+      const chunkBase64 = Buffer.from(subPdfBytes).toString("base64");
+
+      const resultpromt = PromtsPdfforAI(chunkBase64);
+      const chunkResult = await ScanPDFWithAI(resultpromt);
+
+      if (Array.isArray(chunkResult)) {
+        for (const q of chunkResult) {
+          if (
+            !q?.question ||
+            !Array.isArray(q.options) ||
+            q.options.length < 2 ||
+            q.correctAnswer === undefined
+          ) {
+            continue;
+          }
+          const key = q.question
+            .toLowerCase()
+            .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"'’“”]/g, " ")
+            .replace(/\s+/g, " ")
+            .trim();
+          if (key && !uniqueQuestions.has(key)) {
+            uniqueQuestions.set(key, q);
+          }
+        }
+      }
+
+      if (end === totalPages) break;
+    }
+
+    const result = Array.from(uniqueQuestions.values());
+    if (result.length === 0) {
+      throw {
+        status: 400,
+        message: "Không trích xuất được câu hỏi hợp lệ nào từ file PDF!",
+      };
+    }
+
     for (const question of result) {
       if (
         !question.question ||

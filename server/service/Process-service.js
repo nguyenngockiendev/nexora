@@ -8,9 +8,6 @@ const QuizAttempts = require("../model/QuizAttempts");
 
 const SaveLessonProgress = async (data) => {
   try {
-    if (data.role != "student") {
-      throw { message: "bạn không có quyền tạo" };
-    }
     if (!data.lessonId || !data.courseId) {
       throw { message: "lession hoặc course không tồn tại!" };
     }
@@ -71,9 +68,6 @@ const SaveLessonProgress = async (data) => {
 
 const getLessonProgress = async (data) => {
   try {
-    if (data.role != "student") {
-      throw { message: "bạn không có quyền xem" };
-    }
 
     const process = await ProcessLesson.findOne({
       userId: data.userId,
@@ -91,9 +85,6 @@ const getLessonProgress = async (data) => {
 
 const getAllLessonProgress = async (data) => {
   try {
-    if (data.role != "student") {
-      throw { message: "bạn không có quyền xem" };
-    }
 
     const processes = await ProcessLesson.find({
       userId: data.userId,

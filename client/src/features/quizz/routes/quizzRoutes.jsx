@@ -4,8 +4,24 @@ import StudentQuizListPage from "../pages/StudentQuizListPage";
 import AssessmentHubPage from "../pages/AssessmentHubPage";
 import InstructorQuizCourseListPage from "../pages/InstructorQuizCourseListPage";
 import InstructorQuizTrackingPage from "../pages/InstructorQuizTrackingPage";
+import StudentFocusExamPage from "../pages/StudentFocusExamPage";
+import StudentExamBankPage from "../pages/StudentExamBankPage";
 
 const quizzRoutes = [
+  // Danh sách môn học đã mua để ôn thi
+  {
+    path: "student/exam-bank",
+    element: <StudentExamBankPage />,
+  },
+  // Màn hình làm đề 60 câu trọng tâm theo từng môn (courseId)
+  {
+    path: "student/focus-exam/:courseId",
+    element: <StudentFocusExamPage />,
+  },
+  {
+    path: "student/focus-exam",
+    element: <StudentFocusExamPage />,
+  },
   {
     path: "quizz/lession/:lessionId",
     element: <TakeQuizPage />,

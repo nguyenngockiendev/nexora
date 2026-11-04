@@ -1,0 +1,171 @@
+{
+  "scope": "Isolated HTTP; real route/auth/controller/service; mocked model persistence. Not a live MongoDB penetration test.",
+  "results": [
+    {
+      "name": "Anonymous cannot resume an order",
+      "result": "BLOCKED / protected",
+      "status": 401,
+      "response": {
+        "message": "NOT AUTHORIZED"
+      }
+    },
+    {
+      "name": "Student cannot delete lessons",
+      "result": "BLOCKED / protected",
+      "status": 403,
+      "response": {
+        "success": false,
+        "message": "Bạn không có quyền truy cập!"
+      }
+    },
+    {
+      "name": "Instructor A cannot delete lesson B",
+      "result": "BLOCKED / protected",
+      "status": 403,
+      "response": {
+        "message": "Bạn không có quyền xóa bài học của giảng viên khác!"
+      }
+    },
+    {
+      "name": "Owner B can delete own lesson (positive control)",
+      "result": "BLOCKED / protected",
+      "status": 200,
+      "response": {
+        "message": "Xóa bài học thành công!"
+      }
+    },
+    {
+      "name": "Instructor A cannot edit lesson B",
+      "result": "BLOCKED / protected",
+      "status": 403,
+      "response": {
+        "message": "Bạn không có quyền thay đổi bài học của giảng viên khác!"
+      }
+    },
+    {
+      "name": "Student A cannot delete order B",
+      "result": "BLOCKED / protected",
+      "status": 404,
+      "response": {
+        "message": "Không phải đơn hàng của bạn!"
+      }
+    },
+    {
+      "name": "Student A cannot resume order B",
+      "result": "VULNERABLE in isolated reproduction",
+      "status": 200,
+      "response": {
+        "url": "https://qr.sepay.vn/img?acc=undefined&bank=undefined&amount=0&holder=undefined&des=SEVQR_SYNTHETIC&template=compact&showinfo=true"
+      }
+    },
+    {
+      "name": "Instructor A cannot read edit data of lesson B",
+      "result": "VULNERABLE in isolated reproduction",
+      "status": 200,
+      "response": {
+        "_id": "000000000000000000000005",
+        "courseId": "000000000000000000000004",
+        "videoUrl": "https://example.invalid/private-video",
+        "isPreview": false
+      }
+    },
+    {
+      "name": "Nonmember cannot read private meeting link",
+      "result": "VULNERABLE in isolated reproduction",
+      "status": 200,
+      "response": {
+        "_id": "000000000000000000000006",
+        "courseId": {
+          "_id": "000000000000000000000004",
+          "instructor": "000000000000000000000002"
+        },
+        "instructorId": {
+          "_id": "000000000000000000000002",
+          "name": "Teacher B"
+        },
+        "currentStudents": 0,
+        "meetingLink": "https://example.invalid/private-meeting",
+        "schedule": {
+          "startTime": "10:00",
+          "endTime": "11:00"
+        },
+        "startDate": "Invalid Date",
+        "endDate": "Invalid Date"
+      }
+    },
+    {
+      "name": "Instructor cannot forge role=admin to edit class B",
+      "result": "VULNERABLE in isolated reproduction",
+      "status": 200,
+      "response": {
+        "_id": "000000000000000000000006",
+        "courseId": "000000000000000000000004",
+        "instructorId": "000000000000000000000002",
+        "currentStudents": 0,
+        "meetingLink": "https://example.invalid/private-meeting",
+        "schedule": {
+          "startTime": 0,
+          "endTime": 0
+        },
+        "role": "admin",
+        "classId": "000000000000000000000006",
+        "title": "unauthorized change"
+      }
+    },
+    {
+      "name": "Instructor cannot forge userId to change class B status",
+      "result": "VULNERABLE in isolated reproduction",
+      "status": 200,
+      "response": {
+        "message": "Cập nhật trạng thái lớp học thành công!",
+        "changestatus": {
+          "_id": "000000000000000000000006",
+          "courseId": "000000000000000000000004",
+          "instructorId": "000000000000000000000002",
+          "currentStudents": 0,
+          "meetingLink": "https://example.invalid/private-meeting",
+          "schedule": {
+            "startTime": 600,
+            "endTime": 660
+          },
+          "status": "closed"
+        }
+      }
+    },
+    {
+      "name": "Owned course A does not authorize retake of attempt B",
+      "result": "VULNERABLE in isolated reproduction",
+      "status": 200,
+      "response": {
+        "_id": "000000000000000000000008",
+        "courseId": "000000000000000000000004",
+        "status": "retake",
+        "retakeCount": 1
+      }
+    },
+    {
+      "name": "Course detail must not expose instructor password or paid video",
+      "result": "VULNERABLE in isolated reproduction",
+      "status": 200,
+      "response": {
+        "_id": "000000000000000000000004",
+        "instructor": {
+          "_id": "000000000000000000000002",
+          "name": "Teacher B",
+          "password": "SYNTHETIC_HASH_DO_NOT_RETURN"
+        },
+        "isRecode": false,
+        "lessons": [
+          {
+            "_id": "000000000000000000000005",
+            "courseId": "000000000000000000000004",
+            "videoUrl": "https://example.invalid/private-video",
+            "isPreview": false
+          }
+        ],
+        "Rattingleng": 0,
+        "rattingforcoure": 5
+      }
+    }
+  ]
+}

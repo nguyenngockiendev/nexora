@@ -4,9 +4,6 @@ const Courses = require("../model/Courses");
 
 const CreateVoucher = async (data) => {
   try {
-    if (data.role === "student") {
-      throw { status: 400, message: "Bạn không được tạo!" };
-    }
     const uppercase = data.code.trim().toUpperCase();
     const isExitsVoucher = await Vouchers.findOne({ code: uppercase });
     if (isExitsVoucher) {
@@ -72,9 +69,6 @@ const CreateVoucher = async (data) => {
 };
 const getVoucherByid = async (data) => {
   try {
-    if (data.role === "student") {
-      throw { status: 403, message: "Bạn không có quyền!" };
-    }
     let filter = {};
 
     if (data.role === "instructor") {
@@ -93,9 +87,6 @@ const getVoucherByid = async (data) => {
 };
 const updateVoucherbyid = async (data) => {
   try {
-    if (data.role === "student") {
-      throw { status: 403, message: "Bạn không có quyền!" };
-    }
 
     const countVou = await Vouchers.findById(data.vouchersid);
     if (!countVou) {
@@ -171,9 +162,6 @@ const updateVoucherbyid = async (data) => {
 
 const updateStatusVoucher = async (data) => {
   try {
-    if (data.role === "student") {
-      throw { status: 403, message: "Bạn không có quyền!" };
-    }
 
     const countVou = await Vouchers.findById(data.vouchersid);
     if (!countVou) {
@@ -216,9 +204,6 @@ const updateStatusVoucher = async (data) => {
 };
 const deleteVoucher = async (data) => {
   try {
-    if (data.role === "student") {
-      throw { status: 403, message: "Bạn không có quyền!" };
-    }
 
     const countVou = await Vouchers.findById(data.vouchersid);
     if (!countVou) {

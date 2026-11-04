@@ -11,6 +11,7 @@ import {
   ShoppingBag,
   ClipboardCheck,
   Tag,
+  Target,
 } from "lucide-react";
 
 const Nav_Sidebar = [
@@ -50,6 +51,12 @@ const Nav_Sidebar = [
   {
     title: "Quản lý",
     items: [
+      {
+        name: "Kho đề ôn luyện",
+        path: "student/exam-bank",
+        icon: Target,
+        roles: ["student", "instructor", "admin"],
+      },
       {
         name: "Quản lý kiểm tra",
         path: "instructor/assessments",

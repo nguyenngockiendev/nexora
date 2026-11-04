@@ -38,3 +38,8 @@ export const GetFocusExam = async (courseId) => {
   const response = await api.get(`/exam-bank/focus/${courseId}`);
   return response;
 };
+
+export const GetDedupExam = async (courseId) => {
+  const response = await api.post(`/exam-bank/dedup/${courseId}`);
+  return response;
+};

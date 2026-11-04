@@ -11,9 +11,6 @@ const Class = require("../model/Class");
 
 const GetAllUserByrole = async (data) => {
   try {
-    if (data?.role !== "admin") {
-      throw { status: 404, message: "You don't have enough authority." };
-    }
     const userList = await user.find().select("-password").lean();
     if (userList.length === 0) {
       throw { status: 404, message: "no users." };
@@ -39,9 +36,6 @@ const GetAllUserByrole = async (data) => {
 
 const GetUserById = async (data) => {
   try {
-    if (data?.role !== "admin") {
-      throw { status: 404, message: "You don't have enough authority." };
-    }
     const users = await user.findById(data?.userId).lean();
     const orders = await order.find({ userId: data?.userId }).lean();
     const userInfor = await errollment
@@ -101,9 +95,6 @@ const GetUserById = async (data) => {
 
 const ChangeStatusByAdmin = async (data) => {
   try {
-    if (data?.role !== "admin") {
-      throw { status: 404, message: "Bạn ko có quyền." };
-    }
     const isAdmin = await Users.findOne({
       _id: data.userId,
       role: "admin",
@@ -129,9 +120,6 @@ const ChangeStatusByAdmin = async (data) => {
 
 const UpdateroleByAdmin = async (data) => {
   try {
-    if (data?.role !== "admin") {
-      throw { status: 404, message: "You don't have enough authority." };
-    }
     if (data?.roles === "admin") {
       throw {
         status: 404,
@@ -153,9 +141,6 @@ const UpdateroleByAdmin = async (data) => {
 
 const GetAllStudentByIdClass = async (data) => {
   try {
-    if (data?.role !== "instructor" && data?.role !== "admin") {
-      throw { status: 404, message: "You don't have enough authority." };
-    }
     if (data?.role !== "admin") {
       const isClassIns = await Class.findOne({
         _id: data?.classId,
@@ -198,9 +183,6 @@ const GetAllStudentByIdClass = async (data) => {
 
 const RemoveStudentinClass = async (data) => {
   try {
-    if (data?.role === "student") {
-      throw { status: 404, message: "You don't have enough authority." };
-    }
 
     if (data?.role !== "admin") {
       const isClassIns = await Class.findOne({
@@ -247,9 +229,6 @@ const RemoveStudentinClass = async (data) => {
 
 const RefectStudentoutclass = async (data) => {
   try {
-    if (data?.role === "student") {
-      throw { status: 404, message: "You don't have enough authority." };
-    }
     if (data?.role !== "admin") {
       const isClassIns = await Class.findOne({
         _id: data?.classId,
@@ -300,9 +279,6 @@ const RefectStudentoutclass = async (data) => {
 };
 const RequestInstructor = async (data) => {
   try {
-    if (data.role != "student") {
-      throw { status: 404, message: "không thể yêu cầu làm Intructor!" };
-    }
     const existingRequest = await TeacherRequests.findOne({
       userId: data.userId,
       status: "pending",
@@ -326,9 +302,6 @@ const RequestInstructor = async (data) => {
 
 const ResponInstructor = async (data) => {
   try {
-    if (data.role != "admin") {
-      throw { status: 404, message: "không có quyền thay đổi!" };
-    }
     if (data.approved === "approved") {
       const result = await Users.findByIdAndUpdate(data.userId, {
         role: "instructor",
@@ -355,9 +328,6 @@ const ResponInstructor = async (data) => {
 
 const GetPendingTeacherRequests = async (data) => {
   try {
-    if (data.role !== "admin") {
-      throw { status: 403, message: "Bạn không có quyền xem thông tin này!" };
-    }
     const requests = await TeacherRequests.find({ status: "pending" })
       .populate("userId", "name email avatar")
       .lean();

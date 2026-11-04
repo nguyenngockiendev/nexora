@@ -72,7 +72,7 @@ const ExamDetailModal = ({ show, onHide, title, questions = [], isFocus = false 
                     <span className="badge bg-dark rounded-pill px-3 py-1">
                       Câu {idx + 1}
                     </span>
-                    {q.repeatCount !== undefined && q.repeatCount > 1 && (
+                    {isFocus && q.repeatCount !== undefined && q.repeatCount > 1 && (
                       <span className="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3 py-1 fw-bold">
                         🔥 Xuất hiện trong {q.repeatCount} đề thi
                       </span>

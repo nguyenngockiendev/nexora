@@ -114,6 +114,7 @@ const {
   DeleteExamController,
   SyncFocusExamController,
   GetFocusExamController,
+  GetDedupExamController,
 } = require("../controller/examBank-controller");
 const {
   ReplybyAdmin,
@@ -154,7 +155,7 @@ Router.get("/lession/:id", authMiddleware, GetLessons);
 Router.post(
   "/create_lession",
   authMiddleware,
-  checkRole("admin", "instructor"),
+  checkRole("instructor"),
   upload.fields([
     { name: "videoUrl", maxCount: 1 },
     { name: "resourcesurl", maxCount: 1 },
@@ -164,13 +165,13 @@ Router.post(
 Router.delete(
   `/delete_lession/:id`,
   authMiddleware,
-  checkRole("admin", "instructor"),
+  checkRole("instructor"),
   DeleteLession,
 );
 Router.put(
   `/update_lession/:lessionId`,
   authMiddleware,
-  checkRole("admin", "instructor"),
+  checkRole("instructor"),
   upload.fields([
     { name: "video", maxCount: 1 },
     { name: "resourcesurl", maxCount: 1 },
@@ -180,7 +181,7 @@ Router.put(
 Router.get(
   `/get_lessionbyupdate/:lessionId`,
   authMiddleware,
-  checkRole("admin", "instructor"),
+  checkRole("instructor"),
   getLessionbyIntructor,
 );
 
@@ -197,13 +198,13 @@ Router.get("/courses/:courseId/lession", authMiddleware, Getcheckenrollment);
 Router.post(
   "/create-class/:courseId",
   authMiddleware,
-  checkRole("admin", "instructor"),
+  checkRole("instructor"),
   CreateClass,
 );
 Router.get(
   "/get-class-by-instructor/:courseId",
   authMiddleware,
-  checkRole("admin", "instructor"),
+  checkRole("instructor"),
   GetclassbyId,
 );
 Router.put(
@@ -288,10 +289,11 @@ Router.post(
 Router.patch(
   "/process-lesson/:courseId/:lessonId",
   authMiddleware,
+  checkRole("student"),
   SaveProcess,
 );
-Router.get("/process/:lessonId", authMiddleware, GetProcess);
-Router.get("/process/course/:courseId", authMiddleware, GetAllProcess);
+Router.get("/process/:lessonId", authMiddleware, checkRole("student"), GetProcess);
+Router.get("/process/course/:courseId", authMiddleware, checkRole("student"), GetAllProcess);
 (Router.get(
   "/sendMessage/:classId",
   authMiddleware,
@@ -334,11 +336,12 @@ Router.post(
   "/courses/:courseId/ratings",
 
   authMiddleware,
+  checkRole("student"),
   createLimiter(10, 3, true),
   CreateAndUpdateRating,
 );
 Router.get("/courses/:courseId/ratings", GetRating);
-Router.delete("/ratings/:ratingId", authMiddleware, DeleteRatingByuser);
+Router.delete("/ratings/:ratingId", authMiddleware, checkRole("student"), DeleteRatingByuser);
 Router.get(
   "/generate/:lessionId/quizz",
 
@@ -365,7 +368,7 @@ Router.get(
   checkRole("instructor", "admin"),
   GetCoursewithLession,
 );
-Router.get("/lessions/:courseId", authMiddleware, GetLessionDetails);
+Router.get("/lessions/:courseId", authMiddleware, checkRole("instructor", "admin"), GetLessionDetails);
 Router.get(
   "/admin/courses/quality-control",
   authMiddleware,
@@ -441,8 +444,8 @@ Router.put(
   upload.single("fileAss"),
   GradeAssignments,
 );
-Router.get("/Assessment", authMiddleware, GetAssessmentHubData);
-Router.get("/result_quizz/:courseId", authMiddleware, GetResultQuizz);
+Router.get("/Assessment", authMiddleware, checkRole("instructor", "admin"), GetAssessmentHubData);
+Router.get("/result_quizz/:courseId", authMiddleware, checkRole("instructor", "admin"), GetResultQuizz);
 Router.patch(
   "/update_status_Quizz/:quizattempsId",
   authMiddleware,
@@ -528,13 +531,13 @@ Router.post(
 Router.get(
   "/exam-bank/:courseId",
   authMiddleware,
-  checkRole("admin"),
+  checkRole("admin", "instructor", "student"),
   GetExamsByCourseController,
 );
 Router.get(
   "/exam-bank/detail/:examId",
   authMiddleware,
-  checkRole("admin"),
+  checkRole("admin", "instructor", "student"),
   GetExamDetailController,
 );
 Router.delete(
@@ -546,13 +549,19 @@ Router.delete(
 Router.post(
   "/exam-bank/focus/sync/:courseId",
   authMiddleware,
-  checkRole("admin"),
+  checkRole("admin", "instructor", "student"),
   SyncFocusExamController,
+);
+Router.post(
+  "/exam-bank/dedup/:courseId",
+  authMiddleware,
+  checkRole("admin", "instructor", "student"),
+  GetDedupExamController,
 );
 Router.get(
   "/exam-bank/focus/:courseId",
   authMiddleware,
-  checkRole("admin"),
+  checkRole("admin", "instructor", "student"),
   GetFocusExamController,
 );
 

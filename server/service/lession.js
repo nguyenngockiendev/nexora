@@ -44,9 +44,6 @@ const CreateLession = async (data) => {
       { order: -1 },
     );
     let order = numberOrder?.order || 0;
-    if (data?.role !== "instructor") {
-      throw { status: 403, message: "forbidden" };
-    }
     order++;
     const newlession = await Lessons.create({ ...data, order: order });
     if (data.status === "PROCESSING") {
@@ -62,9 +59,6 @@ const CreateLession = async (data) => {
 };
 const DeleteLessionByid = async (data) => {
   try {
-    if (data?.role !== "instructor") {
-      throw { status: 403, message: "Bạn không có quyền giảng viên!" };
-    }
     const lession = await Lessons.findById(data._id);
     if (!lession) {
       throw { status: 404, message: "Bài học không tồn tại!" };
@@ -89,9 +83,6 @@ const DeleteLessionByid = async (data) => {
 };
 const UpdateLessionByid = async (data) => {
   try {
-    if (data?.role !== "instructor") {
-      throw { status: 403, message: "Bạn không có quyền giảng viên!" };
-    }
     const lession = await Lessons.findById(data.lessionId);
     if (!lession) {
       throw { status: 404, message: "Bài học không tồn tại!" };
@@ -149,9 +140,6 @@ const UpdateLessionByid = async (data) => {
 
 const GetLessionByid = async (data) => {
   try {
-    if (data?.role !== "instructor") {
-      throw { status: 403, message: "forbidden" };
-    }
     const getlession = await Lessons.findById({ _id: data?.lessionId }).lean();
     if (!getlession) {
       throw { status: 404, message: "Lesson not found" };
@@ -210,9 +198,6 @@ const GetCoursewithLessionById = async (data) => {
 };
 const getLessionDetails = async (data) => {
   try {
-    if (data.role == "student") {
-      throw { status: 404, message: "không có quyền!" };
-    }
     const listlession = await Lessons.find({
       courseId: data.courseId,
     }).populate("courseId", "type");

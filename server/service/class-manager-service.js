@@ -1,6 +1,4 @@
 const Courses = require("../model/Courses");
-const Lessons = require("../model/Lessons");
-const order = require("../model/Orders");
 const errollment = require("../model/Enrollments");
 const user = require("../model/Users");
 const classs = require("../model/Class");
@@ -9,9 +7,6 @@ const AssignmentSubmissions = require("../model/AssignmentSubmissions");
 
 const CreateClassbyIntructor = async (data) => {
   try {
-    if (data.role !== "instructor") {
-      throw { status: 403, message: "Chỉ giảng viên mới có quyền tạo lớp học" };
-    }
     const isCourse = await Courses.findOne({
       _id: data.courseId,
       instructor: data.instructorId,
@@ -51,12 +46,6 @@ const CreateClassbyIntructor = async (data) => {
 };
 const GetClassbyInstructor = async (data) => {
   try {
-    if (data?.role !== "instructor") {
-      throw {
-        status: 403,
-        message: "Chỉ giảng viên mới có thể xem các lớp học của mình",
-      };
-    }
     const result = await classs
       .find({ instructorId: data.intructor, courseId: data.courseId })
       .populate("instructorId", "name")
@@ -90,9 +79,6 @@ const GetClassbyInstructor = async (data) => {
 };
 const UpdateclassByrole = async (data) => {
   try {
-    if (data?.role === "student") {
-      throw { status: 403, message: "Bạn không có quyền chỉnh sửa lớp học!" };
-    }
     const result = await classs.findById(data?.classId);
     if (!result) {
       throw { status: 404, message: "Lớp học không tồn tại!" };
@@ -127,12 +113,6 @@ const UpdateclassByrole = async (data) => {
 
 const ChangeStatusClass = async (data) => {
   try {
-    if (data?.role === "student") {
-      throw {
-        status: 403,
-        message: "Bạn không có quyền chỉnh sửa trạng thái lớp học!",
-      };
-    }
     const result = await classs.findById(data?.classId);
     if (!result) {
       throw { status: 404, message: "Lớp học không tồn tại!" };
@@ -163,9 +143,6 @@ const ChangeStatusClass = async (data) => {
 };
 const GetClassByStudent = async (data) => {
   try {
-    // if (data?.role !== "student") {
-    //   throw { status: 404, message: "fobiden!" };
-    // }
     const getClass = await classs
       .findById(data?.classId)
       .populate("courseId")
@@ -468,12 +445,6 @@ const SumbitAssments = async (data) => {
 
 const GetAllClassesForInstructor = async (data) => {
   try {
-    if (data?.role !== "instructor" && data?.role !== "admin") {
-      throw {
-        status: 403,
-        message: "Chỉ giảng viên mới có thể xem danh sách lớp học của mình!",
-      };
-    }
     const classes = await classs
       .find({ instructorId: data.userId })
       .populate("courseId", "title thumbnail category")
@@ -528,9 +499,6 @@ const GetAllClassesForInstructor = async (data) => {
 
 const TrackingAssignments = async (data) => {
   try {
-    if (data?.role === "student") {
-      throw { status: 403, message: "Không đủ quyền!" };
-    }
     const isClass = await classs.findOne({
       _id: data.classId,
       instructorId: data.userId,
@@ -603,9 +571,6 @@ const TrackingAssignments = async (data) => {
 
 const GradeStudentSubmission = async (data) => {
   try {
-    if (data?.role === "student") {
-      throw { status: 403, message: "Không đủ quyền chấm điểm!" };
-    }
     const submission = await AssignmentSubmissions.findById(data.submissionId);
     if (!submission) {
       throw { status: 404, message: "Không tìm thấy bài nộp!" };

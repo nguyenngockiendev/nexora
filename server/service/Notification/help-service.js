@@ -23,9 +23,6 @@ const SennotificationbyStudent = async (data) => {
 };
 const ReplyForuser = async (data) => {
   try {
-    if (data.role !== "admin") {
-      throw { status: 403, message: "Không đủ quyền truy cập!" };
-    }
     const isuser = await Users.findById(data.userId);
     if (!isuser) {
       throw { status: 404, message: "không tìm thấy người dùng!" };
@@ -49,9 +46,6 @@ const ReplyForuser = async (data) => {
 
 const GetALLNotification = async (data) => {
   try {
-    if (data.role !== "admin") {
-      throw { status: 403, message: "Không đủ quyền truy cập!" };
-    }
     const getall = await Notifications.find()
       .populate("senderId", "name email avatar")
       .sort({ createdAt: -1 })

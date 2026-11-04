@@ -1,8 +1,6 @@
 const Courses = require("../model/Courses");
 const Lessons = require("../model/Lessons");
-
 const errollment = require("../model/Enrollments");
-
 const quizz = require("../model/Quizz");
 const attempQuizz = require("../model/QuizAttempts");
 const Quizz = require("../model/Quizz");
@@ -10,11 +8,12 @@ const QuizAttempts = require("../model/QuizAttempts");
 const AssignmentSubmissions = require("../model/AssignmentSubmissions");
 const Assignments = require("../model/Assignments");
 
+
+
+
+
 const CreateQuizByIntructor = async (data) => {
   try {
-    if (data?.role !== "instructor" && data?.role !== "admin") {
-      throw { status: 403, message: "Bạn không có quyền tạo bài kiểm tra!" };
-    }
 
     const checkLession = await Lessons.findById(data?.lessonId);
     if (!checkLession) {
@@ -76,12 +75,6 @@ const GetQuizzById = async (data) => {
 };
 const UpdateQuizzbyIntructor = async (data) => {
   try {
-    if (data?.role !== "instructor" && data?.role !== "admin") {
-      throw {
-        status: 403,
-        message: "Bạn không có quyền chỉnh sửa bài kiểm tra!",
-      };
-    }
     const checkLession = await Lessons.findById(data?.lessonId);
     if (!checkLession) {
       throw { status: 404, message: "Bài học không tồn tại!" };
@@ -220,9 +213,6 @@ const GetAttempsQuiz = async ({ studentId, attempsId, lessonId }) => {
 
 const GetCourse = async (data) => {
   try {
-    if (data.role === "student") {
-      throw { status: 404, message: "không có quyền!" };
-    }
     const listCourse = await Courses.find({
       instructor: data.userId,
       type: "recorded",
@@ -335,9 +325,6 @@ const GetQuizzbyStudent = async (data) => {
 
 const GetAssessments = async (data) => {
   try {
-    if (data.role === "student") {
-      throw { status: 404, message: "Không đủ quyền!" };
-    }
     const Courseid = await Courses.find({ instructor: data.userId }).distinct(
       "_id",
     );
@@ -389,9 +376,6 @@ const GetAssessments = async (data) => {
 };
 const TrackingQuizz = async (data) => {
   try {
-    if (data.role === "student") {
-      throw { status: 403, message: "Không đủ quyền!" };
-    }
     const IsexitCour = await Courses.findOne({
       _id: data.courseId,
       instructor: data.userId,
@@ -542,6 +526,8 @@ const UpdateAttempQuizzAll = async (data) => {
     throw error;
   }
 };
+
+
 module.exports = {
   UpdateAttempQuizz,
   UpdateAttempQuizzAll,

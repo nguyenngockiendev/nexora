@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button, Badge, Spinner, Card } from "react-bootstrap";
 import { toast } from "react-toastify";
 import {
@@ -11,6 +12,7 @@ import {
   Calendar,
   Layers,
   HelpCircle,
+  Play,
 } from "lucide-react";
 import {
   GetExamsByCourse,
@@ -18,15 +20,19 @@ import {
   DeleteExam,
   SyncFocusExam,
   GetFocusExam,
+  GetDedupExam,
 } from "../api/examBank-api";
 import UploadScanPdfModal from "./UploadScanPdfModal";
 import ExamDetailModal from "./ExamDetailModal";
 
 const ExamBankTab = ({ courseId }) => {
+  const navigate = useNavigate();
   const [exams, setExams] = useState([]);
   const [focusExam, setFocusExam] = useState(null);
+  const [dedupExam, setDedupExam] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [isSyncingDedup, setIsSyncingDedup] = useState(false);
 
   // Modals state
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -73,6 +79,33 @@ const ExamBankTab = ({ courseId }) => {
       );
     } finally {
       setIsSyncing(false);
+    }
+  };
+
+  const handleGetDedupExam = async () => {
+    try {
+      setIsSyncingDedup(true);
+      const res = await GetDedupExam(courseId);
+      const data = res?.data?.data || res?.data;
+      if (data) {
+        setDedupExam(data);
+        setDetailModalData({
+          show: true,
+          title: `💎 Kho Đề Khử Trùng: Toàn Bộ ${data.totalQuestions || data.questions?.length || 0} Câu Hỏi Độc Nhất`,
+          questions: data.questions || [],
+          isFocus: false,
+        });
+        toast.success(
+          `Đã khử trùng thành công! Có ${data.totalQuestions || data.questions?.length || 0} câu hỏi độc nhất.`,
+        );
+      }
+    } catch (error) {
+      console.error("Lỗi gọi khử trùng đề thi:", error);
+      toast.error(
+        error.response?.data?.message || "Lỗi khi lọc khử trùng đề thi!",
+      );
+    } finally {
+      setIsSyncingDedup(false);
     }
   };
 
@@ -166,20 +199,52 @@ const ExamBankTab = ({ courseId }) => {
               </div>
             </div>
 
-            <div className="d-flex align-items-center gap-2">
+            <div className="d-flex flex-wrap align-items-center gap-2">
+              <Button
+                variant="danger"
+                className="rounded-pill px-4 fw-bold shadow-sm d-flex align-items-center gap-2"
+                style={{
+                  borderRadius: "9999px",
+                  background: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+                  border: "none",
+                }}
+                onClick={() =>
+                  navigate(`/student/focus-exam/${courseId}?mode=focus`)
+                }
+                disabled={exams.length === 0}
+              >
+                <Play size={17} fill="currentColor" />
+                Làm 60 Câu Trọng Tâm
+              </Button>
+              <Button
+                variant="primary"
+                className="rounded-pill px-4 fw-bold shadow-sm d-flex align-items-center gap-2"
+                style={{
+                  borderRadius: "9999px",
+                  background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
+                  border: "none",
+                }}
+                onClick={() =>
+                  navigate(`/student/focus-exam/${courseId}?mode=dedup`)
+                }
+                disabled={exams.length === 0}
+              >
+                <Play size={17} fill="currentColor" />
+                Làm Kho Khử Trùng
+              </Button>
               <Button
                 variant="light"
-                className="rounded-pill px-4 fw-semibold shadow-sm d-flex align-items-center gap-2 bg-white"
+                className="rounded-pill px-3 fw-semibold shadow-sm d-flex align-items-center gap-2 bg-white"
                 style={{ borderRadius: "9999px" }}
                 onClick={handleViewFocusDetail}
                 disabled={focusQuestionCount === 0}
               >
                 <Eye size={18} className="text-orange-500" />
-                Xem {focusQuestionCount} câu trọng tâm
+                Xem {focusQuestionCount} câu
               </Button>
               <Button
                 variant="warning"
-                className="rounded-pill px-4 fw-bold text-dark shadow-sm d-flex align-items-center gap-2"
+                className="rounded-pill px-3 fw-bold text-dark shadow-sm d-flex align-items-center gap-2"
                 style={{ borderRadius: "9999px" }}
                 onClick={handleSyncFocusExam}
                 disabled={isSyncing || exams.length === 0}
@@ -191,6 +256,31 @@ const ExamBankTab = ({ courseId }) => {
                 ) : (
                   <>
                     <RefreshCw size={18} /> Cập Nhật Trọng Tâm
+                  </>
+                )}
+              </Button>
+              <Button
+                variant="light"
+                className="rounded-pill px-3 fw-bold shadow-sm d-flex align-items-center gap-2 border"
+                style={{
+                  borderRadius: "9999px",
+                  background: "linear-gradient(135deg, #e0e7ff 0%, #ede9fe 100%)",
+                  borderColor: "#c7d2fe",
+                  color: "#4338ca",
+                }}
+                onClick={handleGetDedupExam}
+                disabled={isSyncingDedup || exams.length === 0}
+              >
+                {isSyncingDedup ? (
+                  <>
+                    <Spinner size="sm" animation="border" /> Đang khử trùng...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles size={18} className="text-indigo-600" />
+                    {dedupExam?.questions?.length
+                      ? `Xem ${dedupExam.questions.length} câu khử trùng`
+                      : "Xem Kho Khử Trùng"}
                   </>
                 )}
               </Button>
@@ -283,6 +373,18 @@ const ExamBankTab = ({ courseId }) => {
                   </div>
 
                   <div className="d-flex align-items-center gap-2">
+                    <Button
+                      variant="warning"
+                      size="sm"
+                      className="rounded-pill px-3 fw-bold text-dark d-flex align-items-center gap-1"
+                      onClick={() =>
+                        navigate(
+                          `/student/focus-exam/${courseId}?mode=regular&examId=${exam._id}`,
+                        )
+                      }
+                    >
+                      <Play size={14} fill="currentColor" /> Làm đề này
+                    </Button>
                     <Button
                       variant="outline-secondary"
                       size="sm"

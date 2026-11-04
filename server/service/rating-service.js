@@ -3,9 +3,6 @@ const Enrollment = require("../model/Enrollments");
 
 const postAndUpateRating = async (data) => {
   try {
-    if (data.role !== "student") {
-      throw { status: 401, message: "bạn không thể bình luận!" };
-    }
     const isEnrolled = await Enrollment.findOne({
       userId: data.userId,
       courseId: data.courseId,
@@ -89,9 +86,6 @@ const getRating = async (data) => {
 
 const deleteRating = async (data) => {
   try {
-    if (data.role !== "student") {
-      throw { status: 401, message: "bạn không có quyền xóa bình luận này!" };
-    }
     const result = await Ratings.findOneAndDelete({
       _id: data.ratingId,
       userId: data.userId,

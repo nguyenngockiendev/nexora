@@ -8,12 +8,6 @@ const ProcessLession = require("../model/ProcessLessons");
 
 const getInstructorBusinessDashboard = async (data) => {
   try {
-    if (data?.role !== "instructor") {
-      throw {
-        status: 403,
-        message: "Chỉ giảng viên mới có quyền xem bảng điều khiển này!",
-      };
-    }
 
     const instructorId = new mongoose.Types.ObjectId(data.instructorId);
 
@@ -269,12 +263,6 @@ const getInstructorBusinessDashboard = async (data) => {
 
 const DashboartAdmin = async (data) => {
   try {
-    if (data?.role !== "admin") {
-      throw {
-        status: 403,
-        message: "Chỉ admin mới có quyền xem bảng điều khiển này!",
-      };
-    }
     const now = new Date();
     let filterDate = new Date(0);
     if (data.day === "week") {

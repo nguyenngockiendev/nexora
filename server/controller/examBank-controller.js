@@ -5,6 +5,7 @@ const {
   deleteExam,
   syncFocusExam,
   getFocusExam,
+  getDedupExam,
 } = require("../service/examBank-service");
 
 const CreateExamBankController = async (req, res) => {
@@ -110,8 +111,27 @@ const GetFocusExamController = async (req, res) => {
     });
   }
 };
+const GetDedupExamController = async (req, res) => {
+  try {
+    const data = {
+      courseId: req.params.courseId,
+    };
+    const result = await getDedupExam(data);
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    console.error("Lỗi GetFocusExamController:", error);
+    res.status(error.status || 500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
 module.exports = {
+  GetDedupExamController,
   CreateExamBankController,
   GetExamsByCourseController,
   GetExamDetailController,

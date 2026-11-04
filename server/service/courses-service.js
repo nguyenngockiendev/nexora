@@ -102,9 +102,6 @@ const GetCourses = async (data) => {
 
 const CreatenewCourses = async (data) => {
   try {
-    if (data?.role !== "instructor" && data?.role !== "admin") {
-      throw { status: 403, message: "Bạn không có quyền tạo khóa học!" };
-    }
     for (const item in data) {
       if (
         data[item] === "" ||
@@ -223,9 +220,6 @@ const GetDetailsCourse = async (data) => {
 
 const GetCourseForAdmin = async (data) => {
   try {
-    if (data.role !== "admin") {
-      throw { message: "Bạn không có quyền này!" };
-    }
 
     const result = await Courses.aggregate([
       {
@@ -336,9 +330,6 @@ const GetCourseForAdmin = async (data) => {
 
 const UpdateisLookedCourse = async (data) => {
   try {
-    if (data.role !== "admin") {
-      throw { message: "Bạn không có quyền này!" };
-    }
     const isLooked = await Courses.findByIdAndUpdate(
       data.courseId,
       {

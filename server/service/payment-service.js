@@ -373,9 +373,6 @@ const DeleteOrder = async (data) => {
 };
 const GethhistorysForAdmin = async (data) => {
   try {
-    if (data.role !== "admin") {
-      throw { status: 404, message: "Quyền hạn không đủ!" };
-    }
     const OrderHistory = await Orders.find()
       .populate("userId", "name email avatar")
       .populate({

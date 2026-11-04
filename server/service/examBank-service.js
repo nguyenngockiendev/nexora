@@ -1,7 +1,8 @@
 const ExamBank = require("../model/ExamBank");
 const FocusExam = require("../model/FocusExam");
 const Courses = require("../model/Courses");
-
+const Enrollment = require("../model/Enrollments");
+const DedupExam = require("../model/DedupExam");
 const createExamBank = async ({ courseId, title, questions }) => {
   if (!courseId) {
     throw { status: 400, message: "Thiếu courseId!" };
@@ -75,6 +76,71 @@ const normalizeQuestionText = (text) => {
     .trim();
 };
 
+const getDedupExam = async (data) => {
+  try {
+   
+    const totalExambank = await ExamBank.find({ courseId: data.courseId });
+    if (totalExambank.length === 0) {
+      throw { status: 404, message: "Khóa học này chưa tồn tại đề nào!" };
+    }
+    const newDedup = new Map();
+    for (const exmabankitem of totalExambank) {
+      if (!Array.isArray(exmabankitem.questions)) continue;
+      for (const item of exmabankitem.questions) {
+        const keys = normalizeQuestionText(item.question);
+        if (!keys) continue;
+
+        if (newDedup.has(keys)) {
+          const existing = newDedup.get(keys);
+          const isExist = existing.sources.some(
+            (s) => s.examId.toString() === exmabankitem._id.toString()
+          );
+          if (!isExist) {
+            existing.sources.push({
+              examId: exmabankitem._id,
+              title: exmabankitem.title,
+            });
+          }
+          if (!existing.explanation && item.explanation) {
+            existing.explanation = item.explanation;
+          }
+        } else {
+          newDedup.set(keys, {
+            question: item.question,
+            options: item.options,
+            correctAnswer: item.correctAnswer,
+            explanation: item.explanation || "",
+            sources: [
+              {
+                examId: exmabankitem._id,
+                title: exmabankitem.title,
+              },
+            ],
+          });
+        }
+      }
+    }
+    const arr = Array.from(newDedup.values());
+    const updateDedup = await DedupExam.findOneAndUpdate(
+      {
+        courseId: data.courseId,
+      },
+      {
+        courseId: data.courseId,
+        totalExamsAnalyzed: totalExambank.length,
+        totalQuestions: arr.length,
+        questions: arr,
+      },
+      {
+        upsert: true,
+        new: true,
+      },
+    );
+    return updateDedup;
+  } catch (error) {
+    throw error;
+  }
+};
 const syncFocusExam = async (courseId) => {
   if (!courseId) {
     throw { status: 400, message: "Thiếu courseId!" };
@@ -154,4 +220,5 @@ module.exports = {
   deleteExam,
   syncFocusExam,
   getFocusExam,
+  getDedupExam,
 };

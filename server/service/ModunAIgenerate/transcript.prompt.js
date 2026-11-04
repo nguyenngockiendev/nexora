@@ -58,39 +58,47 @@ Nếu không có đủ nội dung để tạo câu hỏi, trả về [].
   return prompt;
 };
 
-const PromtsPdfforAI = (pdfPath) => {
-  const pdfBuffer = fs.readFileSync(pdfPath);
+const PromtsPdfforAI = (pdfBase64OrPath) => {
+  const base64Data =
+    typeof pdfBase64OrPath === "string" && fs.existsSync(pdfBase64OrPath)
+      ? fs.readFileSync(pdfBase64OrPath).toString("base64")
+      : pdfBase64OrPath;
+
   const EXAM_SCAN_PROMPTPDF = `
 Bạn là chuyên gia số hóa đề thi đại học và giải đề chính xác tuyệt đối.
-Nhiệm vụ của bạn là đọc toàn bộ file PDF đề thi đính kèm và trích xuất TẤT CẢ các câu hỏi từ đầu đến cuối (tuyệt đối không được bỏ sót hay làm tắt bất kỳ câu nào, kể cả khi đề có 50-60 câu).
-QUY TẮC TRÍCH XUẤT BẮT BUỘC:
+Nhiệm vụ của bạn là đọc đoạn tài liệu PDF đính kèm và trích xuất TẤT CẢ các câu hỏi trắc nghiệm hoàn chỉnh có trong đoạn này theo đúng thứ tự từ trên xuống dưới.
+
+QUY TẮC XỬ LÝ MÉP TRANG (RẤT QUAN TRỌNG):
+- Nếu ở ngay ĐẦU trang đầu tiên hoặc CUỐI trang cuối cùng có một mảnh câu hỏi bị cắt cụt (ví dụ: chỉ có các đáp án A, B, C, D mà mất phần câu hỏi ở trang trước, hoặc chỉ có câu hỏi mà mất các đáp án ở trang sau), hãy BỎ QUA mảnh bị khuyết đó (vì câu đó đã nằm trọn vẹn ở phần cắt liền kề).
+- Chỉ trích xuất những câu hỏi có đầy đủ cả nội dung câu hỏi lẫn các phương án lựa chọn.
+
+QUY TẮC TRÍCH XUẤT CHI TIẾT:
 1. Trường "question":
-   - Giữ nguyên văn nội dung câu hỏi, tự động sửa lỗi chính tả tiếng Việt nếu ảnh hơi mờ.
-   - LOẠI BỎ hoàn toàn số thứ tự câu ở đầu (ví dụ: bỏ "Câu 1:", "Question 1:", "Q1.") và bỏ các chữ thừa của giao diện phần mềm thi (như "MULTIPLE CHOICE", "Choose 1 answer").
-   - Nếu câu hỏi yêu cầu chọn nhiều đáp án (ví dụ: "Chọn 2 phương án", "Choose 2 answers"), hãy giữ dòng ghi chú "(Chọn 2 đáp án)" ở cuối câu hỏi.
+   - Giữ đúng nội dung câu hỏi tiếng Việt, tự sửa lỗi chính tả nhỏ nếu ảnh chụp bị mờ.
+   - BỎ số thứ tự câu ở đầu ("Câu 1:", "Question 1:", "Q1.") và các chữ thừa của giao diện thi ("MULTIPLE CHOICE", "Choose 1 answer").
+   - Nếu câu hỏi yêu cầu chọn nhiều đáp án ("Chọn 2 phương án", "Choose 2 answers"), giữ ghi chú "(Chọn 2 đáp án)" ở cuối câu hỏi.
 
 2. Trường "options":
-   - Là mảng chuỗi chứa nội dung các phương án trả lời theo đúng thứ tự từ trên xuống dưới (A, B, C, D...).
-   - LOẠI BỎ ký tự đánh dấu "A.", "B.", "C.", "D." ở đầu mỗi phương án, chỉ giữ lại nội dung chữ thuần túy.
+   - Mảng chuỗi chứa các phương án trả lời theo đúng thứ tự từ trên xuống dưới (A, B, C, D...).
+   - BỎ ký tự đánh dấu "A.", "B.", "C.", "D." ở đầu mỗi phương án.
 
-3. Quy tắc phân tích và xác định Đáp án đúng (BẮT BUỘC viết "explanation" TRƯỚC rồi mới chốt "correctAnswer" SAU):
-   - TRƯỜNG HỢP A (Có mục "💬 Bình luận cộng đồng" hoặc "💬 Bình luận đáp án" ngay dưới ảnh câu hỏi):
-     + Ưu tiên lấy theo đáp án được cộng đồng đồng thuận và có số lượt vote (👍) cao nhất (#1).
-     + Nếu các bình luận có ý kiến trái chiều ngang nhau (ví dụ người chọn A, người chọn C), hãy đóng vai trò Trọng tài chuyên môn: đối chiếu kiến thức chuẩn của môn học để phân xử giữa các phương án đang tranh cãi và chốt phương án đúng nhất.
-   - TRƯỜNG HỢP B (Không có bình luận đáp án, ghi "Chưa có bình luận", hoặc bình luận chỉ hỏi bài / tán gẫu):
-     + CẢNH BÁO QUAN TRỌNG: Tuyệt đối KHÔNG ĐƯỢC chọn bừa theo dấu chấm tròn (radio) hay ô vuông (checkbox) đang được tích sẵn trên ảnh chụp màn hình đề thi (đó là vết tích ngẫu nhiên của thí sinh lúc chụp đề, rất hay bị sai).
-     + BẮT BUỘC tự giải nghiêm túc: Đối chiếu từng phương án A, B, C, D với kiến thức giáo trình đại học chuẩn của môn học, phân tích và loại trừ các phương án sai ở bước "explanation" trước, sau đó mới chốt chỉ số đáp án đúng vào "correctAnswer".
+3. Quy tắc xác định Đáp án đúng (Viết "explanation" TRƯỚC rồi mới chốt "correctAnswer" SAU):
+   - TRƯỜNG HỢP A (Có mục "💬 Bình luận cộng đồng" hoặc thảo luận đáp án ngay dưới câu hỏi):
+     + Ưu tiên lấy theo đáp án được cộng đồng đồng thuận và có số lượt vote (👍) cao nhất.
+     + Nếu các bình luận có ý kiến trái chiều ngang nhau, hãy đối chiếu kiến thức giáo trình chuẩn để phân xử và chọn đáp án đúng nhất.
+   - TRƯỜNG HỢP B (Không có bình luận đáp án):
+     + TUYỆT ĐỐI KHÔNG lấy theo nút tròn (radio) hay ô vuông (checkbox) đang được tích sẵn trên ảnh chụp đề (vì thí sinh chụp đề rất hay tích sai).
+     + BẮT BUỘC tự giải dựa trên kiến thức giáo trình đại học chuẩn: phân tích ở trường "explanation" trước, sau đó mới điền chỉ số đáp án đúng vào "correctAnswer".
 
 4. Trường "explanation":
-   - Viết TRƯỚC trường "correctAnswer" để làm căn cứ suy luận (ngắn gọn 1 câu dưới 25 từ giải thích tại sao đáp án đó đúng).
+   - Ngắn gọn 1 câu (dưới 25 từ) giải thích vì sao đáp án đó đúng.
 
 5. Trường "correctAnswer":
-   - Là MẢNG SỐ NGUYÊN chỉ vị trí đáp án đúng dựa trên kết luận ở "explanation" (bắt đầu từ 0: 0 là A, 1 là B, 2 là C, 3 là D...).
-   - Nếu câu hỏi có 1 đáp án đúng (ví dụ B): trả về [1].
-   - Nếu câu hỏi có nhiều đáp án đúng (ví dụ A và C): trả về [0, 2].
+   - Mảng số nguyên chỉ vị trí đáp án đúng (0 là A, 1 là B, 2 là C, 3 là D...).
+   - Ví dụ 1 đáp án đúng (B): [1]. Nhiều đáp án đúng (A và C): [0, 2].
 
 ĐỊNH DẠNG ĐẦU RA:
-Chỉ trả về duy nhất một mảng JSON hợp lệ (không bọc trong markdown \`\`\`json), theo đúng cấu trúc và thứ tự trường sau:
+Chỉ trả về duy nhất một mảng JSON hợp lệ (không bọc trong markdown \`\`\`json):
 [
   {
     "question": "Lĩnh vực nghiên cứu trọng tâm của chủ nghĩa trọng thương là gì?",
@@ -109,7 +117,7 @@ Chỉ trả về duy nhất một mảng JSON hợp lệ (không bọc trong mar
     {
       inlineData: {
         mimeType: "application/pdf",
-        data: pdfBuffer.toString("base64"),
+        data: base64Data,
       },
     },
     EXAM_SCAN_PROMPTPDF,
