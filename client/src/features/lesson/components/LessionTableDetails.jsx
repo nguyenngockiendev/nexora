@@ -10,6 +10,8 @@ const LessionTableLession = ({
   setSearchTerm,
   process,
   handupdatetracrip,
+  handRetryNormalization,
+  retryingLessonId,
   selectedLesson,
   handselectedLesson,
   onClose,
@@ -144,21 +146,27 @@ const LessionTableLession = ({
                     {item.status && (
                       <small
                         className={`fw-semibold ${
-                          item.status === "TRANSCRIPT_READY" ||
-                          (process?.lessionId === item._id &&
-                            process?.percent === 100)
+                          item.normalizationStatus === "READY"
                             ? "text-success"
-                            : item.status === "PROCESSING"
+                            : item.status === "PROCESSING" ||
+                                item.normalizationStatus === "PROCESSING" ||
+                                retryingLessonId === item._id
                               ? "text-warning"
-                              : item.status === "FAILED"
+                              : item.status === "FAILED" ||
+                                  item.normalizationStatus === "FAILED"
                                 ? "text-danger"
                                 : "text-muted"
                         }`}
                       >
-                        {item.status === "TRANSCRIPT_READY" ||
-                        (process?.lessionId === item._id &&
-                          process?.percent === 100)
-                          ? "✓ Đã tạo phụ đề"
+                        {item.status === "TRANSCRIPT_READY"
+                          ? retryingLessonId === item._id ||
+                            item.normalizationStatus === "PROCESSING"
+                            ? "⌛ Đang chuẩn hóa nội dung..."
+                            : item.normalizationStatus === "READY"
+                              ? "✓ Đã phân tích video"
+                              : item.normalizationStatus === "FAILED"
+                                ? "✕ Chuẩn hóa chưa thành công"
+                                : "● Đã tạo phụ đề, chờ chuẩn hóa"
                           : item.status === "PROCESSING"
                             ? process?.lessionId === item._id &&
                               process?.percent !== undefined
@@ -186,6 +194,25 @@ const LessionTableLession = ({
                           : "⚡ Tự động phân tích video"}
                       </Button>
                     </div>
+                  )}
+                {item.status === "TRANSCRIPT_READY" &&
+                  (!item.normalizationStatus ||
+                    item.normalizationStatus === "FAILED") &&
+                  dashboard.role === "instructor" && (
+                    <Button
+                      variant="light"
+                      disabled={retryingLessonId !== null}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handRetryNormalization(item._id);
+                      }}
+                    >
+                      {retryingLessonId === item._id
+                        ? "Đang chuẩn hóa..."
+                        : item.normalizationStatus === "FAILED"
+                          ? "Thử lại chuẩn hóa"
+                          : "Chuẩn hóa nội dung"}
+                    </Button>
                   )}
 
                 <div className="d-flex align-items-center gap-3">

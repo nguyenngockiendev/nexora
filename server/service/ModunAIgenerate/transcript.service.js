@@ -1,10 +1,21 @@
 const fs = require("fs");
+const { setTimeout: wait } = require("node:timers/promises");
 const Courses = require("../../model/Courses");
 const Lessons = require("../../model/Lessons");
 const LessonTranscripts = require("../../model/LessonTranscripts");
-const { QuizzGenWithAI, ScanPDFWithAI } = require("./quizAI.service");
-const { PromtsforAI, PromtsPdfforAI } = require("./transcript.prompt");
+const {
+  QuizzGenWithAI,
+  ScanPDFWithAI,
+  responsOpenAI,
+  GenAIquiz,
+} = require("./quizAI.service");
+const {
+  PromtsforAI,
+  PromtsPdfforAI,
+  NormalizeTranscriptPrompt,
+} = require("./transcript.prompt");
 const { PDFDocument } = require("pdf-lib");
+const LessonNormalizedContent = require("../../model/LessonNormalizedContent");
 
 const DEFAULTQUESTION = 25;
 const generateQuizAI = async (data) => {
@@ -16,12 +27,14 @@ const generateQuizAI = async (data) => {
     if (!ExisLession) {
       throw { status: 404, message: "Bài học này ko tồn tại!" };
     }
-    const Exitstranc = await LessonTranscripts.find({
+
+    const Exitstranc = await LessonNormalizedContent.findOne({
       lessonId: ExisLession._id,
+      status: "READY",
     })
-      .select("chunkIndex text")
+      .select("normalizedChunks")
       .lean();
-    if (Exitstranc.length === 0 || Exitstranc.some((e) => !e.text.trim())) {
+    if (!Exitstranc || Exitstranc.normalizedChunks.length === 0) {
       throw {
         status: 404,
         message: "Lỗi chưa tạo trancrip. hãy tạo Trancrip trước!",
@@ -36,16 +49,11 @@ const generateQuizAI = async (data) => {
           "Số lượng câu hỏi không đúng định dang hoặc quá 25 câu Quizz , hãy nhập lại số lượng câu hỏi <= 25 và > 0",
       };
     }
-
-    const arr = Exitstranc.sort((a, b) => a.chunkIndex - b.chunkIndex);
-    const transcriptChunks = arr
-      .map(
-        (item) =>
-          `=== CHUNK ${item.chunkIndex} === \nNỘI DUNG BÀI GIẢNG:\n${item.text}`,
-      )
-      .join(`\n\n`);
-    const dataAI = PromtsforAI(data.questionCount, transcriptChunks);
-    const finalResult = await QuizzGenWithAI(dataAI);
+    const arr = Exitstranc.normalizedChunks.map((item) => {
+      return { index: item.index, title: item.title, content: item.content };
+    });
+    const dataAI = PromtsforAI(data.questionCount, arr);
+    const finalResult = await GenAIquiz(dataAI);
 
     if (Number(finalResult.length) !== count) {
       throw {
@@ -169,8 +177,119 @@ const ScanPDFAI = async (data) => {
     }
   }
 };
+const LessonNormalized = async (lessonId) => {
+  const lesson = await Lessons.findById(lessonId);
+  if (!lesson || lesson.status !== "TRANSCRIPT_READY") {
+    throw new Error("Bài học chưa có transcript sẵn sàng để chuẩn hóa!");
+  }
+
+  const chunks = await LessonTranscripts.find({ lessonId }).sort({
+    chunkIndex: 1,
+  });
+  if (
+    chunks.length === 0 ||
+    chunks.some((chunk) => chunk.status !== "DONE" || !chunk.text?.trim())
+  ) {
+    throw new Error("Transcript thiếu nội dung hoặc chưa xử lý xong!");
+  }
+
+  const existing = await LessonNormalizedContent.findOne({ lessonId });
+  if (existing && existing.status !== "FAILED") return existing;
+  if (existing) {
+    await LessonNormalizedContent.deleteOne({
+      _id: existing._id,
+      status: "FAILED",
+    });
+  }
+
+  let run;
+  try {
+    run = await LessonNormalizedContent.create({
+      lessonId,
+      status: "PROCESSING",
+    });
+  } catch (error) {
+    if (error.code !== 11000) throw error;
+    return LessonNormalizedContent.findOne({ lessonId });
+  }
+
+  try {
+    const currentLesson = await Lessons.exists({
+      _id: lessonId,
+      status: "TRANSCRIPT_READY",
+      updatedAt: lesson.updatedAt,
+    });
+    if (!currentLesson) {
+      throw new Error("Bài học đã thay đổi trong lúc chuẩn bị chuẩn hóa!");
+    }
+
+    const input = chunks.map(({ chunkIndex, text }) => ({ chunkIndex, text }));
+    const sourceIndexes = new Set(input.map(({ chunkIndex }) => chunkIndex));
+    const prompt = NormalizeTranscriptPrompt(input);
+    const retryDelays = [2000, 5000];
+    let result;
+    for (let attempt = 0; ; attempt++) {
+      try {
+        result = await QuizzGenWithAI(prompt);
+        break;
+      } catch (error) {
+        if (error.status !== 503 || attempt === retryDelays.length) throw error;
+        await wait(retryDelays[attempt]);
+        const active = await LessonNormalizedContent.exists({
+          _id: run._id,
+          status: "PROCESSING",
+        });
+        if (!active) return null;
+      }
+    }
+    if (
+      !Array.isArray(result?.normalizedChunks) ||
+      !result.normalizedChunks.length
+    ) {
+      throw new Error("AI không trả về nội dung chuẩn hóa!");
+    }
+
+    const normalizedChunks = result.normalizedChunks.map((item, index) => {
+      if (
+        typeof item?.title !== "string" ||
+        !item.title.trim() ||
+        typeof item.content !== "string" ||
+        !item.content.trim() ||
+        !Array.isArray(item.sources) ||
+        item.sources.length === 0 ||
+        item.sources.some((source) => !sourceIndexes.has(source?.chunkIndex))
+      ) {
+        throw new Error(
+          `Mục chuẩn hóa ${index + 1} thiếu nội dung hoặc có nguồn không hợp lệ!`,
+        );
+      }
+
+      return {
+        index,
+        title: item.title.trim(),
+        content: item.content.trim(),
+        sources: [...new Set(item.sources.map(({ chunkIndex }) => chunkIndex))]
+          .sort((a, b) => a - b)
+          .map((chunkIndex) => ({ chunkIndex })),
+      };
+    });
+
+    return await LessonNormalizedContent.findOneAndUpdate(
+      { _id: run._id, status: "PROCESSING" },
+      { $set: { status: "READY", normalizedChunks } },
+      { new: true, runValidators: true },
+    );
+  } catch (error) {
+    await LessonNormalizedContent.updateOne(
+      { _id: run._id, status: "PROCESSING" },
+      { $set: { status: "FAILED" } },
+    );
+    throw error;
+  }
+};
 
 module.exports = {
   generateQuizAI,
   ScanPDFAI,
+  LessonNormalized,
 };

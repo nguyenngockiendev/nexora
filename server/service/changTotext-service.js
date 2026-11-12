@@ -8,6 +8,7 @@ const { parentPort } = require("worker_threads");
 const LessonTranscripts = require("../model/LessonTranscripts");
 const Lessons = require("../model/Lessons");
 const { TranscribeAI } = require("./ModunAIgenerate/quizAI.service");
+const { LessonNormalized } = require("./ModunAIgenerate/transcript.service");
 
 const downloadAudio = async (url, savePath) => {
   if (!fs.existsSync("./temp")) {
@@ -54,6 +55,7 @@ const cutAudio = (inputLocalPath, start, duration) => {
 };
 
 const ChunkingVideo = async (lessionId) => {
+  let localFile;
   try {
     const video = await Lessons.findOne({
       _id: lessionId,
@@ -63,7 +65,7 @@ const ChunkingVideo = async (lessionId) => {
       await new Promise((resolve) => setTimeout(resolve, 5000));
       return;
     }
-    const localFile = `./temp/source-${lessionId}.mp3`;
+    localFile = `./temp/source-${lessionId}.mp3`;
     const replaceMp3 = video.videoUrl.replace(/\.[^/.]+$/, ".mp3");
     await downloadAudio(replaceMp3, localFile);
 
@@ -99,8 +101,6 @@ const ChunkingVideo = async (lessionId) => {
             text: output.text.trim(),
           });
         }
-      } catch (err) {
-        console.error(`Lỗi khi transcribe khúc ${start}s -> ${end}s:`, err);
       } finally {
         if (fs.existsSync(audiopath)) {
           fs.unlinkSync(audiopath);
@@ -127,6 +127,7 @@ const ChunkingVideo = async (lessionId) => {
     let chunkStart = 0;
 
     for (const seg of allSegments) {
+      if (!seg.text) continue;
       currentText += (currentText ? " " : "") + seg.text;
 
       if (seg.end - chunkStart >= targetChunkSize) {
@@ -154,18 +155,37 @@ const ChunkingVideo = async (lessionId) => {
         status: "DONE",
       });
     }
-    if (parentPort) {
-      parentPort.postMessage({
-        lessionId: lessionId,
-        status: "Transcrip ready",
-        percent: 100,
-      });
+
+    if (chunkIndex === 0) {
+      throw new Error("Không tìm thấy nội dung trong audio!");
     }
 
     video.status = "TRANSCRIPT_READY";
     await video.save();
-    if (fs.existsSync(localFile)) {
-      fs.unlinkSync(localFile);
+    parentPort?.postMessage({
+      lessionId,
+      status: "TRANSCRIPT_READY",
+      normalizationStatus: "PROCESSING",
+      percent: 100,
+    });
+    try {
+      const normalized = await LessonNormalized(video._id);
+      if (normalized?.status === "READY") {
+        parentPort?.postMessage({
+          lessionId,
+          status: "TRANSCRIPT_READY",
+          normalizationStatus: "READY",
+          percent: 100,
+        });
+      }
+    } catch (error) {
+      console.error("Lỗi chuẩn hóa transcript:", error);
+      parentPort?.postMessage({
+        lessionId,
+        status: "TRANSCRIPT_READY",
+        normalizationStatus: "FAILED",
+        percent: 100,
+      });
     }
   } catch (error) {
     console.error("Lỗi trong ChunkingVideo:", error);
@@ -180,6 +200,14 @@ const ChunkingVideo = async (lessionId) => {
       }
     } catch (e) {
       console.error("Không thể cập nhật trạng thái FAILED:", e);
+    }
+  } finally {
+    if (localFile) {
+      try {
+        fs.rmSync(localFile, { force: true });
+      } catch (error) {
+        console.error("Không thể xóa audio tạm:", error);
+      }
     }
   }
 };

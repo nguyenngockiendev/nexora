@@ -29,7 +29,8 @@ const QuizCreaatForm = ({
   handSubmit,
   error,
   loadingAI,
-  istrue,
+  quizz,
+  canSave,
   loading,
   courses,
   hanhId,
@@ -627,29 +628,20 @@ const QuizCreaatForm = ({
             variant="light"
             className="quiz-btn-soft rounded-pill px-4"
             type="button"
+            disabled={!canSave || loading}
             onClick={() => setShowModal(true)}
           >
             Generate AI
           </Button>
 
-          {istrue ? (
-            <Button
-              variant="primary"
-              className="rounded-pill px-4 fw-semibold"
-              type="submit"
-              disabled={loading}
-            >
-              {loading ? "...Loading" : "Update Quizz"}
-            </Button>
-          ) : (
-            <Button
-              variant="primary"
-              className="rounded-pill px-4 fw-semibold"
-              type="submit"
-            >
-              Create Quizz
-            </Button>
-          )}
+          <Button
+            variant="primary"
+            className="rounded-pill px-4 fw-semibold"
+            type="submit"
+            disabled={!canSave || loading || loadingAI}
+          >
+            {loading ? "...Loading" : quizz ? "Update Quizz" : "Create Quizz"}
+          </Button>
         </div>
       </Form>
       {showModal && header && (

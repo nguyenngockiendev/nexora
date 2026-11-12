@@ -52,6 +52,12 @@ const Nav_Sidebar = [
     title: "Quản lý",
     items: [
       {
+        name: "bài học",
+        path: "instructor/lessons",
+        icon: BrainCircuit,
+        roles: ["instructor", "admin"],
+      },
+      {
         name: "Kho đề ôn luyện",
         path: "student/exam-bank",
         icon: Target,
@@ -86,13 +92,6 @@ const Nav_Sidebar = [
         path: "my/class",
         icon: Video,
         roles: ["instructor"],
-      },
-
-      {
-        name: "bài học",
-        path: "instructor/lessons",
-        icon: BrainCircuit,
-        roles: ["instructor ", "admin"],
       },
 
       {
@@ -134,7 +133,7 @@ const Nav_Sidebar = [
         name: "Lịch sử đơn hàng",
         path: "payment_History",
         icon: CreditCard,
-        roles: ["student", "instructor" ,"admin"],
+        roles: ["student", "instructor", "admin"],
       },
       {
         name: "Quản lý giao dịch",

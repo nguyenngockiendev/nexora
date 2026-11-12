@@ -6,6 +6,7 @@ const {
   GetLessionByid,
   GetCoursewithLessionById,
   getLessionDetails,
+  RetryLessonNormalization,
 } = require("../service/lession");
 const uploadFile = require("../service/uploadfile-service");
 
@@ -156,6 +157,20 @@ const GetLessionDetails = async (req, res) => {
   }
 };
 
+const RetryNormalization = async (req, res) => {
+  try {
+    const result = await RetryLessonNormalization(
+      req.params.lessionId,
+      req.user.userId,
+    );
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(error.status || 500).json({
+      message: error.message || "Không thể chuẩn hóa bài học!",
+    });
+  }
+};
+
 module.exports = {
   GetLessons,
   CreateLessons,
@@ -164,4 +179,5 @@ module.exports = {
   getLessionbyIntructor,
   GetCoursewithLession,
   GetLessionDetails,
+  RetryNormalization,
 };

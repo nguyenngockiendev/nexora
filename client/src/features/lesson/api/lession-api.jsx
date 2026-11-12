@@ -43,6 +43,9 @@ const GetLessionDetails = async (courseId) => {
   const request = await api.get(`/lessions/${courseId}`);
   return request;
 };
+const RetryLessonNormalization = (lessionId) =>
+  api.post(`/lessons/${lessionId}/normalization/retry`);
+
 export {
   GetTitle,
   CreateLession,
@@ -54,4 +57,5 @@ export {
   UpdateQuizzByid,
   GetrecordedCourse,
   GetLessionDetails,
+  RetryLessonNormalization,
 };

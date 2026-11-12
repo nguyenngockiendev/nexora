@@ -44,6 +44,12 @@ const CreateQuizByIntructor = async (data) => {
     }
     return { result: result, message: "Tạo bài kiểm tra thành công!" };
   } catch (error) {
+    if (error.code === 11000 && error.keyPattern?.lessonId) {
+      throw {
+        status: 409,
+        message: "Bài học đã có quiz. Hãy chọn lại bài học để cập nhật quiz hiện có.",
+      };
+    }
     throw error;
   }
 };

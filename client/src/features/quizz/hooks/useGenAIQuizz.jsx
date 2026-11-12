@@ -7,12 +7,14 @@ const useGenAIQuizz = () => {
   const [loadingAI, setLoading] = useState(false);
 
   const AIquizz = async (lessionId, questionCount) => {
+    setErrorAI("");
     try {
       setLoading(true);
       const listQuizzAI = await GenAIForQuizz(lessionId, questionCount);
       setQuizzAI(listQuizzAI);
     } catch (error) {
-      const message = error.response?.data?.message || "erron";
+      const message =
+        error.response?.data?.message || "Chưa thể tạo quiz. Bạn có thể thử lại.";
       setErrorAI(message);
     } finally {
       setLoading(false);

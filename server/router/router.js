@@ -50,6 +50,7 @@ const {
   getLessionbyIntructor,
   GetCoursewithLession,
   GetLessionDetails,
+  RetryNormalization,
 } = require("../controller/lession-controller");
 const {
   CreateQuiz,
@@ -369,6 +370,13 @@ Router.get(
   GetCoursewithLession,
 );
 Router.get("/lessions/:courseId", authMiddleware, checkRole("instructor", "admin"), GetLessionDetails);
+Router.post(
+  "/lessons/:lessionId/normalization/retry",
+  authMiddleware,
+  checkRole("instructor"),
+  createLimiter(3, 3, true),
+  RetryNormalization,
+);
 Router.get(
   "/admin/courses/quality-control",
   authMiddleware,

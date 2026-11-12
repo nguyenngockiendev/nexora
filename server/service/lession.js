@@ -6,6 +6,8 @@ const quizz = require("../model/Quizz");
 const { default: mongoose } = require("mongoose");
 const { Worker2 } = require("./Worker/worker.service");
 const LessonTranscripts = require("../model/LessonTranscripts");
+const LessonNormalizedContent = require("../model/LessonNormalizedContent");
+const { LessonNormalized } = require("./ModunAIgenerate/transcript.service");
 
 const GetLession = async (data) => {
   try {
@@ -75,6 +77,7 @@ const DeleteLessionByid = async (data) => {
     }
     const deletelession = await Lessons.findByIdAndDelete(data._id);
     await LessonTranscripts.deleteMany({ lessonId: deletelession._id });
+    await LessonNormalizedContent.deleteOne({ lessonId: deletelession._id });
     return { message: "Xóa bài học thành công!" };
   } catch (error) {
     console.log(error);
@@ -105,11 +108,6 @@ const UpdateLessionByid = async (data) => {
         updateData[item] = data[item];
       }
     }
-    if (data.videoUrl) {
-      updateData.videoUrl = data.videoUrl;
-      await LessonTranscripts.deleteMany({ lessonId: data.lessionId });
-    }
-
     const updatelession = await Lessons.findByIdAndUpdate(
       data.lessionId,
 
@@ -120,14 +118,17 @@ const UpdateLessionByid = async (data) => {
         new: true,
       },
     );
-    if (data.status === "PROCESSING") {
+    if (!updatelession) {
+      throw { status: 404, message: "Lesson not found" };
+    }
+    if (data.videoUrl || data.status === "PROCESSING") {
+      await LessonNormalizedContent.deleteOne({ lessonId: data.lessionId });
       await LessonTranscripts.deleteMany({ lessonId: data.lessionId });
+    }
+    if (data.status === "PROCESSING") {
       if (Worker2) {
         Worker2({ _id: updatelession._id.toString() }, data.io);
       }
-    }
-    if (!updatelession) {
-      throw { status: 404, message: "Lesson not found" };
     }
     if (updatelession) {
       return { message: " Update Lession Succesfully!", data: updatelession };
@@ -204,12 +205,21 @@ const getLessionDetails = async (data) => {
     if (listlession.length === 0) {
       throw { status: 404, message: "bạn không có bài học nào!" };
     }
+    const normalized = await LessonNormalizedContent.find({
+      lessonId: { $in: listlession.map((lesson) => lesson._id) },
+    })
+      .select("lessonId status")
+      .lean();
+    const normalizationStatuses = new Map(
+      normalized.map((item) => [String(item.lessonId), item.status]),
+    );
     const result = listlession.map((e) => {
       return {
         _id: e._id,
         title: e.title,
         type: e.courseId.type,
         status: e.status,
+        normalizationStatus: normalizationStatuses.get(String(e._id)) || null,
         videoUrl: e.videoUrl,
         content: e.content,
         resources: e.resources,
@@ -221,6 +231,37 @@ const getLessionDetails = async (data) => {
     throw error;
   }
 };
+const RetryLessonNormalization = async (lessionId, userId) => {
+  if (!mongoose.isObjectIdOrHexString(lessionId)) {
+    throw { status: 400, message: "Mã bài học không hợp lệ!" };
+  }
+  const lesson = await Lessons.findById(lessionId);
+  if (!lesson || !userId || !(await Courses.exists({
+    _id: lesson.courseId,
+    instructor: userId,
+  }))) {
+    throw { status: 404, message: "Không tìm thấy bài học của bạn!" };
+  }
+  if (lesson.status !== "TRANSCRIPT_READY") {
+    throw { status: 409, message: "Video chưa chuyển thành text xong!" };
+  }
+
+  try {
+    const normalized = await LessonNormalized(lesson._id);
+    if (normalized) return { normalizationStatus: normalized.status };
+  } catch (error) {
+    console.error("Lỗi khi thử lại chuẩn hóa:", error);
+    throw {
+      status: error.status === 503 ? 503 : 502,
+      message:
+        error.status === 503
+          ? "Gemini đang quá tải. Bạn có thể thử lại sau."
+          : "Chưa thể chuẩn hóa nội dung. Bạn có thể thử lại.",
+    };
+  }
+  throw { status: 409, message: "Bài học đã thay đổi. Hãy tải lại danh sách." };
+};
+
 module.exports = {
   GetLession,
   CreateLession,
@@ -229,4 +270,5 @@ module.exports = {
   GetLessionByid,
   GetCoursewithLessionById,
   getLessionDetails,
+  RetryLessonNormalization,
 };

@@ -14,10 +14,18 @@ function CreateExamPage() {
   const [courseId, setCourseId] = useState(null);
   const [lessionId, setLessionId] = useState(null);
   const [numQuestions, setNumQuestions] = useState(10);
-  const { Lession, notification, error, courses } = useCreateQuizz();
-  const { quizz, update, loading, message, Quizz } = useUpdateQuizz();
+  const { Lession, error, courses } = useCreateQuizz();
+  const {
+    quizz,
+    update,
+    loading,
+    error: quizError,
+    Quizz,
+    loadedLessonId,
+    setSavedQuiz,
+  } = useUpdateQuizz();
   const { quizzAI, errorAI, loadingAI, AIquizz } = useGenAIQuizz();
-  const [istrue, setIstrue] = useState(false);
+  const [creating, setCreating] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
@@ -43,21 +51,20 @@ function CreateExamPage() {
     exam.duration !== "" &&
     exam.passScore !== "" &&
     lessionId !== null;
+  const canSave = Boolean(lessionId && loadedLessonId === lessionId);
 
   const hanhId = (courseId, lessionId) => {
+    if (creating || loading || loadingAI) return;
     setCourseId(courseId);
     setLessionId(lessionId);
-    if (lessionId) {
-      Quizz(lessionId);
-    }
+    setCurrentIndex(0);
+    Quizz(lessionId);
   };
 
   useEffect(() => {
     if (quizz) {
       setExam(quizz);
-      setIstrue(true);
     } else {
-      setIstrue(false);
       setExam({
         title: "",
         duration: "",
@@ -74,7 +81,7 @@ function CreateExamPage() {
         ],
       });
     }
-  }, [quizz]);
+  }, [quizz, lessionId]);
 
   useEffect(() => {
     if (quizzAI.length > 0) {
@@ -91,7 +98,7 @@ function CreateExamPage() {
           explanation: e.explanation,
         })),
       });
-      setIstrue(true);
+      setCurrentIndex(0);
       setShowModal(false);
       toast.success("AI đã sinh bộ câu hỏi Quiz thành công! ✨");
     }
@@ -115,15 +122,22 @@ function CreateExamPage() {
   const handSubmit = async (e) => {
     try {
       e.preventDefault();
+      if (!canSave || loading || creating || loadingAI) return;
       if (quizz) {
         const result = await update(lessionId, exam);
         if (result) {
           toast.success("Cập nhật Quizz thành công!");
         }
       } else {
-        const result = await Lession(lessionId, exam);
-        if (result) {
-          toast.success("Tạo bài Quizz thành công!");
+        setCreating(true);
+        try {
+          const result = await Lession(lessionId, exam);
+          if (result?.result) {
+            setSavedQuiz(lessionId, result.result);
+            toast.success("Tạo bài Quizz thành công!");
+          }
+        } finally {
+          setCreating(false);
         }
       }
     } catch (error) {
@@ -135,7 +149,7 @@ function CreateExamPage() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (lessionId) {
+    if (canSave && !creating && !loading && !loadingAI) {
       await AIquizz(lessionId, numQuestions);
     }
   };
@@ -159,13 +173,13 @@ function CreateExamPage() {
           setCurrentIndex={setCurrentIndex}
           currentIndex={currentIndex}
           handSubmit={handSubmit}
-          error={error}
+          error={quizError || error}
           navigate={navigate}
           courseId={courseId}
           lessionId={lessionId}
           quizz={quizz}
-          istrue={istrue}
-          loading={loading}
+          canSave={canSave}
+          loading={loading || creating}
           loadingAI={loadingAI}
           errorAI={errorAI}
         />

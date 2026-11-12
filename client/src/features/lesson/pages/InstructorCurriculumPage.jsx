@@ -11,6 +11,10 @@ import useShareSocket from "../../../shared/hooks/useSocket";
 import useUpdatelession from "../hooks/useUpdatelession";
 import usePagination from "../../../shared/hooks/usePagination";
 import PaginationForm from "../../../shared/components/PaginationForm";
+import {
+  GetLessionDetails,
+  RetryLessonNormalization,
+} from "../api/lession-api";
 
 const InstructorCurriculumPage = () => {
   const navigate = useNavigate();
@@ -26,32 +30,37 @@ const InstructorCurriculumPage = () => {
   const socket = useShareSocket();
   const { Delete } = useDeleteLessionbyid();
   const { update } = useUpdatelession();
-  const [selectedLesson, setSelectedLesson] = useState(null);
+  const [selectedLessonId, setSelectedLessonId] = useState(null);
+  const [retryingLessonId, setRetryingLessonId] = useState(null);
+  const selectedLesson = arrLession.find((item) => item._id === selectedLessonId);
+  const hasProcessingLesson = arrLession.some(
+    (item) =>
+      item.status === "PROCESSING" ||
+      item.normalizationStatus === "PROCESSING",
+  );
 
   useEffect(() => {
     if (!socket) {
       return;
     }
-    socket.on("messageChangettext", (result) => {
+    const onProgress = (result) => {
+      if (!result?.lessionId) return;
       setProcess(result);
-      if (result?.lessionId && result?.percent === 100) {
-        setArrlession((preve) =>
-          preve.map((e) =>
-            e._id === result.lessionId
-              ? { ...e, status: "TRANSCRIPT_READY" }
-              : e,
-          ),
-        );
-      } else if (result?.lessionId && result?.status === "FAILED") {
-        setArrlession((preve) =>
-          preve.map((e) =>
-            e._id === result.lessionId ? { ...e, status: "FAILED" } : e,
-          ),
-        );
-      }
-    });
+      setArrlession((preve) =>
+        preve.map((e) =>
+          e._id === result.lessionId
+            ? {
+                ...e,
+                status: result.status,
+                normalizationStatus: result.normalizationStatus ?? null,
+              }
+            : e,
+        ),
+      );
+    };
+    socket.on("messageChangettext", onProgress);
     return () => {
-      socket.off("messageChangettext");
+      socket.off("messageChangettext", onProgress);
     };
   }, [socket]);
 
@@ -60,6 +69,36 @@ const InstructorCurriculumPage = () => {
       setArrlession(detaisLession);
     }
   }, [detaisLession]);
+
+  useEffect(() => {
+    if (!hasProcessingLesson) return;
+    let stopped = false;
+    let timer;
+    const refresh = async () => {
+      try {
+        const lessons = await GetLessionDetails(courseId);
+        if (stopped) return;
+        const byId = new Map(lessons.map((lesson) => [lesson._id, lesson]));
+        setArrlession((prev) =>
+          prev.map((lesson) =>
+            lesson.status === "PROCESSING" ||
+            lesson.normalizationStatus === "PROCESSING"
+              ? byId.get(lesson._id) || lesson
+              : lesson,
+          ),
+        );
+      } catch (error) {
+        console.error("Không thể tải trạng thái bài học:", error);
+      } finally {
+        if (!stopped) timer = setTimeout(refresh, 5000);
+      }
+    };
+    timer = setTimeout(refresh, 5000);
+    return () => {
+      stopped = true;
+      clearTimeout(timer);
+    };
+  }, [courseId, hasProcessingLesson]);
 
   const filterLession = arrLession.filter((lession) => {
     return (
@@ -81,21 +120,55 @@ const InstructorCurriculumPage = () => {
   };
 
   const handupdatetracrip = async (lessionId) => {
-    await update(lessionId, "PROCESSING");
+    const result = await update(lessionId, "PROCESSING");
+    if (!result) {
+      toast.error("Chưa thể bắt đầu phân tích video.");
+      return;
+    }
     setArrlession((preve) =>
       preve.map((e) =>
-        e._id === lessionId ? { ...e, status: "PROCESSING" } : e,
+        e._id === lessionId
+          ? { ...e, status: "PROCESSING", normalizationStatus: null }
+          : e,
       ),
     );
-    toast.success("update status success!");
+    toast.info("Đang phân tích video.");
+  };
+
+  const handRetryNormalization = async (lessionId) => {
+    setRetryingLessonId(lessionId);
+    try {
+      const { normalizationStatus } = await RetryLessonNormalization(lessionId);
+      setArrlession((prev) =>
+        prev.map((item) =>
+          item._id === lessionId ? { ...item, normalizationStatus } : item,
+        ),
+      );
+      if (normalizationStatus === "READY") {
+        toast.success("Đã chuẩn hóa nội dung. Có thể tạo quiz.");
+      }
+    } catch (error) {
+      if ([502, 503].includes(error.response?.status)) {
+        setArrlession((prev) =>
+          prev.map((item) =>
+            item._id === lessionId
+              ? { ...item, normalizationStatus: "FAILED" }
+              : item,
+          ),
+        );
+      }
+      toast.error(error.response?.data?.message || "Chưa thể chuẩn hóa nội dung.");
+    } finally {
+      setRetryingLessonId(null);
+    }
   };
 
   const handselectedLesson = (selectedLesson) => {
     if (!selectedLesson) return;
-    setSelectedLesson(selectedLesson);
+    setSelectedLessonId(selectedLesson._id);
   };
 
-  const onClose = () => setSelectedLesson(null);
+  const onClose = () => setSelectedLessonId(null);
   const pagination = usePagination(filterLession, 7);
 
   return (
@@ -116,6 +189,8 @@ const InstructorCurriculumPage = () => {
             setSearchTerm={setSearchTerm}
             process={process}
             handupdatetracrip={handupdatetracrip}
+            handRetryNormalization={handRetryNormalization}
+            retryingLessonId={retryingLessonId}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
           />
