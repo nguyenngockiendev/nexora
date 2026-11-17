@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Check,
   Play,
@@ -13,6 +13,7 @@ import {
   Filter,
   Eye,
   CheckCircle2,
+  ClipboardCheck,
   Circle,
   X,
 } from "lucide-react";
@@ -292,6 +293,19 @@ const SidebarLesson = ({
                       </span>
                     )}
                   </div>
+                  {titl?.QuizExits && !titl.isLocked && (
+                    <Link
+                      to={`/quizz/lession/${titl._id}`}
+                      onClick={(event) => event.stopPropagation()}
+                      className="mt-2 flex items-center gap-1.5 rounded-lg border border-orange-200/70 bg-orange-50 px-2 py-1 text-[11px] font-semibold text-orange-700 no-underline transition-colors hover:bg-orange-100 hover:text-orange-800"
+                    >
+                      <ClipboardCheck size={13} className="shrink-0" />
+                      <span className="min-w-0 truncate">
+                        {titl.QuizExits.title || "Quiz của bài học"}
+                      </span>
+                      <span className="ml-auto shrink-0 font-bold">Làm quiz</span>
+                    </Link>
+                  )}
                 </div>
               </div>
 
