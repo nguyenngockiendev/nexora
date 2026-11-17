@@ -11,6 +11,30 @@ const genOpenAI = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+const GeminiEmbedding = async (data) => {
+  try {
+    const res = await genAI.models.embedContent({
+      model: "gemini-embedding-2",
+      contents: data,
+      config: {
+        outputDimensionality: 3072,
+      },
+    });
+    const vector = res.embeddings?.[0]?.values;
+    if (
+      !Array.isArray(vector) ||
+      vector.length !== 3072 ||
+      !vector.every(Number.isFinite)
+    ) {
+      throw new Error("Gemini trả về vector không hợp lệ!");
+    }
+    return vector;
+  } catch (error) {
+    console.error("Lỗi khi gọi Gemini API:", error);
+    throw error;
+  }
+};
+
 const responsOpenAI = async (prompt) => {
   try {
     const res = await genOpenAI.responses.create({
@@ -54,7 +78,10 @@ const GenAIquiz = async (prompt) => {
     return JSON.parse(res.text);
   } catch (error) {
     console.error("Lỗi khi gọi Gemini API:", error);
-    if (abortSignal.aborted || error.cause?.code === "UND_ERR_HEADERS_TIMEOUT") {
+    if (
+      abortSignal.aborted ||
+      error.cause?.code === "UND_ERR_HEADERS_TIMEOUT"
+    ) {
       throw Object.assign(
         new Error("Gemini phản hồi quá lâu. Bạn có thể thử tạo quiz lại."),
         { status: 504 },
@@ -118,5 +145,6 @@ module.exports = {
   TranscribeAI,
   ScanPDFWithAI,
   responsOpenAI,
-  GenAIquiz
+  GenAIquiz,
+  GeminiEmbedding,
 };

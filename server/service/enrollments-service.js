@@ -7,6 +7,7 @@ const ProcessLession = require("../model/ProcessLessons");
 const Message = require("../model/ClassMessages");
 const Orders = require("../model/Orders");
 const Rating = require("../model/Ratings");
+const { AttachLessonQuizzes } = require("./lession");
 
 const GetorderByUserId = async (data) => {
   try {
@@ -95,7 +96,7 @@ const CheckEnrollment = async (data) => {
       throw { status: 404, message: "Bạn chưa tham gia khóa học này!" };
     }
     const fullLesons = await Lessons.find({ courseId: data?.courseId }).lean();
-    return fullLesons;
+    return await AttachLessonQuizzes(fullLesons);
   } catch (error) {
     console.log(error);
     throw error;

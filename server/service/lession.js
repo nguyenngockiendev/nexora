@@ -9,6 +9,22 @@ const LessonTranscripts = require("../model/LessonTranscripts");
 const LessonNormalizedContent = require("../model/LessonNormalizedContent");
 const { LessonNormalized } = require("./ModunAIgenerate/transcript.service");
 
+const AttachLessonQuizzes = async (lessons) => {
+  const quizzes = await quizz.find({
+    lessonId: { $in: lessons.map((lesson) => lesson._id) },
+  })
+    .select("lessonId title")
+    .lean();
+  const quizByLessonId = new Map(
+    quizzes.map((quiz) => [String(quiz.lessonId), quiz]),
+  );
+
+  return lessons.map((lesson) => ({
+    ...lesson,
+    QuizExits: quizByLessonId.get(String(lesson._id)) || null,
+  }));
+};
+
 const GetLession = async (data) => {
   try {
     let result = [];
@@ -27,14 +43,7 @@ const GetLession = async (data) => {
       throw { status: 404, message: "not lession" };
     }
 
-    const Quizzexist = Promise.all(
-      result.map(async (item) => {
-        const quizzExits = await quizz.findOne({ lessonId: item._id });
-
-        return { ...item, QuizExits: quizzExits };
-      }),
-    );
-    return Quizzexist;
+    return await AttachLessonQuizzes(result);
   } catch (error) {
     console.log(error);
     throw error;
@@ -263,6 +272,7 @@ const RetryLessonNormalization = async (lessionId, userId) => {
 };
 
 module.exports = {
+  AttachLessonQuizzes,
   GetLession,
   CreateLession,
   DeleteLessionByid,

@@ -6,6 +6,7 @@ const DBconnection = require("./config/db");
 const http = require("http");
 const { Server } = require("socket.io");
 const Router = require("./router/router");
+const RouterappAssistant = require("./service/AI_appAss/AppAssistant_rote");
 const registerSoket = require("./socket");
 
 const app = express();
@@ -19,6 +20,7 @@ app.use(express.json());
 DBconnection();
 app.use("/uploads", express.static("uploads"));
 app.use("/api", Router);
+app.use("/api/ai", RouterappAssistant);
 
 const server = http.createServer(app);
 const io = new Server(server, {
