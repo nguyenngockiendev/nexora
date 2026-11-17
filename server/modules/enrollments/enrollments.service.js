@@ -1,0 +1,130 @@
+const Courses = require("../courses/Courses");
+const Lessons = require("../lessons/Lessons");
+const order = require("../payments/Orders");
+const errollment = require("./Enrollments");
+const user = require("../users/Users");
+const ProcessLession = require("../progress/ProcessLessons");
+const Message = require("../classes/ClassMessages");
+const Orders = require("../payments/Orders");
+const Rating = require("../ratings/Ratings");
+const { AttachLessonQuizzes } = require("../lessons/lessons.service");
+
+const GetorderByUserId = async (data) => {
+  try {
+    const result = await errollment
+      .find({ userId: data?.userId })
+      .select("-_id type createdAt status completedAt enrolledAt")
+      .populate({
+        path: "courseId",
+        match: { status: "active" },
+      })
+      .populate({
+        path: "classId",
+        match: { isLocked: false },
+      })
+      .lean();
+    if (!result || result.length === 0) {
+      throw {
+        status: 404,
+        message: "Bạn chưa đăng ký khóa học nào! Vui lòng khám phá và đăng ký các khóa học mới.",
+      };
+    }
+
+    const resultInstructorNam = await Promise.all(
+      result.map(async (item) => {
+        const intructorName = await user
+          .findById(item?.courseId?.instructor)
+          .select("name -_id avatar email")
+          .lean();
+        const numberStudy = await Lessons.find({ courseId: item.courseId });
+
+        const completeds = await ProcessLession.find({
+          userId: data.userId,
+          courseId: item.courseId,
+          completed: true,
+        }).populate("lessonId");
+
+        const process = numberStudy.length > 0
+          ? Math.round((completeds.length / numberStudy.length) * 100)
+          : 0;
+
+        const validCompleteds = completeds.filter((c) => c.lessonId);
+
+        const sortedLessons = [...numberStudy].sort(
+          (a, b) => a.order - b.order,
+        );
+
+        const completedLessonIds = new Set(
+          validCompleteds.map((c) => c.lessonId._id.toString()),
+        );
+
+        const nextLesson = sortedLessons.find(
+          (lesson) => !completedLessonIds.has(lesson._id.toString()),
+        );
+
+        const courseRatings = await Rating.find({ courseId: item.courseId }).lean();
+        const avgRating = courseRatings.length > 0
+          ? (courseRatings.reduce((sum, r) => sum + (r.rating || r.instructorRating || 5), 0) / courseRatings.length).toFixed(1)
+          : 5.0;
+
+        return {
+          ...item,
+          instructor: intructorName,
+          numberStudy: numberStudy,
+          completed: completeds,
+          process: process,
+          nextLesson: nextLesson || null,
+          rating: Number(avgRating),
+          ratingCount: courseRatings.length,
+        };
+      }),
+    );
+
+    return resultInstructorNam;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const CheckEnrollment = async (data) => {
+  try {
+    const result = await errollment
+      .findOne({ userId: data?.userId, courseId: data?.courseId })
+      .lean();
+    if (!result) {
+      throw { status: 404, message: "Bạn chưa tham gia khóa học này!" };
+    }
+    const fullLesons = await Lessons.find({ courseId: data?.courseId }).lean();
+    return await AttachLessonQuizzes(fullLesons);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+const OrderHistory = async (data) => {
+  try {
+    const result = await Orders.find({ userId: data.userId })
+      .populate("items.courseId", "title price thumbnail type")
+      .populate("items.classId", "className schedule")
+      .lean();
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const ActionOrder = async (data) => {
+  try {
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+module.exports = {
+  GetorderByUserId,
+  CheckEnrollment,
+  OrderHistory,
+  ActionOrder,
+};

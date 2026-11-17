@@ -6,7 +6,7 @@ const DBconnection = require("./config/db");
 const http = require("http");
 const { Server } = require("socket.io");
 const Router = require("./router/router");
-const RouterappAssistant = require("./service/AI_appAss/AppAssistant_rote");
+const RouterappAssistant = require("./modules/ai/app-assistant/app-assistant.routes");
 const registerSoket = require("./socket");
 
 const app = express();

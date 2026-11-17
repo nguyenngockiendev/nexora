@@ -1,0 +1,393 @@
+const Courses = require("./Courses");
+const Lessons = require("../lessons/Lessons");
+const classs = require("../classes/Class");
+const Rating = require("../ratings/Ratings");
+const Enrollments = require("../enrollments/Enrollments");
+
+const GetAllCourses = async (data) => {
+  try {
+    let course = [];
+    if (data?.role === "admin") {
+      course = await Courses.find({ instructor: data?.userId })
+        .populate("instructor", "name type")
+        .lean();
+    }
+    if (data?.role === "instructor") {
+      course = await Courses.find({ instructor: data?.userId })
+        .populate("instructor", "name type")
+        .lean();
+    }
+
+    const resultFinal = await Promise.all(
+      course?.map(async (co) => {
+        const numbserclass = await classs.find({ courseId: co?._id });
+        const rattingforcoure = await Rating.find({ courseId: co?._id });
+        const totalRating = rattingforcoure.reduce((sum, number) => {
+          return sum + Number(number.rating || number.instructorRating || 5);
+        }, 0);
+        const avg =
+          rattingforcoure.length > 0
+            ? totalRating / rattingforcoure.length
+            : 5.0;
+        return {
+          ...co,
+          instructor: co?.instructor?.name,
+          numberClass: numbserclass.length,
+          Rattingleng: rattingforcoure.length,
+          rattingforcoure: Number(avg.toFixed(1)),
+        };
+      }),
+    );
+
+    return resultFinal;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const GetCourses = async (data) => {
+  try {
+    let course = [];
+    if (data?.role === "admin") {
+      course = await Courses.find().populate("instructor", "name type").lean();
+    }
+    if (data?.role === "instructor") {
+      course = await Courses.find().populate("instructor", "name type").lean();
+    }
+    if (data?.role === "student") {
+      course = await Courses.find().populate("instructor", "name type").lean();
+    }
+    course = course.filter(
+      (e) => e.instructor?._id?.toString() !== data.userId?.toString(),
+    );
+    const resultFinal = await Promise.all(
+      course?.map(async (co) => {
+        const numbserclass = await classs.find({ courseId: co?._id });
+        const rattingforcoure = await Rating.find({ courseId: co?._id });
+        const totalRating = rattingforcoure.reduce((sum, number) => {
+          return sum + Number(number.rating || number.instructorRating || 5);
+        }, 0);
+        const avg =
+          rattingforcoure.length > 0
+            ? totalRating / rattingforcoure.length
+            : 5.0;
+        const isEnroiment = await Enrollments.find({
+          userId: data.userId,
+          courseId: co?._id,
+          status: "active",
+        });
+        const isClass = isEnroiment
+          .filter((e) => e.classId)
+          .map((e) => e.classId.toString());
+        const isRecode = isEnroiment.some((item) => item.type === "recorded");
+        return {
+          ...co,
+          instructor: co?.instructor?.name,
+          numberClass: numbserclass.length,
+          Rattingleng: rattingforcoure.length,
+          rattingforcoure: Number(avg.toFixed(1)),
+          isClass: isClass,
+          isRecode: isRecode,
+        };
+      }),
+    );
+
+    return resultFinal;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const CreatenewCourses = async (data) => {
+  try {
+    for (const item in data) {
+      if (
+        data[item] === "" ||
+        data[item] === undefined ||
+        data[item] === null
+      ) {
+        throw {
+          status: 400,
+          message: `Nhập thiếu thông tin ${item},hãy nhập đầy đủ thông tin khóa học!`,
+        };
+      }
+    }
+    if (data?.type == "recorded" && data?.type !== "live") {
+      if (!Number(data.price)) {
+        throw { status: 403, message: "Giá khóa học sai định dạng!" };
+      }
+    }
+
+    if (data.price < 0) {
+      throw { status: 403, message: "Giá khóa học không được < 0!" };
+    }
+
+    const newCourses = await Courses.create({
+      title: data.title,
+      description: data.description,
+      price: data.price,
+      level: data.level,
+      type: data.type,
+      thumbnail: data.thumbnail,
+      instructor: data.instructor,
+    });
+
+    return { message: " Tạo khóa học thành công!", result: newCourses };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+const EditCourse = async (data) => {
+  try {
+    const updatecourse = {
+      title: data.title,
+      description: data.description,
+      price: data.price || 0,
+      level: data.level,
+    };
+    if (data.thumbnail != null && data.thumbnail != "") {
+      updatecourse.thumbnail = data.thumbnail;
+    }
+    const update = await Courses.findOneAndUpdate(
+      {
+        _id: data.courseId,
+        instructor: data.userId,
+      },
+      {
+        $set: updatecourse,
+      },
+      { new: true },
+    );
+
+    return update;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const GetLessonById = async (data) => {
+  try {
+    let result = [];
+    if (data?.role == "instructor") {
+      result = await Lessons.find({ courseId: data.id });
+    }
+
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+const GetDetailsCourse = async (data) => {
+  try {
+    const list = await Courses.findById(data.courseId)
+      .populate("instructor", "-password")
+      .lean();
+    if (!list) {
+      throw { status: 404, message: "Khóa học không tồn tại!" };
+    }
+    const lessionbycou = await Lessons.find({ courseId: list._id }).lean();
+    const isEnroillment = await Enrollments.find({
+      userId: data.userId,
+      courseId: list._id,
+      status: "active",
+    });
+    const isRecode = isEnroillment.some((item) => item.type === "recorded");
+    const canViewLessons =
+      isRecode ||
+      data.role === "admin" ||
+      list.instructor?._id?.toString() === data.userId.toString();
+    const visibleLessons = lessionbycou.map((lesson) => {
+      if (canViewLessons || (lesson.isPreview && !lesson.isLocked)) return lesson;
+      return {
+        _id: lesson._id,
+        courseId: lesson.courseId,
+        title: lesson.title,
+        duration: lesson.duration,
+        order: lesson.order,
+        isPreview: lesson.isPreview,
+        isLocked: lesson.isLocked,
+      };
+    });
+    const rattingforcoure = await Rating.find({ courseId: list._id }).lean();
+    const totalRating = rattingforcoure.reduce((sum, number) => {
+      return sum + Number(number.rating || number.instructorRating || 5);
+    }, 0);
+    const avg =
+      rattingforcoure.length > 0 ? totalRating / rattingforcoure.length : 5.0;
+
+    const result = {
+      ...list,
+      isRecode: isRecode,
+      lessons: visibleLessons,
+      Rattingleng: rattingforcoure.length,
+      rattingforcoure: Number(avg.toFixed(1)),
+    };
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const GetCourseForAdmin = async (data) => {
+  try {
+
+    const result = await Courses.aggregate([
+      {
+        $lookup: {
+          from: "users",
+          localField: "instructor",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+
+      {
+        $lookup: {
+          from: "ratings",
+          localField: "_id",
+          foreignField: "courseId",
+          as: "ratting",
+        },
+      },
+
+      {
+        $lookup: {
+          from: "enrollments",
+          localField: "_id",
+          foreignField: "courseId",
+          as: "enrollment",
+        },
+      },
+
+      {
+        $addFields: {
+          avgRatting: {
+            $cond: {
+              if: { $gt: [{ $size: { $ifNull: ["$ratting", []] } }, 0] },
+              then: { $avg: "$ratting.rating" },
+              else: 0,
+            },
+          },
+
+          toatalcomment: {
+            $size: { $ifNull: ["$ratting", []] },
+          },
+
+          studentsCount: {
+            $size: { $ifNull: ["$enrollment", []] },
+          },
+
+          lowRatingAlert: {
+            $and: [
+              { $gt: [{ $size: { $ifNull: ["$ratting", []] } }, 0] },
+              {
+                $lt: [
+                  {
+                    $cond: {
+                      if: {
+                        $gt: [{ $size: { $ifNull: ["$ratting", []] } }, 0],
+                      },
+                      then: { $avg: "$ratting.rating" },
+                      else: 0,
+                    },
+                  },
+                  3.0,
+                ],
+              },
+            ],
+          },
+        },
+      },
+      {
+        $project: {
+          title: 1,
+          type: 1,
+          status: 1,
+          thumbnail: 1,
+          price: 1,
+          createdAt: 1,
+          avgRatting: 1,
+          toatalcomment: 1,
+          studentsCount: 1,
+          lowRatingAlert: 1,
+
+          instructorName: { $arrayElemAt: ["$user.name", 0] },
+          instructorAvatar: { $arrayElemAt: ["$user.avatar", 0] },
+        },
+      },
+      {
+        $sort: {
+          lowRatingAlert: -1,
+          createdAt: -1,
+        },
+      },
+    ]);
+    const review = await Promise.all(
+      result.map(async (e) => {
+        const coment = await Rating.find({
+          courseId: e._id,
+        }).populate("userId", "name avatar");
+
+        return { ...e, reviews: coment };
+      }),
+    );
+    return review;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const UpdateisLookedCourse = async (data) => {
+  try {
+    const isLooked = await Courses.findByIdAndUpdate(
+      data.courseId,
+      {
+        status: data.status,
+      },
+      { new: true },
+    );
+    if (!isLooked) {
+      throw { message: "khóa học không tồn tại!" };
+    }
+    const isLookedLession = await Lessons.updateMany(
+      { courseId: isLooked._id },
+      {
+        $set: {
+          isLocked: data.status === "active" ? false : true,
+        },
+      },
+    );
+    await classs.updateMany(
+      { courseId: isLooked._id },
+      {
+        $set: {
+          isLocked: data.status === "active" ? false : true,
+        },
+      },
+    );
+    return {
+      isLooked: isLooked,
+      isLookedLession: isLookedLession,
+    };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+module.exports = {
+  GetAllCourses,
+  CreatenewCourses,
+  GetLessonById,
+  GetDetailsCourse,
+  GetCourseForAdmin,
+  UpdateisLookedCourse,
+  GetCourses,
+  EditCourse,
+};

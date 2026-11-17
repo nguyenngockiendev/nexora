@@ -1,4 +1,4 @@
-const { SaveMessage } = require("./controller/message-controller");
+const { SaveMessage } = require("./modules/classes/messages.controller");
 
 const registerSoket = (io, socket) => {
   socket.on("join_class", (data) => {

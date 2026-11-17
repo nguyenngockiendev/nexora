@@ -1,0 +1,89 @@
+const Notifications = require("./Notifications");
+const TeacherRequests = require("../users/TeacherRequests");
+const Users = require("../users/Users");
+
+const SennotificationbyStudent = async (data) => {
+  try {
+    const isuser = await Users.findById(data.userId);
+    if (!isuser) {
+      throw { status: 404, message: "không tìm thấy người dùng!" };
+    }
+    const newNotifi = await Notifications.create({
+      receiverId: null,
+      senderId: data.userId,
+      title: data.title,
+      message: data.message,
+      type: "help_request",
+      targetRole: "admin",
+    });
+    return newNotifi;
+  } catch (error) {
+    throw error;
+  }
+};
+const ReplyForuser = async (data) => {
+  try {
+    const isuser = await Users.findById(data.userId);
+    if (!isuser) {
+      throw { status: 404, message: "không tìm thấy người dùng!" };
+    }
+    const reRole = data.receiverId
+      ? await Users.findById(data.receiverId).select("role").lean()
+      : null;
+    const newNotifi = await Notifications.create({
+      receiverId: data.receiverId || null,
+      senderId: data.userId,
+      title: data.title,
+      message: data.message,
+      type: data.type || (data.receiverId ? "admin_note" : "broadcast"),
+      targetRole: reRole?.role || "all",
+    });
+    return newNotifi;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const GetALLNotification = async (data) => {
+  try {
+    const getall = await Notifications.find()
+      .populate("senderId", "name email avatar")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return getall;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const GetNotificationbyuser = async (data) => {
+  try {
+    const getnote = await Notifications.find({
+      $or: [
+        { receiverId: data.userId },
+        { senderId: data.userId, type: "help_request" },
+        { targetRole: "all" },
+        { targetRole: data.role, type: "broadcast" },
+      ],
+    })
+      .sort({
+        createdAt: -1,
+      })
+      .lean();
+    const reqTeach = await TeacherRequests.find({ userId: data.userId })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return { getnote: getnote || [], reqTeach: reqTeach || [] };
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = {
+  SennotificationbyStudent,
+  ReplyForuser,
+  GetALLNotification,
+  GetNotificationbyuser,
+};
