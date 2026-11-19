@@ -36,7 +36,7 @@ const AIcourseadvisorService = async (userText, signal) => {
       const denominator = questionNorm * Math.sqrt(courseSquaredNorm);
       if (denominator == 0) continue;
       const similar = dot / denominator;
-      if (Number.isFinite(similar) && similar >= 0.6) {
+      if (Number.isFinite(similar)) {
         signal?.throwIfAborted();
         const lessons = await Lessons.find({ courseId: course._id })
           .select("title duration content")
@@ -70,7 +70,7 @@ const AIcourseadvisorService = async (userText, signal) => {
       }
     }
     topsimilar.sort((a, b) => b.similar - a.similar);
-    return topsimilar.slice(0, 3);
+    return topsimilar.slice(0, 4);
   } catch (error) {
     throw error;
   }
