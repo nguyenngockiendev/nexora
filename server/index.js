@@ -6,7 +6,7 @@ const DBconnection = require("./config/db");
 const http = require("http");
 const { Server } = require("socket.io");
 const Router = require("./router/router");
-const RouterappAssistant = require("./modules/ai/app-assistant/app-assistant.routes");
+const RouterappAssistant = require("./modules/ai/app-ai.routes");
 const registerSoket = require("./socket");
 
 const app = express();
@@ -32,6 +32,7 @@ const io = new Server(server, {
 app.set("io", io);
 
 const jwt = require("jsonwebtoken");
+
 io.use((socket, next) => {
   const token = socket.handshake.auth?.token;
   if (token) {

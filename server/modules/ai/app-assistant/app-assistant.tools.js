@@ -1,23 +1,24 @@
 const AppFeatures = require("./AppFeatures");
 const { GeminiEmbedding } = require("../providers/ai-provider.service");
 
-const AIassistantService = async (queryText) => {
+const AIassistantService = async (queryText, signal, role) => {
   if (typeof queryText !== "string" || !queryText.trim()) {
     throw {
       status: 400,
       message: "Câu truy vấn tìm tính năng không hợp lệ.",
     };
   }
-
+  const topsimilar = [];
   const query = `task: search result | query: ${queryText.trim()}`;
-  const questionEmbedding = await GeminiEmbedding(query);
+  signal?.throwIfAborted();
+  const questionEmbedding = await GeminiEmbedding(query, signal);
+  signal?.throwIfAborted();
   const questionNorm = Math.sqrt(
     questionEmbedding.reduce((sum, value) => sum + value ** 2, 0),
   );
   if (questionNorm === 0) return null;
 
-  const features = await AppFeatures.find().lean();
-  let bestMatch = null;
+  const features = await AppFeatures.find({ roles: role }).lean();
 
   for (const feature of features) {
     const featureEmbedding = feature.embedding;
@@ -35,24 +36,28 @@ const AIassistantService = async (queryText) => {
     if (denominator === 0) continue;
 
     const similar = dot / denominator;
-    if (
-      Number.isFinite(similar) &&
-      (!bestMatch || similar > bestMatch.similar)
-    ) {
-      bestMatch = { feature: feature.name, similar };
+    if (Number.isFinite(similar) && similar >= 0.6) {
+      topsimilar.push({
+        featureCode: feature.featureCode,
+        feature: feature.name,
+        description: feature.description,
+        steps: feature.steps,
+        route: feature.route,
+        similar,
+      });
     }
   }
 
-  if (!bestMatch || bestMatch.similar < 0.6) {
+  if (topsimilar.length === 0) {
     throw {
       status: 404,
       message: "Không tìm thấy tính năng phù hợp với câu hỏi.",
     };
   }
 
-  return bestMatch;
+  topsimilar.sort((a, b) => b.similar - a.similar);
+  return topsimilar.slice(0, 3);
 };
-
 
 module.exports = {
   AIassistantService,

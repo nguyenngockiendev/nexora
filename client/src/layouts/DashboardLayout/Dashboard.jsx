@@ -5,6 +5,7 @@ import { Menu } from "lucide-react";
 
 import useDashboats from "../../features/dashboard/hooks/useDashboats";
 import CornerOrangeButton from "./components/ButtonInfor";
+import AssistantChat from "../../features/ai-assistant/components/AssistantChat";
 
 const Dashboard = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -51,6 +52,7 @@ const Dashboard = () => {
           <Outlet context={{ dashboard, setDashboard, loading }} />
         </main>
       </div>
+      <AssistantChat />
     </div>
   );
 };

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "seed:app-features": "node seeds/seed-app-features.js",
+    "seed:course-embeddings": "node seeds/seed-course-embeddings.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "dev": "nodemon --inspect index.js"

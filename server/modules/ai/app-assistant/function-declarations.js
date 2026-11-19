@@ -10,8 +10,8 @@ const AIassistantServiceDeclaration = {
     - Hỏi vị trí hoặc cách truy cập một chức năng trong ứng dụng.
     - Mô tả điều họ muốn làm và cần xác định tính năng liên quan.
 
-    Công cụ sử dụng Embedding và Cosine Similarity để tìm
-    tính năng có độ tương đồng cao nhất trong cơ sở dữ liệu.
+    Công cụ sử dụng Embedding và Cosine Similarity để tìm và trả về 3 
+    tính năng có độ tương đồng cao trong cơ sở dữ liệu.
 
     Kết quả gồm tên tính năng phù hợp và điểm tương đồng.
     Công cụ có thể không tìm thấy tính năng phù hợp.

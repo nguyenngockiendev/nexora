@@ -11,13 +11,14 @@ const genOpenAI = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-const GeminiEmbedding = async (data) => {
+const GeminiEmbedding = async (data, signal) => {
   try {
     const res = await genAI.models.embedContent({
       model: "gemini-embedding-2",
       contents: data,
       config: {
         outputDimensionality: 3072,
+        abortSignal: signal,
       },
     });
     const vector = res.embeddings?.[0]?.values;

@@ -1,0 +1,70 @@
+.nexora-bot-button {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 80px;
+  height: 80px;
+  padding: 0;
+  border: 0;
+  border-radius: 28px;
+  background: transparent;
+  cursor: grab;
+  isolation: isolate;
+  -webkit-tap-highlight-color: transparent;
+}
+.nexora-bot-button:active {
+  cursor: grabbing;
+}
+.nexora-bot-button:focus-visible {
+  outline: 2px solid #fb923c;
+  outline-offset: 4px;
+}
+.nexora-bot-aura {
+  position: absolute;
+  inset: 20px 12px 7px;
+  border-radius: 50%;
+  background: #fb923c;
+  filter: blur(16px);
+  opacity: 0.16;
+  z-index: -1;
+  transition: opacity 200ms;
+}
+.nexora-bot-character {
+  overflow: visible;
+  filter: drop-shadow(0 5px 5px rgb(39 20 6 / 25%));
+}
+.nexora-bot-hint {
+  position: absolute;
+  right: 92px;
+  white-space: nowrap;
+  padding: 8px 13px;
+  border: 1px solid rgb(251 146 60 / 22%);
+  border-radius: 12px;
+  background: #24201c;
+  color: #fff1dd;
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateX(5px);
+  transition:
+    opacity 180ms,
+    transform 180ms;
+  pointer-events: none;
+}
+.nexora-bot-button:hover .nexora-bot-aura {
+  opacity: 0.28;
+}
+.nexora-bot-button:is(:hover, :focus-visible) .nexora-bot-hint {
+  opacity: 1;
+  transform: translateX(0);
+}
+/* The app inverts the entire document in dark mode; restore this mascot's palette. */
+html.dark-coc-coc .nexora-floating-bot {
+  filter: invert(1) hue-rotate(180deg) !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nexora-bot-hint,
+  .nexora-bot-aura {
+    transition: none;
+  }
+}

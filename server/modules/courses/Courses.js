@@ -6,6 +6,9 @@ const courseSchema = new mongoose.Schema(
 
     description: { type: String, required: true, trim: true },
 
+    embedding: { type: [Number], default: undefined },
+    embeddingModel: { type: String, default: undefined },
+
     price: { type: Number, required: true },
 
     thumbnail: { type: String, required: true },

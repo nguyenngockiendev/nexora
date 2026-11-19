@@ -9,6 +9,7 @@ dist
 build
 client/dist
 server/dist
+server/backups/
 
 # env
 .env

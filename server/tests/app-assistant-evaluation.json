@@ -1,0 +1,216 @@
+{
+  "scope": "Independent requests, real local API, Gemini and MongoDB. No application data changes requested.",
+  "results": [
+    {
+      "id": 1,
+      "question": "Tôi muốn đổi mật khẩu tài khoản, mật khẩu cũ tôi vẫn nhớ.",
+      "attempt": 2,
+      "status": 201,
+      "seconds": 9.209,
+      "success": true,
+      "data": {
+        "answer": "Bạn có thể dễ dàng đổi mật khẩu ngay trong trang cá nhân vì vẫn nhớ mật khẩu cũ. Bạn hãy làm theo các bước sau:\n\n1. Truy cập [Đổi mật khẩu](/profile).\n2. Chọn mục đổi mật khẩu và điền các thông tin theo yêu cầu để hoàn tất.",
+        "usedTools": [
+          "AIassistantService"
+        ]
+      },
+      "assessment": "Đúng tính năng và hướng dẫn chính"
+    },
+    {
+      "id": 2,
+      "question": "Tôi đang là học viên, muốn đăng ký trở thành giảng viên thì làm thế nào?",
+      "attempt": 1,
+      "status": 201,
+      "seconds": 11.556,
+      "success": true,
+      "data": {
+        "answer": "Để đăng ký trở thành giảng viên trên Nexora, bạn có thể thực hiện theo các bước sau:\n\n1. Truy cập vào [Đăng ký trở thành giảng viên](/user/become-instructor).\n2. Điền đầy đủ thông tin cá nhân và gửi kèm các minh chứng theo yêu cầu để quản trị viên xem xét.",
+        "usedTools": [
+          "AIassistantService"
+        ]
+      },
+      "assessment": "Đúng tính năng và hướng dẫn chính"
+    },
+    {
+      "id": 3,
+      "question": "Tôi muốn gửi báo lỗi cho quản trị viên và xem họ đã trả lời chưa.",
+      "attempt": 1,
+      "status": 201,
+      "seconds": 9.603,
+      "success": true,
+      "data": {
+        "answer": "Để gửi báo lỗi và kiểm tra phản hồi từ quản trị viên, bạn hãy sử dụng tính năng [Yêu cầu hỗ trợ](/help). \n\nCác bước thực hiện:\n1. Mở mục Hỗ trợ trên hệ thống.\n2. Mô tả chi tiết vấn đề bạn gặp phải và gửi yêu cầu.\n3. Quay lại đây sau để xem câu trả lời từ quản trị viên.",
+        "usedTools": [
+          "AIassistantService"
+        ]
+      },
+      "assessment": "Đúng tính năng và hướng dẫn chính"
+    },
+    {
+      "id": 4,
+      "question": "Tôi là giảng viên, muốn tạo mã giảm giá chỉ áp dụng cho khóa của tôi.",
+      "attempt": 1,
+      "status": 201,
+      "seconds": 9.338,
+      "success": true,
+      "data": {
+        "answer": "Chào thầy/cô, để tạo mã giảm giá áp dụng cho khóa học của mình, thầy/cô hãy sử dụng tính năng [Quản lý Voucher](/admin/vouchers). \n\nCác bước thực hiện:\n1. Mở [Quản lý Voucher](/admin/vouchers).\n2. Tạo mới hoặc chọn mã để chỉnh sửa, sau đó cấu hình giá trị giảm, thời hạn, giới hạn và chọn khóa học cụ thể của thầy/cô để áp dụng.",
+        "usedTools": [
+          "AIassistantService"
+        ]
+      },
+      "assessment": "Đúng tính năng và hướng dẫn chính"
+    },
+    {
+      "id": 5,
+      "question": "Tôi là học viên, có mã giảm giá thì nhập ở đâu?",
+      "attempt": 1,
+      "status": 201,
+      "seconds": 6.85,
+      "success": true,
+      "data": {
+        "answer": "Chào bạn, để sử dụng mã giảm giá, bạn hãy làm theo các bước sau:\n\n1. Truy cập vào [Giỏ hàng](/cart).\n2. Nhập mã giảm giá của bạn vào ô tương ứng để kiểm tra số tiền được giảm trước khi tiến hành thanh toán.",
+        "usedTools": [
+          "AIassistantService"
+        ]
+      },
+      "assessment": "Đúng tính năng và hướng dẫn chính"
+    },
+    {
+      "id": 6,
+      "question": "Tôi là học viên, muốn xem lịch và vào lớp trực tuyến đã đăng ký.",
+      "attempt": 1,
+      "status": 201,
+      "seconds": 9.148,
+      "success": true,
+      "data": {
+        "answer": "Để xem lịch và vào lớp trực tuyến đã đăng ký trên Nexora, bạn hãy làm theo các bước sau:\n\n1. Truy cập vào [Vào lớp đã đăng ký](/student).\n2. Chọn lớp live tương ứng để xem lịch học.\n3. Nhấn vào link meeting do giảng viên cung cấp để tham gia buổi học.",
+        "usedTools": [
+          "AIassistantService"
+        ]
+      },
+      "assessment": "Đúng tính năng và hướng dẫn chính"
+    },
+    {
+      "id": 7,
+      "question": "Tôi muốn gửi tin nhắn cho các bạn trong lớp học của mình.",
+      "attempt": 1,
+      "status": 201,
+      "seconds": 9.61,
+      "success": true,
+      "data": {
+        "answer": "Để gửi tin nhắn cho các bạn trong lớp, bạn có thể sử dụng tính năng [Chat trong lớp](/student) với các bước sau:\n\n1. Mở lớp đã đăng ký hoặc lớp đang quản lý.\n2. Mở khu vực chat để trao đổi với mọi người.",
+        "usedTools": [
+          "AIassistantService"
+        ]
+      },
+      "assessment": "Đúng tính năng và hướng dẫn chính"
+    },
+    {
+      "id": 8,
+      "question": "Giảng viên giao bài tập rồi, tôi muốn nộp file bài làm và xem nhận xét sau khi chấm.",
+      "attempt": 1,
+      "status": 201,
+      "seconds": 7.139,
+      "success": true,
+      "data": {
+        "answer": "Để nộp bài tập và xem nhận xét, bạn hãy sử dụng tính năng [Nộp bài và xem nhận xét](/student) với các bước sau:\n\n1. Mở lớp đã đăng ký.\n2. Chọn bài tập cần làm.\n3. Tải bài làm lên và gửi đi để giảng viên chấm điểm.",
+        "usedTools": [
+          "AIassistantService"
+        ]
+      },
+      "assessment": "Thiếu phần hướng dẫn xem điểm và nhận xét"
+    },
+    {
+      "id": 9,
+      "question": "Tôi là giảng viên, muốn xem bạn nào đã nộp bài, chấm điểm và gửi nhận xét.",
+      "attempt": 1,
+      "status": 201,
+      "seconds": 9.288,
+      "success": true,
+      "data": {
+        "answer": "Chào thầy/cô, để xem danh sách học viên nộp bài, chấm điểm và gửi nhận xét trên Nexora, thầy/cô hãy sử dụng tính năng [Giao và chấm bài tập](/instructor/assessments). \n\nThầy/cô làm theo các bước sau:\n1. Vào lớp học để giao bài.\n2. Mở phần Quản lý kiểm tra để xem danh sách bài nộp của học viên.\n3. Tiến hành chấm điểm và gửi phản hồi, nhận xét trực tiếp cho học viên.",
+        "usedTools": [
+          "AIassistantService"
+        ]
+      },
+      "assessment": "Đúng tính năng và hướng dẫn chính",
+      "note": "Có bước giao bài thừa so với yêu cầu chỉ xem bài nộp và chấm."
+    },
+    {
+      "id": 10,
+      "question": "Tôi là admin, muốn xem hồ sơ đăng ký giảng viên rồi duyệt hoặc từ chối.",
+      "attempt": 1,
+      "status": 201,
+      "seconds": 9.942,
+      "success": true,
+      "data": {
+        "answer": "Chào bạn, với tư cách là admin, bạn có thể xem và duyệt hồ sơ đăng ký giảng viên tại tính năng [Duyệt giảng viên](/admin/teacher-requests). \n\nBạn thực hiện theo các bước sau:\n1. Mở danh sách yêu cầu giảng viên.\n2. Xem kỹ hồ sơ, minh chứng và tiến hành chấp thuận hoặc từ chối.",
+        "usedTools": [
+          "AIassistantService"
+        ]
+      },
+      "assessment": "Đúng tính năng và hướng dẫn chính"
+    },
+    {
+      "id": 11,
+      "question": "Tôi là admin, muốn khóa tài khoản người dùng vi phạm.",
+      "attempt": 1,
+      "status": 201,
+      "seconds": 9.069,
+      "success": true,
+      "data": {
+        "answer": "Chào bạn, với vai trò admin, bạn có thể khóa tài khoản người dùng vi phạm bằng tính năng [Quản lý tài khoản](/user). \n\nBạn thực hiện theo các bước sau:\n1. Mở Quản lý người dùng.\n2. Tìm tài khoản cần khóa.\n3. Chọn thao tác khóa tài khoản.",
+        "usedTools": [
+          "AIassistantService"
+        ]
+      },
+      "assessment": "Đúng tính năng và hướng dẫn chính"
+    },
+    {
+      "id": 12,
+      "question": "Tôi muốn ôn các câu xuất hiện nhiều trong các đề thi của khóa học.",
+      "attempt": 1,
+      "status": 201,
+      "seconds": 11.225,
+      "success": true,
+      "data": {
+        "answer": "Bạn có thể sử dụng tính năng [Kho đề và ôn luyện](/student/exam-bank) để ôn các câu hỏi xuất hiện nhiều trong đề thi. Bạn chỉ cần:\n1. Mở [Kho đề ôn luyện](/student/exam-bank).\n2. Chọn khóa học và chọn chế độ ôn các câu xuất hiện nhiều để bắt đầu luyện tập.",
+        "usedTools": [
+          "AIassistantService"
+        ]
+      },
+      "assessment": "Đúng tính năng và hướng dẫn chính"
+    },
+    {
+      "id": 13,
+      "question": "Tôi muốn xem lại bài vừa học hôm qua và tiếp tục từ chỗ đã dừng.",
+      "attempt": 1,
+      "status": 201,
+      "seconds": 13.955,
+      "success": true,
+      "data": {
+        "answer": "Bạn có thể tiếp tục bài học hôm qua bằng cách sử dụng tính năng [Học tiếp và xem tiến độ](/dashboard). Bạn hãy làm theo các bước sau:\n\n1. Mở [Dashboard](/dashboard).\n2. Chọn bài học gần nhất để tiếp tục xem video ở vị trí đã lưu.",
+        "usedTools": [
+          "AIassistantService"
+        ]
+      },
+      "assessment": "Đúng tính năng và hướng dẫn chính"
+    },
+    {
+      "id": 14,
+      "question": "Tôi muốn hủy đăng ký lớp để được hoàn tiền tự động về tài khoản ngân hàng.",
+      "attempt": 1,
+      "status": 201,
+      "seconds": 16.95,
+      "success": true,
+      "data": {
+        "answer": "Tôi chưa tìm được hướng dẫn phù hợp trong Nexora cho tính năng hủy đăng ký lớp và hoàn tiền tự động. Bạn vui lòng liên hệ bộ phận hỗ trợ khách hàng để được trợ giúp trực tiếp nhé.",
+        "usedTools": [
+          "AIassistantService"
+        ]
+      },
+      "assessment": "Nhận ra danh mục chưa có hoàn tiền tự động, không bịa thao tác."
+    }
+  ]
+}
