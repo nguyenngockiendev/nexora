@@ -1,8 +1,10 @@
 const {
   getAppAssistantDecision,
   AIanserForUser,
-} = require("./app-assistant.ai");
-const { AppAssistantAnswerPrompt } = require("./app-assistant-promt");
+} = require("./ai-assistant.ai");
+const {
+  AssistantAnswerPrompt,
+} = require("./ai-assistant-answer-promt");
 const usetools = require("./dispatcher-tool");
 
 const appAssistantService = async (data, onChunk = () => {}, options = {}) => {
@@ -66,19 +68,22 @@ const appAssistantService = async (data, onChunk = () => {}, options = {}) => {
         message: "Không tìm thấy câu trả lời từ mô hình AI.",
       };
     }
-    contents.push(ansermodel);
-    const features = [];
     const usedTools = [];
+    const toolResults = [];
     for (const call of result) {
       options.signal?.throwIfAborted();
-      options.onStatus?.("Đang tìm tính năng phù hợp...");
+      options.onStatus?.("Đang tìm thông tin phù hợp...");
       const toolResult = await usetools(call, options.signal, data.role);
-      features.push(...(toolResult || []));
+      toolResults.push({
+        tool: call.name,
+        data: toolResult,
+      });
+
       if (!usedTools.includes(call.name)) usedTools.push(call.name);
     }
     options.onStatus?.("Đang chuẩn bị câu trả lời...");
     const answer = await AIanserForUser(
-      AppAssistantAnswerPrompt(data.quesion, features, history, data.role),
+      AssistantAnswerPrompt(data.quesion, toolResults, history, data.role),
       onChunk,
       options.signal,
     );

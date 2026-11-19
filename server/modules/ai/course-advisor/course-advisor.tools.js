@@ -1,4 +1,5 @@
 const Courses = require("../../courses/Courses");
+const Lessons = require("../../lessons/Lessons");
 const { GeminiEmbedding } = require("../providers/ai-provider.service");
 
 const AIcourseadvisorService = async (userText, signal) => {
@@ -18,7 +19,10 @@ const AIcourseadvisorService = async (userText, signal) => {
       questionEmbedding.reduce((sum, value) => sum + value ** 2, 0),
     );
     if (questionNorm === 0) return [];
-    const courses = await Courses.find({ status: "active" }).lean();
+    const courses = await Courses.find({ status: "active" })
+      .populate("instructor", "name")
+      .lean();
+
     for (const course of courses) {
       const courseEmb = course.embedding;
       if (!Array.isArray(courseEmb)) continue;
@@ -33,8 +37,25 @@ const AIcourseadvisorService = async (userText, signal) => {
       if (denominator == 0) continue;
       const similar = dot / denominator;
       if (Number.isFinite(similar) && similar >= 0.6) {
+        signal?.throwIfAborted();
+        const lessons = await Lessons.find({ courseId: course._id })
+          .select("title duration content")
+          .sort({ order: 1, _id: 1 })
+          .lean();
+        signal?.throwIfAborted();
         topsimilar.push({
           courseId: course._id,
+          lessonCount: lessons.length,
+          totalDuration: lessons.reduce(
+            (sum, lesson) => sum + (lesson.duration || 0),
+            0,
+          ),
+          lessons: lessons.map((lesson) => ({
+            title: lesson.title,
+            duration: lesson.duration || 0,
+            content: lesson.content,
+          })),
+          instructorName: course.instructor?.name || "Không xác định",
           title: course.title,
           description: course.description,
           price: course.price,

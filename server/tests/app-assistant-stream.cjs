@@ -8,7 +8,7 @@ let mode = "stream";
 let disconnected;
 const realLoad = Module._load;
 Module._load = function (id, ...args) {
-  if (id === "./app-assistant.service") {
+  if (id === "./ai-assistant.service") {
     return {
       appAssistantService: async (data, onChunk = () => {}, options) => {
         if (mode === "error") throw new Error("Synthetic provider failure");
@@ -26,12 +26,12 @@ Module._load = function (id, ...args) {
   }
   return realLoad.call(this, id, ...args);
 };
-const { AIassistantController } = require("../modules/ai/app-assistant/app-assistant.controller");
+const { AIassistantController } = require("../modules/ai/ap-ai.controller");
 Module._load = realLoad;
 
 const app = express();
 app.use(express.json());
-app.post("/chat", AIassistantController);
+app.post("/chat", (req, res, next) => { req.user = { role: "student" }; next(); }, AIassistantController);
 
 const testClientParser = async () => {
   const source = fs.readFileSync(path.join(__dirname, "../../client/src/features/ai-assistant/api/assistant-api.jsx"), "utf8")

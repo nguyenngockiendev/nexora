@@ -9,7 +9,7 @@ let query;
 let direct = false;
 const originalLoad = Module._load;
 Module._load = function (id, ...args) {
-  if (id === "./app-assistant.ai") return {
+  if (id === "./ai-assistant.ai") return {
     getAppAssistantDecision: async (value) => {
       contents = value;
       return direct ? { text: "Chào bạn!" } : {
@@ -25,7 +25,7 @@ Module._load = function (id, ...args) {
   };
   return originalLoad.call(this, id, ...args);
 };
-const { appAssistantService } = require("../modules/ai/app-assistant/app-assistant.service");
+const { appAssistantService } = require("../modules/ai/ai-assistant.service");
 Module._load = originalLoad;
 
 const main = async () => {

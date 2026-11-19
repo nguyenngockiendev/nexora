@@ -1,6 +1,6 @@
 const {
   appAssistantService,
-} = require("./app-assistant/app-assistant.service");
+} = require("./ai-assistant.service");
 
 const AIassistantController = async (req, res) => {
   if (typeof req.body?.quesion !== "string" || !req.body.quesion.trim()) {
