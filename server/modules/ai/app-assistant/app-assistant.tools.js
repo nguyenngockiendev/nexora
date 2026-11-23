@@ -1,15 +1,15 @@
 const AppFeatures = require("./AppFeatures");
 const { GeminiEmbedding } = require("../providers/ai-provider.service");
 
-const AIassistantService = async (queryText, signal, role) => {
-  if (typeof queryText !== "string" || !queryText.trim()) {
+const AIassistantService = async (datas, signal) => {
+  if (typeof datas.message !== "string" || !datas.message.trim()) {
     throw {
       status: 400,
       message: "Câu truy vấn tìm tính năng không hợp lệ.",
     };
   }
   const topsimilar = [];
-  const query = `task: search result | query: ${queryText.trim()}`;
+  const query = `task: search result | query: ${datas.message.trim()}`;
   signal?.throwIfAborted();
   const questionEmbedding = await GeminiEmbedding(query, signal);
   signal?.throwIfAborted();
@@ -18,7 +18,7 @@ const AIassistantService = async (queryText, signal, role) => {
   );
   if (questionNorm === 0) return null;
 
-  const features = await AppFeatures.find({ roles: role }).lean();
+  const features = await AppFeatures.find({ roles: datas.role }).lean();
 
   for (const feature of features) {
     const featureEmbedding = feature.embedding;
@@ -58,7 +58,7 @@ const AIassistantService = async (queryText, signal, role) => {
   topsimilar.sort((a, b) => b.similar - a.similar);
   return topsimilar.slice(0, 3);
 };
-
+AIassistantService.capacity = 1;
 module.exports = {
   AIassistantService,
 };

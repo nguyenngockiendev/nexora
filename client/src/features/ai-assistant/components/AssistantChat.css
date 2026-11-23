@@ -4,7 +4,9 @@
   border: 1px solid #f0dfd1;
   border-radius: 24px;
   background: #fffcf9;
-  box-shadow: 0 20px 70px rgb(54 31 12 / 18%), 0 2px 8px rgb(54 31 12 / 5%);
+  box-shadow:
+    0 20px 70px rgb(54 31 12 / 18%),
+    0 2px 8px rgb(54 31 12 / 5%);
 }
 #nexora-assistant .assistant-header {
   flex-shrink: 0;
@@ -22,41 +24,324 @@
   background: linear-gradient(135deg, #ffad55, #f77516);
   box-shadow: 0 3px 9px rgb(249 115 22 / 16%);
 }
-#nexora-assistant .assistant-title { margin: 0; font-size: 17px; line-height: 24px; font-weight: 750; color: #292b32; }
-#nexora-assistant .assistant-subtitle { display: flex; align-items: center; gap: 5px; margin: 2px 0 0; font-size: 11px; line-height: 16px; color: #85817d; }
-.assistant-status-dot { width: 5px; height: 5px; border-radius: 50%; background: #72a882; }
-#nexora-assistant .assistant-header button { display: grid; place-items: center; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 10px; background: transparent; color: #8d8580; }
-#nexora-assistant .assistant-header button:hover { background: #f4e9de; }
-#nexora-assistant .assistant-header button:disabled { opacity: .3; }
-#nexora-assistant .assistant-messages { flex: 1; min-height: 0; overflow-y: auto; padding: 20px 18px; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #e4d7cb transparent; }
-#nexora-assistant .assistant-messages > div + div { margin-top: 16px; }
-#nexora-assistant .assistant-messages-empty { display: flex; flex-direction: column; justify-content: center; }
-.assistant-welcome { text-align: center; padding: 12px 8px; }
-.assistant-welcome-icon { display: grid; place-items: center; width: 68px; height: 68px; margin: 0 auto 20px; border-radius: 24px; border: 1px solid #ffe0bf; background: linear-gradient(145deg, #fff0dc, #ffe3c3); color: #ed812d; box-shadow: 0 8px 22px rgb(236 140 55 / 9%); transform: rotate(-5deg); }
-.assistant-eyebrow { font-size: 9px; font-weight: 700; letter-spacing: 2px; color: #bc8b65; }
-#nexora-assistant .assistant-welcome h3 { margin: 9px 0 10px; font-size: 23px; line-height: 30px; font-weight: 700; letter-spacing: -.5px; color: #333039; }
-#nexora-assistant .assistant-welcome p { margin: 0; font-size: 13px; line-height: 22px; color: #8e8781; }
-.assistant-suggestions { display: grid; gap: 8px; margin: 24px auto 0; max-width: 290px; }
-#nexora-assistant .assistant-suggestions button { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 13px; border: 1px solid #eee4da; border-radius: 12px; background: #fff; color: #6b625b; font-size: 12px; text-align: left; transition: background 150ms, border-color 150ms; }
-#nexora-assistant .assistant-suggestions button:hover { background: #fff3e6; border-color: #f5caa5; }
-.assistant-suggestions button span { color: #bc9b81; }
-#nexora-assistant .assistant-bubble { max-width: 92%; padding: 12px 14px; border-radius: 17px; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13px; line-height: 23px; }
-#nexora-assistant .assistant-bubble-user { background: #ef812d; color: #fff; border-bottom-right-radius: 5px; }
-#nexora-assistant .assistant-bubble-model { border: 1px solid #eee7df; background: #fff; color: #55515a; border-bottom-left-radius: 5px; }
-#nexora-assistant .assistant-footer { flex-shrink: 0; padding: 12px 14px 10px; border-top: 1px solid #f1e7df; background: #fffdfb; }
-#nexora-assistant .assistant-composer { display: flex; align-items: flex-end; gap: 8px; padding: 8px; border: 1px solid #eaddd1; border-radius: 17px; background: #fff; transition: border-color 150ms, box-shadow 150ms; }
-#nexora-assistant .assistant-composer:focus-within { border-color: #edb285; box-shadow: 0 0 0 3px rgb(249 115 22 / 5%); }
-#nexora-assistant .assistant-input { flex: 1; min-width: 0; height: 44px; min-height: 44px; max-height: 110px; resize: none; border: 0; border-radius: 0; padding: 2px 4px; background: transparent; color: #49414a; font-family: inherit; font-size: 13px; line-height: 21px; outline: none; box-shadow: none; }
-#nexora-assistant .assistant-input::placeholder { color: #aaa19a; }
-#nexora-assistant .assistant-send { display: grid; place-items: center; flex-shrink: 0; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 12px; background: #ef812d; color: white; transition: background 150ms; }
-#nexora-assistant .assistant-send:hover { background: #e56c18; }
-#nexora-assistant .assistant-send:disabled { background: #f7decb; color: #c7a78e; cursor: default; }
-#nexora-assistant .assistant-stop { background: #3a3440; }
-#nexora-assistant .assistant-input-hint { margin: 7px 0 0; text-align: center; font-size: 9px; line-height: 13px; color: #aba19a; }
-.assistant-input-hint span { padding: 0 4px; }
-#nexora-assistant button:focus-visible { outline: 2px solid #ed9a59; outline-offset: 2px; }
+#nexora-assistant .assistant-title {
+  margin: 0;
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 750;
+  color: #292b32;
+}
+#nexora-assistant .assistant-subtitle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 2px 0 0;
+  font-size: 11px;
+  line-height: 16px;
+  color: #85817d;
+}
+.assistant-status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #72a882;
+}
+#nexora-assistant .assistant-header button {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #8d8580;
+}
+#nexora-assistant .assistant-header button:hover {
+  background: #f4e9de;
+}
+#nexora-assistant .assistant-header button:disabled {
+  opacity: 0.3;
+}
+#nexora-assistant .assistant-lesson-context {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-shrink: 0;
+  padding: 10px 18px;
+  background: #fff2e4;
+  border-bottom: 1px solid #f1e0d0;
+  color: #ba692b;
+}
+#nexora-assistant .assistant-lesson-context > div {
+  flex: 1;
+  min-width: 0;
+}
+#nexora-assistant .assistant-lesson-context > div > span {
+  display: block;
+  font-size: 10px;
+  line-height: 15px;
+  color: #9c785c;
+}
+#nexora-assistant .assistant-lesson-context strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 650;
+  color: #74543c;
+}
+#nexora-assistant .assistant-context-time {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+#nexora-assistant .assistant-message-context {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 7px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgb(255 255 255 / 25%);
+  font-size: 10px;
+  line-height: 16px;
+  opacity: 0.9;
+}
+#nexora-assistant .assistant-message-context > span:first-of-type {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#nexora-assistant .assistant-message-context > span:last-child {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+#nexora-assistant .assistant-messages {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 20px 18px;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #e4d7cb transparent;
+}
+#nexora-assistant .assistant-messages > div + div {
+  margin-top: 16px;
+}
+#nexora-assistant .assistant-messages-empty {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.assistant-welcome {
+  flex-shrink: 0;
+  margin: auto 0;
+  text-align: center;
+  padding: 12px 8px;
+}
+.assistant-welcome-icon {
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  margin: 0 auto 20px;
+  border-radius: 24px;
+  border: 1px solid #ffe0bf;
+  background: linear-gradient(145deg, #fff0dc, #ffe3c3);
+  color: #ed812d;
+  box-shadow: 0 8px 22px rgb(236 140 55 / 9%);
+  transform: rotate(-5deg);
+}
+.assistant-eyebrow {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #bc8b65;
+}
+#nexora-assistant .assistant-welcome h3 {
+  margin: 9px 0 10px;
+  font-size: 23px;
+  line-height: 30px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: #333039;
+}
+#nexora-assistant .assistant-welcome p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 22px;
+  color: #8e8781;
+}
+.assistant-suggestions {
+  display: grid;
+  gap: 8px;
+  margin: 24px auto 0;
+  max-width: 290px;
+}
+#nexora-assistant .assistant-suggestions button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 13px;
+  border: 1px solid #eee4da;
+  border-radius: 12px;
+  background: #fff;
+  color: #6b625b;
+  font-size: 12px;
+  text-align: left;
+  transition:
+    background 150ms,
+    border-color 150ms;
+}
+#nexora-assistant .assistant-suggestions button:hover {
+  background: #fff3e6;
+  border-color: #f5caa5;
+}
+.assistant-suggestions button span {
+  color: #bc9b81;
+}
+#nexora-assistant
+  .assistant-lesson-context
+  + .assistant-messages
+  .assistant-welcome {
+  padding: 0;
+}
+#nexora-assistant
+  .assistant-lesson-context
+  + .assistant-messages
+  .assistant-welcome-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 17px;
+  margin-bottom: 12px;
+}
+#nexora-assistant
+  .assistant-lesson-context
+  + .assistant-messages
+  .assistant-suggestions {
+  margin-top: 16px;
+}
+#nexora-assistant .assistant-bubble {
+  max-width: 92%;
+  padding: 12px 14px;
+  border-radius: 17px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  line-height: 23px;
+}
+#nexora-assistant .assistant-bubble-user {
+  background: #ef812d;
+  color: #fff;
+  border-bottom-right-radius: 5px;
+}
+#nexora-assistant .assistant-bubble-model {
+  border: 1px solid #eee7df;
+  background: #fff;
+  color: #55515a;
+  border-bottom-left-radius: 5px;
+}
+#nexora-assistant .assistant-footer {
+  flex-shrink: 0;
+  padding: 12px 14px 10px;
+  border-top: 1px solid #f1e7df;
+  background: #fffdfb;
+}
+#nexora-assistant .assistant-composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid #eaddd1;
+  border-radius: 17px;
+  background: #fff;
+  transition:
+    border-color 150ms,
+    box-shadow 150ms;
+}
+#nexora-assistant .assistant-composer:focus-within {
+  border-color: #edb285;
+  box-shadow: 0 0 0 3px rgb(249 115 22 / 5%);
+}
+#nexora-assistant .assistant-input {
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+  min-height: 44px;
+  max-height: 110px;
+  resize: none;
+  border: 0;
+  border-radius: 0;
+  padding: 2px 4px;
+  background: transparent;
+  color: #49414a;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 21px;
+  outline: none;
+  box-shadow: none;
+}
+#nexora-assistant .assistant-input::placeholder {
+  color: #aaa19a;
+}
+#nexora-assistant .assistant-send {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: #ef812d;
+  color: white;
+  transition: background 150ms;
+}
+#nexora-assistant .assistant-send:hover {
+  background: #e56c18;
+}
+#nexora-assistant .assistant-send:disabled {
+  background: #f7decb;
+  color: #c7a78e;
+  cursor: default;
+}
+#nexora-assistant .assistant-stop {
+  background: #3a3440;
+}
+#nexora-assistant .assistant-input-hint {
+  margin: 7px 0 0;
+  text-align: center;
+  font-size: 9px;
+  line-height: 13px;
+  color: #aba19a;
+}
+.assistant-input-hint span {
+  padding: 0 4px;
+}
+#nexora-assistant button:focus-visible {
+  outline: 2px solid #ed9a59;
+  outline-offset: 2px;
+}
 @media (max-height: 580px) {
-  .assistant-welcome-icon { width: 45px; height: 45px; margin-bottom: 8px; border-radius: 16px; }
-  .assistant-suggestions { margin-top: 12px; gap: 5px; }
-  .assistant-welcome { padding: 0; }
+  .assistant-welcome-icon {
+    width: 45px;
+    height: 45px;
+    margin-bottom: 8px;
+    border-radius: 16px;
+  }
+  .assistant-suggestions {
+    margin-top: 12px;
+    gap: 5px;
+  }
+  .assistant-welcome {
+    padding: 0;
+  }
 }

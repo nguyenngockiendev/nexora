@@ -5,19 +5,24 @@ let appError = { status: 404 };
 let answerPrompt;
 const calls = [];
 const courses = [{ title: "Tiếng Trung", route: "/courses/123", price: 150000 }];
+const appTool = async (data) => {
+  calls.push({ query: data.message, role: data.role });
+  throw appError;
+};
+appTool.capacity = 1;
+const courseTool = async () => courses;
+courseTool.capacity = 2;
 const originalLoad = Module._load;
 Module._load = function (id, ...args) {
   if (id === "./app-assistant/app-tool") return [{
     path: "AIassistantService",
-    name: async (query, signal, role) => {
-      calls.push({ query, role });
-      throw appError;
-    },
+    name: appTool,
   }];
   if (id === "./course-advisor/course-tool") return [{
     path: "AIcourseadvisorService",
-    name: async () => courses,
+    name: courseTool,
   }];
+  if (id === "./learning-assistant/learning-tool") return [];
   if (id === "./ai-assistant.ai") return {
     getAppAssistantDecision: async () => ({
       functionCalls: [
@@ -47,13 +52,13 @@ const main = async () => {
   assert.equal(streamed, response.answer);
   assert.deepEqual(response.usedTools, ["AIassistantService", "AIcourseadvisorService"]);
   assert.ok(answerPrompt.includes(JSON.stringify([
-    { tool: "AIassistantService", data: [] },
-    { tool: "AIcourseadvisorService", data: courses },
+    { tool: "AIassistantService", data: [], capacity: 1 },
+    { tool: "AIcourseadvisorService", data: courses, capacity: 2 },
   ], null, 2)));
   assert.deepEqual(calls, [{ query: "Cách thanh toán", role: "student" }]);
   appError = { status: 503, message: "Unavailable" };
   await assert.rejects(
-    usetools({ name: "AIassistantService", args: { query: "test" } }),
+    usetools({ name: "AIassistantService", args: { query: "test" } }, undefined, { role: "student" }),
     (error) => error === appError,
   );
   await assert.rejects(usetools({ name: "unknown", args: {} }), (error) => error.status === 400);

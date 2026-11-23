@@ -1,0 +1,47 @@
+{
+  "fixture": {
+    "lessonId": "6a8cd7b7e86fc1f41d37bfe7",
+    "title": "Học tiếng Nhật sơ cấp N5 ",
+    "time": 60.5
+  },
+  "cases": [
+    {
+      "type": "full-service-real-LLM1",
+      "question": "Đoạn này thầy đang nói gì? Giải thích dễ hiểu giúp tôi.",
+      "tools": [],
+      "answer": "Bạn đang hỏi về nội dung bài giảng, nhưng hiện tại tôi chưa nhận được ngữ cảnh video tại thời điểm bạn đang xem. \n\nBạn vui lòng cho tôi biết bạn đang học khóa học nào, bài học nào, hoặc mô tả ngắn gọn nội dung giảng viên đang nhắc tới để tôi hỗ trợ giải thích dễ hiểu hơn nhé!",
+      "streamMatches": true,
+      "seconds": 1.622
+    },
+    {
+      "type": "full-service-real-LLM1",
+      "question": "Tôi đang xem bài Học tiếng Nhật sơ cấp N5  tại giây 60.5. Giải thích nội dung đoạn hiện tại giúp tôi.",
+      "tools": [
+        {
+          "name": "AIlearningassistantService",
+          "query": "giải thích nội dung tại giây 60.5 của bài học Học tiếng Nhật sơ cấp N5",
+          "capacity": 3,
+          "status": "READY"
+        }
+      ],
+      "answer": "Trong đoạn 00:00–02:01 của bài, giảng viên Hiên Trần giới thiệu về khóa học tiếng Nhật online và bộ giáo trình sử dụng là *Minna no Nihongo*. \n\nBộ giáo trình này gồm 2 cuốn chính:\n- **Cuốn sách chính (sách màu hồng):** Chỉ có tiếng Nhật để bạn luyện tập và thực hành.\n- **Cuốn bản dịch và giải thích ngữ pháp:** Dịch từ vựng và giải thích ngữ pháp bằng tiếng Việt để bạn dễ dàng đọc hiểu.\n\nNgoài ra, tiếng Nhật được chia thành 5 cấp độ từ N5 đến N1 (trong đó N1 là cao nhất), và khóa học này sẽ bắt đầu từ trình độ sơ cấp N5.",
+      "streamMatches": true,
+      "seconds": 5.943
+    },
+    {
+      "type": "dispatcher+LLM2",
+      "deny": false,
+      "error": "Incomplete JSON segment at the end"
+    },
+    {
+      "type": "dispatcher+LLM2-real-LLM1-bypassed",
+      "deny": true,
+      "capacity": 3,
+      "status": "ACCESS_DENIED",
+      "source": null,
+      "answer": "Tài khoản của bạn chưa có quyền truy cập để học bài này, nên mình chưa thể giải thích nội dung cho bạn được.",
+      "streamMatches": true,
+      "seconds": 1.503
+    }
+  ]
+}

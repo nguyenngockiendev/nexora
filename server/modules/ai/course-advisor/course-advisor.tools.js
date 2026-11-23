@@ -2,16 +2,16 @@ const Courses = require("../../courses/Courses");
 const Lessons = require("../../lessons/Lessons");
 const { GeminiEmbedding } = require("../providers/ai-provider.service");
 
-const AIcourseadvisorService = async (userText, signal) => {
+const AIcourseadvisorService = async (datas, signal) => {
   try {
-    if (typeof userText !== "string" || !userText.trim()) {
+    if (typeof datas.message !== "string" || !datas.message.trim()) {
       throw {
         status: 400,
         message: "Câu truy vấn tìm khóa học không hợp lệ.",
       };
     }
     const topsimilar = [];
-    const query = `task: search result | query: ${userText.trim()}`;
+    const query = `task: search result | query: ${datas.message.trim()}`;
     signal?.throwIfAborted();
     const questionEmbedding = await GeminiEmbedding(query, signal);
     signal?.throwIfAborted();
@@ -66,6 +66,7 @@ const AIcourseadvisorService = async (userText, signal) => {
               ? `/courses-all/details/class/live/${course._id}`
               : `/courses-all/details/recorded/${course._id}`,
           similar,
+          
         });
       }
     }
@@ -75,6 +76,7 @@ const AIcourseadvisorService = async (userText, signal) => {
     throw error;
   }
 };
+AIcourseadvisorService.capacity = 2;
 module.exports = {
   AIcourseadvisorService,
 };

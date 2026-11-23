@@ -6,11 +6,20 @@ const express = require("express");
 
 let mode = "stream";
 let disconnected;
+let receivedData;
 const realLoad = Module._load;
 Module._load = function (id, ...args) {
   if (id === "./ai-assistant.service") {
     return {
+      getConversationHistory: async (userId) => {
+        assert.equal(userId, "verified-user");
+        return [{ _id: "message-id", role: "user", text: "Tin đã lưu", status: "DONE" }];
+      },
+      deleteConversationHistory: async (userId) => {
+        assert.equal(userId, "verified-user");
+      },
       appAssistantService: async (data, onChunk = () => {}, options) => {
+        receivedData = data;
         if (mode === "error") throw new Error("Synthetic provider failure");
         if (mode === "disconnect") {
           await new Promise((resolve) => options.signal.addEventListener("abort", resolve, { once: true }));
@@ -26,17 +35,19 @@ Module._load = function (id, ...args) {
   }
   return realLoad.call(this, id, ...args);
 };
-const { AIassistantController } = require("../modules/ai/ap-ai.controller");
+const { AIassistantController, getConversationController, deleteConversationController } = require("../modules/ai/ap-ai.controller");
 Module._load = realLoad;
 
 const app = express();
 app.use(express.json());
-app.post("/chat", (req, res, next) => { req.user = { role: "student" }; next(); }, AIassistantController);
+app.post("/chat", (req, res, next) => { req.user = { role: "student", userId: "verified-user" }; next(); }, AIassistantController);
+app.get("/chat", (req, res, next) => { req.user = { userId: "verified-user" }; next(); }, getConversationController);
+app.delete("/chat", (req, res, next) => { req.user = { userId: "verified-user" }; next(); }, deleteConversationController);
 
 const testClientParser = async () => {
   const source = fs.readFileSync(path.join(__dirname, "../../client/src/features/ai-assistant/api/assistant-api.jsx"), "utf8")
     .replace(/^import .*;\r?\n/, "")
-    .replace("export const sendAssistantQuestion", "const sendAssistantQuestion");
+    .replace(/export const /g, "const ");
   const events = [
     { type: "status", message: "Đang tìm..." },
     { type: "delta", text: "Tiếng Việt có dấu" },
@@ -44,7 +55,9 @@ const testClientParser = async () => {
     { type: "done", usedTools: [] },
   ];
   let payload = events.map((event) => `data: ${JSON.stringify(event)}\n\n`).join("");
-  const fakeFetch = async () => {
+  let sentBody;
+  const fakeFetch = async (url, options) => {
+    sentBody = JSON.parse(options.body);
     const bytes = new TextEncoder().encode(payload);
     return new Response(new ReadableStream({
       start(controller) {
@@ -60,6 +73,17 @@ const testClientParser = async () => {
   const received = [];
   await send({ question: "test", onEvent: (event) => received.push(event) });
   assert.deepEqual(received, events);
+  assert.equal(sentBody.lessonId, undefined);
+  assert.equal(sentBody.messhistory, undefined);
+  const historyApi = new Function("api", `${source}\nreturn { getAssistantHistory, deleteAssistantHistory };`)({
+    get: async () => ({ success: true, data: { messages: [{ text: "Tin đã lưu" }] } }),
+    delete: async () => ({ success: true }),
+  });
+  assert.deepEqual(await historyApi.getAssistantHistory(), [{ text: "Tin đã lưu" }]);
+  await historyApi.deleteAssistantHistory();
+  const lessonContext = { lessonId: "6a8cd7b7e86fc1f41d37bfe7", courseId: "6a88805e9821fc5d34397f4a", time: 0 };
+  await send({ question: "Đoạn này?", lessonContext, onEvent() {} });
+  assert.deepEqual(sentBody, { quesion: "Đoạn này?", ...lessonContext });
   payload = 'data: {"type":"delta","text":"partial"}\n\n';
   await assert.rejects(send({ question: "test", onEvent() {} }), /Kết nối bị ngắt/);
   payload = 'data: {"type":"error","message":"Test error"}\n\n';
@@ -77,6 +101,12 @@ const main = async () => {
     signal,
   });
   try {
+    const history = await fetch(url + "?userId=fake");
+    assert.equal(history.status, 200);
+    assert.equal(history.headers.get("cache-control"), "no-store");
+    assert.equal((await history.json()).data.messages[0].text, "Tin đã lưu");
+    const deleted = await fetch(url, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ userId: "fake" }) });
+    assert.equal(deleted.status, 200);
     const response = await request("text/event-stream");
     assert.match(response.headers.get("content-type"), /text\/event-stream/);
     const text = await response.text();
@@ -86,6 +116,22 @@ const main = async () => {
     const json = await request("application/json");
     assert.equal(json.status, 201);
     assert.equal((await json.json()).data.answer, "Bạn vào [Hồ sơ](/profile).");
+    const context = { lessonId: "6a8cd7b7e86fc1f41d37bfe7", courseId: "6a88805e9821fc5d34397f4a", time: 0 };
+    const contextual = await request("application/json", { quesion: "Đoạn này?", ...context, role: "admin", userId: "fake" });
+    assert.equal(contextual.status, 201);
+    assert.equal(receivedData.userId, "verified-user");
+    assert.equal(receivedData.role, "student");
+    assert.equal(receivedData.time, 0);
+    assert.equal(receivedData.lessonId, context.lessonId);
+    assert.equal(receivedData.courseId, context.courseId);
+    for (const body of [
+      { lessonId: context.lessonId },
+      { ...context, time: -1 },
+      { ...context, time: "60" },
+      { ...context, lessonId: "invalid" },
+    ]) {
+      assert.equal((await request("text/event-stream", { quesion: "Đoạn này?", ...body })).status, 400);
+    }
     assert.equal((await request("text/event-stream", { quesion: " " })).status, 400);
     mode = "error";
     const failed = await request("text/event-stream");

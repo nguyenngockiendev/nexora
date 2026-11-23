@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import SidebarLesson from "../components/LessionSibar";
 
@@ -13,6 +13,7 @@ const Lession = () => {
   const role = localStorage.getItem("role");
 
   const { id } = useParams();
+  const { assistantContextRef } = useOutletContext();
 
   const { loading, error, title, setTitle } = useSibarLession(id);
 
@@ -30,7 +31,25 @@ const Lession = () => {
   const videoRef = useRef(null);
   const intervalRef = useRef(null);
 
-  // 1. Lock outer page body scroll while on this lesson study page
+  useEffect(() => {
+    const getContext = () => {
+      const video = videoRef.current;
+      if (!currentLesson?._id || !video || video.readyState < 1) return null;
+      if (String(currentLesson.courseId || id) !== String(id)) return null;
+      return {
+        lessonId: currentLesson._id,
+        lessonTitle: currentLesson.title,
+        courseId: currentLesson.courseId || id,
+        time: video.currentTime,
+      };
+    };
+    assistantContextRef.current = getContext;
+    return () => {
+      if (assistantContextRef.current === getContext)
+        assistantContextRef.current = null;
+    };
+  }, [currentLesson, id, assistantContextRef]);
+
   useEffect(() => {
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -116,7 +135,6 @@ const Lession = () => {
     }
   };
 
-  // Auto-select first lesson when title loads if not already selected
   useEffect(() => {
     if (title && title.length > 0 && !currentLesson) {
       setCurrentLesson(title[0]);

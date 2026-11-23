@@ -1,5 +1,7 @@
 const {
   appAssistantService,
+  getConversationHistory,
+  deleteConversationHistory,
 } = require("./ai-assistant.service");
 
 const AIassistantController = async (req, res) => {
@@ -8,6 +10,16 @@ const AIassistantController = async (req, res) => {
       success: false,
       message: "Bạn chưa nhập câu hỏi.",
     });
+  }
+
+  const { lessonId, courseId, time } = req.body;
+  const hasLessonContext = [lessonId, courseId, time].some((value) => value !== undefined);
+  if (hasLessonContext && (
+    typeof lessonId !== "string" || !/^[a-f\d]{24}$/i.test(lessonId) ||
+    typeof courseId !== "string" || !/^[a-f\d]{24}$/i.test(courseId) ||
+    typeof time !== "number" || !Number.isFinite(time) || time < 0
+  )) {
+    return res.status(400).json({ success: false, message: "Ngữ cảnh bài học không hợp lệ. Cần bài học, khóa học và thời điểm tính bằng giây." });
   }
 
   const streaming = req.get("accept")?.includes("text/event-stream");
@@ -44,8 +56,11 @@ const AIassistantController = async (req, res) => {
   try {
     const data = {
       role: req.user.role,
+      userId:req.user.userId,
+      courseId:req.body.courseId,
+      lessonId:req.body.lessonId,
+      time:req.body.time,
       quesion: req.body.quesion,
-      historymess: req.body.messhistory ?? [],
     };
     const result = await appAssistantService(
       data,
@@ -86,4 +101,27 @@ const AIassistantController = async (req, res) => {
 
 module.exports = {
   AIassistantController,
+  getConversationController: async (req, res) => {
+    try {
+      const messages = await getConversationHistory(req.user.userId);
+      res.setHeader("Cache-Control", "no-store");
+      return res.json({ success: true, data: { messages } });
+    } catch (error) {
+      return res.status(error.status || 500).json({
+        success: false,
+        message: error.message || "Không tải được lịch sử trò chuyện.",
+      });
+    }
+  },
+  deleteConversationController: async (req, res) => {
+    try {
+      await deleteConversationHistory(req.user.userId);
+      return res.json({ success: true, message: "Đã xóa lịch sử trò chuyện." });
+    } catch (error) {
+      return res.status(error.status || 500).json({
+        success: false,
+        message: error.message || "Không xóa được lịch sử trò chuyện.",
+      });
+    }
+  },
 };

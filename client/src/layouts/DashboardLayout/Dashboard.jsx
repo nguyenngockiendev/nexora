@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import { Menu } from "lucide-react";
@@ -10,6 +10,8 @@ import AssistantChat from "../../features/ai-assistant/components/AssistantChat"
 const Dashboard = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const assistantContextRef = useRef(null);
+  const getLessonContext = useCallback(() => assistantContextRef.current?.() || null, []);
   const { dashboard, setDashboard, loading } = useDashboats();
   return (
     <div
@@ -49,10 +51,10 @@ const Dashboard = () => {
           </div>
 
           <CornerOrangeButton dashboard={dashboard} />
-          <Outlet context={{ dashboard, setDashboard, loading }} />
+          <Outlet context={{ dashboard, setDashboard, loading, assistantContextRef }} />
         </main>
       </div>
-      <AssistantChat />
+      <AssistantChat getLessonContext={getLessonContext} />
     </div>
   );
 };

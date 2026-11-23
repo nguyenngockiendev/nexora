@@ -1,9 +1,43 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Bot, LoaderCircle, Send, Square, Trash2, X } from "lucide-react";
+import {
+  Bot,
+  BookOpen,
+  Clock3,
+  LoaderCircle,
+  Send,
+  Square,
+  Trash2,
+  X,
+} from "lucide-react";
 import useAssistant from "../hooks/useAssistant";
 import FloatingBot from "../../../demo/HomePage/ChatboxAI";
 import "./AssistantChat.css";
+
+const formatTime = (seconds) => {
+  const total = Math.max(0, Math.floor(seconds));
+  const minutes = Math.floor(total / 60);
+  const rest = String(total % 60).padStart(2, "0");
+  return minutes >= 60
+    ? `${Math.floor(minutes / 60)}:${String(minutes % 60).padStart(2, "0")}:${rest}`
+    : `${minutes}:${rest}`;
+};
+
+const getDisplayText = (message) => {
+  const time = message.lessonContext?.time;
+  if (
+    message.role !== "model" ||
+    !Number.isFinite(time) ||
+    (message.usedTools &&
+      !message.usedTools.includes("AIlearningassistantService"))
+  )
+    return message.text;
+
+  return message.text.replace(
+    /^Trong đoạn\s+(?:\*\*)?\d{1,3}:\d{2}(?::\d{2})?(?:\*\*)?\s*[–—-]\s*(?:\*\*)?\d{1,3}:\d{2}(?::\d{2})?(?:\*\*)?\s+của bài\s*[,.:]?\s*/i,
+    `Với phần bạn đang xem tại ${formatTime(time)}, `,
+  );
+};
 
 const MessageText = ({ text }) =>
   text.split(/(\[[^\]]+\]\(\/[^\s()]*\)|\*\*[^*]+\*\*)/g).map((part, index) => {
@@ -25,20 +59,31 @@ const MessageText = ({ text }) =>
     return part;
   });
 
-const AssistantChat = () => {
+const AssistantChat = ({ getLessonContext }) => {
   const [open, setOpen] = useState(false);
   const [question, setQuestion] = useState("");
+  const [lessonContext, setLessonContext] = useState(null);
   const {
     messages,
     loading,
+    historyLoading,
+    clearing,
     status,
     error,
     sendMessage,
     stopMessage,
     clearMessages,
-  } = useAssistant();
+  } = useAssistant(getLessonContext);
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const updateContext = () => setLessonContext(getLessonContext?.() || null);
+    updateContext();
+    const interval = setInterval(updateContext, 1000);
+    return () => clearInterval(interval);
+  }, [open, getLessonContext]);
 
   useEffect(() => {
     if (open) bottomRef.current?.scrollIntoView({ block: "nearest" });
@@ -50,7 +95,7 @@ const AssistantChat = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!question.trim() || loading) return;
+    if (!question.trim() || loading || historyLoading || clearing) return;
     sendMessage(question);
     setQuestion("");
   };
@@ -73,17 +118,18 @@ const AssistantChat = () => {
               <Bot size={22} />
             </span>
             <div className="min-w-0 flex-1">
-              <h2 className="assistant-title">
-                Trợ lý Nexora
-              </h2>
+              <h2 className="assistant-title">Trợ lý Nexora</h2>
               <p className="assistant-subtitle">
-                <span className="assistant-status-dot" /> Trợ lý hướng dẫn của bạn
+                <span className="assistant-status-dot" /> Hỗ trợ ứng dụng và bài
+                học
               </p>
             </div>
             <button
               type="button"
               onClick={clearMessages}
-              disabled={loading || !messages.length}
+              disabled={
+                loading || historyLoading || clearing || !messages.length
+              }
               aria-label="Xóa cuộc trò chuyện"
               className="rounded-xl p-2 text-slate-500 hover:bg-orange-100 disabled:opacity-30"
             >
@@ -99,22 +145,62 @@ const AssistantChat = () => {
             </button>
           </header>
 
+          {lessonContext && (
+            <div className="assistant-lesson-context">
+              <BookOpen size={16} aria-hidden="true" />
+              <div>
+                <span>Đang xem bài học</span>
+                <strong title={lessonContext.lessonTitle}>
+                  {lessonContext.lessonTitle || "Bài học hiện tại"}
+                </strong>
+              </div>
+              <span className="assistant-context-time">
+                <Clock3 size={12} aria-hidden="true" />{" "}
+                {formatTime(lessonContext.time)}
+              </span>
+            </div>
+          )}
+
           <div
             className={`assistant-messages ${!messages.length ? "assistant-messages-empty" : ""}`}
-            aria-busy={loading}
+            aria-busy={loading || historyLoading || clearing}
           >
-            {!messages.length && (
+            {!messages.length && !historyLoading && (
               <div className="assistant-welcome">
-                <div className="assistant-welcome-icon"><Bot size={32} strokeWidth={1.6} /></div>
+                <div className="assistant-welcome-icon">
+                  <Bot size={32} strokeWidth={1.6} />
+                </div>
                 <span className="assistant-eyebrow">NEXORA ASSISTANT</span>
                 <h3>Mình có thể giúp gì?</h3>
-                <p>Tìm đúng tính năng, học tập dễ dàng hơn.<br />Bạn muốn bắt đầu từ đâu?</p>
+                <p>
+                  {lessonContext
+                    ? "Chỗ nào trong bài chưa rõ? Mình sẽ dựa vào đoạn bạn đang xem để giải thích."
+                    : "Tìm tính năng hoặc chọn khóa học phù hợp. Bạn muốn bắt đầu từ đâu?"}
+                </p>
                 <div className="assistant-suggestions">
-                  {["Tìm khóa học ở đâu?", "Xem khóa học đã mua", "Đổi ảnh đại diện thế nào?"].map((suggestion) => (
-                    <button key={suggestion} type="button" onClick={() => {
-                      setQuestion(suggestion);
-                      inputRef.current?.focus();
-                    }}>{suggestion}<span aria-hidden="true">↗</span></button>
+                  {(lessonContext
+                    ? [
+                        "Giải thích đoạn đang xem giúp tôi",
+                        "Cho ví dụ dễ hiểu về phần này",
+                        "Tìm khóa học ở đâu?",
+                      ]
+                    : [
+                        "Tìm khóa học ở đâu?",
+                        "Xem khóa học đã mua",
+                        "Đổi ảnh đại diện thế nào?",
+                      ]
+                  ).map((suggestion) => (
+                    <button
+                      key={suggestion}
+                      type="button"
+                      onClick={() => {
+                        setQuestion(suggestion);
+                        inputRef.current?.focus();
+                      }}
+                    >
+                      {suggestion}
+                      <span aria-hidden="true">↗</span>
+                    </button>
                   ))}
                 </div>
               </div>
@@ -127,7 +213,16 @@ const AssistantChat = () => {
                 <div
                   className={`assistant-bubble ${message.role === "user" ? "assistant-bubble-user" : "assistant-bubble-model"}`}
                 >
-                  <MessageText text={message.text} />
+                  {message.role === "user" && message.lessonContext && (
+                    <div className="assistant-message-context">
+                      <BookOpen size={12} aria-hidden="true" />
+                      <span title={message.lessonContext.lessonTitle}>
+                        {message.lessonContext.lessonTitle || "Bài học"}
+                      </span>
+                      <span>{formatTime(message.lessonContext.time)}</span>
+                    </div>
+                  )}
+                  <MessageText text={getDisplayText(message)} />
                   {message.state === "loading" && !message.text && (
                     <span className="text-slate-500">
                       {status || "Đang trả lời..."}
@@ -155,20 +250,28 @@ const AssistantChat = () => {
                 {error}
               </p>
             )}
-            {loading && (
+            {(loading || historyLoading || clearing) && (
               <p
                 role="status"
                 className="mb-2 flex items-center gap-2 text-xs text-slate-500"
               >
                 <LoaderCircle size={13} className="animate-spin" />
-                {status}
+                {historyLoading
+                  ? "Đang tải lịch sử..."
+                  : clearing
+                    ? "Đang xóa lịch sử..."
+                    : status}
               </p>
             )}
             <form onSubmit={handleSubmit} className="assistant-composer">
               <textarea
                 ref={inputRef}
                 aria-label="Câu hỏi cho trợ lý"
-                placeholder="Hỏi về Nexora..."
+                placeholder={
+                  lessonContext
+                    ? "Hỏi về đoạn đang xem hoặc Nexora..."
+                    : "Hỏi về Nexora..."
+                }
                 value={question}
                 rows={2}
                 onChange={(event) => setQuestion(event.target.value)}
@@ -197,7 +300,7 @@ const AssistantChat = () => {
               ) : (
                 <button
                   type="submit"
-                  disabled={!question.trim()}
+                  disabled={!question.trim() || historyLoading || clearing}
                   aria-label="Gửi câu hỏi"
                   className="assistant-send"
                 >
@@ -205,7 +308,11 @@ const AssistantChat = () => {
                 </button>
               )}
             </form>
-            <p className="assistant-input-hint">Enter để gửi <span>·</span> Shift + Enter để xuống dòng</p>
+            <p className="assistant-input-hint">
+              {lessonContext
+                ? "Gửi kèm thời điểm video khi bạn nhấn gửi."
+                : "Enter để gửi · Shift + Enter để xuống dòng"}
+            </p>
           </footer>
         </section>
       ) : (

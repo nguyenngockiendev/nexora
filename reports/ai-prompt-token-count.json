@@ -1,0 +1,8 @@
+{
+  "model": "gemini-3.5-flash-lite",
+  "method": "countTokens on each prompt text; declarations serialized as JSON text, approximate actual native tools overhead",
+  "decisionPromptTokens": 1710,
+  "declarationTextTokens": 973,
+  "answerTemplateTokens": 2219,
+  "totalTextTokens": 4902
+}

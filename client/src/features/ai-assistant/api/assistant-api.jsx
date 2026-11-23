@@ -1,10 +1,19 @@
 import api from "../../../shared/api/axiosClient";
 
+export const getAssistantHistory = async (signal) => {
+  const response = await api.get("/ai/appAssistant", { signal });
+  return response.data.messages;
+};
+
+export const deleteAssistantHistory = async (signal) => {
+  await api.delete("/ai/appAssistant", { signal });
+};
+
 export const sendAssistantQuestion = async ({
   question,
   signal,
   onEvent,
-  messhistory = [],
+  lessonContext = null,
 }) => {
   const token = localStorage.getItem("token");
   const response = await fetch(api.getUri({ url: "/ai/appAssistant" }), {
@@ -14,7 +23,14 @@ export const sendAssistantQuestion = async ({
       Accept: "text/event-stream",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
-    body: JSON.stringify({ quesion: question, messhistory }),
+    body: JSON.stringify({
+      quesion: question,
+      ...(lessonContext ? {
+        lessonId: lessonContext.lessonId,
+        courseId: lessonContext.courseId,
+        time: lessonContext.time,
+      } : {}),
+    }),
     signal,
   });
 

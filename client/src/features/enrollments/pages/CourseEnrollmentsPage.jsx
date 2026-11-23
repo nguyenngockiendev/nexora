@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { useCourseEnrollments } from "../hooks/useCourseEnrollments";
 import SidebarLesson from "../../lesson/components/LessionSibar";
@@ -8,6 +8,7 @@ import useSaveProcess from "../../process/hooks/useSaveProcess";
 const CourseEnrollments = () => {
   const role = localStorage.getItem("role");
   const { courseId } = useParams();
+  const { assistantContextRef } = useOutletContext();
   const { enrollment, error, loading } = useCourseEnrollments(courseId);
   const [currentLesson, setCurrentLesson] = useState(null);
 
@@ -15,6 +16,24 @@ const CourseEnrollments = () => {
     useSaveProcess();
   const videoRef = useRef(null);
   const intervalRef = useRef(null);
+
+  useEffect(() => {
+    const getContext = () => {
+      const video = videoRef.current;
+      if (!currentLesson?._id || !video || video.readyState < 1) return null;
+      if (String(currentLesson.courseId || courseId) !== String(courseId)) return null;
+      return {
+        lessonId: currentLesson._id,
+        lessonTitle: currentLesson.title,
+        courseId,
+        time: video.currentTime,
+      };
+    };
+    assistantContextRef.current = getContext;
+    return () => {
+      if (assistantContextRef.current === getContext) assistantContextRef.current = null;
+    };
+  }, [currentLesson, courseId, assistantContextRef]);
 
   // Fetch all processes for the course on mount
   useEffect(() => {
