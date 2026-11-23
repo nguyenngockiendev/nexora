@@ -1,9 +1,9 @@
 const {
   getAppAssistantDecision,
   AIanserForUser,
-} = require("./ai-assistant.ai");
-const { AssistantAnswerPrompt } = require("./ai-assistant-answer-promt");
-const usetools = require("./dispatcher-tool");
+} = require("./ai-model.service");
+const { AssistantAnswerPrompt } = require("./llm2-answer.prompt");
+const usetools = require("./tool-dispatcher");
 const AIConversation = require("./AIConversation");
 const mongoose = require("mongoose");
 
@@ -11,7 +11,6 @@ const activeConversations = new Set();
 
 const getConversationHistory = async (userId) => {
   const key = String(userId);
-  // Không dọn trong lúc POST đang lưu câu trả lời.
   if (activeConversations.has(key)) {
     const conversation = await AIConversation.findOne({ userId });
     return conversation?.messages.slice(-20) || [];
@@ -41,7 +40,10 @@ const getConversationHistory = async (userId) => {
 const deleteConversationHistory = async (userId) => {
   const key = String(userId);
   if (activeConversations.has(key)) {
-    throw { status: 409, message: "Vui lòng đợi câu trả lời kết thúc rồi xóa lịch sử." };
+    throw {
+      status: 409,
+      message: "Vui lòng đợi câu trả lời kết thúc rồi xóa lịch sử.",
+    };
   }
   activeConversations.add(key);
   try {

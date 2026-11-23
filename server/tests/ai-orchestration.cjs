@@ -23,7 +23,7 @@ Module._load = function (id, ...args) {
     name: courseTool,
   }];
   if (id === "./learning-assistant/learning-tool") return [];
-  if (id === "./ai-assistant.ai") return {
+  if (id === "./ai-model.service") return {
     getAppAssistantDecision: async () => ({
       functionCalls: [
         { name: "AIassistantService", args: { query: "Cách thanh toán" } },
@@ -39,8 +39,8 @@ Module._load = function (id, ...args) {
   };
   return originalLoad.call(this, id, ...args);
 };
-const { appAssistantService } = require("../modules/ai/ai-assistant.service");
-const usetools = require("../modules/ai/dispatcher-tool");
+const { appAssistantService } = require("../modules/ai/ai-orchestrator.service");
+const usetools = require("../modules/ai/tool-dispatcher");
 Module._load = originalLoad;
 
 const main = async () => {

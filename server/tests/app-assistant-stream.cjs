@@ -9,7 +9,7 @@ let disconnected;
 let receivedData;
 const realLoad = Module._load;
 Module._load = function (id, ...args) {
-  if (id === "./ai-assistant.service") {
+  if (id === "./ai-orchestrator.service") {
     return {
       getConversationHistory: async (userId) => {
         assert.equal(userId, "verified-user");
@@ -35,7 +35,7 @@ Module._load = function (id, ...args) {
   }
   return realLoad.call(this, id, ...args);
 };
-const { AIassistantController, getConversationController, deleteConversationController } = require("../modules/ai/ap-ai.controller");
+const { AIassistantController, getConversationController, deleteConversationController } = require("../modules/ai/ai-chat.controller");
 Module._load = realLoad;
 
 const app = express();

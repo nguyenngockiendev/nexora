@@ -162,8 +162,50 @@ const AIlearningassistantServiceDeclaration = {
     additionalProperties: false,
   },
 };
+const AIleaninganalyzeDeclaration = {
+  name: "AIleaninganalyze",
+  description: `
+    Lấy toàn bộ nội dung chuẩn hóa của một bài học để tóm tắt.
+
+    Sử dụng khi người dùng:
+    - Muốn tóm tắt hoặc tổng kết bài học.
+    - Hỏi bài học có những nội dung chính nào.
+    - Muốn liệt kê kiến thức cần nhớ trong bài.
+
+    Backend cung cấp lessonId, courseId và userId.
+    Công cụ không cần thời điểm video.
+    Nếu chưa xác định được bài học, hỏi người dùng làm rõ.
+
+    Kết quả:
+    - READY: tổng hợp tất cả các mục kiến thức trả về.
+    - ACCESS_DENIED: tài khoản chưa có quyền học khóa;
+      không tìm cách lấy nội dung bằng công cụ khác.
+    - LESSON_UNAVAILABLE: chưa lấy được bài học;
+      không tự khẳng định bài đã bị xóa hoặc bị khóa.
+    - CONTENT_NOT_READY: chưa có nội dung để tóm tắt;
+      thông báo theo message của công cụ.
+
+    Chỉ tóm tắt nội dung được cung cấp.
+    Không thêm kiến thức bên ngoài rồi coi đó là nội dung bài học.
+    Không dùng công cụ này để giải thích riêng đoạn video đang xem,
+    tìm kiến thức theo vector hoặc tóm tắt toàn bộ khóa học.
+  `,
+  parametersJsonSchema: {
+    type: "object",
+    properties: {
+      query: {
+        type: "string",
+        description:
+          "Yêu cầu tóm tắt bài học. Dùng lịch sử để làm rõ ý hỏi, giữ yêu cầu về độ dài hoặc trọng tâm nếu có.",
+      },
+    },
+    required: ["query"],
+    additionalProperties: false,
+  },
+};
 module.exports = {
   AIassistantServiceDeclaration,
   AIcourseadvisorServiceDeclaration,
   AIlearningassistantServiceDeclaration,
+  AIleaninganalyzeDeclaration
 };

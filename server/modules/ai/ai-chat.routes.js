@@ -3,7 +3,7 @@ const {
   AIassistantController,
   getConversationController,
   deleteConversationController,
-} = require("./ap-ai.controller");
+} = require("./ai-chat.controller");
 
 const RouterappAssistant = require("express").Router();
 

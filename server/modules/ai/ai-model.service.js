@@ -6,15 +6,22 @@ const {
   AIassistantServiceDeclaration,
   AIcourseadvisorServiceDeclaration,
   AIlearningassistantServiceDeclaration,
-} = require("./function-declarations");
-const { AppAssistantDecisionPrompt } = require("./ai-assistant-promt");
+  AIleaninganalyzeDeclaration,
+} = require("./tool-declarations");
+const { AppAssistantDecisionPrompt } = require("./llm1-decision.prompt");
 
 const Declarations = [
   AIassistantServiceDeclaration,
   AIcourseadvisorServiceDeclaration,
-  AIlearningassistantServiceDeclaration
+  AIlearningassistantServiceDeclaration,
+  AIleaninganalyzeDeclaration,
 ];
-const getAppAssistantDecision = async (message, signal, role, lessonContext = null) => {
+const getAppAssistantDecision = async (
+  message,
+  signal,
+  role,
+  lessonContext = null,
+) => {
   const retryDelays = [2000, 5000];
   for (let attempt = 0; attempt <= retryDelays.length; attempt++) {
     signal?.throwIfAborted();

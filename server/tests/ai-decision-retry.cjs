@@ -19,7 +19,7 @@ Module._load = function (id, ...args) {
   };
   return originalLoad.call(this, id, ...args);
 };
-const { getAppAssistantDecision } = require("../modules/ai/ai-assistant.ai");
+const { getAppAssistantDecision } = require("../modules/ai/ai-model.service");
 Module._load = originalLoad;
 
 const main = async () => {

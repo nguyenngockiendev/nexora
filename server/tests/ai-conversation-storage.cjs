@@ -22,7 +22,7 @@ AIConversation.create = async (data) => {
 };
 const originalLoad = Module._load;
 Module._load = function (id, ...args) {
-  if (id === "./ai-assistant.ai") return {
+  if (id === "./ai-model.service") return {
     getAppAssistantDecision: async (value) => {
       contents = value;
       if (mode === "waiting") await new Promise((resolve) => { release = resolve; });
@@ -39,10 +39,10 @@ Module._load = function (id, ...args) {
       return "Bạn mở giỏ hàng.";
     },
   };
-  if (id === "./dispatcher-tool") return async () => ({ capacity: 1, data: [] });
+  if (id === "./tool-dispatcher") return async () => ({ capacity: 1, data: [] });
   return originalLoad.call(this, id, ...args);
 };
-const { appAssistantService, getConversationHistory, deleteConversationHistory } = require("../modules/ai/ai-assistant.service");
+const { appAssistantService, getConversationHistory, deleteConversationHistory } = require("../modules/ai/ai-orchestrator.service");
 Module._load = originalLoad;
 
 async function main() {

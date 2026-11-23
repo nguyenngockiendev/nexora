@@ -2,7 +2,7 @@ const {
   appAssistantService,
   getConversationHistory,
   deleteConversationHistory,
-} = require("./ai-assistant.service");
+} = require("./ai-orchestrator.service");
 
 const AIassistantController = async (req, res) => {
   if (typeof req.body?.quesion !== "string" || !req.body.quesion.trim()) {

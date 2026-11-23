@@ -1,12 +1,12 @@
 const assert = require("node:assert/strict");
 const Module = require("node:module");
-const { AssistantAnswerPrompt } = require("../modules/ai/ai-assistant-answer-promt");
+const { AssistantAnswerPrompt } = require("../modules/ai/llm2-answer.prompt");
 const { AppAssistantResponseRules } = require("../modules/ai/app-assistant/app-assistant-promt");
 const { CourseAdvisorResponseRules } = require("../modules/ai/course-advisor/course-advisor-promt");
-const { LearningAssistantResponseRules } = require("../modules/ai/learning-assistant/learning-assistant-promt");
-const rules = [AppAssistantResponseRules, CourseAdvisorResponseRules, LearningAssistantResponseRules];
+const { LearningAssistantResponseRules, LessonSummaryRules } = require("../modules/ai/learning-assistant/learning-assistant-promt");
+const rules = [AppAssistantResponseRules, CourseAdvisorResponseRules, LearningAssistantResponseRules, LessonSummaryRules];
 
-for (const capacities of [[], [1], [2], [3], [1, 2], [1, 3], [2, 3], [1, 2, 3], [3, 3]]) {
+for (const capacities of [[], [1], [2], [3], [4], [1, 2], [1, 3], [2, 3], [3, 4], [1, 2, 3, 4], [3, 3], [4, 4]]) {
   const toolResults = capacities.map((capacity) => ({
     tool: `tool-${capacity}`,
     capacity,
@@ -38,7 +38,7 @@ Module._load = function (id, ...args) {
   }
   return originalLoad.call(this, id, ...args);
 };
-const dispatch = require("../modules/ai/dispatcher-tool");
+const dispatch = require("../modules/ai/tool-dispatcher");
 Module._load = originalLoad;
 
 const main = async () => {

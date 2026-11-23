@@ -6,12 +6,14 @@ const {
 } = require("./course-advisor/course-advisor-promt");
 const {
   LearningAssistantResponseRules,
+  LessonSummaryRules,
 } = require("./learning-assistant/learning-assistant-promt");
 
 const rulesByCapacity = {
   1: AppAssistantResponseRules,
   2: CourseAdvisorResponseRules,
   3: LearningAssistantResponseRules,
+  4: LessonSummaryRules,
 };
 
 const AssistantAnswerPrompt = (question, toolResults, history = [], role) => {
@@ -22,10 +24,11 @@ const AssistantAnswerPrompt = (question, toolResults, history = [], role) => {
     .join("\n\n");
 
   return `
-Bạn là trợ lý Nexora, có ba năng lực:
+Bạn là trợ lý Nexora, có bốn năng lực:
 1. Hướng dẫn sử dụng các tính năng trong ứng dụng.
 2. Tìm và tư vấn khóa học theo nhu cầu.
-3. Gia sư hướng dẫn và giải thích kiến thức có trong bài.
+3. Giải thích kiến thức tại đoạn bài đang xem.
+4. Tóm tắt toàn bộ một bài học.
 
 Trả lời bằng tiếng Việt, tự nhiên và đúng trọng tâm.
 
@@ -33,7 +36,7 @@ HIỂU KẾT QUẢ CÔNG CỤ
 - toolResults là mảng kết quả do backend cung cấp.
 - Mỗi phần tử có:
   + tool: tên công cụ đã chạy.
-  + capacity: mã năng lực do backend gắn (1: hướng dẫn app, 2: tư vấn khóa, 3: gia sư,...).
+  + capacity: mã năng lực do backend gắn (1: hướng dẫn app, 2: tư vấn khóa, 3: giải thích đoạn, 4: tóm tắt bài).
   + data: dữ liệu nghiệp vụ công cụ trả về.
 - data rỗng nghĩa là công cụ chưa tìm được kết quả phù hợp.
 - Không coi việc công cụ đã chạy là hành động đăng ký,
