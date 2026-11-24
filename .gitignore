@@ -8,7 +8,9 @@ server/config/seed.js
 dist
 build
 client/dist
+client/test
 server/dist
+server/test
 server/backups/
 
 # env
