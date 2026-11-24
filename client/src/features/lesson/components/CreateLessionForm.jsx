@@ -21,6 +21,7 @@ import {
 
 const CreateLession = ({
   navigate,
+  classId,
   register,
   handleSubmit,
   onSubmit,
@@ -128,7 +129,7 @@ const CreateLession = ({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div className="flex items-center justify-between p-5 rounded-2xl sm:rounded-3xl bg-white/90 border border-slate-200/80 shadow-xs hover:border-amber-300 transition-all">
+            {!classId && <div className="flex items-center justify-between p-5 rounded-2xl sm:rounded-3xl bg-white/90 border border-slate-200/80 shadow-xs hover:border-amber-300 transition-all">
               <div className="flex items-center gap-4 min-w-0 pr-4">
                 <div className="w-12 h-12 rounded-2xl bg-slate-100/90 border border-slate-200 flex items-center justify-center text-slate-700 shadow-2xs flex-shrink-0">
                   <Play size={20} className="fill-slate-700 text-slate-700" />
@@ -151,7 +152,7 @@ const CreateLession = ({
                 />
                 <div className="w-14 h-8 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all after:shadow-sm peer-checked:bg-gradient-to-r peer-checked:from-amber-400 peer-checked:to-orange-500 peer-checked:shadow-md peer-checked:shadow-orange-500/30"></div>
               </label>
-            </div>
+            </div>}
 
             <div className="flex items-center justify-between p-5 rounded-2xl sm:rounded-3xl bg-white/90 border border-slate-200/80 shadow-xs hover:border-amber-300 transition-all">
               <div className="flex items-center gap-4 min-w-0 pr-4">
@@ -324,7 +325,7 @@ const CreateLession = ({
                 <textarea
                   rows={8}
                   placeholder="Chào mừng bạn đến với bài học! Trong bài này, chúng ta sẽ tìm hiểu về các nguyên lý cốt lõi, cú pháp và bài tập thực hành..."
-                  required
+                  required={!classId}
                   {...register("content")}
                   className="w-full flex-1 p-5 text-sm font-medium text-slate-800 placeholder-slate-400 outline-none resize-none bg-transparent"
                 />

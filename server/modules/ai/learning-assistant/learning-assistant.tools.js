@@ -1,3 +1,16 @@
+const { requireClassAccess } = require("../../lessons/class-lesson-access");
+
+const classAccessDenied = async (lesson, userId) => {
+  if (!lesson.classId) return false;
+  try {
+    await requireClassAccess(lesson.classId, lesson.courseId, userId);
+    return false;
+  } catch (error) {
+    if ([403, 404].includes(error.status)) return true;
+    throw error;
+  }
+};
+
 const Enrollments = require("../../enrollments/Enrollments");
 const LessonNormalizedContent = require("../../lessons/LessonNormalizedContent");
 const Lessons = require("../../lessons/Lessons");
@@ -9,7 +22,7 @@ const AIlearningassistantService = async (datas, signal) => {
     const isExiterron = await Enrollments.findOne({
       userId: datas.userId,
       courseId: datas.courseId,
-      status: "active",
+      $or: [{ status: "active" }, { type: "live", status: "completed" }],
     });
     if (!isExiterron) {
       return {
@@ -28,6 +41,9 @@ const AIlearningassistantService = async (datas, signal) => {
         status: "LESSON_UNAVAILABLE",
         message: "Không tìm thấy bài học này hoặc bài học đang bị khóa.",
       };
+    }
+    if (await classAccessDenied(lessionIsexit, datas.userId)) {
+      return { status: "ACCESS_DENIED", reason: "CLASS_ACCESS_REQUIRED", message: "Bạn chưa có quyền học bài của lớp này." };
     }
     if (lessionIsexit.status !== "TRANSCRIPT_READY") {
       return {
@@ -99,7 +115,7 @@ const AIleaninganalyze = async (datas, signal) => {
     const isExiterron = await Enrollments.findOne({
       userId: datas.userId,
       courseId: datas.courseId,
-      status: "active",
+      $or: [{ status: "active" }, { type: "live", status: "completed" }],
     });
     if (!isExiterron) {
       return {
@@ -123,6 +139,9 @@ const AIleaninganalyze = async (datas, signal) => {
       };
     }
 
+    if (await classAccessDenied(isExitlession, datas.userId)) {
+      return { status: "ACCESS_DENIED", reason: "CLASS_ACCESS_REQUIRED", message: "Bạn chưa có quyền học bài của lớp này." };
+    }
     const lessionAnalyze = await LessonNormalizedContent.findOne({
       lessonId: isExitlession._id,
       status: "READY",

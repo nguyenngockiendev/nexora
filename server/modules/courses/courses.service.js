@@ -1,4 +1,6 @@
 const Courses = require("./Courses");
+const syncCourseEmbedding = require("../../services/Embedding");
+const embeddingFields = ["title", "description", "level", "type"];
 const Lessons = require("../lessons/Lessons");
 const classs = require("../classes/Class");
 const Rating = require("../ratings/Ratings");
@@ -124,7 +126,7 @@ const CreatenewCourses = async (data) => {
       throw { status: 403, message: "Giá khóa học không được < 0!" };
     }
 
-    const newCourses = await Courses.create({
+    const newCourses = new Courses({
       title: data.title,
       description: data.description,
       price: data.price,
@@ -133,6 +135,10 @@ const CreatenewCourses = async (data) => {
       thumbnail: data.thumbnail,
       instructor: data.instructor,
     });
+    await newCourses.validate();
+    newCourses.embedding = await syncCourseEmbedding(newCourses, "course_document");
+    newCourses.embeddingModel = "gemini-embedding-2";
+    await newCourses.save();
 
     return { message: " Tạo khóa học thành công!", result: newCourses };
   } catch (error) {
@@ -142,27 +148,40 @@ const CreatenewCourses = async (data) => {
 };
 const EditCourse = async (data) => {
   try {
-    const updatecourse = {
-      title: data.title,
-      description: data.description,
-      price: data.price || 0,
-      level: data.level,
-    };
-    if (data.thumbnail != null && data.thumbnail != "") {
-      updatecourse.thumbnail = data.thumbnail;
-    }
-    const update = await Courses.findOneAndUpdate(
-      {
-        _id: data.courseId,
-        instructor: data.userId,
-      },
-      {
-        $set: updatecourse,
-      },
-      { new: true },
-    );
+    const filter = { _id: data.courseId, instructor: data.userId };
+    const course = await Courses.findOne(filter);
+    if (!course) throw { status: 404, message: "Không tìm thấy khóa học của bạn." };
 
-    return update;
+    const updatecourse = {};
+    let needEmbedding = false;
+    for (const field of embeddingFields) {
+      if (data[field] === undefined) continue;
+      const value = typeof data[field] === "string" ? data[field].trim() : data[field];
+      if (value !== course[field]) {
+        updatecourse[field] = value;
+        needEmbedding = true;
+      }
+    }
+    if (data.price !== undefined) updatecourse.price = data.price;
+    if (data.thumbnail) updatecourse.thumbnail = data.thumbnail;
+
+    if (needEmbedding) {
+      for (const field of embeddingFields) filter[field] = course[field];
+      course.set(updatecourse);
+      await course.validate();
+      const lessons = await Lessons.find({ courseId: course._id, classId: null })
+        .select("title content order").lean();
+      updatecourse.embedding = await syncCourseEmbedding(course, "course_document", lessons);
+      updatecourse.embeddingModel = "gemini-embedding-2";
+    }
+    const result = await Courses.findOneAndUpdate(filter, { $set: updatecourse }, {
+      returnDocument: "after",
+      runValidators: true,
+    });
+    if (!result) {
+      throw { status: 409, message: "Khóa học đã thay đổi. Hãy tải lại trước khi lưu." };
+    }
+    return result;
   } catch (error) {
     console.log(error);
     throw error;
@@ -173,7 +192,7 @@ const GetLessonById = async (data) => {
   try {
     let result = [];
     if (data?.role == "instructor") {
-      result = await Lessons.find({ courseId: data.id });
+      result = await Lessons.find({ classId: null, courseId: data.id });
     }
 
     return result;
@@ -190,7 +209,7 @@ const GetDetailsCourse = async (data) => {
     if (!list) {
       throw { status: 404, message: "Khóa học không tồn tại!" };
     }
-    const lessionbycou = await Lessons.find({ courseId: list._id }).lean();
+    const lessionbycou = await Lessons.find({ classId: null, courseId: list._id }).lean();
     const isEnroillment = await Enrollments.find({
       userId: data.userId,
       courseId: list._id,

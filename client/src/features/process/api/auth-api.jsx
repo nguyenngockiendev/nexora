@@ -12,8 +12,8 @@ const GetProcessbyLession = async (lessonId) => {
   return request;
 };
 
-const GetAllProcess = async (courseId) => {
-  const request = await api.get(`/process/course/${courseId}`);
+const GetAllProcess = async (courseId, classId) => {
+  const request = await api.get(`/process/course/${courseId}`, { params: { classId } });
   return request;
 };
 

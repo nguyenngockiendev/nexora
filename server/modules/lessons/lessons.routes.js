@@ -5,6 +5,7 @@ const {
   createLimiter,
 } = require("../../Middleware/Middleware");
 const {
+  ReorderLessons,
   GetLessons,
   CreateLessons,
   DeleteLession,
@@ -14,7 +15,9 @@ const {
   GetLessionDetails,
   RetryNormalization,
 } = require("./lessons.controller");
-const upload = require("../../Middleware/Uploadfile");
+const multer = require("multer");
+const os = require("node:os");
+const upload = multer({ dest: os.tmpdir() });
 
 Router.get("/lession/:id", authMiddleware, GetLessons);
 Router.post(
@@ -55,6 +58,8 @@ Router.get(
   checkRole("instructor", "admin"),
   GetCoursewithLession,
 );
+Router.put("/lessions/:courseId/classes/:classId/order", authMiddleware, checkRole("instructor"), ReorderLessons);
+Router.get("/lessions/:courseId/classes/:classId", authMiddleware, checkRole("instructor"), GetLessionDetails);
 Router.get("/lessions/:courseId", authMiddleware, checkRole("instructor", "admin"), GetLessionDetails);
 Router.post(
   "/lessons/:lessionId/normalization/retry",

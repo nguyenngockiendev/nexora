@@ -5,29 +5,11 @@ const mongoose = require("mongoose");
 const model = "gemini-embedding-2";
 const dimensions = 3072;
 
-const buildCourseText = (course, lessons) => {
-  const levels = { beginner: "Cơ bản", intermediate: "Trung cấp", advanced: "Nâng cao" };
-  const types = { recorded: "Video tự học", live: "Lớp trực tuyến", free: "Miễn phí" };
-  const lines = [
-    `Tên khóa học: ${course.title.trim()}`,
-    course.description?.trim() && `Mô tả: ${course.description.trim()}`,
-    course.level && `Trình độ: ${levels[course.level] || course.level}`,
-    course.type && `Hình thức: ${types[course.type] || course.type}`,
-  ].filter(Boolean);
-  const sorted = [...lessons].sort((a, b) => a.order - b.order || String(a._id).localeCompare(String(b._id)));
-  if (sorted.length) {
-    lines.push("Các bài học:");
-    sorted.forEach((lesson, index) => {
-      if (lesson.title?.trim()) lines.push(`${index + 1}. ${lesson.title.trim()}`);
-      if (lesson.content?.trim()) lines.push(`Mô tả bài: ${lesson.content.trim()}`);
-    });
-  }
-  return lines.join("\n");
-};
+const { buildCourseText } = require("../services/course-embedding-text");
 
 const readSource = async (Courses, Lessons, session) => {
   const courses = await Courses.find().select("title description level type embedding embeddingModel").sort({ _id: 1 }).session(session || null).lean();
-  const lessons = await Lessons.find({ courseId: { $in: courses.map((course) => course._id) } })
+  const lessons = await Lessons.find({ classId: null, courseId: { $in: courses.map((course) => course._id) } })
     .select("courseId title content order").sort({ courseId: 1, order: 1, _id: 1 }).session(session || null).lean();
   return { courses, lessons };
 };

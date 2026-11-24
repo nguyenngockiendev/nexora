@@ -24,9 +24,9 @@ const useSaveProcess = () => {
     }
   };
 
-  const FetchAllProcess = async (courseId) => {
+  const FetchAllProcess = async (courseId, classId) => {
     try {
-      const res = await GetAllProcess(courseId);
+      const res = await GetAllProcess(courseId, classId);
       setAllProcess(res);
       return res;
     } catch (error) {

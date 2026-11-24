@@ -73,8 +73,8 @@ const QuizCreaatForm = ({
     const map = new Map();
 
     courses.forEach((lesson) => {
-      const cTitle = lesson.courseId?.title || "Khóa học chưa phân loại";
-      const cId = lesson.courseId?._id || "other";
+      const cTitle = [lesson.courseId?.title, lesson.classId?.className].filter(Boolean).join(" · ") || "Khóa học chưa phân loại";
+      const cId = lesson.classId?._id || lesson.courseId?._id || "other";
       const lTitle = lesson.title || "";
 
       const matchesSearch =

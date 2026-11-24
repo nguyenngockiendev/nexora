@@ -9,7 +9,7 @@ import { useNavigate, useParams } from "react-router-dom";
 const MyClass = () => {
   const { classId } = useParams();
   const { classs, error, loading, getclass } = useGetclassByIntructor(classId);
-  const { notification, Change } = useChangeStatus();
+  const { Change } = useChangeStatus();
   const [result, setResult] = useState([]);
   const [search, setSearch] = useState("");
   const [filer, setFiler] = useState("All Status");
@@ -18,11 +18,12 @@ const MyClass = () => {
 
   const handchangesStatus = async (data) => {
     try {
-      await Change(data);
+      const response = await Change(data);
       await getclass();
-      toast.success(notification);
+      toast.success(response?.message || "Cập nhật trạng thái lớp thành công!");
     } catch (error) {
       console.log(error);
+      toast.error(error.response?.data?.message || "Không cập nhật được trạng thái lớp!");
     }
   };
 
@@ -54,7 +55,6 @@ const MyClass = () => {
         loading={loading}
         error={error}
         handchangesStatus={handchangesStatus}
-        notification={notification}
         setSearch={setSearch}
         setFiler={setFiler}
         setFilterday={setFilterday}

@@ -6,13 +6,17 @@ import LessionForm from "../../lesson/components/LessionForm";
 import useSaveProcess from "../../process/hooks/useSaveProcess";
 
 const CourseEnrollments = () => {
+  const { courseId, classId } = useParams();
+  return <LessonPlayer key={classId || courseId} courseId={courseId} classId={classId} />;
+};
+
+const LessonPlayer = ({ courseId, classId }) => {
   const role = localStorage.getItem("role");
-  const { courseId } = useParams();
   const { assistantContextRef } = useOutletContext();
-  const { enrollment, error, loading } = useCourseEnrollments(courseId);
+  const { enrollment, error, loading } = useCourseEnrollments(courseId, classId);
   const [currentLesson, setCurrentLesson] = useState(null);
 
-  const { SaveUpdate, exits, GetProcess, process, FetchAllProcess, allProcess } =
+  const { SaveUpdate, exits, GetProcess, FetchAllProcess, allProcess } =
     useSaveProcess();
   const videoRef = useRef(null);
   const intervalRef = useRef(null);
@@ -38,14 +42,17 @@ const CourseEnrollments = () => {
   // Fetch all processes for the course on mount
   useEffect(() => {
     if (courseId) {
-      FetchAllProcess(courseId);
+      FetchAllProcess(courseId, classId);
     }
-  }, [courseId]);
+  }, [courseId, classId]);
 
+  const [resume, setResume] = useState(null);
   useEffect(() => {
-    if (currentLesson) {
-      GetProcess(currentLesson._id);
-    }
+    let active = true;
+    if (currentLesson) GetProcess(currentLesson._id).then((progress) => {
+      if (active) setResume({ lessonId: currentLesson._id, lastPosition: progress?.lastPosition || 0 });
+    });
+    return () => { active = false; };
   }, [currentLesson]);
 
   const handduration = () => {
@@ -55,11 +62,17 @@ const CourseEnrollments = () => {
     }
   };
 
+  useEffect(() => () => {
+    clearInterval(intervalRef.current);
+    intervalRef.current = null;
+  }, [currentLesson]);
+
   const handlePlay = () => {
-    if (!videoRef.current) return;
+    if (!videoRef.current || !currentLesson) return;
     if (intervalRef.current) return;
     console.log("Video is playing");
     intervalRef.current = setInterval(() => {
+      if (!videoRef.current) return;
       SaveUpdate({
         lastPosition: videoRef.current.currentTime,
         lessonId: currentLesson._id,
@@ -107,6 +120,9 @@ const CourseEnrollments = () => {
     }
   };
 
+  if (error) return <p role="alert">{error}</p>;
+  if (classId && !enrollment.length) return <p>{loading ? "Đang tải bài học…" : "Lớp chưa có bài học để xem."}</p>;
+
   return (
     /* ── Cinema 2-Column Layout (Video 70% Left, Syllabus 30% Right) ── */
     <div className="flex flex-col lg:flex-row h-auto lg:h-[88vh] w-full bg-transparent rounded-[2rem] overflow-hidden gap-6">
@@ -114,12 +130,12 @@ const CourseEnrollments = () => {
       <div className="flex-1 h-full overflow-y-auto custom-scrollbar z-10 relative bg-white/70 backdrop-blur-3xl border border-white/90 rounded-[2rem] p-5 lg:p-7 shadow-sm">
         <LessionForm
           videoRef={videoRef}
-          currentLesson={currentLesson}
+          currentLesson={resume?.lessonId === currentLesson?._id ? currentLesson : null}
           role={role}
           handduration={handduration}
           onplay={handlePlay}
           onpause={handlePause}
-          process={process}
+          process={resume}
           onNextLesson={handleNextLesson}
           onPrevLesson={handlePrevLesson}
           hasNext={hasNext}
@@ -138,6 +154,7 @@ const CourseEnrollments = () => {
           currentLesson={currentLesson}
           setCurrentLesson={setCurrentLesson}
           id={courseId}
+          classId={classId}
           role={role}
           exits={exits}
           allProcess={allProcess}

@@ -1,3 +1,4 @@
+const { requireClassAccess } = require("../lessons/class-lesson-access");
 const Lessons = require("../lessons/Lessons");
 
 const ProcessLesson = require("./ProcessLessons");
@@ -12,26 +13,15 @@ const SaveLessonProgress = async (data) => {
       throw { message: "lession hoặc course không tồn tại!" };
     }
     const lessionDuration = await Lessons.findById(data.lessonId).select(
-      "duration",
+      "duration courseId classId isLocked",
     );
     if (!lessionDuration) {
       throw { message: "lession không tồn tại!" };
     }
-    const process = await ProcessLesson.findOne({
-      userId: data.userId,
-      courseId: data.courseId,
-      lessonId: data.lessonId,
-    }).lean();
-    if (!process) {
-      await ProcessLesson.create({
-        userId: data.userId,
-        courseId: data.courseId,
-        lessonId: data.lessonId,
-        lastPosition: 0,
-        percent: 0,
-        completed: false,
-        completedAt: null,
-      });
+    if (String(lessionDuration.courseId) !== String(data.courseId)) throw { status: 400, message: "Bài học không thuộc khóa này." };
+    if (lessionDuration.classId) {
+      await requireClassAccess(lessionDuration.classId, data.courseId, data.userId);
+      if (lessionDuration.isLocked) throw { status: 403, message: "Bài học đang bị khóa." };
     }
 
     const percen = Math.floor(
@@ -57,7 +47,7 @@ const SaveLessonProgress = async (data) => {
           completedAt: date,
         },
       },
-      { new: true },
+      { returnDocument: "after", upsert: true },
     );
     return result;
   } catch (error) {
@@ -86,7 +76,10 @@ const getLessonProgress = async (data) => {
 const getAllLessonProgress = async (data) => {
   try {
 
+    if (data.classId) await requireClassAccess(data.classId, data.courseId, data.userId);
+    const lessonIds = await Lessons.distinct("_id", { courseId: data.courseId, classId: data.classId || null });
     const processes = await ProcessLesson.find({
+      lessonId: { $in: lessonIds },
       userId: data.userId,
       courseId: data.courseId,
     });
@@ -100,18 +93,27 @@ const GetrecentLession = async (data) => {
   try {
     const item = await ProcessLesson.findOne({ userId: data.userId })
       .populate("courseId", "title")
-      .populate("lessonId", "title")
+      .populate("lessonId", "title classId")
       .sort({
         updatedAt: -1,
       })
       .lean();
-    if (!item) {
+    if (!item?.lessonId || !item.courseId) {
       return null;
+    }
+    if (item.lessonId.classId) {
+      try {
+        await requireClassAccess(item.lessonId.classId, item.courseId._id, data.userId);
+      } catch (error) {
+        if ([403, 404].includes(error.status)) return null;
+        throw error;
+      }
     }
     if (item.completed == true) {
       const lessionOrder = await Lessons.findById(item.lessonId._id);
       const nextLession = await Lessons.findOne({
         courseId: item.courseId._id,
+        classId: lessionOrder.classId || null,
         order: {
           $gt: lessionOrder.order,
         },
@@ -123,6 +125,7 @@ const GetrecentLession = async (data) => {
       if (nextLession) {
         return {
           courseId: nextLession.courseId._id,
+          classId: nextLession.classId,
           titleCourse: nextLession.courseId.title,
           titleLession: nextLession.title,
           percent: 0,
@@ -132,6 +135,7 @@ const GetrecentLession = async (data) => {
 
     return {
       courseId: item.courseId._id,
+      classId: item.lessonId.classId,
       titleCourse: item.courseId.title,
       titleLession: item.lessonId.title,
       percent: item.percent,
@@ -166,7 +170,7 @@ const DashboartforStudent = async (data) => {
           completed: true,
         })
           .populate("courseId")
-          .populate("lessonId")
+          .populate({ path: "lessonId", match: { classId: item.classId?._id || null }, select: "title order duration" })
           .lean();
         const classLive = await Class.find({ courseId: item.courseId._id })
           .populate("instructorId", "name")
@@ -177,8 +181,8 @@ const DashboartforStudent = async (data) => {
         return {
           course: item.courseId,
           CourseEnroill: result.length,
-          LessonsSuccess: toatalLessionsucsecc.length,
-          LessonsSuccessData: toatalLessionsucsecc,
+          LessonsSuccess: toatalLessionsucsecc.filter((entry) => entry.lessonId).length,
+          LessonsSuccessData: toatalLessionsucsecc.filter((entry) => entry.lessonId),
           ClassLive: classLive.length,
           ClassLiveData: classLive,
           AvgQuizz: avgScore,

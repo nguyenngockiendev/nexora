@@ -1,3 +1,4 @@
+const { requireClassAccess } = require("../lessons/class-lesson-access");
 const Courses = require("../courses/Courses");
 const Lessons = require("../lessons/Lessons");
 const errollment = require("../enrollments/Enrollments");
@@ -20,6 +21,7 @@ const CreateQuizByIntructor = async (data) => {
       throw { status: 404, message: "Bài học không tồn tại!" };
     }
 
+    if (checkLession.classId) await requireClassAccess(checkLession.classId, checkLession.courseId, data.userId, true);
     const isOwner = await Courses.findOne({
       _id: checkLession.courseId,
       instructor: data.userId,
@@ -56,6 +58,9 @@ const CreateQuizByIntructor = async (data) => {
 
 const GetQuizzById = async (data) => {
   try {
+    const lesson = await Lessons.findById(data.lessonId);
+    if (!lesson || (lesson.classId && lesson.isLocked && data.role === "student")) throw { status: 404, message: "Bài học không khả dụng." };
+    if (lesson.classId) await requireClassAccess(lesson.classId, lesson.courseId, data.userId, data.role !== "student");
     const res = await quizz
       .findOne({ lessonId: data.lessonId })
       .populate("courseId", "title")
@@ -98,6 +103,7 @@ const UpdateQuizzbyIntructor = async (data) => {
       };
     }
 
+    if (checkLession.classId) await requireClassAccess(checkLession.classId, checkLession.courseId, data.userId, true);
     const update = await quizz.findOneAndUpdate(
       { lessonId: data?.lessonId },
       {
@@ -117,18 +123,17 @@ const UpdateQuizzbyIntructor = async (data) => {
 const CreateAttempQuiz = async (data) => {
   try {
     const quiz = await quizz.findOne({ lessonId: data.lessonId });
+    if (!quiz) throw { status: 404, message: "Không tìm thấy quiz." };
+    const lesson = await Lessons.findById(data.lessonId);
+    if (!lesson || (lesson.classId && lesson.isLocked)) throw { status: 404, message: "Không tìm thấy bài học." };
+    if (lesson.classId) await requireClassAccess(lesson.classId, lesson.courseId, data.id);
     const ids = Object.keys(data.answers);
 
     const questions = quiz.questions.filter((question) =>
       ids.includes(question._id.toString()),
     );
 
-    const isErronment = await errollment.findOne({
-      userId: data.id,
-      courseId: quiz.courseId,
-      status: "active",
-    });
-    if (!isErronment) {
+    if (!lesson.classId && !await errollment.exists({ userId: data.id, courseId: quiz.courseId, status: "active" })) {
       throw { status: 404, message: "Bạn chưa đăng ký khóa học này!" };
     }
     let correctCount = 0;
@@ -177,7 +182,7 @@ const CreateAttempQuiz = async (data) => {
       studentId: data.id,
       quizId: quiz._id,
       courseId: quiz.courseId,
-      classId: null,
+      classId: lesson.classId || null,
       answers,
       score: correctCount,
       totalQuestions: quiz.questions.length,
@@ -221,7 +226,7 @@ const GetCourse = async (data) => {
   try {
     const listCourse = await Courses.find({
       instructor: data.userId,
-      type: "recorded",
+      type: { $in: ["recorded", "live"] },
     });
     if (!listCourse) {
       throw {
@@ -234,7 +239,8 @@ const GetCourse = async (data) => {
     const listLession = await Lessons.find({
       courseId: { $in: courseIds },
     })
-      .select("title status duration type")
+      .select("title status duration type classId")
+      .populate("classId", "className")
       .populate("courseId", "title")
       .lean();
     if (listLession.length === 0) {
@@ -252,6 +258,7 @@ const GetQuizzbyStudent = async (data) => {
     const listQuiz = await errollment
       .find({
         userId: data.userId,
+        status: { $in: ["active", "completed"] },
       })
       .populate({
         path: "courseId",
@@ -267,7 +274,7 @@ const GetQuizzbyStudent = async (data) => {
         const course = item.courseId;
         if (!course) return null;
 
-        const less = await Lessons.find({ courseId: course._id })
+        const less = await Lessons.find({ courseId: course._id, classId: item.classId || null, isLocked: { $ne: true } })
           .select("title")
           .lean();
 

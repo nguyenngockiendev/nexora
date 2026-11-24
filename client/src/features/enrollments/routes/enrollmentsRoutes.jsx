@@ -2,6 +2,7 @@ import CourseEnrollments from "../pages/CourseEnrollmentsPage";
 import MyCourses from "../pages/MyCourse";
 
 const enrollmentsRoutes = [
+  { path: "student/courses/:courseId/classes/:classId/lessons", element: <CourseEnrollments /> },
   {
     path: "student",
     element: <MyCourses />,

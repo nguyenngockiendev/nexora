@@ -36,6 +36,7 @@ const ClassRoom = ({
   showStudentModal,
   setShowStudentModal,
   studentFile,
+  setStudentFile,
   selectedAssId,
   setSelectedAssId,
   handSubmitStudent,
@@ -108,6 +109,14 @@ const ClassRoom = ({
             <span>Quay lại</span>
           </button>
         </div>
+
+        {classs?.courseId && currentUser?.role !== "admin" && (
+          <Link className="btn btn-light rounded-pill relative z-10" to={isInstructor
+            ? `/instructor/lessons/${classs.courseId._id || classs.courseId}/classes/${classs._id}`
+            : `/student/courses/${classs.courseId._id || classs.courseId}/classes/${classs._id}/lessons`}>
+            {isInstructor ? "Quản lý bài học" : "Bài học của lớp"}
+          </Link>
+        )}
 
         {/* Ambient Glow */}
         <div

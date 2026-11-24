@@ -5,6 +5,13 @@ const LessionTableLession = ({
   navigate,
   curriculum,
   courseId,
+  classId,
+  moveLesson,
+  savingOrder,
+  firstLessonId,
+  lastLessonId,
+  error,
+  loading,
   handDelete,
   searchTerm,
   setSearchTerm,
@@ -30,7 +37,7 @@ const LessionTableLession = ({
             className="quiz-btn-back rounded-pill"
             style={{ borderRadius: "9999px" }}
             type="button"
-            onClick={() => navigate("/instructor/lessons")}
+            onClick={() => navigate(classId ? `/live/class/${classId}/item` : "/instructor/lessons")}
           >
             ← Quay lại
           </Button>
@@ -38,7 +45,7 @@ const LessionTableLession = ({
             <div className="text-muted small fw-semibold">
               Bài học › Chi tiết giáo trình
             </div>
-            <h1 className="quiz-page-title mb-0">Giáo trình bài học</h1>
+            <h1 className="quiz-page-title mb-0">{classId ? "Bài học của lớp" : "Giáo trình bài học"}</h1>
           </div>
         </div>
 
@@ -49,7 +56,7 @@ const LessionTableLession = ({
               className="quiz-btn-soft rounded-pill px-4 fw-semibold"
               style={{ borderRadius: "9999px" }}
               type="button"
-              onClick={() => navigate(`/create_lession/${courseId}`)}
+              onClick={() => navigate(classId ? `/create_lession/${courseId}/classes/${classId}` : `/create_lession/${courseId}`)}
             >
               + Thêm bài học
             </Button>
@@ -119,9 +126,9 @@ const LessionTableLession = ({
             </select>
           </div>
 
-          {curriculum.length === 0 ? (
+          {loading ? <p>Đang tải bài học…</p> : error ? <p role="alert">{error}</p> : curriculum.length === 0 ? (
             <div className="text-center p-4 text-muted bg-white rounded-3 border">
-              🔍 Không tìm thấy bài học nào phù hợp với từ khóa!
+              {classId && !searchTerm ? "Lớp chưa có bài học." : "Không tìm thấy bài học phù hợp."}
             </div>
           ) : (
             curriculum.map((item, index) => (
@@ -137,7 +144,7 @@ const LessionTableLession = ({
                     style={{ cursor: "grab" }}
                     title="Kéo thả đổi thứ tự"
                   >
-                    {index + 1} ☰
+                    {classId ? item.order : index + 1} ☰
                   </span>
                   <div>
                     <h6 className="mb-0 fw-bold text-slate-800 fs-6">
@@ -180,7 +187,7 @@ const LessionTableLession = ({
                   </div>
                 </div>
                 {(item.status === "PENDING" || item.status === "FAILED") &&
-                  dashboard.role === "instructor" && (
+                  dashboard?.role === "instructor" && (
                     <div>
                       <Button
                         onClick={(e) => {
@@ -198,7 +205,7 @@ const LessionTableLession = ({
                 {item.status === "TRANSCRIPT_READY" &&
                   (!item.normalizationStatus ||
                     item.normalizationStatus === "FAILED") &&
-                  dashboard.role === "instructor" && (
+                  dashboard?.role === "instructor" && (
                     <Button
                       variant="light"
                       disabled={retryingLessonId !== null}
@@ -224,6 +231,10 @@ const LessionTableLession = ({
                     {item.type === "Quiz" ? "Trắc nghiệm" : "Video bài học"}
                   </Badge>
 
+                  {classId && <span className="d-flex gap-1" onClick={(event) => event.stopPropagation()}>
+                    <Button size="sm" variant="light" aria-label="Đưa bài lên" disabled={savingOrder || item._id === firstLessonId} onClick={() => moveLesson(item._id, -1)}>↑</Button>
+                    <Button size="sm" variant="light" aria-label="Đưa bài xuống" disabled={savingOrder || item._id === lastLessonId} onClick={() => moveLesson(item._id, 1)}>↓</Button>
+                  </span>}
                   {role === "instructor" && (
                     <Dropdown align="end" onClick={(e) => e.stopPropagation()}>
                       <Dropdown.Toggle

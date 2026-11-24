@@ -10,14 +10,15 @@ const useChangeStatus = () => {
     try {
       const res = await ChangeStatus({
         classId: data._id,
-        status: data.status === "closed" ? "open" : "closed",
+        status: ["closed", "closes"].includes(data.status) ? "open" : "closed",
       });
       SetNotification(res?.message);
 
       return res;
     } catch (error) {
-      const message = error.message || "error";
+      const message = error.response?.data?.message || error.message || "error";
       setErron(message);
+      throw error;
     }
   };
   return { notification, Change, erron };

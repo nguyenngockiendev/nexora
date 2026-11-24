@@ -25,6 +25,7 @@ const SidebarLesson = ({
   currentLesson,
   setCurrentLesson,
   allProcess = [],
+  classId,
 }) => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
@@ -74,12 +75,12 @@ const SidebarLesson = ({
       {/* ── 1. Top Bar: Back Button & Total Badge ── */}
       <div className="shrink-0 mb-2.5 flex items-center justify-between gap-2">
         <button
-          onClick={() => navigate("/student")}
+          onClick={() => navigate(classId ? `/student/live/class/${classId}/item` : "/student")}
           style={{ borderRadius: "9999px" }}
           className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-700 bg-white hover:bg-orange-50 hover:text-orange-600 border border-slate-200/80 shadow-2xs hover:shadow-xs transition-all cursor-pointer select-none"
         >
           <ArrowLeft size={13} className="text-orange-500" />
-          <span>Khóa học của tôi</span>
+          <span>{classId ? "Về lớp học" : "Khóa học của tôi"}</span>
         </button>
 
         <span

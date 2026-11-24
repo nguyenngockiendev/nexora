@@ -14,13 +14,14 @@ const {
 } = require("./classes.service");
 const uploadFile = require("../../services/upload.service");
 
+const converttime = (time) => {
+  if (typeof time !== "string" || !/^([01]\d|2[0-3]):[0-5]\d$/.test(time)) return NaN;
+  const [hour, minute] = time.split(":").map(Number);
+  return hour * 60 + minute;
+};
+
 const CreateClass = async (req, res) => {
   try {
-    const converttime = (time = "00:00") => {
-      const [h, p] = time.split(":").map(Number);
-      return h * 60 + p;
-    };
-
     const data = {
       ...req.body,
       role: req.user.role,
@@ -55,21 +56,21 @@ const GetclassbyId = async (req, res) => {
 };
 const UpdateClass = async (req, res) => {
   try {
-    const converttime = (time = "00:00") => {
-      const [h, p] = time.split(":").map(Number);
-      return h * 60 + p;
-    };
     const data = {
       ...req.body,
       role: req.user.role,
       userId: req.user.userId,
       classId: req.params.classId,
-      schedule: {
-        ...req.body?.schedule,
-        startTime: converttime(req.body?.schedule?.startTime),
-        endTime: converttime(req.body?.schedule?.endTime),
-      },
     };
+    if (req.body.schedule !== undefined) {
+      data.schedule = { ...req.body.schedule };
+      if (req.body.schedule?.startTime !== undefined) {
+        data.schedule.startTime = converttime(req.body.schedule.startTime);
+      }
+      if (req.body.schedule?.endTime !== undefined) {
+        data.schedule.endTime = converttime(req.body.schedule.endTime);
+      }
+    }
     const result = await UpdateclassByrole(data);
     res.status(200).json(result);
   } catch (error) {

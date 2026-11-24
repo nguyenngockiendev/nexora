@@ -15,10 +15,10 @@ const {
 const CreateQuiz = async (req, res) => {
   try {
     const data = {
+      ...req.body,
       lessonId: req.params.lessionId,
       role: req.user.role,
       userId: req.user.userId,
-      ...req.body,
     };
     const result = await CreateQuizByIntructor(data);
     res.status(200).json(result);
@@ -44,10 +44,10 @@ const GetQuizzByLession = async (req, res) => {
 const UpdateQuizz = async (req, res) => {
   try {
     const data = {
+      ...req.body,
       lessonId: req.params.lessonId,
       userId: req.user.userId,
       role: req.user.role,
-      ...req.body,
     };
     const result = await UpdateQuizzbyIntructor(data);
     res.status(200).json(result);
@@ -80,9 +80,9 @@ const UpdateQuizzAll = async (req, res) => {
 const CreateAttemp = async (req, res) => {
   try {
     const data = {
+      ...req.body,
       lessonId: req.params.lessonId,
       id: req.user.userId,
-      ...req.body,
     };
     const result = await CreateAttempQuiz(data);
     const resultAttemps = await GetAttempsQuiz({

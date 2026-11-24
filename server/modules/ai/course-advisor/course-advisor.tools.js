@@ -38,7 +38,7 @@ const AIcourseadvisorService = async (datas, signal) => {
       const similar = dot / denominator;
       if (Number.isFinite(similar)) {
         signal?.throwIfAborted();
-        const lessons = await Lessons.find({ courseId: course._id })
+        const lessons = await Lessons.find({ classId: null, courseId: course._id })
           .select("title duration content")
           .sort({ order: 1, _id: 1 })
           .lean();

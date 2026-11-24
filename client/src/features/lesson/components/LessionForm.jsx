@@ -61,8 +61,8 @@ const LessionForm = ({
 
   // Fallback resources if currentLesson doesn't have any attached yet
   const resourceList =
-    currentLesson?.resources && currentLesson.resources.length > 0
-      ? currentLesson.resources
+    currentLesson.classId || currentLesson?.resources?.length > 0
+      ? currentLesson.resources || []
       : [
           {
             id: 1,

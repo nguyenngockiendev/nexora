@@ -39,14 +39,18 @@ const GetrecordedCourse = async () => {
   const request = await api.get(`/instructor/recorded-courses`);
   return request;
 };
-const GetLessionDetails = async (courseId) => {
-  const request = await api.get(`/lessions/${courseId}`);
+const GetLessionDetails = async (courseId, classId) => {
+  const request = await api.get(classId ? `/lessions/${courseId}/classes/${classId}` : `/lessions/${courseId}`);
   return request;
 };
+const saveClassLessonOrder = (courseId, classId, lessonIds) =>
+  api.put(`/lessions/${courseId}/classes/${classId}/order`, { lessonIds });
+
 const RetryLessonNormalization = (lessionId) =>
   api.post(`/lessons/${lessionId}/normalization/retry`);
 
 export {
+  saveClassLessonOrder,
   GetTitle,
   CreateLession,
   DeleteLessionbyid,

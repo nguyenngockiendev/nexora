@@ -40,7 +40,7 @@ const classSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["open", "ongoing", "closes"],
+      enum: ["open", "ongoing", "closed", "closes"],
       default: "open",
     },
     isLocked: {

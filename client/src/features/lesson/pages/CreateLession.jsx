@@ -7,8 +7,8 @@ import CreateLession from "../components/CreateLessionForm";
 import useShareSocket from "../../../shared/hooks/useSocket";
 
 const Createlession = () => {
-  const { id } = useParams();
-  const { error, Lession } = useCreateLession();
+  const { id, classId } = useParams();
+  const { Lession } = useCreateLession();
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm();
   const [videoFile, setVideoFile] = useState(null);
@@ -44,7 +44,8 @@ const Createlession = () => {
       setUploadPercent(0);
       const formData = new FormData();
       formData.append("title", data.title);
-      formData.append("isPreview", data.isPreview);
+      formData.append("isPreview", classId ? false : data.isPreview);
+      if (classId) formData.append("classId", classId);
       formData.append("content", data.content);
       formData.append("videoUrl", videoFile);
 
@@ -57,11 +58,11 @@ const Createlession = () => {
 
       const result = await Lession(formData);
       if (result) {
-        toast.success(error || "Create Lession successfully!");
+        toast.success("Đã thêm bài học.");
         navigate(-1);
       }
     } catch (error) {
-      console.error(error);
+      toast.error(error.response?.data?.message || "Chưa thể thêm bài học.");
     } finally {
       setLoading(false);
       setUploading(false);
@@ -72,6 +73,7 @@ const Createlession = () => {
     <div className="w-full min-h-screen py-6 md:py-10 px-2 sm:px-4">
       <CreateLession
         navigate={navigate}
+        classId={classId}
         register={register}
         handleSubmit={handleSubmit}
         onSubmit={onSubmit}

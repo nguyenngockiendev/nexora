@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { GetLessionDetails } from "../api/lession-api";
 
-const useInsCurr = (courseId) => {
+const useInsCurr = (courseId, classId) => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [detaisLession, setDetailslession] = useState([]);
@@ -11,7 +11,7 @@ const useInsCurr = (courseId) => {
       try {
         setError(null);
         setLoading(true);
-        const res = await GetLessionDetails(courseId);
+        const res = await GetLessionDetails(courseId, classId);
 
         setDetailslession(res);
       } catch (error) {
@@ -23,7 +23,7 @@ const useInsCurr = (courseId) => {
     };
 
     gettitlebycouses();
-  }, [courseId]);
+  }, [courseId, classId]);
 
   return { loading, error, detaisLession };
 };

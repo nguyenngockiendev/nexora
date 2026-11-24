@@ -3,7 +3,7 @@ import { CheckEnrollment } from "../api/enrollments-api";
 
 
 
-const useCourseEnrollments = (data) => {
+const useCourseEnrollments = (data, classId) => {
   const [enrollment, setEnrollment] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -12,7 +12,7 @@ useEffect(() => {
     try {
       setLoading(true);
       setError(null);
-      const result = await CheckEnrollment(data);
+      const result = await CheckEnrollment(data, classId);
       setEnrollment(result);
       setLoading(false);
     } catch (error) {
@@ -23,7 +23,7 @@ useEffect(() => {
     }
   };
   checkEnrollments();
-}, [data]);
+}, [data, classId]);
 
  
   return { enrollment, error, loading};

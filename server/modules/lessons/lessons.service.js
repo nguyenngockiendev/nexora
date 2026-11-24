@@ -1,4 +1,5 @@
 const Lessons = require("./Lessons");
+const { requireClassAccess } = require("./class-lesson-access");
 const Courses = require("../courses/Courses");
 
 const quizz = require("../quizzes/Quizz");
@@ -29,14 +30,15 @@ const GetLession = async (data) => {
   try {
     let result = [];
     if (data?.role === "instructor") {
-      result = await Lessons.find({ courseId: data.id }).lean();
+      result = await Lessons.find({ courseId: data.id, classId: null }).lean();
     } else if (data?.role === "student") {
       result = await Lessons.find({
         courseId: data.id,
+        classId: null,
         isPreview: true,
       }).lean();
     } else if (data?.role === "admin") {
-      result = await Lessons.find({ courseId: data.id }).lean();
+      result = await Lessons.find({ courseId: data.id, classId: null }).lean();
     }
 
     if (!result || result.length === 0) {
@@ -51,12 +53,12 @@ const GetLession = async (data) => {
 };
 const CreateLession = async (data) => {
   try {
-    const numberOrder = await Lessons.findOne({ courseId: data.courseId }).sort(
+    const numberOrder = await Lessons.findOne({ courseId: data.courseId, classId: data.classId || null }).sort(
       { order: -1 },
     );
     let order = numberOrder?.order || 0;
     order++;
-    const newlession = await Lessons.create({ ...data, order: order });
+    const newlession = await Lessons.create({ ...data, isPreview: data.classId ? false : data.isPreview, order });
     if (data.status === "PROCESSING") {
       if (Worker2) {
         Worker2({ _id: newlession._id.toString() }, data.io);
@@ -68,22 +70,37 @@ const CreateLession = async (data) => {
     throw error;
   }
 };
+const requireLessonOwner = async (lesson, userId) => {
+  if (lesson.classId) return requireClassAccess(lesson.classId, lesson.courseId, userId, true);
+  if (!await Courses.exists({ _id: lesson.courseId, instructor: userId })) {
+    throw { status: 403, message: "Bạn không có quyền quản lý bài học này." };
+  }
+};
+
+const ReorderClassLessons = async ({ courseId, classId, userId, lessonIds }) => {
+  await requireClassAccess(classId, courseId, userId, true);
+  if (!Array.isArray(lessonIds) || !lessonIds.every((id) => typeof id === "string" && mongoose.isObjectIdOrHexString(id)) || new Set(lessonIds).size !== lessonIds.length) {
+    throw { status: 400, message: "Danh sách bài học không hợp lệ." };
+  }
+  await mongoose.connection.transaction(async (session) => {
+    const lessons = await Lessons.find({ courseId, classId }).select("_id").session(session);
+    const ids = new Set(lessons.map((lesson) => String(lesson._id)));
+    if (ids.size !== lessonIds.length || !lessonIds.every((id) => ids.has(id))) {
+      throw { status: 409, message: "Danh sách bài học đã thay đổi. Hãy tải lại trang." };
+    }
+    if (lessonIds.length) await Lessons.bulkWrite(lessonIds.map((_id, index) => ({
+      updateOne: { filter: { _id, courseId, classId }, update: { $set: { order: index + 1 } } },
+    })), { session });
+  });
+};
+
 const DeleteLessionByid = async (data) => {
   try {
     const lession = await Lessons.findById(data._id);
     if (!lession) {
       throw { status: 404, message: "Bài học không tồn tại!" };
     }
-    const isOwner = await Courses.findOne({
-      _id: lession.courseId,
-      instructor: data.userId,
-    });
-    if (!isOwner) {
-      throw {
-        status: 403,
-        message: "Bạn không có quyền xóa bài học của giảng viên khác!",
-      };
-    }
+    await requireLessonOwner(lession, data.userId);
     const deletelession = await Lessons.findByIdAndDelete(data._id);
     await LessonTranscripts.deleteMany({ lessonId: deletelession._id });
     await LessonNormalizedContent.deleteOne({ lessonId: deletelession._id });
@@ -99,24 +116,17 @@ const UpdateLessionByid = async (data) => {
     if (!lession) {
       throw { status: 404, message: "Bài học không tồn tại!" };
     }
-    const isOwner = await Courses.findOne({
-      _id: lession.courseId,
-      instructor: data.userId,
-    });
-    if (!isOwner) {
-      throw {
-        status: 403,
-        message: "Bạn không có quyền thay đổi bài học của giảng viên khác!",
-      };
-    }
+    await requireLessonOwner(lession, data.userId);
 
     const updateData = {};
 
-    for (let item in data) {
-      if (data[item] !== undefined && item !== "lessionId" && item !== "io") {
-        updateData[item] = data[item];
-      }
+    const fields = ["title", "content", "duration", "videoUrl", "isPreview", "status", "resources", "isLocked"];
+    if (!lession.classId) fields.push("order");
+    for (const field of fields) {
+      if (data[field] !== undefined) updateData[field] = data[field];
     }
+    if (data.resourceUrl) updateData.resources = [{ type: data.resourceType, title: data.resourceTitle, url: data.resourceUrl }];
+    if (lession.classId) updateData.isPreview = false;
     const updatelession = await Lessons.findByIdAndUpdate(
       data.lessionId,
 
@@ -124,7 +134,8 @@ const UpdateLessionByid = async (data) => {
         $set: updateData,
       },
       {
-        new: true,
+        returnDocument: "after",
+        runValidators: true,
       },
     );
     if (!updatelession) {
@@ -155,13 +166,7 @@ const GetLessionByid = async (data) => {
       throw { status: 404, message: "Lesson not found" };
     }
 
-    const isOwner = await Courses.findOne({
-      _id: getlession.courseId,
-      instructor: data.userId,
-    });
-    if (data.role !== "admin" && !isOwner) {
-      throw { status: 403, message: "Bạn không có quyền sửa bài học này!" };
-    }
+    if (getlession.classId || data.role !== "admin") await requireLessonOwner(getlession, data.userId);
     return getlession;
   } catch (error) {
     console.log(error);
@@ -182,6 +187,7 @@ const GetCoursewithLessionById = async (data) => {
           from: "lessons",
           localField: "_id",
           foreignField: "courseId",
+          pipeline: [{ $match: { classId: null } }],
           as: "lessionlist",
         },
       },
@@ -215,10 +221,12 @@ const GetCoursewithLessionById = async (data) => {
 };
 const getLessionDetails = async (data) => {
   try {
+    if (data.classId) await requireClassAccess(data.classId, data.courseId, data.userId, true);
     const listlession = await Lessons.find({
       courseId: data.courseId,
-    }).populate("courseId", "type");
-    if (listlession.length === 0) {
+      classId: data.classId || null,
+    }).sort({ order: 1, _id: 1 }).populate("courseId", "type");
+    if (!data.classId && listlession.length === 0) {
       throw { status: 404, message: "bạn không có bài học nào!" };
     }
     const normalized = await LessonNormalizedContent.find({
@@ -232,6 +240,7 @@ const getLessionDetails = async (data) => {
     const result = listlession.map((e) => {
       return {
         _id: e._id,
+        order: e.order,
         title: e.title,
         type: e.courseId.type,
         status: e.status,
@@ -252,12 +261,10 @@ const RetryLessonNormalization = async (lessionId, userId) => {
     throw { status: 400, message: "Mã bài học không hợp lệ!" };
   }
   const lesson = await Lessons.findById(lessionId);
-  if (!lesson || !userId || !(await Courses.exists({
-    _id: lesson.courseId,
-    instructor: userId,
-  }))) {
+  if (!lesson || !userId) {
     throw { status: 404, message: "Không tìm thấy bài học của bạn!" };
   }
+  await requireLessonOwner(lesson, userId);
   if (lesson.status !== "TRANSCRIPT_READY") {
     throw { status: 409, message: "Video chưa chuyển thành text xong!" };
   }
@@ -279,6 +286,7 @@ const RetryLessonNormalization = async (lessionId, userId) => {
 };
 
 module.exports = {
+  ReorderClassLessons,
   AttachLessonQuizzes,
   GetLession,
   CreateLession,

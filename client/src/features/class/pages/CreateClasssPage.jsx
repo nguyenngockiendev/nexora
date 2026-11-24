@@ -51,6 +51,7 @@ const CreateClass = () => {
       }
     } catch (error) {
       console.log(error);
+      toast.error(error.response?.data?.message || "Không cập nhật được lớp học!");
     }
   };
 

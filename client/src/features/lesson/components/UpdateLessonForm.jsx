@@ -262,7 +262,7 @@ const UpdateLessonForm = ({
                 Cài đặt bài học
               </div>
 
-              <div
+              {!lession?.classId && <div
                 className="w-full p-4 rounded-2xl bg-white border border-slate-200 hover:border-orange-300 transition-all flex items-center justify-between gap-4 cursor-pointer shadow-2xs"
                 style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}
               >
@@ -287,7 +287,7 @@ const UpdateLessonForm = ({
                     style={{ width: "20px", height: "20px", cursor: "pointer", accentColor: "#f97316" }}
                   />
                 </div>
-              </div>
+              </div>}
 
               <div
                 className="w-full p-4 rounded-2xl bg-white border border-slate-200 hover:border-orange-300 transition-all flex items-center justify-between gap-4 cursor-pointer shadow-2xs"

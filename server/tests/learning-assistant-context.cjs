@@ -46,7 +46,7 @@ const main = async () => {
   assert.equal(result.status, "READY");
   assert.equal(result.transcript.text, "Đoạn hiện tại");
   assert.deepEqual(result.normalizedChunks.map((item) => item.index), [8]);
-  assert.equal(queries[0].query.status, "active");
+  assert.equal(queries[0].query.$or[0].status, "active");
   assert.equal(queries[1].query._id, data.lessonId);
   assert.equal(queries[1].query.courseId, data.courseId);
   assert.equal(queries[2].query.lessonId, data.lessonId);

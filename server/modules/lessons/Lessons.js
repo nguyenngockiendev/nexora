@@ -8,6 +8,8 @@ const lessonSchema = new mongoose.Schema(
       required: true,
     },
 
+    classId: { type: mongoose.Schema.Types.ObjectId, ref: "Class", default: null },
+
     title: { type: String, required: true },
 
     videoUrl: { type: String, required: true },

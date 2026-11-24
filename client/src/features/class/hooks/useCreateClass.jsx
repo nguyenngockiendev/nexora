@@ -7,6 +7,8 @@ const useCreateClass = () => {
   const [loading, setLoading] = useState(false);
 
   const Create = async (data,courseId) => {
+    setNotification(null);
+    setLoading(true);
     try {
       const finalData = {
        
@@ -25,14 +27,15 @@ const useCreateClass = () => {
         price: data.Price,
       };
      
-      setLoading(true);
       const res = await CreateClass(finalData,courseId);
-      setLoading(false);
-      setNotification(res?.data?.message);
+      setNotification(res?.message);
       return res;
     } catch (error) {
       const message = error.response?.data?.message || "erron";
       setNotification(message);
+      throw error;
+    } finally {
+      setLoading(false);
     }
   };
   return { notification, Create, loading };

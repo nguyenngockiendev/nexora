@@ -1,5 +1,6 @@
 const fs = require("fs");
 const { setTimeout: wait } = require("node:timers/promises");
+const { requireClassAccess } = require("../../lessons/class-lesson-access");
 const Courses = require("../../courses/Courses");
 const Lessons = require("../../lessons/Lessons");
 const LessonTranscripts = require("../../lessons/LessonTranscripts");
@@ -28,6 +29,7 @@ const generateQuizAI = async (data) => {
       throw { status: 404, message: "Bài học này ko tồn tại!" };
     }
 
+    if (ExisLession.classId) await requireClassAccess(ExisLession.classId, ExisLession.courseId, data.userId, true);
     const Exitstranc = await LessonNormalizedContent.findOne({
       lessonId: ExisLession._id,
       status: "READY",

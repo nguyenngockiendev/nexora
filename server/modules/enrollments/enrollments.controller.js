@@ -23,6 +23,7 @@ const Getcheckenrollment = async (req, res) => {
     const data = {
       userId: req.user.userId,
       courseId: req.params.courseId,
+      classId: req.params.classId,
     };
     const result = await CheckEnrollment(data);
     res.status(200).json(result);

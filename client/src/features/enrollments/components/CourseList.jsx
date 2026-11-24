@@ -6,6 +6,7 @@ import {
   Clock,
   Users,
   Radio,
+  PlayCircle,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -87,6 +88,8 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-7">
         {courses?.map((item) => {
           const isLive = item?.type === "live";
+          const classId = item.classId?._id || item.classId;
+          const courseId = item.courseId?._id || item.courseId;
           const courseTitle = item?.courseId?.title || "Khóa học";
           const className = item?.classId?.className || "";
           const title = isLive
@@ -116,7 +119,7 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
 
           return (
             <div
-              key={item._id}
+              key={item._id || classId || courseId}
               className="group flex flex-col justify-between rounded-2xl p-4 sm:p-5 transition-all duration-300 hover:-translate-y-1 shadow-[0_8px_25px_rgba(194,110,30,0.06)] hover:shadow-[0_16px_36px_rgba(249,115,22,0.1)] relative overflow-hidden"
               style={{
                 background: "rgba(255, 255, 255, 0.78)",
@@ -234,20 +237,22 @@ const CourseList = ({ courses, error, loading, setFilter, setSearch }) => {
 
               <div className="pt-1">
                 {isLive ? (
-                  <Link
-                    to={`live/class/${item?.classId?._id || item?.classId || ""}/item`}
-                    className="block w-full"
-                  >
-                    <button
-                      className="w-full py-2.5 px-4 rounded-full text-xs font-bold text-white shadow-md shadow-orange-500/20 hover:shadow-orange-500/35 hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                      style={{
-                        background: "linear-gradient(135deg, #f97316, #ea580c)",
-                        borderRadius: "9999px",
-                      }}
-                    >
-                      Vào lớp học
-                    </button>
-                  </Link>
+                  classId && courseId && ["active", "completed"].includes(item.status) && (
+                    <div className="flex flex-wrap gap-2">
+                      <Link
+                        to={`/student/live/class/${classId}/item`}
+                        className="flex-1 inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-orange-600 px-4 py-2.5 text-xs font-bold text-white no-underline hover:bg-orange-700"
+                      >
+                        <Radio size={15} /> Vào lớp học
+                      </Link>
+                      <Link
+                        to={`/student/courses/${courseId}/classes/${classId}/lessons`}
+                        className="flex-1 inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-orange-200 px-4 py-2.5 text-xs font-bold text-orange-700 no-underline hover:bg-orange-50"
+                      >
+                        <PlayCircle size={15} /> Xem lại bài học
+                      </Link>
+                    </div>
+                  )
                 ) : (
                   <div className="flex items-center gap-2 w-full">
                     <Link

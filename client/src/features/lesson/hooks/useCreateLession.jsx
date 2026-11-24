@@ -13,6 +13,7 @@ const useCreateLession = () => {
     } catch (error) {
       const message = error.response?.data?.message || "erron";
       setError(message);
+      throw error;
     }
   };
   return { error, Lession };

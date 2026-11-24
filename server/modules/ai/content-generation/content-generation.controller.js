@@ -7,6 +7,7 @@ const GenerateQuizAI = async (req, res) => {
   try {
     const data = {
       role: req.user.role,
+      userId: req.user.userId,
       lessionId: req.params.lessionId,
       questionCount: req.query.questionCount,
     };

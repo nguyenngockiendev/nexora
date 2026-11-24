@@ -292,6 +292,9 @@ const MyClassCart = ({
                   >
                      <Activity size={13} /> Vào phòng học
                   </button>
+                  <button className="btn btn-outline-secondary rounded-pill" onClick={() => navigate(`/instructor/lessons/${item.courseId?._id || item.courseId}/classes/${item._id}`)}>
+                    Quản lý bài học
+                  </button>
 
                   <div className="grid grid-cols-2 gap-2">
                     <button

@@ -44,7 +44,7 @@ const UpdateLessonPage = () => {
         title: lession.title,
 
         isPreview: lession.isPreview,
-        status: lession.status,
+        status: false,
         videoUrl: lession.videoUrl,
         content: lession.content,
         resources: lession.resources,

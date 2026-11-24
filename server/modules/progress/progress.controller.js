@@ -43,6 +43,7 @@ const GetAllProcess = async (req, res) => {
       role: req.user.role,
       userId: req.user.userId,
       courseId: req.params.courseId,
+      classId: req.query.classId,
     };
     const result = await getAllLessonProgress(data);
     res.status(200).json(result);

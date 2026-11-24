@@ -1,3 +1,4 @@
+const { requireClassAccess } = require("../lessons/class-lesson-access");
 const Courses = require("../courses/Courses");
 const Lessons = require("../lessons/Lessons");
 const order = require("../payments/Orders");
@@ -36,11 +37,14 @@ const GetorderByUserId = async (data) => {
           .findById(item?.courseId?.instructor)
           .select("name -_id avatar email")
           .lean();
-        const numberStudy = await Lessons.find({ courseId: item.courseId });
+        const numberStudy = item.type === "live"
+          ? []
+          : await Lessons.find({ courseId: item.courseId, classId: null });
 
         const completeds = await ProcessLession.find({
           userId: data.userId,
           courseId: item.courseId,
+          lessonId: { $in: numberStudy.map((lesson) => lesson._id) },
           completed: true,
         }).populate("lessonId");
 
@@ -89,13 +93,18 @@ const GetorderByUserId = async (data) => {
 
 const CheckEnrollment = async (data) => {
   try {
+    if (data.classId) {
+      await requireClassAccess(data.classId, data.courseId, data.userId);
+      const lessons = await Lessons.find({ courseId: data.courseId, classId: data.classId, isLocked: false }).sort({ order: 1, _id: 1 }).lean();
+      return AttachLessonQuizzes(lessons);
+    }
     const result = await errollment
-      .findOne({ userId: data?.userId, courseId: data?.courseId })
+      .findOne({ userId: data?.userId, courseId: data?.courseId, classId: null, status: { $in: ["active", "completed"] } })
       .lean();
     if (!result) {
       throw { status: 404, message: "Bạn chưa tham gia khóa học này!" };
     }
-    const fullLesons = await Lessons.find({ courseId: data?.courseId }).lean();
+    const fullLesons = await Lessons.find({ courseId: data?.courseId, classId: null }).sort({ order: 1, _id: 1 }).lean();
     return await AttachLessonQuizzes(fullLesons);
   } catch (error) {
     console.log(error);

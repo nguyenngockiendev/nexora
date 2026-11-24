@@ -130,6 +130,7 @@ const UpdateCourse = async (req, res) => {
       description: req.body.description,
       price: req.body.price,
       level: req.body.level,
+      type: req.body.type,
       thumbnail: thumbnail,
     };
     const result = await EditCourse(data);

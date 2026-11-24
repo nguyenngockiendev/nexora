@@ -234,7 +234,7 @@ const StudentDashboardView = ({
                       onClick={() =>
                         navigate(
                           recentlesson?.courseId
-                            ? `/student/courses/${recentlesson.courseId}/item`
+                            ? (recentlesson.classId ? `/student/courses/${recentlesson.courseId}/classes/${recentlesson.classId}/lessons` : `/student/courses/${recentlesson.courseId}/item`)
                             : "/courses",
                         )
                       }

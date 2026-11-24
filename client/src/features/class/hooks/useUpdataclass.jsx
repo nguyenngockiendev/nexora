@@ -6,6 +6,8 @@ const useUpdateClass = () => {
   const [loading, setLoading] = useState(false);
 
   const Update = async (data, classId) => {
+    setNotification(null);
+    setLoading(true);
     try {
       const finalData = {
         className: data.Classname,
@@ -23,14 +25,14 @@ const useUpdateClass = () => {
         price: data.Price,
       };
 
-      setLoading(true);
       const res = await UpdatClassById(finalData, classId);
-      setLoading(false);
-      setNotification(res?.data?.message);
       return res;
     } catch (error) {
       const message = error.response?.data?.message || "erron";
       setNotification(message);
+      throw error;
+    } finally {
+      setLoading(false);
     }
   };
   return { notification, Update, loading };

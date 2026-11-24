@@ -18,9 +18,7 @@ const {
   GetTrackingAssignments,
   GradeAssignmentSubmission,
 } = require("./classes.controller");
-const {
-  SenMessLimit,
-} = require("./messages.controller");
+const { SenMessLimit } = require("./messages.controller");
 const upload = require("../../Middleware/Uploadfile");
 
 Router.post(
@@ -58,7 +56,7 @@ Router.get(
 Router.put(
   "/create_Ass/:classId",
   authMiddleware,
-  checkRole("student"),
+  checkRole("instructor", "admin"),
   upload.single("fileAss"),
   SumbitAssignment,
 );
@@ -66,7 +64,7 @@ Router.get("/Assesment_Class/:classId", authMiddleware, GetAssesmentClass);
 Router.put(
   "/Assesment_sumbit/:classId",
   authMiddleware,
-  checkRole("instructor", "admin"),
+  checkRole("student"),
   upload.single("fileAss"),
   GradeAssignments,
 );

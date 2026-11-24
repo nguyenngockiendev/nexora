@@ -4,6 +4,8 @@ import InstructorLessonCourseListPage from "../pages/InstructorLessonCourseListP
 import InstructorCurriculumPage from "../pages/InstructorCurriculumPage";
 
 const lessionRoute = [
+  { path: "instructor/lessons/:courseId/classes/:classId", element: <InstructorCurriculumPage /> },
+  { path: "create_lession/:id/classes/:classId", element: <Createlession /> },
   {
     path: "instructor/lessons",
     element: <InstructorLessonCourseListPage />,

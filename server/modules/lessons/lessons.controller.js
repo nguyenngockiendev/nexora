@@ -1,4 +1,5 @@
 const {
+  ReorderClassLessons,
   GetLession,
   CreateLession,
   DeleteLessionByid,
@@ -8,6 +9,9 @@ const {
   getLessionDetails,
   RetryLessonNormalization,
 } = require("./lessons.service");
+const fs = require("node:fs/promises");
+const Courses = require("../courses/Courses");
+const { requireClassAccess } = require("./class-lesson-access");
 const uploadFile = require("../../services/upload.service");
 
 const GetLessons = async (req, res) => {
@@ -24,8 +28,21 @@ const GetLessons = async (req, res) => {
   }
 };
 
+const removeTempFiles = async (files) => {
+  for (const file of Object.values(files || {}).flat()) {
+    await fs.rm(file.path, { force: true }).catch((error) => console.error(error.message));
+  }
+};
+
 const CreateLessons = async (req, res) => {
   try {
+    const body = req.body || {};
+    if (body.classId) {
+      await requireClassAccess(body.classId, body.courseId, req.user.userId, true);
+    } else if (!await Courses.exists({ _id: body.courseId, instructor: req.user.userId, type: { $ne: "live" } })) {
+      throw { status: 403, message: "Hãy chọn khóa video của bạn hoặc lớp cần đăng bài." };
+    }
+    if (!req.files?.videoUrl?.length) throw { status: 400, message: "Hãy chọn video bài học." };
     let videoUrl = "";
     let resourceUrl = "";
     if (req.files?.videoUrl) {
@@ -39,8 +56,7 @@ const CreateLessons = async (req, res) => {
       resourceUrl = await uploadFile(req.files.resourcesurl[0].path, false);
     }
 
-    const body = req.body || {};
-    src = {
+    const src = {
       type: body.resourcestype,
       title: body.resourcestitle,
       url: resourceUrl.secure_url,
@@ -52,17 +68,18 @@ const CreateLessons = async (req, res) => {
       videoUrl: videoUrl.secure_url,
       role: req.user.role,
 
-      resources: src,
+      resources: resourceUrl ? [src] : [],
       status:
         body.status === "" || body.status === "false"
           ? "PENDING"
-          : body.status || "PROCESSING",
+          : "PROCESSING",
       io: req.app.get("io"),
     };
 
     const result = await CreateLession(data);
     res.status(200).json(result);
   } catch (error) {
+    await removeTempFiles(req.files);
     res.status(error.status || 500).json({ message: error.message });
   }
 };
@@ -83,6 +100,7 @@ const DeleteLession = async (req, res) => {
 
 const UpdateLession = async (req, res) => {
   try {
+    await GetLessionByid({ lessionId: req.params.lessionId, userId: req.user.userId, role: req.user.role });
     let videoUrl = null;
     let resourceUrl = null;
     if (req.files?.video) {
@@ -107,15 +125,13 @@ const UpdateLession = async (req, res) => {
       resourceType: body.resourcestype,
       resourceTitle: body.resourcestitle,
       resourceUrl: resourceUrl?.secure_url,
-      status:
-        body.status === "" || body.status === "false"
-          ? "PENDING"
-          : body.status || "PROCESSING",
+      status: body.status === "PROCESSING" ? "PROCESSING" : videoUrl ? "PENDING" : undefined,
       io: req.app.get("io"),
     };
     const result = await UpdateLessionByid(data);
     res.status(200).json(result);
   } catch (error) {
+    await removeTempFiles(req.files);
     res.status(error.status || 500).json({ message: error.message });
   }
 };
@@ -150,6 +166,8 @@ const GetLessionDetails = async (req, res) => {
     const data = {
       role: req.user.role,
       courseId: req.params.courseId,
+      classId: req.params.classId,
+      userId: req.user.userId,
     };
     const result = await getLessionDetails(data);
     res.status(200).json(result);
@@ -172,7 +190,17 @@ const RetryNormalization = async (req, res) => {
   }
 };
 
+const ReorderLessons = async (req, res) => {
+  try {
+    await ReorderClassLessons({ courseId: req.params.courseId, classId: req.params.classId, userId: req.user.userId, lessonIds: req.body.lessonIds });
+    res.json({ message: "Đã lưu thứ tự bài học." });
+  } catch (error) {
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
+
 module.exports = {
+  ReorderLessons,
   GetLessons,
   CreateLessons,
   DeleteLession,

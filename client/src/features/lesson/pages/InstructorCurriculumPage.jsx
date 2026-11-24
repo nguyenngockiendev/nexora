@@ -12,19 +12,24 @@ import useUpdatelession from "../hooks/useUpdatelession";
 import usePagination from "../../../shared/hooks/usePagination";
 import PaginationForm from "../../../shared/components/PaginationForm";
 import {
+  saveClassLessonOrder,
   GetLessionDetails,
   RetryLessonNormalization,
 } from "../api/lession-api";
 
 const InstructorCurriculumPage = () => {
+  const { courseId, classId } = useParams();
+  return <Curriculum key={classId || courseId} courseId={courseId} classId={classId} />;
+};
+
+const Curriculum = ({ courseId, classId }) => {
   const navigate = useNavigate();
-  const { courseId } = useParams();
   const { dashboard } = useOutletContext() || {};
   const role = dashboard?.role;
 
   const [activeTab, setActiveTab] = useState("lessons"); 
   const [searchTerm, setSearchTerm] = useState("");
-  const { loading, error, detaisLession } = useInsCurr(courseId);
+  const { loading, error, detaisLession } = useInsCurr(courseId, classId);
   const [arrLession, setArrlession] = useState([]);
   const [process, setProcess] = useState(0);
   const socket = useShareSocket();
@@ -76,7 +81,7 @@ const InstructorCurriculumPage = () => {
     let timer;
     const refresh = async () => {
       try {
-        const lessons = await GetLessionDetails(courseId);
+        const lessons = await GetLessionDetails(courseId, classId);
         if (stopped) return;
         const byId = new Map(lessons.map((lesson) => [lesson._id, lesson]));
         setArrlession((prev) =>
@@ -98,7 +103,7 @@ const InstructorCurriculumPage = () => {
       stopped = true;
       clearTimeout(timer);
     };
-  }, [courseId, hasProcessingLesson]);
+  }, [courseId, classId, hasProcessingLesson]);
 
   const filterLession = arrLession.filter((lession) => {
     return (
@@ -109,7 +114,10 @@ const InstructorCurriculumPage = () => {
 
   const handDelete = async (id) => {
     try {
-      await Delete(id);
+      if (!(await Delete(id))) {
+        toast.error("Chưa thể xóa bài học.");
+        return;
+      }
       setArrlession((preve) =>
         preve.filter((titlesibar) => titlesibar._id !== id),
       );
@@ -120,7 +128,7 @@ const InstructorCurriculumPage = () => {
   };
 
   const handupdatetracrip = async (lessionId) => {
-    const result = await update(lessionId, "PROCESSING");
+    const result = await update(lessionId, { status: "PROCESSING" });
     if (!result) {
       toast.error("Chưa thể bắt đầu phân tích video.");
       return;
@@ -168,6 +176,25 @@ const InstructorCurriculumPage = () => {
     setSelectedLessonId(selectedLesson._id);
   };
 
+  const [savingOrder, setSavingOrder] = useState(false);
+  const moveLesson = async (lessonId, direction) => {
+    const from = arrLession.findIndex((lesson) => lesson._id === lessonId);
+    const to = from + direction;
+    if (savingOrder || from < 0 || to < 0 || to >= arrLession.length) return;
+    const ordered = [...arrLession];
+    [ordered[from], ordered[to]] = [ordered[to], ordered[from]];
+    setSavingOrder(true);
+    try {
+      await saveClassLessonOrder(courseId, classId, ordered.map((lesson) => lesson._id));
+      const positions = new Map(ordered.map((lesson, index) => [lesson._id, index + 1]));
+      setArrlession((prev) => prev.map((lesson) => ({ ...lesson, order: positions.get(lesson._id) ?? lesson.order })).sort((a, b) => a.order - b.order));
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Chưa thể đổi thứ tự bài học.");
+    } finally {
+      setSavingOrder(false);
+    }
+  };
+
   const onClose = () => setSelectedLessonId(null);
   const pagination = usePagination(filterLession, 7);
 
@@ -183,6 +210,11 @@ const InstructorCurriculumPage = () => {
             navigate={navigate}
             curriculum={pagination.currentData}
             courseId={courseId}
+            classId={classId}
+            moveLesson={moveLesson}
+            savingOrder={savingOrder}
+            firstLessonId={arrLession[0]?._id}
+            lastLessonId={arrLession.at(-1)?._id}
             loading={loading}
             error={error}
             searchTerm={searchTerm}
