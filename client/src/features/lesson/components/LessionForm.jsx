@@ -239,30 +239,6 @@ const LessionForm = ({
               {resourceList.length}
             </span>
           </button>
-
-          <button
-            onClick={() => setActiveTab("ai_tutor")}
-            style={{ borderRadius: "9999px" }}
-            className={`px-3.5 py-1.5 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer select-none ${
-              activeTab === "ai_tutor"
-                ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs"
-                : "bg-white/80 text-slate-600 hover:text-slate-900 hover:bg-white border border-slate-200/70"
-            }`}
-          >
-            <Bot
-              size={13}
-              className={
-                activeTab === "ai_tutor" ? "text-white" : "text-orange-500"
-              }
-            />
-            <span>Hỏi đáp AI Trợ giảng</span>
-            <span
-              style={{ borderRadius: "9999px" }}
-              className="text-[9px] font-black bg-orange-100 text-orange-700 px-1.5 py-0.2 uppercase"
-            >
-              Mới
-            </span>
-          </button>
         </div>
 
         {/* Tab Content Panel */}
@@ -366,62 +342,6 @@ const LessionForm = ({
                   </div>
                 );
               })}
-            </div>
-          )}
-
-          {/* ── TAB 3: AI TUTOR SUGGESTIONS (GỢI Ý HỎI ĐÁP BÀI HỌC) ── */}
-          {activeTab === "ai_tutor" && (
-            <div
-              style={{ borderRadius: "16px" }}
-              className="p-3 bg-gradient-to-br from-orange-50/70 to-amber-50/40 border border-orange-200/80 space-y-2 shadow-2xs"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div
-                    style={{ borderRadius: "9999px" }}
-                    className="w-6 h-6 bg-orange-500 text-white flex items-center justify-center shadow-xs"
-                  >
-                    <Bot size={13} />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-black text-slate-900">
-                      Nexora AI Tutor — Trợ giảng thông minh 24/7
-                    </h4>
-                    <p className="text-[10px] text-slate-500">
-                      Hỏi bất kỳ điều gì về bài giảng này, AI sẽ giải thích dựa
-                      trên nội dung video.
-                    </p>
-                  </div>
-                </div>
-
-                <span
-                  style={{ borderRadius: "9999px" }}
-                  className="px-2 py-0.5 text-[9px] font-extrabold bg-orange-100 text-orange-700 border border-orange-200"
-                >
-                  Còn 15/15 lượt
-                </span>
-              </div>
-
-              {/* Sample Prompt Chips */}
-              <div className="space-y-1 pt-0.5">
-                <div className="flex flex-wrap gap-1.5">
-                  {[
-                    "💡 Tóm tắt 3 ý chính video",
-                    "⏱️ Giải thích đoạn video đang xem",
-                    "❓ Đố tôi 1 câu hỏi ôn tập",
-                    "💻 Cho ví dụ thực tế về bài này",
-                  ].map((prompt, i) => (
-                    <button
-                      key={i}
-                      type="button"
-                      style={{ borderRadius: "9999px" }}
-                      className="px-2.5 py-1 bg-white/90 hover:bg-white text-slate-700 hover:text-orange-600 text-[11px] font-semibold border border-orange-200/70 hover:border-orange-300 shadow-2xs hover:shadow-xs transition-all cursor-pointer active:scale-95"
-                    >
-                      {prompt}
-                    </button>
-                  ))}
-                </div>
-              </div>
             </div>
           )}
         </div>
