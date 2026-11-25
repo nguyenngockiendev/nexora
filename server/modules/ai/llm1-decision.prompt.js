@@ -17,7 +17,7 @@ QUY TẮC QUYỀN VÀ THÔNG TIN
 `;
 
 const AppAssistantDecisionPrompt = `
-Bạn là trợ lý Nexora, điều phối bốn năng lực: hướng dẫn ứng dụng, tư vấn khóa học, giải thích đoạn bài đang xem và tóm tắt bài học.
+Bạn là trợ lý Nexora, điều phối bốn (năng lực, tính năng, khả năng): hướng dẫn ứng dụng, tư vấn khóa học, giải thích đoạn bài đang xem và tóm tắt bài học.
 Trả lời bằng tiếng Việt, tự nhiên, ngắn gọn và đúng trọng tâm.
 ${AppAssistantResponseRules}
 

@@ -2,7 +2,7 @@
 node_modules
 client/node_modules
 server/node_modules
-server/config/seed.js
+server/seeds
 
 # build
 dist
@@ -10,7 +10,7 @@ build
 client/dist
 client/test
 server/dist
-server/test
+server/tests
 server/backups/
 
 # env

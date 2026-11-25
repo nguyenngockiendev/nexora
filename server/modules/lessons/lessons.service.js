@@ -8,12 +8,15 @@ const { default: mongoose } = require("mongoose");
 const { Worker2 } = require("./workers/worker.service");
 const LessonTranscripts = require("./LessonTranscripts");
 const LessonNormalizedContent = require("./LessonNormalizedContent");
-const { LessonNormalized } = require("../ai/content-generation/content-generation.service");
+const {
+  LessonNormalized,
+} = require("../ai/content-generation/content-generation.service");
 
 const AttachLessonQuizzes = async (lessons) => {
-  const quizzes = await quizz.find({
-    lessonId: { $in: lessons.map((lesson) => lesson._id) },
-  })
+  const quizzes = await quizz
+    .find({
+      lessonId: { $in: lessons.map((lesson) => lesson._id) },
+    })
     .select("lessonId title")
     .lean();
   const quizByLessonId = new Map(
@@ -53,12 +56,17 @@ const GetLession = async (data) => {
 };
 const CreateLession = async (data) => {
   try {
-    const numberOrder = await Lessons.findOne({ courseId: data.courseId, classId: data.classId || null }).sort(
-      { order: -1 },
-    );
+    const numberOrder = await Lessons.findOne({
+      courseId: data.courseId,
+      classId: data.classId || null,
+    }).sort({ order: -1 });
     let order = numberOrder?.order || 0;
     order++;
-    const newlession = await Lessons.create({ ...data, isPreview: data.classId ? false : data.isPreview, order });
+    const newlession = await Lessons.create({
+      ...data,
+      isPreview: data.classId ? false : data.isPreview,
+      order,
+    });
     if (data.status === "PROCESSING") {
       if (Worker2) {
         Worker2({ _id: newlession._id.toString() }, data.io);
@@ -71,26 +79,53 @@ const CreateLession = async (data) => {
   }
 };
 const requireLessonOwner = async (lesson, userId) => {
-  if (lesson.classId) return requireClassAccess(lesson.classId, lesson.courseId, userId, true);
-  if (!await Courses.exists({ _id: lesson.courseId, instructor: userId })) {
+  if (lesson.classId)
+    return requireClassAccess(lesson.classId, lesson.courseId, userId, true);
+  if (!(await Courses.exists({ _id: lesson.courseId, instructor: userId }))) {
     throw { status: 403, message: "Bạn không có quyền quản lý bài học này." };
   }
 };
 
-const ReorderClassLessons = async ({ courseId, classId, userId, lessonIds }) => {
+const ReorderClassLessons = async ({
+  courseId,
+  classId,
+  userId,
+  lessonIds,
+}) => {
   await requireClassAccess(classId, courseId, userId, true);
-  if (!Array.isArray(lessonIds) || !lessonIds.every((id) => typeof id === "string" && mongoose.isObjectIdOrHexString(id)) || new Set(lessonIds).size !== lessonIds.length) {
+  if (
+    !Array.isArray(lessonIds) ||
+    !lessonIds.every(
+      (id) => typeof id === "string" && mongoose.isObjectIdOrHexString(id),
+    ) ||
+    new Set(lessonIds).size !== lessonIds.length
+  ) {
     throw { status: 400, message: "Danh sách bài học không hợp lệ." };
   }
   await mongoose.connection.transaction(async (session) => {
-    const lessons = await Lessons.find({ courseId, classId }).select("_id").session(session);
+    const lessons = await Lessons.find({ courseId, classId })
+      .select("_id")
+      .session(session);
     const ids = new Set(lessons.map((lesson) => String(lesson._id)));
-    if (ids.size !== lessonIds.length || !lessonIds.every((id) => ids.has(id))) {
-      throw { status: 409, message: "Danh sách bài học đã thay đổi. Hãy tải lại trang." };
+    if (
+      ids.size !== lessonIds.length ||
+      !lessonIds.every((id) => ids.has(id))
+    ) {
+      throw {
+        status: 409,
+        message: "Danh sách bài học đã thay đổi. Hãy tải lại trang.",
+      };
     }
-    if (lessonIds.length) await Lessons.bulkWrite(lessonIds.map((_id, index) => ({
-      updateOne: { filter: { _id, courseId, classId }, update: { $set: { order: index + 1 } } },
-    })), { session });
+    if (lessonIds.length)
+      await Lessons.bulkWrite(
+        lessonIds.map((_id, index) => ({
+          updateOne: {
+            filter: { _id, courseId, classId },
+            update: { $set: { order: index + 1 } },
+          },
+        })),
+        { session },
+      );
   });
 };
 
@@ -120,12 +155,28 @@ const UpdateLessionByid = async (data) => {
 
     const updateData = {};
 
-    const fields = ["title", "content", "duration", "videoUrl", "isPreview", "status", "resources", "isLocked"];
+    const fields = [
+      "title",
+      "content",
+      "duration",
+      "videoUrl",
+      "isPreview",
+      "status",
+      "resources",
+      "isLocked",
+    ];
     if (!lession.classId) fields.push("order");
     for (const field of fields) {
       if (data[field] !== undefined) updateData[field] = data[field];
     }
-    if (data.resourceUrl) updateData.resources = [{ type: data.resourceType, title: data.resourceTitle, url: data.resourceUrl }];
+    if (data.resourceUrl)
+      updateData.resources = [
+        {
+          type: data.resourceType,
+          title: data.resourceTitle,
+          url: data.resourceUrl,
+        },
+      ];
     if (lession.classId) updateData.isPreview = false;
     const updatelession = await Lessons.findByIdAndUpdate(
       data.lessionId,
@@ -166,7 +217,8 @@ const GetLessionByid = async (data) => {
       throw { status: 404, message: "Lesson not found" };
     }
 
-    if (getlession.classId || data.role !== "admin") await requireLessonOwner(getlession, data.userId);
+    if (getlession.classId || data.role !== "admin")
+      await requireLessonOwner(getlession, data.userId);
     return getlession;
   } catch (error) {
     console.log(error);
@@ -221,11 +273,14 @@ const GetCoursewithLessionById = async (data) => {
 };
 const getLessionDetails = async (data) => {
   try {
-    if (data.classId) await requireClassAccess(data.classId, data.courseId, data.userId, true);
+    if (data.classId)
+      await requireClassAccess(data.classId, data.courseId, data.userId, true);
     const listlession = await Lessons.find({
       courseId: data.courseId,
       classId: data.classId || null,
-    }).sort({ order: 1, _id: 1 }).populate("courseId", "type");
+    })
+      .sort({ order: 1, _id: 1 })
+      .populate("courseId", "type");
     if (!data.classId && listlession.length === 0) {
       throw { status: 404, message: "bạn không có bài học nào!" };
     }

@@ -1,7 +1,5 @@
 const Router = require("express").Router();
-const {
-  createLimiter,
-} = require("../../Middleware/Middleware");
+const { createLimiter } = require("../../Middleware/Middleware");
 const {
   AuthController,
   RegisterController,

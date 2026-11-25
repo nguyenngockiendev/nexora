@@ -52,10 +52,17 @@ const Nav_Sidebar = [
     title: "Quản lý",
     items: [
       {
-        name: "bài học",
+        name: "Quản lý bài học",
         path: "instructor/lessons",
         icon: BrainCircuit,
         roles: ["instructor", "admin"],
+      },
+
+      {
+        name: "Quản lý lớp trực tuyến",
+        path: "my/class",
+        icon: Video,
+        roles: ["instructor"],
       },
       {
         name: "Kho đề ôn luyện",
@@ -64,7 +71,7 @@ const Nav_Sidebar = [
         roles: ["student", "instructor", "admin"],
       },
       {
-        name: "Quản lý kiểm tra",
+        name: "Quản lý bài kiểm tra",
         path: "instructor/assessments",
         icon: ClipboardCheck,
         roles: ["instructor", "admin"],
@@ -86,12 +93,6 @@ const Nav_Sidebar = [
         path: "student/quizzes",
         icon: BrainCircuit,
         roles: ["student"],
-      },
-      {
-        name: "Lớp trực tuyến",
-        path: "my/class",
-        icon: Video,
-        roles: ["instructor"],
       },
 
       {

@@ -150,7 +150,8 @@ export default function FloatingBot({ onClick }) {
             <circle cx="60.5" cy="53" r="2" fill="#FF9F75" opacity="0.65" />
           </svg>
           <span aria-hidden="true" className="nexora-bot-hint">
-            xin chào các con giời đến với dự án thất nghiệp của tôi
+            xin chào mọi người đến với dự án của mình.Sau khi trải nghiệm cho
+            mình 1 comment nha!
           </span>
         </motion.button>
       </motion.div>

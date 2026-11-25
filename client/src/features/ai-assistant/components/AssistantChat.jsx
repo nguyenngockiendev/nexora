@@ -182,12 +182,12 @@ const AssistantChat = ({ getLessonContext }) => {
                     ? [
                         "Giải thích đoạn đang xem giúp tôi",
                         "Cho ví dụ dễ hiểu về phần này",
-                        "Tìm khóa học ở đâu?",
+                        "App có các năng lực nào?",
                       ]
                     : [
                         "Tìm khóa học ở đâu?",
                         "Xem khóa học đã mua",
-                        "Đổi ảnh đại diện thế nào?",
+                        "App có các năng lực nào?",
                       ]
                   ).map((suggestion) => (
                     <button

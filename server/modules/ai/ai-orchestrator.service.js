@@ -6,6 +6,7 @@ const { AssistantAnswerPrompt } = require("./llm2-answer.prompt");
 const usetools = require("./tool-dispatcher");
 const AIConversation = require("./AIConversation");
 const mongoose = require("mongoose");
+const aiUsageToken = require("./aiUsageToken");
 
 const activeConversations = new Set();
 
@@ -160,6 +161,17 @@ const appAssistantService = async (data, onChunk = () => {}, options = {}) => {
         ? { lessonId: data.lessonId, courseId: data.courseId, time: data.time }
         : null,
     );
+    await aiUsageToken.findOneAndUpdate(
+      {
+        userId: data.userId,
+      },
+      {
+        $inc: {
+          usedTokens: responsAI1.usageMetadata.promptTokenCount,
+        },
+      },
+    );
+
     options.signal?.throwIfAborted();
     const result = responsAI1.functionCalls ?? [];
     if (result.length === 0) {
@@ -171,6 +183,7 @@ const appAssistantService = async (data, onChunk = () => {}, options = {}) => {
       modelMessage.text = answerText;
       modelMessage.status = "DONE";
       await conversation.save();
+
       return {
         answer: responsAI1.text,
         usedTools: [],
@@ -189,6 +202,7 @@ const appAssistantService = async (data, onChunk = () => {}, options = {}) => {
       options.signal?.throwIfAborted();
       options.onStatus?.("Đang tìm thông tin phù hợp...");
       const toolResult = await usetools(call, options.signal, data);
+
       if (
         Number.isFinite(toolResult.capacity) &&
         !capacities.includes(toolResult.capacity)
@@ -204,16 +218,29 @@ const appAssistantService = async (data, onChunk = () => {}, options = {}) => {
       if (!usedTools.includes(call.name)) usedTools.push(call.name);
     }
     options.onStatus?.("Đang chuẩn bị câu trả lời...");
-    const answer = await AIanserForUser(
+    const answers = await AIanserForUser(
       AssistantAnswerPrompt(data.quesion, toolResults, history, data.role),
       sendChunk,
       options.signal,
     );
+    await aiUsageToken.findOneAndUpdate(
+      {
+        userId: data.userId,
+      },
+      {
+        $inc: {
+          usedTokens: answers.inputToken,
+        },
+      },
+    );
+
+    const answer = answers.answer;
     options.signal?.throwIfAborted();
     modelMessage.text = answer;
     modelMessage.capacities = capacities;
     modelMessage.status = "DONE";
     await conversation.save();
+
     return { answer, usedTools };
   } catch (error) {
     if (modelMessage) {

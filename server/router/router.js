@@ -11,7 +11,9 @@ Router.use(require("../modules/dashboard/dashboard.routes"));
 Router.use(require("../modules/quizzes/quizzes.routes"));
 Router.use(require("../modules/progress/progress.routes"));
 Router.use(require("../modules/ratings/ratings.routes"));
-Router.use(require("../modules/ai/content-generation/content-generation.routes"));
+Router.use(
+  require("../modules/ai/content-generation/content-generation.routes"),
+);
 Router.use(require("../modules/support/support.routes"));
 Router.use(require("../modules/vouchers/vouchers.routes"));
 Router.use(require("../modules/exam-bank/exam-bank.routes"));

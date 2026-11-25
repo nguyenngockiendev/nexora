@@ -136,7 +136,10 @@ const CreatenewCourses = async (data) => {
       instructor: data.instructor,
     });
     await newCourses.validate();
-    newCourses.embedding = await syncCourseEmbedding(newCourses, "course_document");
+    newCourses.embedding = await syncCourseEmbedding(
+      newCourses,
+      "course_document",
+    );
     newCourses.embeddingModel = "gemini-embedding-2";
     await newCourses.save();
 
@@ -150,13 +153,15 @@ const EditCourse = async (data) => {
   try {
     const filter = { _id: data.courseId, instructor: data.userId };
     const course = await Courses.findOne(filter);
-    if (!course) throw { status: 404, message: "Không tìm thấy khóa học của bạn." };
+    if (!course)
+      throw { status: 404, message: "Không tìm thấy khóa học của bạn." };
 
     const updatecourse = {};
     let needEmbedding = false;
     for (const field of embeddingFields) {
       if (data[field] === undefined) continue;
-      const value = typeof data[field] === "string" ? data[field].trim() : data[field];
+      const value =
+        typeof data[field] === "string" ? data[field].trim() : data[field];
       if (value !== course[field]) {
         updatecourse[field] = value;
         needEmbedding = true;
@@ -169,17 +174,32 @@ const EditCourse = async (data) => {
       for (const field of embeddingFields) filter[field] = course[field];
       course.set(updatecourse);
       await course.validate();
-      const lessons = await Lessons.find({ courseId: course._id, classId: null })
-        .select("title content order").lean();
-      updatecourse.embedding = await syncCourseEmbedding(course, "course_document", lessons);
+      const lessons = await Lessons.find({
+        courseId: course._id,
+        classId: null,
+      })
+        .select("title content order")
+        .lean();
+      updatecourse.embedding = await syncCourseEmbedding(
+        course,
+        "course_document",
+        lessons,
+      );
       updatecourse.embeddingModel = "gemini-embedding-2";
     }
-    const result = await Courses.findOneAndUpdate(filter, { $set: updatecourse }, {
-      returnDocument: "after",
-      runValidators: true,
-    });
+    const result = await Courses.findOneAndUpdate(
+      filter,
+      { $set: updatecourse },
+      {
+        returnDocument: "after",
+        runValidators: true,
+      },
+    );
     if (!result) {
-      throw { status: 409, message: "Khóa học đã thay đổi. Hãy tải lại trước khi lưu." };
+      throw {
+        status: 409,
+        message: "Khóa học đã thay đổi. Hãy tải lại trước khi lưu.",
+      };
     }
     return result;
   } catch (error) {
@@ -209,7 +229,10 @@ const GetDetailsCourse = async (data) => {
     if (!list) {
       throw { status: 404, message: "Khóa học không tồn tại!" };
     }
-    const lessionbycou = await Lessons.find({ classId: null, courseId: list._id }).lean();
+    const lessionbycou = await Lessons.find({
+      classId: null,
+      courseId: list._id,
+    }).lean();
     const isEnroillment = await Enrollments.find({
       userId: data.userId,
       courseId: list._id,
@@ -221,7 +244,8 @@ const GetDetailsCourse = async (data) => {
       data.role === "admin" ||
       list.instructor?._id?.toString() === data.userId.toString();
     const visibleLessons = lessionbycou.map((lesson) => {
-      if (canViewLessons || (lesson.isPreview && !lesson.isLocked)) return lesson;
+      if (canViewLessons || (lesson.isPreview && !lesson.isLocked))
+        return lesson;
       return {
         _id: lesson._id,
         courseId: lesson.courseId,
@@ -255,7 +279,6 @@ const GetDetailsCourse = async (data) => {
 
 const GetCourseForAdmin = async (data) => {
   try {
-
     const result = await Courses.aggregate([
       {
         $lookup: {

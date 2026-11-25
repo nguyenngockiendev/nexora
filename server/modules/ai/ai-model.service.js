@@ -69,11 +69,18 @@ const AIanserForUser = async (prompt, onChunk = () => {}, signal) => {
       config: { abortSignal: signal },
     });
     let answer = "";
+    let inputToken = 0;
     for await (const chunk of res) {
       signal?.throwIfAborted();
       if (chunk.text) {
         answer += chunk.text;
         onChunk(chunk.text);
+      }
+      if (chunk.usageMetadata) {
+        const count = chunk.usageMetadata.promptTokenCount;
+        if (Number.isFinite(count)) {
+          inputToken = count;
+        }
       }
     }
     if (!answer.trim()) {
@@ -82,13 +89,23 @@ const AIanserForUser = async (prompt, onChunk = () => {}, signal) => {
         message: "Gemini chưa trả về nội dung trả lời.",
       };
     }
-    return answer;
+    return { answer: answer, inputToken: inputToken };
   } catch (error) {
     console.error("Lỗi khi gọi Gemini API:", error);
     throw error;
   }
 };
+const CountTokenInput = async (text) => {
+  const result = await genAI.models.countTokens({
+    model: "gemini-3.5-flash-lite",
+    contents: text,
+  });
+
+  return result.totalTokens;
+};
+
 module.exports = {
   getAppAssistantDecision,
   AIanserForUser,
+  CountTokenInput,
 };
