@@ -308,7 +308,7 @@ const CartView = ({
                     className="px-2 py-0.5 rounded-md bg-orange-50 text-orange-600 font-mono font-bold text-[11px] border border-orange-200 hover:bg-orange-100 hover:text-orange-700 transition-colors cursor-pointer"
                     title="Nhấn để tự động điền mã giảm 100%"
                   >
-                   NEXKUQQF
+                   NEXR2K3A
                   </button>
                   <span className="text-slate-400 text-[10px]">(Giảm 100% học thử 0đ)</span>
                 </p>
