@@ -304,7 +304,7 @@ const CartView = ({
                   <span>Mã test:</span>
                   <button
                     type="button"
-                    onClick={() => setCouponCode("NEXKUQQF")}
+                    onClick={() => setCouponCode("NEXR2K3A")}
                     className="px-2 py-0.5 rounded-md bg-orange-50 text-orange-600 font-mono font-bold text-[11px] border border-orange-200 hover:bg-orange-100 hover:text-orange-700 transition-colors cursor-pointer"
                     title="Nhấn để tự động điền mã giảm 100%"
                   >
